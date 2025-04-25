@@ -84,19 +84,18 @@
             background-color: rgba(0, 0, 0, 0.3);
             border-color: rgba(255, 255, 255, 0.4);
          }
-         /* Styling for debug list */
          #debug-email-list {
-             font-size: 0.75rem; /* Smaller text */
+             font-size: 0.75rem;
              margin-top: 1rem;
              padding-top: 0.5rem;
              border-top: 1px dashed rgba(255, 255, 255, 0.2);
-             max-height: 100px; /* Limit height */
-             overflow-y: auto; /* Add scroll if needed */
-             color: #d1d5db; /* Light gray text */
+             max-height: 100px;
+             overflow-y: auto;
+             color: #d1d5db;
          }
          #debug-email-list h4 {
              margin-bottom: 0.25rem;
-             font-weight: 500; /* Semi-bold */
+             font-weight: 500;
          }
          #debug-email-list ul {
              list-style-type: disc;
@@ -141,7 +140,7 @@
 
              <div id="error-message"></div>
 
-            <div id="debug-email-list" style="display: none;"> {/* Hidden by default, shown by JS */}
+            <div id="debug-email-list" style="display: none;">
                 <h4>Allowed Emails (Debug):</h4>
                 <ul></ul>
             </div>
@@ -167,11 +166,17 @@
     </div>
 
     <script>
+        // *** UPDATED De-obfuscation function using index skipping ***
         function deobfuscateEmail(obfuscatedEmail) {
             if (typeof obfuscatedEmail !== 'string') {
                 return "";
             }
-            return obfuscatedEmail.split("roman").join("");
+            let deobfuscated = "";
+            // Loop through the obfuscated string, taking every 6th character (0, 6, 12, ...)
+            for (let i = 0; i < obfuscatedEmail.length; i += 6) { // Step by 6 (1 character + 5 for "roman")
+                deobfuscated += obfuscatedEmail[i];
+            }
+            return deobfuscated;
         }
 
         const correctPassword = "alphatek";
@@ -184,7 +189,7 @@
         const errorMessageDiv = document.getElementById('error-message');
         const requestAccessLink = document.getElementById('request-access-link');
         const requestAccessSection = document.getElementById('request-access-section');
-        const debugEmailListDiv = document.getElementById('debug-email-list'); // Get the debug div
+        const debugEmailListDiv = document.getElementById('debug-email-list');
 
         function isEmailAllowed(emailToCheck) {
             const normalizedEmail = emailToCheck.trim().toLowerCase();
@@ -194,7 +199,7 @@
                 return false;
             }
             for (const obfuscatedEmail of allowedObfuscatedEmails) {
-                const deobfuscated = deobfuscateEmail(obfuscatedEmail);
+                const deobfuscated = deobfuscateEmail(obfuscatedEmail); // Uses the new function
                 if (normalizedEmail === deobfuscated) {
                     return true;
                 }
@@ -226,32 +231,31 @@
             }
         }
 
-        // Function to display the debug email list
         function displayDebugEmailList() {
-            if (!debugEmailListDiv) return; // Exit if div not found
+            if (!debugEmailListDiv) return;
 
             if (typeof allowedObfuscatedEmails === 'undefined' || !Array.isArray(allowedObfuscatedEmails)) {
                  debugEmailListDiv.innerHTML = '<h4>Allowed Emails (Debug):</h4><p>Error: Could not load email list.</p>';
-                 debugEmailListDiv.style.display = 'block'; // Show the error
+                 debugEmailListDiv.style.display = 'block';
                  return;
             }
 
             const listElement = debugEmailListDiv.querySelector('ul');
-            if (!listElement) return; // Exit if ul not found
+            if (!listElement) return;
 
-            listElement.innerHTML = ''; // Clear previous list items
+            listElement.innerHTML = '';
 
             if (allowedObfuscatedEmails.length === 0) {
                 listElement.innerHTML = '<li>List is empty.</li>';
             } else {
                 allowedObfuscatedEmails.forEach(obfuscated => {
-                    const deobfuscated = deobfuscateEmail(obfuscated);
+                    const deobfuscated = deobfuscateEmail(obfuscated); // Uses the new function
                     const listItem = document.createElement('li');
-                    listItem.textContent = deobfuscated;
+                    listItem.textContent = deobfuscated; // Display the result of the new function
                     listElement.appendChild(listItem);
                 });
             }
-            debugEmailListDiv.style.display = 'block'; // Show the list
+            debugEmailListDiv.style.display = 'block';
         }
 
 
@@ -290,10 +294,9 @@
              if (typeof allowedObfuscatedEmails === 'undefined' || !Array.isArray(allowedObfuscatedEmails)) {
                  console.error("Initialization Error: allowedObfuscatedEmails list missing on DOMContentLoaded.");
                  errorMessageDiv.textContent = 'Configuration error loading email list.';
-                 displayDebugEmailList(); // Display error in debug list as well
+                 displayDebugEmailList();
              } else {
                 if (!loadAndCheckStorage()) {
-                    // If not redirected, display the debug list
                     displayDebugEmailList();
                 }
              }
