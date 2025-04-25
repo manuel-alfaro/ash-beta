@@ -573,10 +573,10 @@
             content: '';
             position: absolute;
             /* Plassering og størrelse for gradient-effekten */
-            top: -100px;     /* Flyttet lenger opp */
-            right: -100px;     /* Flyttet lenger til høyre */
+            top: -100px;      /* Flyttet lenger opp */
+            right: -100px;      /* Flyttet lenger til høyre */
             width: 500px;      /* Størrelse på sirkel */
-            height: 500px;     /* Størrelse på sirkel */
+            height: 500px;      /* Størrelse på sirkel */
             /* Selve gradienten */
             background-image: radial-gradient(circle at top right, /* Starter i øvre høyre */
                 var(--success-gradient-start-color) 0%,
@@ -986,7 +986,7 @@
                     </div>
                 </div>
                 <div id="canvas-container">
-                    </div>
+                 </div>
                 <h2 id="results-title">Results</h2>
 
                 <div class="position-row">
@@ -1661,7 +1661,7 @@
             console.log("Exited PDF preview mode");
         }
 
-        // --- Function for Exporting to CSV (MODIFIED unit formatting) ---
+        // --- Function for Exporting to CSV (MODIFIED unit formatting in Metric column) ---
          function exportTableToCsv() {
              const fpNr = fpNrInput ? fpNrInput.value.trim() : '';
              const age = ageInput ? ageInput.value.trim() : '';
@@ -1676,27 +1676,50 @@
              const dateString = `${year}-${month}-${day}`;
              const safeFpNr = fpNr.replace(/[^a-z0-9]/gi, '_') || 'Unknown';
              const filename = `ASH_${safeFpNr}_${dateString}.csv`;
-             // --- UNIT FORMATTING CHANGE ---
+
+             // *** START CSV EXPORT MODIFICATION ***
+             // Headers remain the same
              const headers = [ "Patient ID", "Age", "Gender", "Sport", "Bodyweight (kg)", "Injured Side", "Position", "Metric", "Left Value", "Right Value" ];
              let csv = [headers.join(',')];
              const positions = ['I', 'Y', 'T'];
-             const metrics = ['Max Force (N)', 'RFD 100ms (Ns-1)']; // Use Ns-1 for CSV header consistency
+             // Define the metrics with the desired display format for the CSV
+             const metricsForCsv = ['Max Force (N)', 'RFD 100ms (N/s)']; // Use N/s here
 
              positions.forEach(pos => {
                  const positionName = `ASH Test Position ${pos}`;
-                 const positionData = processInputAndCalculate(pos);
-                 metrics.forEach(metric => {
-                     let leftVal = ''; let rightVal = '';
-                     if (positionData) {
-                         if (metric === 'Max Force (N)') { leftVal = positionData.left.max_force; rightVal = positionData.right.max_force; }
-                         // Match the header 'RFD 100ms (Ns-1)'
-                         else if (metric === 'RFD 100ms (Ns-1)') { leftVal = positionData.left.rfd; rightVal = positionData.right.rfd; }
+                 const positionData = processInputAndCalculate(pos); // Gets raw numeric data
+
+                 metricsForCsv.forEach(metricDisplay => { // Iterate using the CSV display names
+                     let leftVal = '';
+                     let rightVal = '';
+                     let metricIdentifier = metricDisplay; // Default identifier is the display name
+
+                     // Determine which raw data to fetch based on the metric display name
+                     if (metricDisplay === 'Max Force (N)') {
+                         if (positionData) {
+                             leftVal = positionData.left.max_force;
+                             rightVal = positionData.right.max_force;
+                         }
+                     } else if (metricDisplay === 'RFD 100ms (N/s)') {
+                         if (positionData) {
+                             leftVal = positionData.left.rfd; // Fetch the raw RFD number
+                             rightVal = positionData.right.rfd; // Fetch the raw RFD number
+                         }
+                         metricIdentifier = 'RFD 100ms (N/s)'; // Ensure this specific string is used in the CSV row
                      }
-                     const rowData = [ `"${fpNr}"`, `"${age}"`, `"${gender}"`, `"${sport}"`, `"${bodyweight}"`, `"${injuredSide}"`, `"${positionName}"`, `"${metric}"`, `"${leftVal}"`, `"${rightVal}"` ];
+
+                     // Create the CSV row using the metricDisplay string and raw numeric values
+                     const rowData = [
+                         `"${fpNr}"`, `"${age}"`, `"${gender}"`, `"${sport}"`, `"${bodyweight}"`, `"${injuredSide}"`,
+                         `"${positionName}"`, `"${metricIdentifier}"`, // Use the correct metric string for the CSV
+                         `"${leftVal}"`, `"${rightVal}"` // Use the raw numeric values
+                     ];
                      csv.push(rowData.join(','));
                  });
              });
-             const csvString = "\uFEFF" + csv.join('\n');
+             // *** END CSV EXPORT MODIFICATION ***
+
+             const csvString = "\uFEFF" + csv.join('\n'); // Add BOM for Excel compatibility
              const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
              const link = document.createElement('a');
              if (link.download !== undefined) {
@@ -1736,60 +1759,62 @@
         }
 
 
-        // --- localStorage Functions (Adapted for NEW structure, using v4 key) ---
-        const localStorageKey = 'screeningAppData_v4'; // Use new key to avoid conflicts with old structure
+        // --- localStorage Functions (Reverted to original - no unit formatting) ---
+        const localStorageKey = 'screeningAppData_v4';
         function saveInputsToLocalStorage() {
-             const dataToSave = {
-                 injuredSide: injuredSideRadio.value,
-                 bodyweight: bodyweightInput.value,
-                 fpNr: fpNrInput.value,
-                 age: ageInput.value,
-                 gender: genderSelect.value,
-                 sport: sportInput.value,
-                 // Save values from the new input structure using their IDs
-                 'non-injured-max-force-i': nonInjuredMaxForceInputI.value, 'non-injured-rfd-i': nonInjuredRfdInputI.value,
-                 'injured-max-force-i': injuredMaxForceInputI.value, 'injured-rfd-i': injuredRfdInputI.value,
-                 'non-injured-max-force-y': nonInjuredMaxForceInputY.value, 'non-injured-rfd-y': nonInjuredRfdInputY.value,
-                 'injured-max-force-y': injuredMaxForceInputY.value, 'injured-rfd-y': injuredRfdInputY.value,
-                 'non-injured-max-force-t': nonInjuredMaxForceInputT.value, 'non-injured-rfd-t': nonInjuredRfdInputT.value,
-                 'injured-max-force-t': injuredMaxForceInputT.value, 'injured-rfd-t': injuredRfdInputT.value,
-             };
-             try { localStorage.setItem(localStorageKey, JSON.stringify(dataToSave)); } catch (error) { console.error('Error saving inputs:', error); }
+            const dataToSave = {
+                injuredSide: injuredSideRadio.value,
+                bodyweight: bodyweightInput.value,
+                fpNr: fpNrInput.value,
+                age: ageInput.value,
+                gender: genderSelect.value,
+                sport: sportInput.value,
+                // Save raw values from the input structure using their IDs
+                'non-injured-max-force-i': nonInjuredMaxForceInputI.value, 'non-injured-rfd-i': nonInjuredRfdInputI.value,
+                'injured-max-force-i': injuredMaxForceInputI.value, 'injured-rfd-i': injuredRfdInputI.value,
+                'non-injured-max-force-y': nonInjuredMaxForceInputY.value, 'non-injured-rfd-y': nonInjuredRfdInputY.value,
+                'injured-max-force-y': injuredMaxForceInputY.value, 'injured-rfd-y': injuredRfdInputY.value,
+                'non-injured-max-force-t': nonInjuredMaxForceInputT.value, 'non-injured-rfd-t': nonInjuredRfdInputT.value,
+                'injured-max-force-t': injuredMaxForceInputT.value, 'injured-rfd-t': injuredRfdInputT.value,
+            };
+            try { localStorage.setItem(localStorageKey, JSON.stringify(dataToSave)); } catch (error) { console.error('Error saving inputs:', error); }
         }
-        function loadInputsFromLocalStorage() {
-             try {
-                 const savedDataString = localStorage.getItem(localStorageKey);
-                 if (savedDataString) {
-                     const savedData = JSON.parse(savedDataString);
-                     console.log('Loading inputs from localStorage (v4)');
-                     // Load patient details and top controls
-                     injuredSideRadio.value = savedData.injuredSide || 'Left';
-                     bodyweightInput.value = savedData.bodyweight || '';
-                     fpNrInput.value = savedData.fpNr || '';
-                     ageInput.value = savedData.age || '';
-                     genderSelect.value = savedData.gender || '';
-                     sportInput.value = savedData.sport || '';
-                     // Load values into the new input structure using their IDs
-                     nonInjuredMaxForceInputI.value = savedData['non-injured-max-force-i'] || ''; nonInjuredRfdInputI.value = savedData['non-injured-rfd-i'] || '';
-                     injuredMaxForceInputI.value = savedData['injured-max-force-i'] || ''; injuredRfdInputI.value = savedData['injured-rfd-i'] || '';
-                     nonInjuredMaxForceInputY.value = savedData['non-injured-max-force-y'] || ''; nonInjuredRfdInputY.value = savedData['non-injured-rfd-y'] || '';
-                     injuredMaxForceInputY.value = savedData['injured-max-force-y'] || ''; injuredRfdInputY.value = savedData['injured-rfd-y'] || '';
-                     nonInjuredMaxForceInputT.value = savedData['non-injured-max-force-t'] || ''; nonInjuredRfdInputT.value = savedData['non-injured-rfd-t'] || '';
-                     injuredMaxForceInputT.value = savedData['injured-max-force-t'] || ''; injuredRfdInputT.value = savedData['injured-rfd-t'] || '';
 
-                     // Automatically show patient data section if any patient data was loaded
-                     if (fpNrInput.value || ageInput.value || genderSelect.value || sportInput.value) {
-                         if (patientDataContainer && !patientDataContainer.classList.contains('visible')) {
-                             togglePatientData(); // Show the section
-                         }
-                     }
-                 }
-             } catch (error) {
-                 console.error('Error loading inputs:', error);
-                 // Optionally clear local storage if parsing fails
-                 // localStorage.removeItem(localStorageKey);
-             }
+        function loadInputsFromLocalStorage() {
+            try {
+                const savedDataString = localStorage.getItem(localStorageKey);
+                if (savedDataString) {
+                    const savedData = JSON.parse(savedDataString);
+                    console.log('Loading inputs from localStorage (v4)');
+                    // Load patient details and top controls
+                    injuredSideRadio.value = savedData.injuredSide || 'Left';
+                    bodyweightInput.value = savedData.bodyweight || '';
+                    fpNrInput.value = savedData.fpNr || '';
+                    ageInput.value = savedData.age || '';
+                    genderSelect.value = savedData.gender || '';
+                    sportInput.value = savedData.sport || '';
+                    // Load raw values into the input structure using their IDs
+                    nonInjuredMaxForceInputI.value = savedData['non-injured-max-force-i'] || ''; nonInjuredRfdInputI.value = savedData['non-injured-rfd-i'] || '';
+                    injuredMaxForceInputI.value = savedData['injured-max-force-i'] || ''; injuredRfdInputI.value = savedData['injured-rfd-i'] || '';
+                    nonInjuredMaxForceInputY.value = savedData['non-injured-max-force-y'] || ''; nonInjuredRfdInputY.value = savedData['non-injured-rfd-y'] || '';
+                    injuredMaxForceInputY.value = savedData['injured-max-force-y'] || ''; injuredRfdInputY.value = savedData['injured-rfd-y'] || '';
+                    nonInjuredMaxForceInputT.value = savedData['non-injured-max-force-t'] || ''; nonInjuredRfdInputT.value = savedData['non-injured-rfd-t'] || '';
+                    injuredMaxForceInputT.value = savedData['injured-max-force-t'] || ''; injuredRfdInputT.value = savedData['injured-rfd-t'] || '';
+
+                    // Automatically show patient data section if any patient data was loaded
+                    if (fpNrInput.value || ageInput.value || genderSelect.value || sportInput.value) {
+                        if (patientDataContainer && !patientDataContainer.classList.contains('visible')) {
+                            togglePatientData(); // Show the section
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading inputs:', error);
+                // Optionally clear local storage if parsing fails
+                // localStorage.removeItem(localStorageKey);
+            }
         }
+
 
         // --- Event Listeners (Adapted for NEW structure) ---
         // Top controls listeners
@@ -1847,4 +1872,4 @@
 </script>
 
 </body>
-</ht
+</html>
