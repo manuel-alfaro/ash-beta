@@ -6,7 +6,6 @@
     <title>Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="assets/emails.js"></script>
     <style>
         body {
             font-family: 'Avenir Next', 'Avenir', 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -84,37 +83,7 @@
             background-color: rgba(0, 0, 0, 0.3);
             border-color: rgba(255, 255, 255, 0.4);
          }
-         #debug-email-list {
-             font-size: 0.75rem;
-             margin-top: 1rem;
-             padding-top: 0.5rem;
-             border-top: 1px dashed rgba(255, 255, 255, 0.2);
-             max-height: 150px; /* Increased height slightly */
-             overflow-y: auto;
-             color: #d1d5db;
-             word-break: break-all; /* Break long strings */
-         }
-         #debug-email-list h4 {
-             margin-bottom: 0.25rem;
-             font-weight: 500;
-         }
-         #debug-email-list ul {
-             list-style-type: none; /* Removed bullets */
-             margin-left: 0;
-             padding-left: 0;
-         }
-          #debug-email-list li {
-             margin-bottom: 0.3rem; /* Spacing between items */
-         }
-         #debug-email-list .obfuscated {
-             color: #9ca3af; /* Gray for obfuscated */
-             display: block; /* Put on new line */
-             font-size: 0.65rem; /* Smaller */
-         }
-         #debug-email-list .deobfuscated {
-             color: #e5e7eb; /* Lighter gray for deobfuscated */
-             font-weight: 500;
-         }
+         /* Removed debug list styles */
     </style>
     </head>
 <body class="h-screen flex items-center justify-center">
@@ -154,11 +123,7 @@
 
              <div id="error-message"></div>
 
-            <div id="debug-email-list" style="display: none;">
-                <h4>Allowed Emails (Debug):</h4>
-                <ul></ul>
-            </div>
-            <div>
+             <div>
                  <button type="submit"
                         class="custom-gradient-button w-full flex justify-center py-2 px-4 rounded-md text-sm text-white focus:outline-none">
                     Login
@@ -180,16 +145,15 @@
     </div>
 
     <script>
-        function deobfuscateEmail(obfuscatedEmail) {
-            if (typeof obfuscatedEmail !== 'string') {
-                return "";
-            }
-            let deobfuscated = "";
-            for (let i = 0; i < obfuscatedEmail.length; i += 6) {
-                deobfuscated += obfuscatedEmail[i];
-            }
-            return deobfuscated;
-        }
+        // Removed deobfuscateEmail function
+
+        // *** Email list with plain emails ***
+        const allowedEmails = [
+            "test@example.com",
+            "bruker@domene.no",
+            "manuel@alphatek.ai"
+            // Add more plain emails here
+        ];
 
         const correctPassword = "alphatek";
         const nextPageUrl = "screening.html";
@@ -201,34 +165,26 @@
         const errorMessageDiv = document.getElementById('error-message');
         const requestAccessLink = document.getElementById('request-access-link');
         const requestAccessSection = document.getElementById('request-access-section');
-        const debugEmailListDiv = document.getElementById('debug-email-list');
+        // Removed debugEmailListDiv reference
 
+        // *** Updated function to use plain email list ***
         function isEmailAllowed(emailToCheck) {
             const normalizedEmail = emailToCheck.trim().toLowerCase();
-            if (typeof allowedObfuscatedEmails === 'undefined' || !Array.isArray(allowedObfuscatedEmails)) {
-                console.error("CRITICAL: allowedObfuscatedEmails list not found or is not an array. Check if 'assets/emails.js' loaded correctly and has the correct variable name.");
-                errorMessageDiv.textContent = 'Configuration error. Please contact support.';
-                return false;
-            }
-            for (const obfuscatedEmail of allowedObfuscatedEmails) {
-                const deobfuscated = deobfuscateEmail(obfuscatedEmail);
-                if (normalizedEmail === deobfuscated) {
-                    return true;
-                }
-            }
-            return false;
+            // Directly check against the plain email list
+            return allowedEmails.includes(normalizedEmail);
         }
 
         function loadAndCheckStorage() {
             const savedEmail = localStorage.getItem(localStorageEmailKey);
             if (savedEmail) {
-                if (typeof allowedObfuscatedEmails !== 'undefined' && Array.isArray(allowedObfuscatedEmails) && isEmailAllowed(savedEmail)) {
+                // Check directly if the saved email is allowed
+                if (isEmailAllowed(savedEmail)) {
                     console.log("Valid email found in localStorage. Redirecting...");
                     window.location.href = nextPageUrl;
                     return true;
                 } else {
                     emailInput.value = savedEmail;
-                    console.log("Loaded email from localStorage, but not redirecting (either list missing or email not allowed):", savedEmail);
+                    console.log("Loaded email from localStorage, but it's not currently allowed:", savedEmail);
                 }
             }
              return false;
@@ -243,38 +199,7 @@
             }
         }
 
-        // *** UPDATED Debug display function ***
-        function displayDebugEmailList() {
-            if (!debugEmailListDiv) return;
-
-            if (typeof allowedObfuscatedEmails === 'undefined' || !Array.isArray(allowedObfuscatedEmails)) {
-                 debugEmailListDiv.innerHTML = '<h4>Allowed Emails (Debug):</h4><p>Error: Could not load email list from assets/emails.js</p>';
-                 debugEmailListDiv.style.display = 'block';
-                 return;
-            }
-
-            const listElement = debugEmailListDiv.querySelector('ul');
-            if (!listElement) return;
-
-            listElement.innerHTML = ''; // Clear previous list items
-
-            if (allowedObfuscatedEmails.length === 0) {
-                listElement.innerHTML = '<li>List in assets/emails.js is empty.</li>';
-            } else {
-                allowedObfuscatedEmails.forEach((obfuscated, index) => {
-                    const deobfuscated = deobfuscateEmail(obfuscated);
-                    const listItem = document.createElement('li');
-                    // Show both obfuscated (from file) and deobfuscated result
-                    listItem.innerHTML = `
-                        <span class="deobfuscated">${deobfuscated}</span>
-                        <span class="obfuscated">(From: ${obfuscated})</span>
-                    `;
-                    listElement.appendChild(listItem);
-                });
-            }
-            debugEmailListDiv.style.display = 'block'; // Show the list
-        }
-
+        // Removed displayDebugEmailList function
 
         loginForm.addEventListener('submit', function(event) {
             event.preventDefault();
@@ -283,6 +208,7 @@
             errorMessageDiv.textContent = '';
             let loginSuccess = false;
 
+            // Simplified check
             if (isEmailAllowed(enteredEmail) && enteredPassword === correctPassword) {
                  loginSuccess = true;
             }
@@ -291,14 +217,11 @@
                 saveEmailToStorage();
                 window.location.href = nextPageUrl;
             } else {
-                 if (typeof allowedObfuscatedEmails !== 'undefined' && Array.isArray(allowedObfuscatedEmails)) {
-                    errorMessageDiv.textContent = 'Invalid email or password.';
-                    const loginBox = loginForm.parentElement;
-                    loginBox.classList.add('animate-shake');
-                    setTimeout(() => loginBox.classList.remove('animate-shake'), 500);
-                 }
-                 // Display the debug list again on failed login attempt
-                 displayDebugEmailList();
+                 errorMessageDiv.textContent = 'Invalid email or password.';
+                 const loginBox = loginForm.parentElement;
+                 loginBox.classList.add('animate-shake');
+                 setTimeout(() => loginBox.classList.remove('animate-shake'), 500);
+                 // Removed call to displayDebugEmailList
             }
         });
 
@@ -310,15 +233,10 @@
         emailInput.addEventListener('blur', saveEmailToStorage);
 
         document.addEventListener('DOMContentLoaded', (event) => {
-             if (typeof allowedObfuscatedEmails === 'undefined' || !Array.isArray(allowedObfuscatedEmails)) {
-                 console.error("Initialization Error: allowedObfuscatedEmails list missing on DOMContentLoaded.");
-                 errorMessageDiv.textContent = 'Configuration error loading email list.';
-                 displayDebugEmailList();
-             } else {
-                if (!loadAndCheckStorage()) {
-                    displayDebugEmailList();
-                }
-             }
+            // Simplified check on load
+            if (!loadAndCheckStorage()) {
+                 // No debug list to display
+            }
         });
     </script>
 
