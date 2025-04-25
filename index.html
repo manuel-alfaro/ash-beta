@@ -84,6 +84,24 @@
             background-color: rgba(0, 0, 0, 0.3);
             border-color: rgba(255, 255, 255, 0.4);
          }
+         /* Styling for debug list */
+         #debug-email-list {
+             font-size: 0.75rem; /* Smaller text */
+             margin-top: 1rem;
+             padding-top: 0.5rem;
+             border-top: 1px dashed rgba(255, 255, 255, 0.2);
+             max-height: 100px; /* Limit height */
+             overflow-y: auto; /* Add scroll if needed */
+             color: #d1d5db; /* Light gray text */
+         }
+         #debug-email-list h4 {
+             margin-bottom: 0.25rem;
+             font-weight: 500; /* Semi-bold */
+         }
+         #debug-email-list ul {
+             list-style-type: disc;
+             margin-left: 1rem;
+         }
     </style>
     </head>
 <body class="h-screen flex items-center justify-center">
@@ -123,6 +141,10 @@
 
              <div id="error-message"></div>
 
+            <div id="debug-email-list" style="display: none;"> {/* Hidden by default, shown by JS */}
+                <h4>Allowed Emails (Debug):</h4>
+                <ul></ul>
+            </div>
             <div>
                  <button type="submit"
                         class="custom-gradient-button w-full flex justify-center py-2 px-4 rounded-md text-sm text-white focus:outline-none">
@@ -152,32 +174,25 @@
             return obfuscatedEmail.split("roman").join("");
         }
 
-        // Configuration (Password and URLs remain)
         const correctPassword = "alphatek";
         const nextPageUrl = "screening.html";
         const localStorageEmailKey = 'savedLoginEmail';
 
-        // DOM Elements
         const loginForm = document.getElementById('login-form');
         const emailInput = document.getElementById('email');
         const passwordInput = document.getElementById('password');
         const errorMessageDiv = document.getElementById('error-message');
         const requestAccessLink = document.getElementById('request-access-link');
         const requestAccessSection = document.getElementById('request-access-section');
+        const debugEmailListDiv = document.getElementById('debug-email-list'); // Get the debug div
 
-        // Function to check if an email is in the allowed list
         function isEmailAllowed(emailToCheck) {
             const normalizedEmail = emailToCheck.trim().toLowerCase();
-
-            // *** Improved Check: Ensure the list from the external file exists ***
             if (typeof allowedObfuscatedEmails === 'undefined' || !Array.isArray(allowedObfuscatedEmails)) {
                 console.error("CRITICAL: allowedObfuscatedEmails list not found or is not an array. Check if 'assets/emails.js' loaded correctly and has the correct variable name.");
-                // Display error to user as well, as this is critical
                 errorMessageDiv.textContent = 'Configuration error. Please contact support.';
-                return false; // Cannot check if the list is missing
+                return false;
             }
-            // *** End of Improved Check ***
-
             for (const obfuscatedEmail of allowedObfuscatedEmails) {
                 const deobfuscated = deobfuscateEmail(obfuscatedEmail);
                 if (normalizedEmail === deobfuscated) {
@@ -190,13 +205,11 @@
         function loadAndCheckStorage() {
             const savedEmail = localStorage.getItem(localStorageEmailKey);
             if (savedEmail) {
-                // *** Added check here too before redirecting ***
                 if (typeof allowedObfuscatedEmails !== 'undefined' && Array.isArray(allowedObfuscatedEmails) && isEmailAllowed(savedEmail)) {
                     console.log("Valid email found in localStorage. Redirecting...");
                     window.location.href = nextPageUrl;
                     return true;
                 } else {
-                    // Pre-fill even if list is missing or email not allowed, but don't redirect
                     emailInput.value = savedEmail;
                     console.log("Loaded email from localStorage, but not redirecting (either list missing or email not allowed):", savedEmail);
                 }
@@ -213,6 +226,35 @@
             }
         }
 
+        // Function to display the debug email list
+        function displayDebugEmailList() {
+            if (!debugEmailListDiv) return; // Exit if div not found
+
+            if (typeof allowedObfuscatedEmails === 'undefined' || !Array.isArray(allowedObfuscatedEmails)) {
+                 debugEmailListDiv.innerHTML = '<h4>Allowed Emails (Debug):</h4><p>Error: Could not load email list.</p>';
+                 debugEmailListDiv.style.display = 'block'; // Show the error
+                 return;
+            }
+
+            const listElement = debugEmailListDiv.querySelector('ul');
+            if (!listElement) return; // Exit if ul not found
+
+            listElement.innerHTML = ''; // Clear previous list items
+
+            if (allowedObfuscatedEmails.length === 0) {
+                listElement.innerHTML = '<li>List is empty.</li>';
+            } else {
+                allowedObfuscatedEmails.forEach(obfuscated => {
+                    const deobfuscated = deobfuscateEmail(obfuscated);
+                    const listItem = document.createElement('li');
+                    listItem.textContent = deobfuscated;
+                    listElement.appendChild(listItem);
+                });
+            }
+            debugEmailListDiv.style.display = 'block'; // Show the list
+        }
+
+
         loginForm.addEventListener('submit', function(event) {
             event.preventDefault();
             const enteredEmail = emailInput.value.trim().toLowerCase();
@@ -220,7 +262,6 @@
             errorMessageDiv.textContent = '';
             let loginSuccess = false;
 
-            // isEmailAllowed now includes the check for the list existence
             if (isEmailAllowed(enteredEmail) && enteredPassword === correctPassword) {
                  loginSuccess = true;
             }
@@ -229,7 +270,6 @@
                 saveEmailToStorage();
                 window.location.href = nextPageUrl;
             } else {
-                // Avoid showing password error if the list failed to load
                  if (typeof allowedObfuscatedEmails !== 'undefined' && Array.isArray(allowedObfuscatedEmails)) {
                     errorMessageDiv.textContent = 'Invalid email or password.';
                     const loginBox = loginForm.parentElement;
@@ -247,14 +287,14 @@
         emailInput.addEventListener('blur', saveEmailToStorage);
 
         document.addEventListener('DOMContentLoaded', (event) => {
-            // Check if the list loaded correctly during initialization
              if (typeof allowedObfuscatedEmails === 'undefined' || !Array.isArray(allowedObfuscatedEmails)) {
                  console.error("Initialization Error: allowedObfuscatedEmails list missing on DOMContentLoaded.");
                  errorMessageDiv.textContent = 'Configuration error loading email list.';
+                 displayDebugEmailList(); // Display error in debug list as well
              } else {
-                 // Try to load and redirect if list is present
                 if (!loadAndCheckStorage()) {
-                    // Page setup continues if not redirected
+                    // If not redirected, display the debug list
+                    displayDebugEmailList();
                 }
              }
         });
