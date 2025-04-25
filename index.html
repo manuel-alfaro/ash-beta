@@ -166,7 +166,7 @@
             return allowedEmails.includes(normalizedEmail);
         }
 
-        // *** UPDATED: This function now ONLY loads the email, it does not check or redirect ***
+        // This function now ONLY loads the email, it does not check validity or redirect
         function loadEmailFromStorage() {
             const savedEmail = localStorage.getItem(localStorageEmailKey);
             if (savedEmail) {
@@ -217,7 +217,7 @@
         });
         emailInput.addEventListener('blur', saveEmailToStorage);
 
-        // *** UPDATED: Only call loadEmailFromStorage on page load ***
+        // Only call loadEmailFromStorage on page load
         document.addEventListener('DOMContentLoaded', (event) => {
             loadEmailFromStorage(); // Just load the email, no check/redirect here
         });
