@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis - Functional Shoulder Screening</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-2.27.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Avenir:wght@400;700&family=Futura:wght@400;500;700&display=swap">
+
+    <style>
+        /* --- CSS Variables --- */
+        :root {
+            --primary-color: #005f73;
+            --secondary-color: #0a9396;
+            --accent-color: #ee9b00;
+            --light-gray: #f8f9fa; /* Used for plot background */
+            --medium-gray: #dee2e6; /* Used for gridlines */
+            --dark-gray: #495057;
+            --text-color: #212529;
+            --success-color: #16a34a;
+            --success-border-color: #15803d;
+            --success-shadow-color: rgba(22, 163, 74, 0.3);
+            --warning-color: #facc15;
+            --danger-color-light: #e85d04;
+            --danger-color-dark: #dc2626;
+            --injured-input-bg: rgba(255, 224, 224, 0.7);
+            --white: #ffffff; /* Used for paper background */
+            --border-radius: 8px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            /* --- Matplotlib Default Colors --- */
+            --left-line-color-matplotlib: #1f77b4; /* Matplotlib Blue */
+            --right-line-color-matplotlib: #ff7f0e; /* Matplotlib Orange */
+            --left-bg-color-transparent-matplotlib: rgba(31, 119, 180, 0.1); /* Transparent Matplotlib Blue */
+            --right-bg-color-transparent-matplotlib: rgba(255, 127, 14, 0.1); /* Transparent Matplotlib Orange */
+            /* --- End Matplotlib Default Colors --- */
+            --base-font-size: 16px;
+            --graph-box-min-height: 380px;
+             --norm-poor-bg: rgba(252, 165, 165, 0.5);
+             --norm-average-bg: rgba(252, 211, 77, 0.5);
+             --norm-good-bg: rgba(167, 243, 208, 0.5);
+             --norm-excellent-bg: rgba(52, 211, 153, 0.5);
+         }
+        /* Use Avenir font if loaded, otherwise fallback to Tailwind's default (Inter) */
+        body { font-family: 'Avenir', 'Inter', sans-serif; background-color: #f8fafc; }
+        .container { background-color: #ffffff; }
+        .file-input-button { background-color: #0d9488; color: white; padding: 0.75rem 1.5rem; border-radius: 0.5rem; cursor: pointer; transition: background-color 0.3s ease, transform 0.2s ease; font-weight: 600; display: inline-block; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+        .file-input-button:hover { background-color: #0f766e; transform: translateY(-1px); }
+        #upload-csv { display: none; }
+        .patient-button { transition: all 0.2s ease-in-out; background-color: #f0fdfa; border-color: #5eead4; color: #115e59; font-weight: 500; border-width: 1px; }
+        .patient-button:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(13, 148, 136, 0.2); border-color: #0d9488; background-color: #ccfbf1; }
+        .patient-button.selected { background-color: #0f766e; color: white; border-color: #0f766e; transform: translateY(0); box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+        .patient-button.selected:hover { box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+        .view-toggle-button { transition: all 0.2s ease-in-out; border-width: 1px; font-weight: 500; }
+        .view-toggle-button.active { background-color: #14b8a6; color: white; border-color: #0f766e; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); }
+        .view-toggle-button:not(.active):hover { background-color: #f1f5f9; border-color: #94a3b8; }
+        .info-box { background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .graph-box { background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 1rem; margin-bottom: 2rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+        .graph-box-title { color: #0f766e; font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #cbd5e1; font-family: 'Futura', 'Inter', sans-serif; } /* Use Futura for title */
+        .plotly-graph-div { min-height: 350px; width: 100%; }
+        .summary-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.875rem; table-layout: fixed; }
+        .summary-table th, .summary-table td { border: 1px solid #e2e8f0; padding: 0.5rem 0.5rem; text-align: center; vertical-align: middle; white-space: nowrap; }
+        .summary-table th { background-color: #f1f5f9; font-weight: 600; color: #1e293b; }
+        .summary-table .metric-header { width: 140px; text-align: left; font-weight: bold; background-color: #f8fafc; padding-left: 0.75rem; }
+        .summary-table .date-header { background-color: #f8fafc; font-weight: bold; text-align: center; }
+        .summary-table .sub-header { background-color: #f8fafc; font-weight: 500; font-size: 0.8rem; color: #475569; }
+        .summary-table .metric-label { text-align: left; font-weight: 500; padding-left: 1rem; background-color: #f8fafc; }
+        /* --- Table Cell Background Colors (Using Matplotlib Default Colors) --- */
+        .summary-table .left-value-cell { background-color: var(--left-bg-color-transparent-matplotlib); } /* Light Matplotlib Blue */
+        .summary-table .right-value-cell { background-color: var(--right-bg-color-transparent-matplotlib); } /* Light Matplotlib Orange */
+        /* --- End Table Cell Background Colors --- */
+        .summary-table .change-pos { color: #16a34a; }
+        .summary-table .change-neg { color: #dc2626; }
+        .summary-table .change-zero { color: #64748b; }
+        .summary-table .na { color: #94a3b8; font-style: italic; }
+        .loading-placeholder { display: flex; align-items: center; justify-content: center; height: 100%; color: #94a3b8; font-style: italic; }
+        .error-message { color: #dc2626; font-weight: 600; }
+        .summary-section + .summary-section { margin-top: 2.5rem; }
+        .summary-section-title { color: #0f766e; font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #5eead4; font-family: 'Futura', 'Inter', sans-serif; } /* Use Futura for title */
+        .action-button {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            padding: 0.6rem 1.2rem;
+            color: white;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            border: none;
+            font-family: 'Futura', 'Inter', sans-serif; /* Use Futura for buttons */
+        }
+        .action-button:hover {
+            transform: translateY(-1px);
+        }
+        .action-button i { margin-right: 0.5rem; }
+        .back-button { background-color: #64748b; }
+        .back-button:hover { background-color: #475569; }
+        .clear-button { background-color: var(--dark-gray); margin-left: 0.5rem; }
+        .clear-button:hover { background-color: #343a40; }
+        /* Styles for Test Date Selection */
+        #test-date-selection-area { margin-top: -1rem; margin-bottom: 1.5rem; }
+        .test-date-list { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 1rem; background-color: #f1f5f9; border-radius: 0.5rem; border: 1px solid #e2e8f0; }
+        .test-date-button {
+            padding: 0.4rem 0.8rem; border-radius: 0.375rem; border: 1px solid; cursor: pointer;
+            font-size: 0.875rem; font-weight: 500; transition: all 0.2s ease;
+            display: flex; align-items: center; gap: 0.3rem;
+        }
+        .test-date-button.visible { /* Style for VISIBLE/SELECTED dates */
+            background-color: #ccfbf1; border-color: #5eead4; color: #115e59; /* Teal background */
+        }
+        .test-date-button.visible:hover { background-color: #a7f3d0; border-color: #2dd4bf; }
+        .test-date-button.hidden { /* Style for HIDDEN/DESELECTED dates */
+            background-color: #e2e8f0; /* Light Gray background */
+            border-color: #94a3b8;   /* Medium Gray border */
+            color: #475569;       /* Darker Gray text */
+        }
+        .test-date-button.hidden:hover {
+             background-color: #cbd5e1; /* Slightly darker gray on hover */
+             border-color: #64748b;
+        }
+        .test-date-button .icon { font-size: 0.8em; }
+
+        /* Plotly specific overrides (similar to screening.html) */
+        .js-plotly-plot .plotly { font-family: 'Avenir', sans-serif !important; }
+        .js-plotly-plot .plotly .gtitle { font-family: 'Futura', sans-serif !important; font-size: 1rem !important; fill: var(--primary-color) !important; font-weight: 500 !important; }
+        .js-plotly-plot .plotly .axistitle { font-size: 0.85rem !important; fill: var(--dark-gray) !important; font-weight: 500 !important; }
+        .js-plotly-plot .plotly .tick text { font-size: 0.8rem !important; fill: var(--dark-gray) !important; }
+        .js-plotly-plot .plotly .legendtext { font-size: 0.85rem !important; }
+        .js-plotly-plot .plotly .annotation text { font-family: 'Futura', sans-serif !important; }
+
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 p-4 md:p-8">
+
+    <div class="container mx-auto max-w-7xl bg-white p-6 md:p-10 rounded-xl shadow-xl">
+
+        <div>
+            <button id="back-to-screening-btn" class="action-button back-button">
+                <i class="fas fa-arrow-left"></i> Back to Screening
+            </button>
+            <button id="clear-history-btn" class="action-button clear-button">
+                <i class="fas fa-trash-alt"></i> Clear Saved Analysis Data
+            </button>
+        </div>
+
+        <h1 class="text-4xl font-bold text-center text-teal-700 mb-8 font-[Futura]">Functional Shoulder Screening Analysis</h1> <div class="info-box text-center">
+            <label for="upload-csv" class="file-input-button">
+                <i class="fas fa-folder-open mr-2"></i>Select/Add Patient Data Files
+            </label>
+            <input type="file" id="upload-csv" accept=".csv" multiple>
+            <p id="file-info" class="mt-3 text-sm text-slate-600">Select all relevant CSV files. New files will be added to existing data.<br>(Direct folder upload is not supported by browsers).</p>
+            <div id="loading-spinner" class="hidden mt-3 text-teal-600">
+                 <i class="fas fa-spinner fa-spin text-2xl"></i>
+                 <span class="ml-2 align-middle">Processing files...</span>
+            </div>
+             <div id="error-message" class="mt-3 error-message"></div>
+        </div>
+
+        <div class="info-box">
+             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+                <h2 class="text-xl font-semibold text-teal-700 whitespace-nowrap font-[Futura]">Select Patient</h2> <div id="view-toggle-container" class="flex-shrink-0">
+                     <button id="view-scatter-btn" class="view-toggle-button active py-1 px-3 rounded-l-md border-slate-300 bg-slate-100 text-slate-700 text-sm">
+                         <i class="fas fa-chart-line mr-1"></i> Scatter View
+                     </button>
+                     <button id="view-bar-btn" class="view-toggle-button py-1 px-3 rounded-r-md border-slate-300 bg-slate-100 text-slate-700 text-sm border-l-0">
+                         <i class="fas fa-chart-bar mr-1"></i> Bar Chart View
+                     </button>
+                 </div>
+             </div>
+            <div class="flex flex-col md:flex-row md:items-center gap-4">
+                <div class="flex-grow">
+                    <input type="text" id="patient-search" placeholder="Search Patient ID (FP)..." class="w-full p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-teal-500 focus:border-transparent shadow-sm">
+                </div>
+                <div id="patient-button-container" class="flex flex-wrap gap-2 mt-2 md:mt-0">
+                    <span class="text-slate-500 italic self-center">Upload files or load saved data to see patients.</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="test-date-selection-area"></div>
+
+        <div id="output-area" class="mt-8">
+            </div>
+
+    </div>
+
+    <script>
+        let allPatientData = {};
+        let uniquePatientIds = [];
+        let selectedPatientId = null;
+        let currentViewMode = 'scatter';
+        let latestInjuredSide = null;
+        let testDateVisibility = {};
+        const localStorageKey = 'analysisAppData';
+
+        // --- Using Matplotlib default colors ---
+        const LEFT_COLOR = '#1f77b4'; // Matplotlib Blue
+        const RIGHT_COLOR = '#ff7f0e'; // Matplotlib Orange
+        // --- End Matplotlib colors ---
+
+        const NORMATIVE_THRESHOLDS = {
+            'I': {'poor_max': 1.47, 'average_mid': 1.65, 'good_min': 1.85, 'excellent_min': 2.1},
+            'Y': {'poor_max': 1.25, 'average_mid': 1.4,  'good_min': 1.6,  'excellent_min': 1.76},
+            'T': {'poor_max': 1.15, 'average_mid': 1.25, 'good_min': 1.4,  'excellent_min': 1.58}
+        };
+        const NORM_ZONE_COLORS = {
+            poor: getComputedStyle(document.documentElement).getPropertyValue('--norm-poor-bg').trim() || 'rgba(252, 165, 165, 0.5)',
+            average: getComputedStyle(document.documentElement).getPropertyValue('--norm-average-bg').trim() || 'rgba(252, 211, 77, 0.5)',
+            good: getComputedStyle(document.documentElement).getPropertyValue('--norm-good-bg').trim() || 'rgba(167, 243, 208, 0.5)',
+            excellent: getComputedStyle(document.documentElement).getPropertyValue('--norm-excellent-bg').trim() || 'rgba(52, 211, 153, 0.5)'
+        };
+        const POSITIONS = ['I', 'Y', 'T'];
+        const METRIC_KEYS = { MAX_FORCE: 'Max Force (N)', RFD: 'RFD 100ms (N/s)', NORM: 'Max Force / BW' };
+        const METRICS_DISPLAY_ORDER = [METRIC_KEYS.MAX_FORCE, METRIC_KEYS.RFD, METRIC_KEYS.NORM];
+
+        // --- DOM References ---
+        const uploadInput = document.getElementById('upload-csv');
+        const fileInfo = document.getElementById('file-info');
+        const patientSearchInput = document.getElementById('patient-search');
+        const patientButtonContainer = document.getElementById('patient-button-container');
+        const outputArea = document.getElementById('output-area');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const errorMessage = document.getElementById('error-message');
+        const viewScatterBtn = document.getElementById('view-scatter-btn');
+        const viewBarBtn = document.getElementById('view-bar-btn');
+        const backButton = document.getElementById('back-to-screening-btn');
+        const clearHistoryButton = document.getElementById('clear-history-btn');
+        const testDateSelectionArea = document.getElementById('test-date-selection-area');
+
+        // --- Plotly Configuration (similar to screening.html) ---
+        const plotlyConfig = {
+            displaylogo: false,
+            modeBarButtonsToRemove: ['sendDataToCloud', 'lasso2d', 'select2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d', 'resetScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian'],
+            modeBarButtonsToAdd: [{
+                name: 'Download plot as PNG',
+                icon: Plotly.Icons.camera,
+                click: function(gd) {
+                    const titleText = (gd.layout.title?.text || 'plot').replace(/<br>/g, ' ');
+                    Plotly.downloadImage(gd, { format: 'png', width: gd._fullLayout.width, height: gd._fullLayout.height, filename: titleText });
+                }
+            }]
+        };
+
+        // --- Local Storage Functions (unchanged) ---
+        function saveAnalysisStateToLocalStorage() {
+            const stateToSave = {
+                allPatientData: allPatientData,
+                uniquePatientIds: uniquePatientIds,
+                selectedPatientId: selectedPatientId,
+                currentViewMode: currentViewMode
+            };
+            try {
+                // Convert Date objects to ISO strings before saving
+                const dataWithIsoDates = JSON.parse(JSON.stringify(allPatientData));
+                for (const pid in dataWithIsoDates) {
+                    if (Array.isArray(dataWithIsoDates[pid])) {
+                        dataWithIsoDates[pid].forEach(record => {
+                            if (record['Test Date'] instanceof Date) {
+                                record['Test Date'] = record['Test Date'].toISOString();
+                            }
+                        });
+                    }
+                }
+                stateToSave.allPatientData = dataWithIsoDates;
+                localStorage.setItem(localStorageKey, JSON.stringify(stateToSave));
+                console.log('Analysis state saved to localStorage.');
+            } catch (error) {
+                console.error('Error saving analysis state to localStorage:', error);
+                errorMessage.textContent = 'Could not save analysis state. Storage might be full.';
+            }
+        }
+
+        function loadAnalysisStateFromLocalStorage() {
+            try {
+                const savedDataString = localStorage.getItem(localStorageKey);
+                 testDateVisibility = {}; // Reset visibility on load
+                if (savedDataString) {
+                    const savedState = JSON.parse(savedDataString);
+                    console.log('Loading analysis state from localStorage.');
+                    allPatientData = savedState.allPatientData || {};
+                    uniquePatientIds = savedState.uniquePatientIds || [];
+                    selectedPatientId = savedState.selectedPatientId || null;
+                    currentViewMode = savedState.currentViewMode || 'scatter';
+
+                    // Convert date strings back to Date objects
+                    for (const pid in allPatientData) {
+                        if (Array.isArray(allPatientData[pid])) {
+                            allPatientData[pid].forEach(record => {
+                                if (record['Test Date'] && typeof record['Test Date'] === 'string') {
+                                    const parsedDate = new Date(record['Test Date']);
+                                    if (!isNaN(parsedDate)) {
+                                        record['Test Date'] = parsedDate;
+                                    } else {
+                                        console.warn("Failed to parse date string:", record['Test Date']);
+                                        record['Test Date'] = null; // Handle invalid date strings
+                                    }
+                                } else if (!(record['Test Date'] instanceof Date)) {
+                                     record['Test Date'] = null; // Handle cases where it's not a date or string
+                                }
+                            });
+                            // Filter out records with invalid dates and sort
+                            allPatientData[pid] = allPatientData[pid].filter(r => r['Test Date'] instanceof Date);
+                            allPatientData[pid].sort((a, b) => a['Test Date'] - b['Test Date']);
+                        }
+                    }
+                    fileInfo.textContent = `${Object.keys(allPatientData).length} patient(s) loaded from saved data. Add more files or select a patient.`;
+
+                    displayPatientButtons();
+                    // Update view toggle buttons based on loaded state
+                    viewScatterBtn.classList.toggle('active', currentViewMode === 'scatter');
+                    viewBarBtn.classList.toggle('active', currentViewMode === 'bar');
+
+                    // If a patient was selected, display their data
+                    if (selectedPatientId && allPatientData[selectedPatientId]) {
+                         console.log("Triggering display for loaded patient:", selectedPatientId);
+                         selectPatient(selectedPatientId, true); // Pass true to indicate loading
+                    } else {
+                         console.log("No patient selected or patient data missing after load.");
+                         testDateSelectionArea.innerHTML = ''; // Clear date selection
+                         outputArea.innerHTML = ''; // Clear output area
+                    }
+
+                } else {
+                    console.log('No analysis data found in localStorage.');
+                    fileInfo.textContent = 'Select patient data files to begin analysis.';
+                    displayPatientButtons(); // Display empty state
+                }
+            } catch (error) {
+                console.error('Error loading analysis state from localStorage:', error);
+                errorMessage.textContent = 'Could not load previous analysis state.';
+                // Reset state on error
+                allPatientData = {};
+                uniquePatientIds = [];
+                selectedPatientId = null;
+                currentViewMode = 'scatter';
+                 testDateVisibility = {};
+                displayPatientButtons();
+            }
+        }
+
+        function clearAnalysisHistory() {
+            if (confirm('Are you sure you want to clear all saved analysis data? This cannot be undone.')) {
+                try {
+                    localStorage.removeItem(localStorageKey);
+                    // Reset all state variables
+                    allPatientData = {};
+                    uniquePatientIds = [];
+                    selectedPatientId = null;
+                    latestInjuredSide = null;
+                    currentViewMode = 'scatter';
+                    testDateVisibility = {};
+                    // Clear UI elements
+                    outputArea.innerHTML = '';
+                    testDateSelectionArea.innerHTML = '';
+                    fileInfo.textContent = 'Select patient data files to begin analysis.';
+                    patientSearchInput.value = '';
+                    displayPatientButtons(); // Update patient buttons (will show empty state)
+                    switchViewMode('scatter'); // Reset view mode toggle
+                    console.log('Analysis history cleared.');
+                    errorMessage.textContent = ''; // Clear any previous error messages
+                } catch (error) {
+                    console.error('Error clearing analysis history:', error);
+                    errorMessage.textContent = 'Could not clear saved data.';
+                }
+            }
+        }
+
+        // --- Event Listeners ---
+        uploadInput.addEventListener('change', handleFileUpload);
+        patientSearchInput.addEventListener('input', displayPatientButtons);
+        viewScatterBtn.addEventListener('click', () => switchViewMode('scatter'));
+        viewBarBtn.addEventListener('click', () => switchViewMode('bar'));
+        if (backButton) {
+            backButton.addEventListener('click', () => {
+                console.log('Back button clicked, saving state before navigation.');
+                saveAnalysisStateToLocalStorage(); // Save current state before leaving
+                window.location.href = '../screening.html'; // Navigate back
+            });
+        }
+         if (clearHistoryButton) {
+             clearHistoryButton.addEventListener('click', clearAnalysisHistory);
+         }
+
+        // --- View Mode Switching ---
+        function switchViewMode(mode) {
+            if (mode === currentViewMode) return; // Do nothing if already in this mode
+
+            currentViewMode = mode;
+            // Update button styles
+            viewScatterBtn.classList.toggle('active', mode === 'scatter');
+            viewBarBtn.classList.toggle('active', mode === 'bar');
+
+            // Re-render the data for the selected patient in the new view mode
+            if (selectedPatientId) {
+                displayPatientDataAndGraphs(selectedPatientId);
+            } else {
+                 outputArea.innerHTML = ''; // Clear output if no patient selected
+            }
+            saveAnalysisStateToLocalStorage(); // Save the new view mode
+            console.log("Switched view to:", currentViewMode);
+        }
+
+        // --- File Handling (unchanged) ---
+        function handleFileUpload(event) {
+             const files = event.target.files;
+             if (!files || files.length === 0) {
+                 fileInfo.textContent = 'No files selected.';
+                 return;
+             }
+             errorMessage.textContent = ''; // Clear previous errors
+             loadingSpinner.classList.remove('hidden');
+             fileInfo.textContent = `Loading ${files.length} new file(s)...`;
+             let filesProcessed = 0;
+             const promises = [];
+             let newPatientData = {}; // Store data from newly uploaded files temporarily
+             let skippedFileCount = 0;
+
+             for (const file of files) {
+                 // Validate filename format
+                 const match = file.name.match(/ASH_([^_]+)_(\d{4}-\d{2}-\d{2})\.csv/i);
+                 if (!match || !match[1] || !match[2]) {
+                     console.warn(`Filename format error, skipping: ${file.name}`);
+                     filesProcessed++;
+                     skippedFileCount++;
+                     continue; // Skip this file
+                 }
+
+                 const patientId = match[1];
+                 const dateStringFromFile = match[2];
+                 const testDateFromFile = new Date(dateStringFromFile + 'T00:00:00'); // Ensure consistent time
+
+                 // Check for invalid date in filename
+                 if (isNaN(testDateFromFile)) {
+                      console.warn(`Invalid date in filename, skipping: ${file.name}`);
+                      filesProcessed++;
+                      skippedFileCount++;
+                      continue; // Skip this file
+                 }
+
+                 // Check if data for this patient and date already exists (based on filename date)
+                 let isDuplicateDate = false;
+                 if (allPatientData[patientId]) {
+                     isDuplicateDate = allPatientData[patientId].some(record => {
+                         return record['Test Date'] instanceof Date &&
+                                !isNaN(record['Test Date']) &&
+                                record['Test Date'].toISOString().split('T')[0] === dateStringFromFile;
+                     });
+                 }
+
+                 if (isDuplicateDate) {
+                     console.log(`Skipping duplicate file based on filename date: ${file.name}`);
+                     filesProcessed++;
+                     skippedFileCount++;
+                     promises.push(Promise.resolve({ skipped: true, filename: file.name })); // Resolve as skipped
+                     continue; // Skip this file
+                 }
+
+                 // Parse the CSV file
+                 promises.push(new Promise((resolve, reject) => {
+                     Papa.parse(file, {
+                         header: true, skipEmptyLines: true, dynamicTyping: true,
+                         complete: (results) => {
+                             try {
+                                 if (!newPatientData[patientId]) newPatientData[patientId] = []; // Initialize if first file for this patient
+                                 results.data.forEach(row => {
+                                     // Basic validation of row structure
+                                     if (row && typeof row === 'object' && row['Metric'] && row['Position']) {
+                                          // Clean position string
+                                          let positionClean = String(row['Position']).replace(/ASH Test Position\s+/i, '').trim();
+                                          if (POSITIONS.includes(positionClean)) {
+                                             // Safely convert values to numbers, defaulting to null if invalid
+                                             const leftVal = row['Left Value'] == null ? null : Number(row['Left Value']);
+                                             const rightVal = row['Right Value'] == null ? null : Number(row['Right Value']);
+                                             const bwVal = row['Bodyweight (kg)'] == null ? null : Number(row['Bodyweight (kg)']);
+                                             // Add processed row to temporary storage
+                                             newPatientData[patientId].push({
+                                                 ...row,
+                                                 'Left Value': isNaN(leftVal) ? null : leftVal,
+                                                 'Right Value': isNaN(rightVal) ? null : rightVal,
+                                                 'Bodyweight (kg)': isNaN(bwVal) ? null : bwVal,
+                                                 'Test Date': testDateFromFile, // Use date from filename
+                                                 'Filename': file.name, // Store filename for reference
+                                                 'Position Clean': positionClean // Store cleaned position
+                                             });
+                                          } else { console.warn(`Invalid position '${row['Position']}' in ${file.name}.`); }
+                                     } else { console.warn(`Invalid row structure in ${file.name}.`, row); }
+                                 });
+                             } catch (parseError) {
+                                 console.error(`Error processing row data in ${file.name}:`, parseError);
+                                 reject(`Error processing data in ${file.name}`); return; // Reject promise on error
+                             }
+                             filesProcessed++; resolve({ skipped: false }); // Resolve successfully
+                         },
+                         error: (error) => { filesProcessed++; reject(`Parsing error in ${file.name}: ${error.message}`); } // Reject on PapaParse error
+                     });
+                 }));
+             }
+
+             // Process results after all files are parsed (or skipped)
+             Promise.allSettled(promises).then(results => {
+                  loadingSpinner.classList.add('hidden'); // Hide spinner
+                  let filesAddedCount = 0;
+                  let patientsAddedCount = 0;
+
+                  // Merge new data into the main data structure
+                  for (const patientId in newPatientData) {
+                      if (!allPatientData[patientId]) {
+                          // New patient
+                          allPatientData[patientId] = newPatientData[patientId];
+                          patientsAddedCount++;
+                          filesAddedCount++;
+                      } else {
+                          // Existing patient, add new records and re-sort
+                          allPatientData[patientId].push(...newPatientData[patientId]);
+                          allPatientData[patientId].sort((a, b) => a['Test Date'] - b['Test Date']);
+                          filesAddedCount++;
+                      }
+                      // Initialize or update visibility state for the patient
+                      testDateVisibility[patientId] = {};
+                      const uniqueDates = getUniqueTestDates(patientId);
+                      uniqueDates.forEach(dateStr => testDateVisibility[patientId][dateStr] = true); // Default new dates to visible
+                  }
+
+                  // Update the list of unique patient IDs and refresh the buttons
+                  uniquePatientIds = Object.keys(allPatientData).sort((a, b) => a.localeCompare(b, undefined, {numeric: true}));
+                  displayPatientButtons();
+                  saveAnalysisStateToLocalStorage(); // Save updated data
+
+                  // Update file info message
+                  const finalPatientCount = uniquePatientIds.length;
+                  let infoMsg = `${finalPatientCount} total patient(s). `;
+                  infoMsg += `Processed ${files.length} file(s). `;
+                  if (filesAddedCount > 0) {
+                     infoMsg += `Added data for ${patientsAddedCount} new patient(s) and updated ${filesAddedCount - patientsAddedCount} existing patient(s). `;
+                  }
+                  if (skippedFileCount > 0) {
+                      infoMsg += `Skipped ${skippedFileCount} file(s) due to format errors or duplicate dates based on filename. `;
+                  }
+                   fileInfo.textContent = infoMsg + 'Select a patient below.';
+
+                  // Display errors if any files failed
+                  const errors = results.filter(r => r.status === 'rejected').map(r => r.reason);
+                  if (errors.length > 0) errorMessage.textContent = `Some files could not be processed: ${errors.join('; ')}`;
+
+                  // Refresh the view if the currently selected patient's data was updated
+                  if (selectedPatientId && newPatientData[selectedPatientId]) {
+                      renderTestDateList(selectedPatientId); // Re-render date list
+                      displayPatientDataAndGraphs(selectedPatientId); // Re-render graphs/table
+                  } else if (selectedPatientId) {
+                      // If selected patient wasn't updated, still might need to rerender dates if list changed
+                      renderTestDateList(selectedPatientId);
+                      // No need to call displayPatientDataAndGraphs if data didn't change
+                  }
+
+
+              }).catch(err => {
+                  // Handle unexpected errors during the Promise.allSettled phase
+                  loadingSpinner.classList.add('hidden');
+                  errorMessage.textContent = `An unexpected error occurred during file processing: ${err.message}`;
+                  console.error("Unexpected error handling file uploads:", err);
+                  displayPatientButtons(); // Ensure buttons are displayed even on error
+              });
+        }
+
+
+        // --- Patient Selection and UI Updates ---
+        function displayPatientButtons() {
+             const searchTerm = patientSearchInput.value.toLowerCase();
+             patientButtonContainer.innerHTML = ''; // Clear existing buttons
+             if (uniquePatientIds.length === 0) {
+                  // Show appropriate message if no patients
+                  if (loadingSpinner.classList.contains('hidden')) { // Only show message if not loading
+                     if (!localStorage.getItem(localStorageKey)) { // Check if local storage was ever used
+                        patientButtonContainer.innerHTML = '<span class="text-slate-500 italic self-center">Upload files or load saved data to see patients.</span>';
+                     } else {
+                         patientButtonContainer.innerHTML = '<span class="text-slate-500 italic self-center">No patients found in saved data or uploaded files.</span>';
+                     }
+                  }
+                  return;
+             }
+             // Filter IDs based on search term
+             const filteredIds = uniquePatientIds.filter(id => id.toLowerCase().includes(searchTerm));
+             if (filteredIds.length === 0) {
+                  patientButtonContainer.innerHTML = '<span class="text-slate-500 italic self-center">No patients match search.</span>';
+                  return;
+             }
+             // Create buttons for filtered IDs
+             filteredIds.forEach(pid => {
+                 const button = document.createElement('button');
+                 button.textContent = pid;
+                 button.className = `patient-button py-2 px-4 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500`;
+                 // Add 'selected' class if this patient is currently selected
+                 if (pid === selectedPatientId) button.classList.add('selected');
+                 button.onclick = () => selectPatient(pid); // Set click handler
+                 patientButtonContainer.appendChild(button);
+             });
+        }
+
+        function selectPatient(patientId, isLoading = false) {
+            // Update selected patient ID
+            selectedPatientId = patientId;
+            console.log(`Selected patient: ${patientId}`);
+            displayPatientButtons(); // Update button styles to reflect selection
+
+            // Initialize visibility state for this patient if it doesn't exist
+            initializeVisibility(patientId);
+            renderTestDateList(patientId); // Render the date selection list
+
+            // Display graphs/table for the selected patient
+            displayPatientDataAndGraphs(patientId); // This function now also saves state
+
+            // No need to save state separately here, as displayPatientDataAndGraphs does it.
+        }
+
+
+        // --- Test Date Visibility Handling ---
+        function getUniqueTestDates(patientId) {
+            if (!allPatientData[patientId]) return []; // Return empty array if no data
+            const dateSet = new Set();
+            // Iterate through records and add unique date strings to the set
+            allPatientData[patientId].forEach(record => {
+                if (record['Test Date'] instanceof Date && !isNaN(record['Test Date'])) {
+                    dateSet.add(record['Test Date'].toISOString().split('T')[0]);
+                }
+            });
+            // Convert set to sorted array
+            return Array.from(dateSet).sort();
+        }
+
+        function initializeVisibility(patientId) {
+            // Ensure the patient has an entry in the visibility state object
+            if (!testDateVisibility[patientId]) {
+                testDateVisibility[patientId] = {};
+            }
+            const uniqueDates = getUniqueTestDates(patientId);
+            // For each unique date, ensure there's a visibility flag (default to true if new)
+            uniqueDates.forEach(dateStr => {
+                if (testDateVisibility[patientId][dateStr] === undefined) {
+                    testDateVisibility[patientId][dateStr] = true; // Default to visible
+                }
+            });
+        }
+
+        function handleDateToggle(patientId, dateToToggle) {
+            if (!testDateVisibility[patientId]) {
+                console.error("Visibility state not initialized for patient:", patientId);
+                return;
+            }
+            // Toggle the visibility state for the specific date
+            const currentVisibility = testDateVisibility[patientId][dateToToggle];
+            testDateVisibility[patientId][dateToToggle] = !currentVisibility;
+            console.log(`Toggled visibility for ${patientId} - ${dateToToggle} to ${!currentVisibility}`);
+
+            // Re-render the date list to reflect the change in button appearance
+            renderTestDateList(patientId);
+
+            // Update graphs/table based on the new visibility state
+            displayPatientDataAndGraphs(patientId); // This will filter data and re-render
+            // State is saved within displayPatientDataAndGraphs
+        }
+
+
+        function renderTestDateList(patientId) {
+            testDateSelectionArea.innerHTML = ''; // Clear previous list
+            const uniqueDates = getUniqueTestDates(patientId);
+
+            // Don't show the list if there's only one test date or none
+            if (uniqueDates.length <= 1) {
+                testDateSelectionArea.innerHTML = '';
+                return;
+            }
+
+            initializeVisibility(patientId); // Ensure state exists
+
+            // Create container for the date buttons
+            const listContainer = document.createElement('div');
+            listContainer.className = 'test-date-list';
+            listContainer.innerHTML = '<h4 class="w-full text-sm font-semibold text-gray-700 mb-1">Toggle Test Dates:</h4>'; // Add a title
+
+            // Create a button for each unique date
+            uniqueDates.forEach(dateStr => {
+                const isVisible = testDateVisibility[patientId]?.[dateStr] ?? true; // Get visibility state
+                const button = document.createElement('button');
+                // Apply 'visible' or 'hidden' class based on state
+                button.className = `test-date-button ${isVisible ? 'visible' : 'hidden'}`;
+                button.textContent = dateStr; // Display the date
+                button.dataset.date = dateStr; // Store date string for reference
+
+                // Add an icon (check or times)
+                const icon = document.createElement('i');
+                icon.className = `icon fas ${isVisible ? 'fa-check-circle' : 'fa-times'}`;
+                button.prepend(icon); // Add icon before text
+
+                // Set click handler to toggle visibility
+                button.onclick = () => handleDateToggle(patientId, dateStr);
+
+                listContainer.appendChild(button);
+            });
+
+            testDateSelectionArea.appendChild(listContainer); // Add the list to the page
+            console.log("Rendered date list for", patientId);
+        }
+
+
+        // --- Data Processing and Display ---
+        function getProcessedPatientData(patientId) {
+            const patientRecords = allPatientData[patientId];
+             if (!patientRecords || patientRecords.length === 0) return null; // No data for patient
+
+             // Ensure visibility state is initialized before filtering
+             initializeVisibility(patientId);
+             // Get the list of date strings that are currently marked as visible
+             const visibleDateStrings = testDateVisibility[patientId]
+                 ? Object.keys(testDateVisibility[patientId]).filter(dateStr => testDateVisibility[patientId][dateStr])
+                 : getUniqueTestDates(patientId); // Fallback if state somehow missing
+             console.log(`Getting processed data for ${patientId}. Visible dates:`, visibleDateStrings);
+
+             // Filter the patient's records to include only those from visible dates
+             const visibleRecords = patientRecords.filter(record => {
+                 if (!(record['Test Date'] instanceof Date) || isNaN(record['Test Date'])) return false; // Skip invalid dates
+                 const dateStr = record['Test Date'].toISOString().split('T')[0];
+                 return visibleDateStrings.includes(dateStr); // Check if date is in the visible list
+             });
+
+             if (visibleRecords.length === 0) {
+                 console.log("No visible records found after filtering.");
+                 return []; // Return empty array if no records match visible dates
+             }
+
+             // Sort visible records by date (should already be sorted, but ensures consistency)
+             visibleRecords.sort((a, b) => a['Test Date'] - b['Test Date']);
+
+            // Find the first test date among the *visible* records
+            const firstTestDate = visibleRecords.length > 0 ? visibleRecords[0]['Test Date'] : null;
+            if (!firstTestDate) {
+                console.log("No valid first test date found in visible records.");
+                return []; // Should not happen if visibleRecords is not empty, but safety check
+            }
+
+            // Calculate 'Weeks Since First' based on the first *visible* test date
+            const processedData = visibleRecords.map(record => {
+                 const weeksSinceFirst = Math.round((record['Test Date'] - firstTestDate) / (1000 * 60 * 60 * 24 * 7));
+                 return { ...record, 'Weeks Since First': weeksSinceFirst };
+            });
+            console.log("Processed data (visible only):", processedData);
+            return processedData;
+        }
+
+        function displayPatientDataAndGraphs(patientId) {
+             saveAnalysisStateToLocalStorage(); // Save state whenever we display data (includes visibility)
+             // Show loading indicator
+             outputArea.innerHTML = '<div class="text-center p-10"><i class="fas fa-spinner fa-spin text-teal-600 text-3xl"></i><p class="mt-2">Loading data and graphs...</p></div>';
+            try {
+                // Get data filtered by visible dates
+                const processedData = getProcessedPatientData(patientId);
+
+                if (!processedData) {
+                     outputArea.innerHTML = `<p class="error-message text-center font-semibold">Could not find data for patient ${patientId}.</p>`;
+                     latestInjuredSide = null; // Reset injured side if no data
+                     return;
+                 }
+                 // Handle case where dates are selected, but no data matches (should be rare)
+                 if (processedData.length === 0) {
+                     outputArea.innerHTML = `<p class="text-center text-slate-500 italic mt-6">No test dates selected to display. Please select dates above.</p>`;
+                      // Still show demographics based on *all* data for the patient
+                      let demoHTML = '';
+                      if (allPatientData[patientId] && allPatientData[patientId].length > 0) {
+                          const allRecordsForPatient = allPatientData[patientId];
+                           latestInjuredSide = null; // Reset before finding
+                           let latestDemo = {};
+                           // Find the latest demographic info from any record
+                           for (let i = allRecordsForPatient.length - 1; i >= 0; i--) {
+                               const record = allRecordsForPatient[i];
+                               if (latestDemo['Age'] == null && record['Age'] != null) latestDemo['Age'] = record['Age'];
+                               if (latestDemo['Gender'] == null && record['Gender'] != null) latestDemo['Gender'] = record['Gender'];
+                               if (latestDemo['Sport'] == null && record['Sport'] != null) latestDemo['Sport'] = record['Sport'];
+                               if (latestDemo['Bodyweight (kg)'] == null && record['Bodyweight (kg)'] != null) latestDemo['Bodyweight (kg)'] = record['Bodyweight (kg)'];
+                               if (latestDemo['Injured Side'] == null && record['Injured Side'] != null) {
+                                   latestDemo['Injured Side'] = record['Injured Side'];
+                                   latestInjuredSide = record['Injured Side']; // Store the latest found injured side
+                               }
+                               // Stop searching if all fields are found
+                               if (latestDemo['Age'] != null && latestDemo['Gender'] != null && latestDemo['Sport'] != null && latestDemo['Bodyweight (kg)'] != null && latestDemo['Injured Side'] != null) break;
+                           }
+                            // Default injured side if not found in any record
+                            if (!latestInjuredSide) latestInjuredSide = 'Left';
+
+                            // Build demographic HTML
+                            demoHTML = `
+                                <div class="info-box">
+                                    <h2 class="text-xl font-semibold text-teal-700 mb-3 font-[Futura]">Demographic Information (Patient: ${patientId})</h2>
+                                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-x-4 gap-y-2 text-sm">
+                                        <div><strong>Age:</strong> ${latestDemo['Age'] ?? 'N/A'}</div>
+                                        <div><strong>Gender:</strong> ${latestDemo['Gender'] ?? 'N/A'}</div>
+                                        <div><strong>Sport:</strong> ${latestDemo['Sport'] ?? 'N/A'}</div>
+                                        <div><strong>Bodyweight (last):</strong> ${latestDemo['Bodyweight (kg)'] != null ? latestDemo['Bodyweight (kg)'].toFixed(1) + ' kg' : 'N/A'}</div>
+                                        <div><strong>Injured Side (last):</strong> ${latestInjuredSide ?? 'N/A'}</div>
+                                    </div>
+                                </div>`;
+                      }
+                      // Prepend demographics to the "no dates selected" message
+                      outputArea.innerHTML = demoHTML + outputArea.innerHTML;
+                      return; // Stop further processing
+                 }
+
+                // --- Process visible data ---
+                latestInjuredSide = null; // Reset before finding
+                let latestDemo = {};
+                 // Find latest demographics from the *visible* data
+                 for (let i = processedData.length - 1; i >= 0; i--) {
+                    const record = processedData[i];
+                     if (latestDemo['Age'] == null && record['Age'] != null) latestDemo['Age'] = record['Age'];
+                     if (latestDemo['Gender'] == null && record['Gender'] != null) latestDemo['Gender'] = record['Gender'];
+                     if (latestDemo['Sport'] == null && record['Sport'] != null) latestDemo['Sport'] = record['Sport'];
+                     if (latestDemo['Bodyweight (kg)'] == null && record['Bodyweight (kg)'] != null) latestDemo['Bodyweight (kg)'] = record['Bodyweight (kg)'];
+                     if (latestDemo['Injured Side'] == null && record['Injured Side'] != null) {
+                        latestDemo['Injured Side'] = record['Injured Side'];
+                        latestInjuredSide = record['Injured Side']; // Store the latest found injured side
+                     }
+                     // Stop searching if all fields are found
+                     if (latestDemo['Age'] != null && latestDemo['Gender'] != null && latestDemo['Sport'] != null && latestDemo['Bodyweight (kg)'] != null && latestDemo['Injured Side'] != null) break;
+                }
+                 // Fallback: If injured side not found in visible data, check *all* data for the patient
+                 if (!latestInjuredSide) {
+                      if (allPatientData[patientId]) {
+                          for (let i = allPatientData[patientId].length - 1; i >= 0; i--) {
+                              const record = allPatientData[patientId][i];
+                               if (latestDemo['Injured Side'] == null && record['Injured Side'] != null) {
+                                   latestDemo['Injured Side'] = record['Injured Side'];
+                                   latestInjuredSide = record['Injured Side'];
+                                   break; // Found it
+                               }
+                          }
+                      }
+                      // Final fallback: Default to 'Left' if still not found
+                      if (!latestInjuredSide) {
+                         console.warn("Injured side not found in data for patient", patientId, "- defaulting to 'Left' for asymmetry calculation.");
+                         latestInjuredSide = 'Left';
+                      }
+                 }
+
+                // --- Build Output HTML ---
+                // 1. Demographics Box
+                let outputHTML = `
+                    <div class="info-box">
+                        <h2 class="text-xl font-semibold text-teal-700 mb-3 font-[Futura]">Demographic Information (Patient: ${patientId})</h2>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-x-4 gap-y-2 text-sm">
+                            <div><strong>Age:</strong> ${latestDemo['Age'] ?? 'N/A'}</div>
+                            <div><strong>Gender:</strong> ${latestDemo['Gender'] ?? 'N/A'}</div>
+                            <div><strong>Sport:</strong> ${latestDemo['Sport'] ?? 'N/A'}</div>
+                            <div><strong>Bodyweight (last):</strong> ${latestDemo['Bodyweight (kg)'] != null ? latestDemo['Bodyweight (kg)'].toFixed(1) + ' kg' : 'N/A'}</div>
+                            <div><strong>Injured Side (last):</strong> ${latestInjuredSide ?? 'N/A'}</div>
+                        </div>
+                    </div>`;
+
+                // 2. Group data by date for plotting and table
+                const dataGroupedByDate = groupDataByDate(processedData);
+                 if (Object.keys(dataGroupedByDate).length === 0) {
+                     // This case should be covered by processedData.length === 0 check, but for safety:
+                     outputArea.innerHTML += `<p class="error-message text-center font-semibold">Could not group visible data by date for patient ${patientId}.</p>`;
+                     return;
+                 }
+
+                // 3. Add HTML structure based on view mode
+                if (currentViewMode === 'scatter') {
+                    outputHTML += renderScatterView(dataGroupedByDate);
+                } else { // Bar chart view
+                    outputHTML += renderBarChartView(dataGroupedByDate);
+                }
+
+                // 4. Render the HTML structure to the page
+                outputArea.innerHTML = outputHTML;
+
+                // 5. Render Plotly graphs asynchronously after HTML is in place
+                setTimeout(() => {
+                    try {
+                        if (currentViewMode === 'scatter') {
+                            renderScatterPlots(dataGroupedByDate);
+                        } else { // Bar chart view
+                            // Pass the determined injured side to the bar chart function
+                            renderBarCharts(dataGroupedByDate, latestInjuredSide);
+                        }
+                    } catch (plotError) {
+                         console.error("Error rendering plots:", plotError);
+                         // Add error message to the output area if plotting fails
+                         outputArea.innerHTML += `<p class="error-message text-center mt-4">An error occurred while rendering the graphs.</p>`;
+                    }
+                }, 50); // Small delay to ensure DOM update
+
+            } catch (error) {
+                 // Catch errors during data processing or HTML generation
+                 console.error("Error displaying patient data:", error);
+                 outputArea.innerHTML = `<p class="error-message text-center font-semibold">An error occurred while processing data for patient ${patientId}.</p>`;
+            }
+        }
+
+
+        function groupDataByDate(processedData) {
+             const dataByDate = {};
+             processedData.forEach(r => {
+                 // Skip records with invalid dates
+                 if (!(r['Test Date'] instanceof Date) || isNaN(r['Test Date'])) {
+                     console.warn("Skipping record with invalid date during grouping:", r);
+                     return;
+                 }
+                 const dateStr = r['Test Date'].toISOString().split('T')[0]; // Use yyyy-MM-DD as key
+
+                 // Initialize entry for this date if it doesn't exist
+                 if (!dataByDate[dateStr]) {
+                     dataByDate[dateStr] = {
+                         'Test Date': r['Test Date'],
+                         'Weeks Since First': r['Weeks Since First'],
+                         'Bodyweight (kg)': r['Bodyweight (kg)'], // Store BW for this date
+                         // Initialize structure for each position and metric
+                         'I': { [METRIC_KEYS.MAX_FORCE]: { Left: null, Right: null }, [METRIC_KEYS.RFD]: { Left: null, Right: null }, [METRIC_KEYS.NORM]: { Left: null, Right: null } },
+                         'Y': { [METRIC_KEYS.MAX_FORCE]: { Left: null, Right: null }, [METRIC_KEYS.RFD]: { Left: null, Right: null }, [METRIC_KEYS.NORM]: { Left: null, Right: null } },
+                         'T': { [METRIC_KEYS.MAX_FORCE]: { Left: null, Right: null }, [METRIC_KEYS.RFD]: { Left: null, Right: null }, [METRIC_KEYS.NORM]: { Left: null, Right: null } }
+                     };
+                 }
+
+                 // Fill in the values for the specific position and metric
+                 const pos = r['Position Clean'];
+                 const metric = r['Metric'];
+                 if (pos && dataByDate[dateStr][pos] && dataByDate[dateStr][pos][metric]) {
+                     // Use ?? to only update if the current value is null (prevents overwriting if multiple rows exist, though unlikely with current structure)
+                     dataByDate[dateStr][pos][metric].Left = r['Left Value'] ?? dataByDate[dateStr][pos][metric].Left;
+                     dataByDate[dateStr][pos][metric].Right = r['Right Value'] ?? dataByDate[dateStr][pos][metric].Right;
+                 }
+
+                 // Update bodyweight for the date if available in the current record
+                 if(r['Bodyweight (kg)'] != null) dataByDate[dateStr]['Bodyweight (kg)'] = r['Bodyweight (kg)'];
+
+                 // Calculate Normalized Force (Max Force / BW) after potentially updating BW and Max Force
+                 for (const p of POSITIONS) {
+                     const bw = dataByDate[dateStr]['Bodyweight (kg)'];
+                     const mfData = dataByDate[dateStr][p]?.[METRIC_KEYS.MAX_FORCE]; // Get Max Force data for the position
+                     if (!mfData) continue; // Skip if no Max Force data
+
+                     let nKgL = null; let nKgR = null;
+                     // Calculate normalized value if BW is valid and Max Force exists
+                     if (bw != null && bw > 0) {
+                         if (mfData.Left != null) nKgL = mfData.Left / bw;
+                         if (mfData.Right != null) nKgR = mfData.Right / bw;
+                     }
+                      // Store the calculated normalized values
+                      if(dataByDate[dateStr][p]) { // Ensure position exists
+                        dataByDate[dateStr][p][METRIC_KEYS.NORM] = { Left: nKgL, Right: nKgR };
+                     }
+                 }
+             });
+             // Return the grouped data as an array of objects, sorted by date (implicitly done by processing sorted data)
+             return Object.values(dataByDate);
+        }
+
+        // --- HTML Rendering Functions ---
+        function renderScatterView(dataGroupedByDate) {
+             let scatterHTML = `<h2 class="text-2xl font-semibold text-teal-700 mb-4 mt-6 text-center md:text-left font-[Futura]">Results Over Time (Scatter)</h2>`;
+             // Create a graph box for each position
+             POSITIONS.forEach(pos => {
+                 scatterHTML += `
+                     <div class="graph-box">
+                         <h3 class="graph-box-title">Position ${pos}</h3>
+                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                             <div id="scatter-graph-${pos}-${METRIC_KEYS.MAX_FORCE}" class="plotly-graph-div"><div class="loading-placeholder">Loading graph...</div></div>
+                             <div id="scatter-graph-${pos}-${METRIC_KEYS.RFD}" class="plotly-graph-div"><div class="loading-placeholder">Loading graph...</div></div>
+                             <div id="scatter-graph-${pos}-${METRIC_KEYS.NORM}" class="plotly-graph-div"><div class="loading-placeholder">Loading graph...</div></div>
+                         </div>
+                     </div>
+                 `;
+             });
+             // Add the summary table below the scatter plots
+             scatterHTML += renderSummaryTable(dataGroupedByDate);
+             return scatterHTML;
+        }
+
+        function renderScatterPlots(dataGroupedByDate) {
+             // Generate scatter plots for each position and metric
+             POSITIONS.forEach(pos => {
+                 createTimeScatter(dataGroupedByDate, `scatter-graph-${pos}-${METRIC_KEYS.MAX_FORCE}`, METRIC_KEYS.MAX_FORCE, pos, false); // No norm bg for Max Force
+                 createTimeScatter(dataGroupedByDate, `scatter-graph-${pos}-${METRIC_KEYS.RFD}`, METRIC_KEYS.RFD, pos, false); // No norm bg for RFD
+                 createTimeScatter(dataGroupedByDate, `scatter-graph-${pos}-${METRIC_KEYS.NORM}`, METRIC_KEYS.NORM, pos, true); // Add norm bg for Normalized Force
+             });
+        }
+
+        function renderBarChartView(dataGroupedByDate) {
+            let barHTML = `<h2 class="text-2xl font-semibold text-teal-700 mb-4 mt-6 text-center md:text-left font-[Futura]">Results Over Time (Bar Chart)</h2>`;
+            // Create a graph box for each position
+            POSITIONS.forEach(pos => {
+                barHTML += `
+                    <div class="graph-box">
+                        <h3 class="graph-box-title">Position ${pos}</h3>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                             <div id="bar-graph-${pos}-${METRIC_KEYS.MAX_FORCE}" class="plotly-graph-div"><div class="loading-placeholder">Loading graph...</div></div>
+                             <div id="bar-graph-${pos}-${METRIC_KEYS.RFD}" class="plotly-graph-div"><div class="loading-placeholder">Loading graph...</div></div>
+                             </div>
+                    </div>
+                `;
+            });
+             // Add the summary table below the bar charts
+            barHTML += renderSummaryTable(dataGroupedByDate);
+            return barHTML;
+        }
+
+         function renderBarCharts(dataGroupedByDate, injuredSide) {
+             // Generate bar charts for Max Force and RFD for each position
+             POSITIONS.forEach(pos => {
+                // Pass the determined injured side for asymmetry calculations/annotations
+                createTimeSeriesBarChart(dataGroupedByDate, `bar-graph-${pos}-${METRIC_KEYS.MAX_FORCE}`, METRIC_KEYS.MAX_FORCE, pos, injuredSide);
+                createTimeSeriesBarChart(dataGroupedByDate, `bar-graph-${pos}-${METRIC_KEYS.RFD}`, METRIC_KEYS.RFD, pos, injuredSide);
+             });
+         }
+
+         function renderSummaryTable(dataGroupedByDate) {
+             // Handle case with no data
+             if (!dataGroupedByDate || dataGroupedByDate.length === 0) return '<p class="text-center text-slate-500 italic mt-6">No test data available for summary table.</p>';
+
+             // Start table structure
+             let tableHTML = `<div class="info-box mt-8">
+                                <h2 class="text-xl font-semibold text-teal-700 mb-4 font-[Futura]">Detailed Summary</h2>
+                             `;
+             // Create a section for each position
+             POSITIONS.forEach(pos => {
+                 tableHTML += `<div class="summary-section">`;
+                 tableHTML += `<h3 class="summary-section-title">Position ${pos} Summary</h3>`;
+                 tableHTML += `<div class="overflow-x-auto">`; // Make table scrollable horizontally if needed
+                 tableHTML += `<table class="summary-table">`;
+
+                 // --- Table Header ---
+                 tableHTML += `<thead>`;
+                 // Row 1: Metric Header + Date Headers (spanning 4 columns each)
+                 tableHTML += `<tr>`;
+                 tableHTML += `<th class="metric-header">Metric</th>`;
+                 dataGroupedByDate.forEach(testData => {
+                     // Format date and week number
+                     const dateStr = testData['Test Date'] instanceof Date && !isNaN(testData['Test Date'])
+                                     ? testData['Test Date'].toLocaleDateString('en-CA') // yyyy-MM-DD format
+                                     : 'Invalid Date';
+                     const weekStr = testData['Weeks Since First'] !== null
+                                     ? `(Week ${testData['Weeks Since First']})`
+                                     : '';
+                     tableHTML += `<th colspan="4" class="date-header">${dateStr}<br>${weekStr}</th>`;
+                 });
+                 tableHTML += `</tr>`;
+                 // Row 2: Empty Metric Header + Sub-headers for each date (L Val, R Val, L Ch%, R Ch%)
+                 tableHTML += `<tr>`;
+                 tableHTML += `<th class="metric-header">&nbsp;</th>`; // Empty cell under "Metric"
+                 dataGroupedByDate.forEach(() => {
+                     tableHTML += `<th class="sub-header">L Val</th>`;
+                     tableHTML += `<th class="sub-header">R Val</th>`;
+                     tableHTML += `<th class="sub-header">L Ch%</th>`;
+                     tableHTML += `<th class="sub-header">R Ch%</th>`;
+                 });
+                 tableHTML += `</tr>`;
+                 tableHTML += `</thead>`;
+
+                 // --- Table Body ---
+                 tableHTML += `<tbody>`;
+                 // Iterate through metrics in the desired display order
+                 METRICS_DISPLAY_ORDER.forEach(metricKey => {
+                     tableHTML += `<tr>`;
+                     tableHTML += `<td class="metric-label">${metricKey}</td>`; // Metric name in the first column
+
+                     // Iterate through each test date's data
+                     for (let i = 0; i < dataGroupedByDate.length; i++) {
+                         const currentTestData = dataGroupedByDate[i];
+                         const previousTestData = i > 0 ? dataGroupedByDate[i - 1] : null; // Get previous test data for change calculation
+
+                         // Get metric data for current and previous tests
+                         const currentMetricData = currentTestData[pos]?.[metricKey];
+                         const previousMetricData = previousTestData?.[pos]?.[metricKey];
+
+                         // Get latest and previous values for Left and Right
+                         const latestL = currentMetricData?.Left;
+                         const previousL = previousMetricData?.Left;
+                         const changeL = calculatePercentageChange(latestL, previousL); // Calculate % change
+
+                         const latestR = currentMetricData?.Right;
+                         const previousR = previousMetricData?.Right;
+                         const changeR = calculatePercentageChange(latestR, previousR); // Calculate % change
+
+                         // Add cells for Left Value, Right Value, Left Change %, Right Change %
+                         // Apply specific classes for background color and change indication
+                         tableHTML += `<td class="left-value-cell">${formatValue(latestL, metricKey === METRIC_KEYS.NORM)}</td>`;
+                         tableHTML += `<td class="right-value-cell">${formatValue(latestR, metricKey === METRIC_KEYS.NORM)}</td>`;
+                         tableHTML += `<td class="${getChangeClass(changeL)}">${formatChange(changeL)}</td>`;
+                         tableHTML += `<td class="${getChangeClass(changeR)}">${formatChange(changeR)}</td>`;
+                     }
+                     tableHTML += `</tr>`;
+                 });
+                 tableHTML += `</tbody></table></div></div>`; // Close table, div, section
+             });
+             // Add footnote about change calculation
+             tableHTML += `<p class="text-xs text-slate-500 mt-4">* Change calculated vs. previous test date shown in the table.</p></div>`; // Close info-box
+             return tableHTML;
+         }
+
+         // --- Helper Functions for Table ---
+         function calculatePercentageChange(latest, previous) {
+             // Return null if either value is missing or previous is zero (avoid division by zero)
+             if (latest == null || previous == null || previous === 0) return null;
+             // Calculate percentage change relative to the absolute previous value
+             return ((latest - previous) / Math.abs(previous)) * 100;
+         }
+
+         function formatValue(value, isNorm = false) {
+             // Display 'N/A' for null values
+             if (value == null) return '<span class="na">N/A</span>';
+             // Format normalized values to 2 decimal places, others to 1
+             return isNorm ? value.toFixed(2) : value.toFixed(1);
+         }
+
+         function formatChange(change) {
+             // Display 'N/A' for null change values
+             if (change == null) return '<span class="na">N/A</span>';
+             // Add '+' sign for positive changes
+             const sign = change >= 0 ? '+' : '';
+             // Format to 0 decimal places and add '%' sign
+             return `${sign}${change.toFixed(0)}%`;
+         }
+         function getChangeClass(change) {
+             // Return CSS class based on the change value for styling (color)
+             if (change == null) return 'na'; // Not applicable
+             if (change > 0) return 'change-pos'; // Positive change
+             if (change < 0) return 'change-neg'; // Negative change
+             return 'change-zero'; // No change
+         }
+
+         // --- Plotting Functions ---
+         function createTimeScatter(dataGroupedByDate, elementId, yMetricKey, position, addNormBg) {
+             const plotElement = document.getElementById(elementId);
+             if (!plotElement) { console.error(`Element ${elementId} not found.`); return; }
+             plotElement.innerHTML = ''; // Clear previous plot
+             // Handle no data case
+             if (!dataGroupedByDate || dataGroupedByDate.length === 0) {
+                 plotElement.innerHTML = `<div class="loading-placeholder">No data for Position ${position}.</div>`; return;
+             }
+
+             // Prepare data for Plotly
+             const xIndex = dataGroupedByDate.map((_, i) => i); // Use index for plotting
+             const xWeeksNum = dataGroupedByDate.map(d => d['Weeks Since First']); // Use weeks for tick labels
+             let yLeft = [], yRight = [], hoverTextLeft = [], hoverTextRight = [], yValuesForRange = [];
+
+             // Extract Y values and create hover text
+             dataGroupedByDate.forEach((d, i) => {
+                 let valLeft = null, valRight = null;
+                 let yAxisTitle = yMetricKey; // Default axis title
+                 let metricData = d[position]?.[yMetricKey]; // Get data for the specific metric
+
+                 // Handle Normalized Force specifically
+                 if (yMetricKey === METRIC_KEYS.NORM) {
+                     yAxisTitle = 'Max Force / BW (N/kg)'; // Update axis title
+                     metricData = d[position]?.[METRIC_KEYS.NORM]; // Get normalized data
+                     valLeft = metricData?.Left;
+                     valRight = metricData?.Right;
+                 } else if (metricData) { // For other metrics (Max Force, RFD)
+                     valLeft = metricData.Left;
+                     valRight = metricData.Right;
+                 }
+
+                 // Store values for plotting and range calculation
+                 yLeft.push(valLeft); yRight.push(valRight);
+                 if (valLeft != null) yValuesForRange.push(valLeft);
+                 if (valRight != null) yValuesForRange.push(valRight);
+
+                 // Create hover text
+                 hoverTextLeft.push(`Week: ${xWeeksNum[i]}<br>${yAxisTitle}: ${valLeft != null ? valLeft.toFixed(2) : 'N/A'} (L)`);
+                 hoverTextRight.push(`Week: ${xWeeksNum[i]}<br>${yAxisTitle}: ${valRight != null ? valRight.toFixed(2) : 'N/A'} (R)`);
+             });
+
+             // Define Plotly traces (lines and markers) using Matplotlib colors
+             const traces = [
+                 { x: xIndex, y: yLeft, mode: 'lines+markers', name: 'Left', line: { color: LEFT_COLOR, shape: 'spline', width: 2.5 }, marker: { color: LEFT_COLOR, size: 9, symbol: 'circle' }, text: hoverTextLeft, hoverinfo: 'text' },
+                 { x: xIndex, y: yRight, mode: 'lines+markers', name: 'Right', line: { color: RIGHT_COLOR, shape: 'spline', width: 2.5 }, marker: { color: RIGHT_COLOR, size: 9, symbol: 'square' }, text: hoverTextRight, hoverinfo: 'text' }
+             ];
+
+             // Calculate Y-axis range, considering normative thresholds if applicable
+             let yRange = calculateAxisRange(yValuesForRange, addNormBg ? NORMATIVE_THRESHOLDS[position] : null);
+
+             // Define Plotly layout
+             const layout = {
+                 xaxis: {
+                     title: 'Weeks Since First Test',
+                     tickmode: 'array', tickvals: xIndex, ticktext: xWeeksNum, // Use index for ticks, weeks for labels
+                     showgrid: true, gridcolor: 'var(--medium-gray)', zeroline: false, // Use CSS var
+                     titlefont: { size: 13 }, tickfont: { size: 11 }
+                 },
+                 yaxis: {
+                     title: { text: yMetricKey === METRIC_KEYS.NORM ? 'Max Force / BW (N/kg)' : yMetricKey, font: {size: 13}},
+                     zeroline: true, gridcolor: 'var(--medium-gray)', range: yRange, // Use CSS var and calculated range
+                     tickfont: { size: 11 }
+                 },
+                 margin: { l: 60, r: 20, t: 20, b: 60 }, // Adjusted margins
+                 hovermode: 'closest',
+                 legend: { orientation: "h", yanchor: "bottom", y: -0.3, xanchor: "center", x: 0.5, font: { size: 11 } },
+                 shapes: [], // Initialize shapes array for normative backgrounds
+                 paper_bgcolor: 'var(--white)', // Use CSS var
+                 plot_bgcolor: 'var(--light-gray)', // Use CSS var
+                 font: { family: 'Avenir, sans-serif', size: 12, color: 'var(--dark-gray)' } // Match screening font
+             };
+
+             // Add normative background shapes if requested
+             if (addNormBg && NORMATIVE_THRESHOLDS[position]) {
+                 const thresholds = NORMATIVE_THRESHOLDS[position];
+                 const finalYRangeMin = layout.yaxis.range[0]; const finalYRangeMax = layout.yaxis.range[1];
+                 // Define zones based on thresholds
+                 const zones = [
+                      { y0: finalYRangeMin, y1: thresholds.poor_max, color: NORM_ZONE_COLORS.poor },
+                      { y0: thresholds.poor_max, y1: thresholds.good_min, color: NORM_ZONE_COLORS.average }, // Average covers poor_max to good_min
+                      { y0: thresholds.good_min, y1: thresholds.excellent_min, color: NORM_ZONE_COLORS.good },
+                      { y0: thresholds.excellent_min, y1: finalYRangeMax, color: NORM_ZONE_COLORS.excellent }
+                 ];
+                  // Create rectangles for each zone
+                  zones.forEach(zone => {
+                      // Ensure the zone is within the calculated Y-axis range
+                      const effectiveY0 = Math.max(zone.y0, finalYRangeMin);
+                      const effectiveY1 = Math.min(zone.y1, finalYRangeMax);
+                      if (effectiveY1 > effectiveY0) { // Only draw if the zone has height
+                          layout.shapes.push({
+                              type: 'rect', xref: 'paper', yref: 'y', // Rectangle spans full plot width
+                              x0: 0, y0: effectiveY0, x1: 1, y1: effectiveY1,
+                              fillcolor: zone.color, opacity: 0.5, layer: 'below', line: { width: 0 } // Semi-transparent, behind data
+                          });
+                      }
+                  });
+             }
+
+             // Render the plot
+             try { Plotly.react(elementId, traces, layout, plotlyConfig); } // Use updated plotlyConfig
+             catch (error) { console.error(`Error plotting scatter ${elementId}:`, error); plotElement.innerHTML = `<div class="error-message p-4 text-center">Could not plot graph: ${error.message}</div>`; }
+         }
+
+         function createTimeSeriesBarChart(dataGroupedByDate, elementId, yMetricKey, position, injuredSide) {
+             const plotElement = document.getElementById(elementId);
+             if (!plotElement) { console.error(`Element ${elementId} not found.`); return; }
+             plotElement.innerHTML = ''; // Clear previous plot
+             // Handle no data case
+             if (!dataGroupedByDate || dataGroupedByDate.length === 0) {
+                 plotElement.innerHTML = `<div class="loading-placeholder">No data for Position ${position}.</div>`; return;
+             }
+
+             // Prepare data for Plotly bars
+             const xIndex = dataGroupedByDate.map((_, i) => i); // Use index for plotting
+             const xWeeksNum = dataGroupedByDate.map(d => d['Weeks Since First']); // Use weeks for tick labels
+             let yLeft = [], yRight = [], changesLeft = [], changesRight = [], yValuesForRange = [];
+
+             // Determine healthy and injured side keys based on input
+             const healthySide = injuredSide === 'Left' ? 'Right' : 'Left';
+             const injuredSideKey = injuredSide === 'Left' ? 'Left' : 'Right';
+             const healthySideKey = healthySide;
+
+             // Extract Y values and calculate changes
+             for (let i = 0; i < dataGroupedByDate.length; i++) {
+                 const currentData = dataGroupedByDate[i];
+                 const previousData = i > 0 ? dataGroupedByDate[i-1] : null; // Get previous data point
+                 const currentMetricData = currentData[position]?.[yMetricKey];
+                 const previousMetricData = previousData?.[position]?.[yMetricKey];
+
+                 // Get current and previous values
+                 const valLeft = currentMetricData?.Left;
+                 const valRight = currentMetricData?.Right;
+                 const prevLeft = previousMetricData?.Left;
+                 const prevRight = previousMetricData?.Right;
+
+                 // Store Y values and calculate percentage changes
+                 yLeft.push(valLeft);
+                 yRight.push(valRight);
+                 changesLeft.push(calculatePercentageChange(valLeft, prevLeft));
+                 changesRight.push(calculatePercentageChange(valRight, prevRight));
+
+                 // Collect non-null values for range calculation
+                 if (valLeft != null) yValuesForRange.push(valLeft);
+                 if (valRight != null) yValuesForRange.push(valRight);
+             }
+
+             // Define Plotly bar traces using Matplotlib colors
+             const traceLeft = {
+                 x: xIndex, y: yLeft, type: 'bar', name: 'Left',
+                 marker: { color: LEFT_COLOR }, // Use Matplotlib blue
+                 width: 0.4, // Keep consistent width
+                 text: yLeft.map(v => v?.toFixed(1) ?? ''), // Text inside bar (value)
+                 textposition: 'inside', insidetextanchor: 'middle',
+                 textfont: { color: '#ffffff', size: 11, weight: 'bold' }, // White text inside
+                 hoverinfo: 'x+y+name' // Standard hover info
+             };
+             const traceRight = {
+                 x: xIndex, y: yRight, type: 'bar', name: 'Right',
+                 marker: { color: RIGHT_COLOR }, // Use Matplotlib orange
+                 width: 0.4, // Keep consistent width
+                 text: yRight.map(v => v?.toFixed(1) ?? ''), // Text inside bar (value)
+                 textposition: 'inside', insidetextanchor: 'middle',
+                 textfont: { color: '#ffffff', size: 11, weight: 'bold' }, // White text inside
+                 hoverinfo: 'x+y+name' // Standard hover info
+             };
+
+             // --- Annotations ---
+             const annotations = [];
+             const asymmetryAnnotationYShift = 35; // Vertical shift for asymmetry %
+             const changeAnnotationYShift = 18; // Vertical shift for change %
+
+             for (let i = 0; i < xIndex.length; i++) {
+                 const yL = yLeft[i];
+                 const yR = yRight[i];
+                 const changeL = changesLeft[i];
+                 const changeR = changesRight[i];
+
+                 // --- Asymmetry Annotation (Difference vs Healthy Side) ---
+                 const currentMetricData = dataGroupedByDate[i][position]?.[yMetricKey];
+                 const injuredValue = currentMetricData?.[injuredSideKey];
+                 const healthyValue = currentMetricData?.[healthySideKey];
+                 let diff = null; // Asymmetry difference percentage
+
+                 // Calculate difference if both values exist and healthy is not zero
+                 if (healthyValue != null && injuredValue != null && healthyValue !== 0) {
+                     diff = ((injuredValue / healthyValue) * 100) - 100;
+                 } else if (healthyValue === 0 && injuredValue === 0) {
+                     diff = 0; // Consider 0% diff if both are zero
+                 }
+
+                 // Determine color based on difference
+                 let asymmetryColor;
+                 if (diff === null) { asymmetryColor = '#94a3b8'; } // Grey for N/A
+                 else if (diff >= -10) { asymmetryColor = '#16a34a'; } // Green for >= -10%
+                 else { asymmetryColor = '#dc2626'; } // Red otherwise
+
+                 const asymmetryText = diff !== null ? `${diff >= 0 ? '+' : ''}${diff.toFixed(0)}%` : 'N/A';
+                 const maxY = Math.max(yL ?? -Infinity, yR ?? -Infinity); // Find max Y for annotation placement
+
+                 // Add asymmetry annotation if there's data
+                 if (yL != null || yR != null) {
+                    annotations.push({
+                        x: xIndex[i], y: maxY >= 0 ? maxY : 0, // Place above the taller bar (or at 0 if negative)
+                        text: asymmetryText,
+                        showarrow: false, font: { color: asymmetryColor, size: 14, weight: 'bold' },
+                        xanchor: 'center', yanchor: 'bottom', yshift: asymmetryAnnotationYShift // Position above bar
+                    });
+                 }
+
+                 // --- Change vs Previous Date Annotations ---
+                 // Determine color for change annotations
+                 const colorL = changeL === null ? '#94a3b8' : (changeL >= 0 ? '#16a34a' : '#dc2626');
+                 const colorR = changeR === null ? '#94a3b8' : (changeR >= 0 ? '#16a34a' : '#dc2626');
+
+                 // Add change annotation for Left side (if not the first data point)
+                 if (yL != null && i > 0) {
+                     annotations.push({
+                         x: xIndex[i], y: maxY >= 0 ? maxY : 0, // Place relative to max Y
+                         text: formatChange(changeL), // Formatted change %
+                         showarrow: false,
+                         font: { color: colorL, size: 10 },
+                         xanchor: 'center', yanchor: 'bottom', yshift: changeAnnotationYShift, // Position above bar, below asymmetry
+                         xshift: -24 // Shift left
+                     });
+                 }
+                  // Add change annotation for Right side (if not the first data point)
+                  if (yR != null && i > 0) {
+                     annotations.push({
+                         x: xIndex[i], y: maxY >= 0 ? maxY : 0, // Place relative to max Y
+                         text: formatChange(changeR), // Formatted change %
+                         showarrow: false,
+                         font: { color: colorR, size: 10 },
+                         xanchor: 'center', yanchor: 'bottom', yshift: changeAnnotationYShift, // Position above bar, below asymmetry
+                         xshift: 24 // Shift right
+                     });
+                 }
+             }
+
+             // --- Layout ---
+             // Calculate Y-axis range, considering annotations
+             let yRange = calculateAxisRange(yValuesForRange, null, annotations, 0.30); // Increased top padding for annotations
+
+             const layout = {
+                 barmode: 'group', // Group bars for Left/Right
+                 bargap: 0.2, bargroupgap: 0.1, // Spacing between bars
+                 xaxis: {
+                     title: 'Weeks Since First Test',
+                     tickmode: 'array', tickvals: xIndex, ticktext: xWeeksNum, // Use index for ticks, weeks for labels
+                     showgrid: false, // No vertical grid lines (like screening)
+                     zeroline: false,
+                     titlefont: { size: 13 }, tickfont: { size: 11 }
+                 },
+                 yaxis: {
+                     title: { text: yMetricKey, font: {size: 13}},
+                     zeroline: true, gridcolor: 'var(--medium-gray)', range: yRange, // Use CSS var and calculated range
+                     tickfont: { size: 11 }
+                 },
+                 margin: { l: 60, r: 20, t: 60, b: 80 }, // Margins similar to screening
+                 hovermode: 'closest',
+                 legend: { orientation: "h", yanchor: "bottom", y: -0.45, xanchor: "center", x: 0.5, font: { size: 11 } }, // Legend below
+                 annotations: annotations, // Add calculated annotations
+                 paper_bgcolor: 'var(--white)', // Use CSS var (like screening)
+                 plot_bgcolor: 'var(--light-gray)', // Use CSS var (like screening)
+                 font: { family: 'Avenir, sans-serif', size: 12, color: 'var(--dark-gray)' }, // Match screening font
+                 uniformtext: { mode: 'hide', minsize: 10 } // Hide text inside bars if too small
+             };
+
+             // Render the plot
+             try { Plotly.react(elementId, [traceLeft, traceRight], layout, plotlyConfig); } // Use updated plotlyConfig
+             catch (error) { console.error(`Error plotting bar ${elementId}:`, error); plotElement.innerHTML = `<div class="error-message p-4 text-center">Could not plot graph: ${error.message}</div>`; }
+         }
+
+        // --- Axis Range Calculation (unchanged) ---
+        function calculateAxisRange(values, thresholds = null, annotations = null, topPaddingFactor = 0.15) {
+            // Filter out null/NaN values
+            const validValues = values.filter(y => y != null && !isNaN(y));
+
+            // Determine min/max from data
+            let yDataMin = validValues.length > 0 ? Math.min(...validValues) : 0;
+            let yDataMax = validValues.length > 0 ? Math.max(...validValues) : 1; // Default max to 1 if no data
+
+            // Consider normative thresholds if provided
+            if (thresholds) {
+                 const thresholdValues = Object.values(thresholds).filter(v => typeof v === 'number');
+                 if (thresholdValues.length > 0) {
+                    yDataMin = Math.min(yDataMin, ...thresholdValues);
+                    yDataMax = Math.max(yDataMax, ...thresholdValues);
+                 }
+            }
+
+            // Consider annotation positions if provided
+            if (annotations && annotations.length > 0) {
+                 let maxAnnotatedY = -Infinity;
+                  annotations.forEach(ann => {
+                     if (ann.y != null && !isNaN(ann.y)) {
+                        // Estimate the top edge of the annotation text
+                        let annTop = ann.y;
+                        if (ann.yanchor === 'bottom') {
+                            annTop += (ann.yshift || 0);
+                            // Add extra space for larger shifts/fonts (heuristic)
+                            if ((ann.yshift || 0) > 10) annTop += (ann.font?.size || 12) * 1.2;
+                        } else if (ann.yanchor === 'top') {
+                             annTop -= (ann.yshift || 0);
+                        } else { // Middle anchor
+                             annTop += (ann.yshift || 0) + (ann.font?.size || 12) * 0.6;
+                        }
+                        maxAnnotatedY = Math.max(maxAnnotatedY, annTop); // Track the highest point reached by annotations
+                     }
+                 });
+                 // Adjust data max if annotations go higher
+                 if (maxAnnotatedY > yDataMax) {
+                    yDataMax = maxAnnotatedY;
+                 }
+            }
+
+            // Calculate padding
+            const yDataRange = yDataMax - yDataMin;
+            const bottomPaddingValue = Math.max(yDataRange * 0.15, Math.abs(yDataMin) * 0.1, 0.5); // Add padding below min
+            const topPaddingValue = Math.max(yDataRange * topPaddingFactor, Math.abs(yDataMax) * topPaddingFactor, 1.0); // Add padding above max (using factor)
+
+            // Calculate final range limits
+            let rangeMin = yDataMin - bottomPaddingValue;
+            let rangeMax = yDataMax + topPaddingValue;
+
+            // Ensure range includes zero if data spans across it or is all positive/negative
+            if (yDataMin >= 0) rangeMin = Math.min(0, rangeMin); // Include 0 if all data is positive
+            if (yDataMax <= 0 && yDataMin < 0) rangeMax = Math.max(0, rangeMax); // Include 0 if all data is negative
+            else if (yDataMax <= 0) rangeMax = 0.5; // Ensure some positive space if max is 0 or less
+
+            // Prevent range min >= range max
+            if (rangeMin >= rangeMax) { rangeMin = rangeMax - 1; }
+            // Prevent range min === range max (e.g., if all data is the same)
+            if (rangeMin === rangeMax) { rangeMin -= 0.5; rangeMax += 0.5; }
+
+            return [rangeMin, rangeMax];
+        }
+
+        // --- Initial Load ---
+        document.addEventListener('DOMContentLoaded', loadAnalysisStateFromLocalStorage);
+
+    </script>
+
+</body>
+</html>
