@@ -2,9 +2,7 @@
 // Definerer listen med obfuskerte e-postadresser
 
 const allowedObfuscatedEmails = [
-  "tromaneromanosromantroman@romaneromanoxromanaromanmromanpromanlromaneroman.romancomanoromanmroman",
-  "bromanrromanuromankromaneromanrroman@romandromanommanaromanenromaneroman.romanromanomanoroman",
-  "mromanaromanromanumaneromanlroman@romanaromanlromanpromanharomantromaneromankroman.romanaromanriroman"
+  "manuel@alphatek.ai"
 ];
 
 // Ingen annen kode er nødvendig her.
