@@ -153,7 +153,8 @@
         const correctPassword = "alphatek";
         const nextPageUrl = "screening.html";
         const localStorageEmailKey = 'savedLoginEmail';
-        const sessionAuthKey = 'isLoggedIn'; // Key for the session flag
+        const localStoragePasswordKey = 'savedLoginPassword'; // New key for password
+        const sessionAuthKey = 'isLoggedIn';
 
         const loginForm = document.getElementById('login-form');
         const emailInput = document.getElementById('email');
@@ -167,20 +168,37 @@
             return allowedEmails.includes(normalizedEmail);
         }
 
-        function loadEmailFromStorage() {
+        // Updated function to load both email and password
+        function loadCredentialsFromStorage() {
             const savedEmail = localStorage.getItem(localStorageEmailKey);
+            const savedPassword = localStorage.getItem(localStoragePasswordKey);
             if (savedEmail) {
                 emailInput.value = savedEmail;
+                console.log("Loaded email from localStorage:", savedEmail);
+            }
+            if (savedPassword) {
+                passwordInput.value = savedPassword; // Autofill password
+                console.log("Loaded password from localStorage.");
             }
         }
 
-        function saveEmailToStorage() {
+        // Updated function to save both email and password
+        function saveCredentialsToStorage() {
             const currentEmail = emailInput.value.trim();
+            const currentPassword = passwordInput.value; // Get password value
+
             if (currentEmail) {
                 localStorage.setItem(localStorageEmailKey, currentEmail);
             } else {
                 localStorage.removeItem(localStorageEmailKey);
             }
+
+            if (currentPassword) { // Save password if field is not empty
+                localStorage.setItem(localStoragePasswordKey, currentPassword);
+            } else {
+                localStorage.removeItem(localStoragePasswordKey);
+            }
+            console.log("Saved credentials to localStorage.");
         }
 
         loginForm.addEventListener('submit', function(event) {
@@ -195,15 +213,14 @@
             }
 
             if (loginSuccess) {
-                saveEmailToStorage();
+                saveCredentialsToStorage(); // Save both on successful login
                 console.log("Login successful! Setting session flag and redirecting...");
-                // *** SET SESSION FLAG HERE ***
                  try {
-                    sessionStorage.setItem(sessionAuthKey, 'true'); // Set the flag
+                    sessionStorage.setItem(sessionAuthKey, 'true');
                 } catch (e) {
                     console.error("Could not set sessionStorage item:", e);
                 }
-                window.location.href = nextPageUrl; // Redirect
+                window.location.href = nextPageUrl;
             } else {
                  errorMessageDiv.textContent = 'Invalid email or password.';
                  const loginBox = loginForm.parentElement;
@@ -217,10 +234,14 @@
             const isHidden = requestAccessSection.style.display === 'none' || requestAccessSection.style.display === '';
             requestAccessSection.style.display = isHidden ? 'block' : 'none';
         });
-        emailInput.addEventListener('blur', saveEmailToStorage);
 
+        // Save credentials when user leaves either field
+        emailInput.addEventListener('blur', saveCredentialsToStorage);
+        passwordInput.addEventListener('blur', saveCredentialsToStorage);
+
+        // Load credentials on page load
         document.addEventListener('DOMContentLoaded', (event) => {
-            loadEmailFromStorage();
+            loadCredentialsFromStorage();
         });
     </script>
 
