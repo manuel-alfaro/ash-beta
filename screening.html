@@ -1,0 +1,1830 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Functional Shoulder Screening</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Avenir:wght@400&family=Futura:wght@400&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /* --- CSS Variables --- */
+        :root {
+            /* App Colors */
+            --app-primary-color: #285484; /* Dark Blue */
+            --app-secondary-color: rgb(112, 188, 252); /* Light Blue */
+            --app-tertiary-color: #121630; /* Very Dark Blue */
+            --app-text-on-primary: #ffffff;
+            --app-text-on-secondary: var(--app-primary-color);
+            /* Button text color */
+            --app-button-text-color: var(--app-text-on-primary); /* Hvit tekst som standard */
+            --app-button-icon-color: var(--app-secondary-color); /* Lys blå ikon som standard */
+            /* Original Gradienter for knapper */
+            --app-button-gradient-start: var(--app-primary-color);
+            --app-button-gradient-end: var(--app-tertiary-color);
+            --app-button-hover-gradient-start: #1e3a5c;
+            --app-button-hover-gradient-end: var(--app-primary-color);
+            /* NY Gradient for knapper (lys -> mørk) */
+            --app-button-light-gradient-start: var(--app-secondary-color);
+            --app-button-light-gradient-end: var(--app-primary-color);
+            --app-button-light-hover-gradient-start: var(--app-primary-color); /* Mørkere start for hover */
+            --app-button-light-hover-gradient-end: #1e3a5c; /* Mørkere slutt for hover */
+
+
+            /* Status/Utility Colors */
+            --light-gray: #f8f9fa; /* Used for body, patient data container, and top boxes background */
+            --medium-gray: #dee2e6; /* Used for labels and borders (less used now) */
+            --dark-gray: #495057; /* Used for labels and version text */
+            --text-color: #212529; /* Black text */
+            --success-color: #16a34a; /* Solid green for success */
+            --success-border-color: #15803d;
+            --success-shadow-color: rgba(22, 163, 74, 0.45); /* Mer intens skygge */
+            /* *** NY VARIABEL FOR GRADIENT *** */
+            --success-gradient-start-color: rgba(22, 163, 74, 1); /* Start color for the fade effect (bruk RGBa for gradient)*/
+            --warning-color: #facc15;
+            --danger-color-dark: #dc2626;
+            --injured-input-bg: rgba(255, 224, 224, 0.7); /* Light red background for injured inputs */
+            --injured-input-border: #fca5a5; /* Light red border for injured inputs */
+            --white: #ffffff; /* Used for input background and text */
+            --border-radius: 8px; /* Default radius */
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Kept for buttons/other elements */
+            --sidebar-border-color: var(--medium-gray); /* Placeholder */
+            --header-border-color: var(--medium-gray); /* Border for top bar */
+            --subtle-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Subtle shadow for boxes */
+
+
+            /* Graph Specific Colors (Oppdatert) */
+            --left-line-color: #ff7f0e; /* NY Oransje */
+            --right-line-color: #1f77b4; /* NY Blå */
+            --norm-poor-bg: rgba(252, 165, 165, 0.5);
+            --norm-average-bg: rgba(252, 211, 77, 0.5);
+            --norm-good-bg: rgba(167, 243, 208, 0.5);
+            --norm-excellent-bg: rgba(52, 211, 153, 0.5);
+
+            /* Layout Variables */
+            --base-font-size: 16px;
+            /* *** ENDRING: Økt høyde for grafbokser *** */
+            --graph-box-height: 380px; /* Høyde for grafbokser */
+            --sidebar-width: 180px; /* Smalere sidebar */
+            /* Font Weights - KUN NORMAL VEKT */
+            --normal-font-weight: 400;
+            --semibold-font-weight: 400; /* Satt til normal */
+            --bold-font-weight: 400; /* Satt til normal */
+            --top-bar-height: 50px;
+            --main-content-margin: 20px; /* Margin mellom sidebar og innhold */
+        }
+
+        /* --- General Styling --- */
+        body {
+            font-family: 'Avenir', sans-serif; /* Avenir først, så generell sans-serif */
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            padding-top: var(--top-bar-height);
+            width: 100%;
+            box-sizing: border-box;
+            line-height: 1.6;
+            font-size: var(--base-font-size);
+            font-weight: var(--normal-font-weight); /* Base weight set to normal (400) */
+
+            /* --- Font Rendering Hint --- */
+            -webkit-font-smoothing: antialiased; /* For Chrome, Safari, Edge */
+            -moz-osx-font-smoothing: grayscale; /* For Firefox på macOS */
+            font-synthesis: none; /* Ikke lag "falsk" fet/kursiv */
+        }
+
+        /* --- Top Header Bar --- */
+        .top-header-bar {
+            height: var(--top-bar-height);
+            background-color: var(--light-gray); /* Light gray background */
+            color: var(--text-color); /* Black text */
+            padding: 0 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            border-bottom: 1px solid var(--header-border-color);
+            z-index: 20;
+            box-sizing: border-box;
+        }
+        .top-header-bar .brand-info {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+        .top-header-bar .brand-name {
+            /* Removed */
+        }
+        .top-header-bar .version-text {
+            font-family: sans-serif; /* Standard sans-serif */
+            font-size: 0.9rem; /* Slightly larger */
+            font-weight: var(--normal-font-weight); /* Normal weight */
+            color: var(--dark-gray); /* Mørkere grå */
+        }
+        .top-header-bar .social-links a {
+            color: var(--text-color); /* Black icons */
+            margin-left: 15px;
+            font-size: 1.2rem;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        .top-header-bar .social-links a:hover {
+            color: var(--app-primary-color); /* Dark blue hover */
+        }
+
+
+        /* --- App Layout --- */
+        .app-layout {
+            display: flex;
+            width: 100%;
+            min-height: calc(100vh - var(--top-bar-height));
+            margin-top: 0;
+        }
+
+        .app-sidebar {
+            width: var(--sidebar-width); /* Bruker variabel */
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            padding: 20px 15px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+            border-right: 1px solid var(--sidebar-border-color);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: var(--top-bar-height);
+            left: 0;
+            height: calc(100vh - var(--top-bar-height));
+            overflow-y: auto;
+            z-index: 10;
+        }
+
+        .sidebar-logo-placeholder {
+            height: 50px;
+            /* Adjusted margin */
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+             font-size: 1.5rem;
+        }
+         .sidebar-logo-placeholder i {
+             color: var(--app-primary-color);
+         }
+
+
+        .sidebar-buttons {
+             display: flex;
+             flex-direction: column;
+             gap: 12px;
+        }
+
+
+        .app-main-content {
+            flex-grow: 1;
+            margin-left: calc(var(--sidebar-width) + var(--main-content-margin)); /* La til margin */
+            padding: 30px 40px 30px 40px;
+            background-color: var(--white);
+            overflow-y: auto;
+            height: calc(100vh - var(--top-bar-height));
+        }
+
+        /* --- Sidebar Buttons --- */
+        .app-sidebar button,
+        .app-sidebar a button {
+            font-family: 'Avenir', sans-serif;
+            font-size: 0.9rem;
+            font-weight: var(--normal-font-weight); /* Bruker normal vekt */
+            padding: 10px 15px;
+            color: var(--app-text-on-primary); /* Hvit tekst */
+            background-image: linear-gradient(to right, var(--app-button-light-gradient-start), var(--app-button-light-gradient-end)); /* Lys -> Mørk gradient */
+            border: none;
+            border-radius: var(--border-radius); /* Runde knapper */
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            letter-spacing: 0.5px;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .app-sidebar button:hover,
+        .app-sidebar a button:hover {
+            background-image: linear-gradient(to right, var(--app-button-light-hover-gradient-start), var(--app-button-light-hover-gradient-end)); /* Mørkere hover gradient */
+            color: var(--app-text-on-primary); /* Hvit tekst på hover */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transform: translateY(-1px);
+        }
+        .app-sidebar button:active,
+        .app-sidebar a button:active {
+            transform: translateY(0px);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+            background-image: linear-gradient(to right, var(--app-button-light-hover-gradient-start), var(--app-button-light-hover-gradient-end)); /* Samme som hover */
+            color: var(--app-text-on-primary); /* Hvit tekst på active */
+        }
+        .app-sidebar button i {
+            width: 20px;
+            text-align: center;
+            color: var(--app-primary-color); /* Mørk blå ikon som standard */
+            transition: color 0.3s ease;
+        }
+        /* Endre ikonfarge til hvit på hover/active */
+        .app-sidebar button:hover i,
+        .app-sidebar a button:hover i,
+        .app-sidebar button:active i,
+        .app-sidebar a button:active i {
+             color: var(--app-text-on-primary); /* Hvit på hover/active */
+        }
+
+        .app-sidebar a {
+            text-decoration: none;
+            display: block;
+        }
+
+
+        /* --- Main Content Styling --- */
+        .content-container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* Apply normal weight (400) by default */
+        h1, h2, h3 {
+            font-family: 'Avenir', sans-serif; /* Use Avenir */
+            margin-bottom: 0.75em;
+            font-weight: var(--normal-font-weight); /* Default to normal weight (400) */
+        }
+        h1 {
+            text-align: left; /* Venstrejustert */
+            font-size: 2.0rem;
+            margin-top: 0;
+            margin-bottom: 1em;
+            color: var(--app-primary-color);
+            font-weight: var(--normal-font-weight); /* Bruker normal vekt */
+        }
+        /* H2 Titles and Borders */
+        h2 {
+            font-size: 1.5rem;
+            padding-bottom: 0.4em;
+            margin-top: 1.8em;
+            color: var(--app-secondary-color);
+            font-weight: var(--normal-font-weight); /* Bruker normal vekt */
+        }
+        /* Graph Box Titles */
+        h3.position-title,
+        h3.normative-title {
+            font-size: 1.15rem;
+            color: var(--app-primary-color);
+            margin-bottom: 1em;
+            font-weight: var(--normal-font-weight); /* Bruker normal vekt */
+        }
+        h3.normative-title { text-align: center;}
+
+        #report-content { background-color: var(--white); padding: 15px 0; }
+
+        /* ======================= NY Top Controls Styling START ======================= */
+        #top-controls {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px; /* Gap between the two control-item boxes */
+            background-color: transparent; /* No background on the container */
+            border: none;
+            border-radius: 0;
+            padding: 0; /* No padding on the container */
+            box-shadow: none;
+        }
+
+        /* Individual Control Item Box (Injured Side, Bodyweight) */
+        #top-controls .control-item {
+             border: none; /* Removed border */
+             border-radius: 0; /* Made rectangular */
+             background-color: var(--light-gray); /* Changed to light gray background */
+             padding: 15px 20px; /* Added padding inside the box */
+             display: flex;
+             align-items: center;
+             gap: 8px; /* Gap between label and input inside the box */
+             box-shadow: var(--subtle-shadow); /* Added subtle shadow to the boxes */
+             transition: none; /* Removed transition */
+        }
+        #top-controls .control-item:focus-within {
+            box-shadow: var(--subtle-shadow); /* Keep shadow on focus */
+            border-color: transparent; /* Remove border color on focus */
+        }
+        #top-controls .control-label {
+            font-family: 'Avenir', sans-serif;
+            font-size: 0.9rem;
+            color: var(--dark-gray); /* Label color */
+            font-weight: var(--normal-font-weight); /* Bruker normal vekt */
+        }
+        /* Styling for Input/Select fields inside Top Controls */
+        #top-controls #injured-side-radio,
+        #top-controls #bodyweight-input {
+            font-family: 'Avenir', sans-serif;
+            font-size: 0.9rem;
+            padding: 5px 8px;
+            border: none; /* Removed border */
+            border-radius: 0; /* Made rectangular */
+            background-color: var(--white); /* White background */
+            color: var(--text-color); /* Black text for readability on white */
+            transition: background-color 0.3s ease;
+            font-weight: var(--normal-font-weight);
+            width: 80px; /* Keep specific width */
+             border-bottom: none; /* Removed subtle bottom border */
+        }
+        #top-controls #injured-side-radio:focus,
+        #top-controls #bodyweight-input:focus {
+            border-color: var(--app-primary-color); /* Keep focus highlight */
+            outline: none;
+            background-color: var(--light-gray); /* Lighter background on focus */
+        }
+        #top-controls #bodyweight-input { width: 60px; } /* Keep specific width */
+
+         /* Add arrow for the select box in Top Controls */
+         #top-controls #injured-side-radio {
+             appearance: none; /* Remove default arrow */
+             -webkit-appearance: none;
+             -moz-appearance: none;
+             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23212529'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E"); /* Custom dark arrow */
+             background-repeat: no-repeat;
+             background-position: right 0.5rem center;
+             background-size: 1.5em 1.5em;
+             padding-right: 2.5rem; /* Space for the arrow */
+         }
+        /* ======================= NY Top Controls Styling END ========================= */
+
+
+        /* ======================= NY Patient Data Styling START ======================= */
+        #patient-data-container {
+            display: none; /* Initially hidden */
+            background-color: var(--light-gray); /* Kept light gray background */
+            padding: 20px;
+            border: none; /* Removed border */
+            border-radius: 0; /* Made rectangular */
+            margin-bottom: 25px;
+            box-shadow: var(--subtle-shadow); /* Added subtle shadow to this box as well */
+        }
+        #patient-data-container.visible {
+            display: block;
+        }
+        #patient-data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px 20px;
+        }
+        .patient-data-item {
+            display: flex;
+            flex-direction: column; /* Kept column layout for label/input */
+            gap: 5px;
+        }
+        .patient-data-item label {
+            font-family: 'Avenir', sans-serif;
+            font-size: 0.9rem;
+            color: var(--dark-gray); /* Label color */
+            font-weight: var(--normal-font-weight); /* Bruker normal vekt */
+        }
+        /* Styling for Input/Select fields inside Patient Data Container (Updated Style) */
+        #patient-data-container input[type="text"],
+        #patient-data-container input[type="number"],
+        #patient-data-container select {
+            font-family: 'Avenir', sans-serif;
+            font-size: 0.9rem;
+            padding: 6px 10px;
+            border: none; /* Removed border */
+            border-radius: 0; /* Made rectangular */
+            background-color: var(--white); /* Original white background */
+            color: var(--text-color); /* Original black text */
+            transition: border-color 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
+            font-weight: var(--normal-font-weight);
+             border-bottom: none; /* Removed subtle bottom border */
+        }
+        #patient-data-container input[type="text"]:focus,
+        #patient-data-container input[type="number"]:focus,
+        #patient-data-container select:focus {
+            border-color: var(--app-primary-color); /* Keep focus highlight */
+            outline: none;
+             background-color: var(--white); /* Reverted focus background */
+        }
+
+         /* Add arrow for the select box in Patient Data Container (Original Style) */
+         #patient-data-container select {
+             appearance: none; /* Remove default arrow */
+             -webkit-appearance: none;
+             -moz-appearance: none;
+             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23212529'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E"); /* Custom dark arrow */
+             background-repeat: no-repeat;
+             background-position: right 0.5rem center;
+             background-size: 1.5em 1.5em;
+             padding-right: 2.5rem; /* Space for the arrow */
+         }
+        /* ======================= NY Patient Data Styling END ========================= */
+
+
+        /* --- NY Input Section Styling --- */
+        #input-section-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px; /* Space between boxes */
+            margin-bottom: 20px; /* Adjusted margin */
+        }
+        .input-position-box {
+            flex: 1; /* Distribute space evenly */
+            min-width: 300px; /* Minimum width before wrapping */
+            padding: 15px;
+            background: linear-gradient(to top right, rgb(222, 226, 230), rgb(112, 188, 252)); /* Gradient */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-radius: 0; /* Firkantet */
+            margin-bottom: 20px; /* Added margin */
+            position: relative;
+            overflow: hidden;
+        }
+
+        .input-position-box h4 {
+            font-family: 'Avenir', sans-serif;
+            font-weight: var(--normal-font-weight); /* Bruker normal vekt */
+            font-size: 1.2rem;
+            color: var(--app-primary-color);
+            margin-top: 0;
+            margin-bottom: 20px;
+            text-align: left;
+            border-bottom: none;
+            padding-bottom: 0;
+            position: relative;
+            z-index: 1;
+        }
+        .input-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline; /* <<< ENDRET: Justerer langs bunnlinjen */
+            margin-bottom: 15px;
+            gap: 5px; /* Redusert gap */
+            position: relative;
+            z-index: 1;
+        }
+        .input-row label {
+            font-family: 'Avenir', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text-color); /* Svart */
+            width: 160px; /* Fast bredde */
+            flex-shrink: 0;
+            text-align: left;
+            font-weight: var(--normal-font-weight);
+            padding-bottom: 8px; /* Litt padding for å justere baseline visuelt */
+        }
+        /* Wrapper for input and unit */
+        .input-wrapper {
+            display: flex;
+            align-items: baseline; /* Justerer baseline for input og enhet */
+            flex: 1; /* Tar resten av plassen */
+            justify-content: flex-start; /* Starter fra venstre */
+        }
+        /* --- INPUT BOX TEXT COLOR ADJUSTED --- */
+        .input-position-box .input-row input {
+            font-family: 'Avenir', sans-serif;
+            font-size: 1.5rem;
+            font-weight: var(--normal-font-weight);
+            width: 100px;
+            height: auto;
+            border: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5); /* White line */
+            border-radius: 0px;
+            padding: 6px 0px 4px 0px;
+            text-align: center;
+            box-sizing: border-box;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+            background-color: transparent;
+            color: var(--text-color); /* Black text for typed numbers */
+            position: relative;
+            z-index: 1;
+        }
+        .input-position-box .input-row input::placeholder {
+            font-size: 0.8rem;
+            color: #ffffff; /* White placeholder text */
+            font-weight: var(--normal-font-weight);
+            opacity: 0.8;
+        }
+        .input-position-box .input-row input:focus {
+            outline: none;
+            border-bottom-color: rgba(255, 255, 255, 0.9); /* White line on focus */
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .input-position-box .unit-text {
+            font-size: 0.9rem;
+            color: var(--text-color); /* Black unit text */
+            margin-left: 5px;
+            white-space: nowrap;
+        }
+        /* --- END INPUT BOX TEXT COLOR ADJUSTMENT --- */
+        .unit-text sup {
+            font-size: 0.7em; /* Gjør superscript litt mindre */
+            vertical-align: super; /* Standard superscript justering */
+        }
+
+
+        /* --- END NY Input Section Styling --- */
+
+        /* --- Canvas Styling (Skjult) --- */
+        #canvas-container {
+            display: none;
+        }
+        /* --- END Canvas Styling --- */
+
+        /* --- Result Layout (Graph Rows) --- */
+        .position-row { display: flex; flex-wrap: wrap; gap: 30px; margin-bottom: 35px; padding-bottom: 30px; align-items: stretch; }
+        .position-row:last-child { border-bottom: none; margin-bottom: 0; }
+        .asymmetry-graph-container { flex: 6; min-width: 320px; }
+        .normative-graph-container { flex: 4; min-width: 260px; }
+
+        /* --- Graph Boxes (Oppdatert) --- */
+        /* *** ENDRING: Bruker height i stedet for min-height *** */
+        .position-box, .normative-box {
+            border: none; /* <<< Fjernet kantlinje */
+            padding: 15px 20px;
+            border-radius: 0; /* <<< Firkantet */
+            background-color: var(--light-gray); /* <<< Lys grå bakgrunn */
+            box-shadow: var(--subtle-shadow);
+            margin-bottom: 0;
+            transition: box-shadow 0.3s ease, opacity 0.3s ease; /* Added opacity transition */
+            display: flex;
+            flex-direction: column;
+            height: var(--graph-box-height); /* Bruker fast høyde */
+            position: relative; /* Needed for pseudo-element positioning */
+            overflow: hidden; /* Clip the pseudo-element */
+        }
+        /* Stil for boksen når den skal ha grønn effekt */
+        .position-box.green-box {
+             /* Original shadow is kept */
+             box-shadow: 0 0 15px 5px var(--success-shadow-color);
+        }
+
+        /* --- GREEN FADE EFFECT START --- */
+        /* Standard ::after for alle .position-box (skjult gradient) */
+        .position-box::after {
+            content: '';
+            position: absolute;
+            /* Plassering og størrelse for gradient-effekten */
+            top: -100px;      /* Flyttet lenger opp */
+            right: -100px;     /* Flyttet lenger til høyre */
+            width: 500px;      /* Størrelse på sirkel */
+            height: 500px;     /* Størrelse på sirkel */
+            /* Selve gradienten */
+            background-image: radial-gradient(circle at top right, /* Starter i øvre høyre */
+                var(--success-gradient-start-color) 0%,
+                /* Fader til boksens bakgrunnsfarge med 0 alpha */
+                rgba(from var(--light-gray) r g b / 0) 65% /* Fade ut ved 65% */
+            );
+            opacity: 0; /* Skjult som standard */
+            pointer-events: none; /* Skal ikke blokkere interaksjon */
+            z-index: 0; /* Ligger bak innholdet */
+            border-radius: 50%; /* Sirkulær form */
+            transition: opacity 0.3s ease; /* Fade-in/out effekt */
+        }
+
+        /* Aktiverer gradienten når .green-box klassen er til stede */
+        .position-box.green-box::after {
+            opacity: 0.85; /* Gjør gradienten synlig */
+        }
+        /* --- GREEN FADE EFFECT END --- */
+
+        .js-plotly-plot {
+            flex-grow: 1;
+            /* *** ENDRING: Fjernet min-height her, lar boksen styre *** */
+            /* min-height: 280px; */
+            position: relative; /* Ensure graph is positioned relative */
+            z-index: 1; /* Place graph above the pseudo-element */
+         }
+
+        /* Placeholder for normative data */
+        #normative-placeholder { text-align: center; color: var(--dark-gray); font-style: italic; padding: 20px; background-color: var(--light-gray); border-radius: var(--border-radius); margin-top: 1em;}
+        #bottom-area { margin-top: 30px; padding-top: 15px; border-top: 1px solid var(--medium-gray); min-height: 30px; }
+
+
+        /* --- Exit Preview Button (Inline) --- */
+        #preview-exit-button-inline { display: none; position: fixed; top: calc(var(--top-bar-height) + 15px); right: 15px; background-color: var(--danger-color-dark); color: white; padding: 8px 15px; font-size: 0.9rem; font-weight: var(--normal-font-weight); border: none; border-radius: var(--border-radius); cursor: pointer; z-index: 1001; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: all 0.3s ease; font-family: inherit; }
+         #preview-exit-button-inline:hover { background-color: #b91c1c; box-shadow: 0 4px 10px rgba(185, 28, 28, 0.3); transform: translateY(-1px); }
+         #preview-exit-button-inline:active { transform: translateY(0px); box-shadow: 0 2px 5px rgba(185, 28, 28, 0.2); }
+         #preview-exit-button-inline i { margin-right: 6px; }
+
+
+        /* --- Explanation Box (for PDF view) --- */
+        .explanation-box { display: none; background-color: var(--light-gray); border: 1px solid var(--medium-gray); border-left: 5px solid var(--app-primary-color); padding: 15px; margin: 1em 0 2em 0; border-radius: var(--border-radius); font-size: 0.9em; color: var(--dark-gray); }
+        .explanation-box h4 { margin-top: 0; color: var(--app-primary-color); font-family: inherit; font-weight: var(--normal-font-weight); } /* Normal weight */
+        .explanation-box p { margin-bottom: 0.5em; }
+        .explanation-box ul { margin-top: 0.5em; padding-left: 20px; }
+
+        /* --- Plotly Specific Styling (Removed) --- */
+
+
+        /* --- On-Screen PDF Preview Styles --- */
+        body.pdf-preview-active { font-size: var(--base-font-size); background-color: var(--white) !important; padding-top: 0 !important; display: block; }
+        body.pdf-preview-active .top-header-bar { display: none; }
+        body.pdf-preview-active .app-sidebar { display: none; }
+        body.pdf-preview-active .app-main-content { margin-left: 0; padding: 15px 40px; height: auto; }
+        body.pdf-preview-active #top-controls, /* Hide original top controls */
+        body.pdf-preview-active #patient-data-container, /* Hide the whole container in preview */
+        body.pdf-preview-active #input-section-container, /* Hide new input container */
+        body.pdf-preview-active #canvas-container, /* Hide canvas container in preview */
+        body.pdf-preview-active #bottom-area,
+        body.pdf-preview-active h2#input-title,
+        body.pdf-preview-active h2#patient-details-title { display: none; } /* Skjul begge H2 */
+        body.pdf-preview-active h1, body.pdf-preview-active h2#results-title { display: block; }
+        body.pdf-preview-active .explanation-box { display: block; }
+        body.pdf-preview-active #preview-exit-button-inline { display: inline-block; top: 15px; }
+        body.pdf-preview-active .content-container { box-shadow: none; border: none; margin: 15px auto; padding: 0; max-width: 1100px; }
+        body.pdf-preview-active .position-row { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed var(--medium-gray); align-items: stretch; }
+        body.pdf-preview-active .position-row:last-child { border-bottom: none; margin-bottom: 0; }
+        body.pdf-preview-active .asymmetry-graph-container { flex: 6; min-width: 320px; }
+        body.pdf-preview-active .normative-graph-container { flex: 4; min-width: 260px; }
+        body.pdf-preview-active .position-box,
+        body.pdf-preview-active .normative-box { /* .green-box fjernet herfra, da .position-box.green-box dekker det */
+            box-shadow: var(--subtle-shadow); /* Bruker subtil skygge */
+            border: none; /* <<< Fjernet kantlinje */
+            border-radius: 0; /* <<< Firkantet */
+            padding: 10px;
+            height: var(--graph-box-height); /* Bruker fast høyde også i preview */
+            background-color: var(--light-gray); /* <<< Lys grå bakgrunn */
+        }
+         /* Ensure fade effect is also visible in preview if needed */
+         body.pdf-preview-active .position-box.green-box::after {
+             opacity: 0.85; /* Behold synligheten i preview */
+         }
+         body.pdf-preview-active .position-box.green-box { /* Stil for .green-box spesifikt i preview */
+              box-shadow: 0 0 15px 5px var(--success-shadow-color) !important; /* Behold skyggen i preview */
+              border: none !important; /* <<< Fjernet kantlinje */
+         }
+        /* Bruker normal vekt for preview */
+        body.pdf-preview-active h3 { font-size: 1.1rem; font-weight: var(--normal-font-weight); }
+        body.pdf-preview-active h3.normative-title { font-size: 1.0rem; font-weight: var(--normal-font-weight); }
+
+
+        /* --- Media Queries for Responsiveness --- */
+        @media (max-width: 992px) {
+             :root { --sidebar-width: 70px; } /* Sidebar blir smalere her */
+             .app-main-content { margin-left: calc(var(--sidebar-width) + var(--main-content-margin)); /* Justerer margin basert på smalere sidebar */ padding: 25px 30px; }
+             .app-sidebar { padding: 20px 10px; top: var(--top-bar-height); height: calc(100vh - var(--top-bar-height)); }
+             .app-sidebar .sidebar-logo-placeholder { height: 40px; margin-bottom: 40px; font-size: 1.3rem; }
+             .app-sidebar .button-text { display: none; }
+             .app-sidebar button, .app-sidebar a button { justify-content: center; padding: 10px 0; gap: 0; font-size: 0.85rem; } /* Adjust size */
+             .app-sidebar button i { width: auto; margin: 0; }
+
+             .position-row { flex-direction: column; align-items: stretch; }
+             .asymmetry-graph-container, .normative-graph-container { flex: none; width: 100%; min-width: unset; }
+             .position-box, .normative-box { height: auto; min-height: unset; } /* Tilbakestiller høyde for mobil */
+             #patient-data-grid { grid-template-columns: 1fr; } /* Stack patient data items */
+             #input-section-container { flex-direction: column; } /* Stack input boxes */
+             .input-position-box { min-width: unset; }
+
+             body.pdf-preview-active .app-main-content { padding: 15px 30px; }
+             body.pdf-preview-active .position-row { align-items: stretch; }
+              body.pdf-preview-active .position-box,
+              body.pdf-preview-active .normative-box { height: auto; min-height: unset; } /* Tilbakestiller høyde for mobil i preview */
+        }
+
+        @media (max-width: 768px) {
+             body { padding-top: var(--top-bar-height); }
+             .app-layout { flex-direction: column; min-height: calc(100vh - var(--top-bar-height)); }
+             .app-sidebar {
+                 width: 100%; height: auto; position: relative;
+                 top: 0;
+                 flex-direction: row; flex-wrap: wrap; justify-content: center;
+                 padding: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                 border-right: none; border-bottom: 1px solid var(--sidebar-border-color);
+                 z-index: 5;
+             }
+             .sidebar-logo-placeholder { display: none; }
+             .sidebar-buttons { flex-direction: row; flex-wrap: wrap; justify-content: center; width: 100%; }
+             .app-sidebar button, .app-sidebar a button {
+                 width: auto; flex-grow: 1; max-width: 180px;
+                 justify-content: center; font-size: 0.85rem;
+                 font-weight: var(--normal-font-weight); /* Bruker normal vekt */
+                 padding: 8px 10px; margin: 5px; gap: 8px;
+             }
+              .app-sidebar .button-text { display: inline-block; }
+              .app-sidebar button i { width: auto; margin-right: 5px; }
+
+             .app-main-content { margin-left: 0; /* <<< Fjernet margin her */ padding: 20px 15px; height: auto; }
+
+             /* Bruker normal vekt for mobil */
+             h1 { font-size: 1.6rem; font-weight: var(--normal-font-weight);}
+             h2 { font-size: 1.3rem; font-weight: var(--normal-font-weight);}
+             h3.position-title, h3.normative-title { font-size: 1.0rem; font-weight: var(--normal-font-weight);}
+             #top-controls { flex-direction: column; align-items: stretch; gap: 10px; margin-bottom: 15px; padding-bottom: 10px;} /* Re-add for small screens */
+             .control-item { justify-content: space-between; }
+
+             /* Adjust NEW input row for small screens */
+             .input-row { flex-direction: column; align-items: flex-start; gap: 5px; }
+             .input-row label { flex-basis: auto; width: 100%; text-align: left; margin-bottom: 3px;}
+             .input-row .input-wrapper { flex-basis: auto; width: 100%; justify-content: flex-start; } /* Juster wrapper for mobil */
+             .input-row input { width: auto; font-size: 1.2rem; font-weight: var(--normal-font-weight); } /* Input verdi normal */
+             .input-row input::placeholder { font-size: 0.8rem; font-weight: var(--normal-font-weight);} /* Placeholder normal */
+             .unit-text { margin-left: 8px; }
+
+             .position-box, .normative-box { padding: 10px; margin-bottom: 0;} /* .green-box fjernet */
+
+             #preview-exit-button-inline { top: calc(var(--top-bar-height) + 10px); right: 10px; font-size: 0.8rem; padding: 6px 10px;}
+
+             body.pdf-preview-active .app-main-content { padding: 10px 15px; }
+        }
+
+         @media (max-width: 480px) {
+             :root { --top-bar-height: 45px; }
+             .top-header-bar { padding: 0 15px; }
+             .top-header-bar .brand-name { font-size: 1.1rem; }
+             .top-header-bar .version-text { font-size: 0.7rem; }
+             .top-header-bar .social-links a { font-size: 1rem; margin-left: 10px; }
+
+             /* Bruker normal vekt for liten mobil */
+             h1 { font-size: 1.4rem; font-weight: var(--normal-font-weight);}
+             h2 { font-size: 1.1rem; font-weight: var(--normal-font-weight);}
+             .app-sidebar button, .app-sidebar a button { font-size: 0.8rem; padding: 6px 8px; max-width: 150px; font-weight: var(--normal-font-weight);} /* Knapper normal vekt */
+             /* Further adjust input row for very small screens already handled */
+         }
+
+        /* --- Print Styles (Bruker 'normal' for standardisering) --- */
+        @media print {
+             body { background-color: white !important; color: black !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; font-size: 9pt !important; padding: 0 !important; display: block !important; font-weight: normal !important;} /* Normal base weight */
+             .top-header-bar, .app-sidebar, #top-controls, #patient-data-container, #input-section-container, #canvas-container, #bottom-area, .print-instruction, #preview-exit-button-inline { display: none !important; } /* Hide canvas */
+             .app-layout { display: block !important; }
+             .app-main-content { margin: 0 !important; padding: 5mm !important; width: 100% !important; max-width: 100% !important; box-shadow: none !important; border: none !important; height: auto !important; }
+             .content-container { margin: 0 !important; padding: 0 !important; max-width: 100% !important; }
+
+             h1 { font-size: 16pt !important; margin-bottom: 5mm !important; text-align: center !important; display: block !important; color: black !important; font-weight: normal !important; } /* Standard normal */
+             h2 { display: block !important; font-size: 12pt !important; margin-top: 8mm; margin-bottom: 4mm; border: none !important; color: black !important; font-weight: normal !important; } /* Standard normal */
+             h3 { font-size: 10pt !important; margin-bottom: 3mm !important; color: black !important; font-weight: normal !important; } /* Standard normal */
+             #report-content { padding: 0 !important; }
+             .position-row { display: block !important; width: 100% !important; page-break-inside: avoid !important; border: none !important; margin-bottom: 5mm !important; padding: 0 !important;}
+             .asymmetry-graph-container, .normative-graph-container { width: 100% !important; display: block !important; margin-bottom: 5mm; page-break-inside: avoid !important; padding: 0 !important; }
+             .position-box, .normative-box { /* .green-box fjernet */
+                 box-shadow: none !important;
+                 border: none !important; /* <<< Fjernet kantlinje for print */
+                 margin-bottom: 3mm;
+                 height: auto !important; /* La høyden justeres automatisk for print */
+                 min-height: unset !important;
+                 padding: 5px !important;
+                 page-break-inside: avoid !important;
+                 background-color: var(--light-gray) !important; /* <<< Lys grå bakgrunn for print */
+             }
+             .position-box.green-box { /* Stil for .green-box spesifikt i print */
+                  box-shadow: 0 0 15px 5px var(--success-shadow-color) !important; /* <<< Beholdt bare skygge */
+                  border: none !important; /* <<< Fjernet kantlinje */
+             }
+             /* Hide fade effect during print */
+             .position-box::after { /* Gjelder også .green-box */
+                  display: none !important;
+             }
+             .js-plotly-plot { width: 100% !important; height: auto !important; }
+             .plotly .scatterlayer .trace.fill { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+             /* Force black text, normal weight for annotations */
+             .plotly .annotation text,
+             .plotly .annotation .norm-label,
+             .plotly .annotation .left-label,
+             .plotly .annotation .right-label,
+             .plotly .annotation .value-display,
+             .plotly .annotation .nkg-combined-text span,
+             .plotly .annotation .asymmetry-percent { fill: black !important; color: black !important; font-weight: normal !important; }
+              .plotly .annotation .norm-value { font-weight: normal !important; }
+
+             .plotly .gtitle { fill: black !important; font-weight: normal !important; } /* Tittel normal */
+             .plotly .axistitle { fill: black !important; font-size: 9pt !important; font-weight: normal !important; }
+             .plotly .tick text { fill: black !important; font-size: 8pt !important; font-weight: normal !important; }
+             .plotly .legend { display: none !important; }
+             .modebar { display: none !important; }
+             #bar-chart-I, #bar-chart-Y, #bar-chart-T { height: 180px !important; }
+             #normative-chart-I, #normative-chart-Y, #normative-chart-T { height: 180px !important; }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="top-header-bar">
+    <div class="brand-info">
+        <span class="version-text">ASH Test V1.3.1</span>
+    </div>
+    <div class="social-links">
+        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" title="Website"><i class="fas fa-globe"></i></a>
+    </div>
+</div>
+
+<div class="app-layout">
+    <aside class="app-sidebar">
+        <div class="sidebar-logo-placeholder">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="sidebar-buttons">
+            <button id="register-patient-button">
+                <i class="fas fa-user-plus"></i>
+                <span class="button-text">Register Patient</span>
+            </button>
+            <a href="assets/analysis.html" id="analysis-link-button">
+                <button type="button" id="view-analysis-button">
+                    <i class="fas fa-history"></i> <span class="button-text">Patient History</span>
+                </button>
+            </a>
+            <button id="pdf-preview-button">
+                <i class="fas fa-file-pdf"></i>
+                <span class="button-text">PDF Preview</span>
+            </button>
+            <button id="export-excel-button">
+                <i class="fas fa-file-excel"></i>
+                <span class="button-text">Export Data</span> </button>
+             <button id="clear-all-button">
+                <i class="fas fa-eraser"></i>
+                <span class="button-text">Clear All</span>
+             </button>
+        </div>
+    </aside>
+
+    <main class="app-main-content">
+        <button id="preview-exit-button-inline"><i class="fas fa-times-circle"></i> Exit Preview</button>
+
+        <div class="content-container">
+            <div id="report-content">
+
+                <h1>Functional Shoulder Screening</h1>
+
+                <h2 id="patient-details-title">Patient Details</h2>
+
+                <div id="top-controls">
+                    <div class="control-item">
+                        <label class="control-label" for="injured-side-radio">Injured Side:</label>
+                        <select id="injured-side-radio">
+                            <option value="Left">Left</option>
+                            <option value="Right">Right</option>
+                        </select>
+                    </div>
+                    <div class="control-item">
+                        <label class="control-label" for="bodyweight-input">Bodyweight (kg):</label>
+                        <input id="bodyweight-input" type="number" placeholder="kg">
+                    </div>
+                </div>
+
+                <div class="explanation-box">
+                     <h4>About This Report</h4> <p>This report summarizes the results of the Functional Shoulder Screening using the ASH test (Positions I, Y, T).</p>
+                     <ul> <li><strong>Asymmetry Graphs:</strong> Show the percentage difference between the injured and uninjured side for key metrics (Max Force, RFD, % Max Force at 100ms). Values closer to 100% indicate better symmetry. Annotations above the bars show the percentage difference relative to the uninjured side (100%). Numbers inside the bars show the absolute values for each side.</li> <li><strong>Normative Graphs:</strong> Visually represent the estimated percentile rank for Max Force / Bodyweight (N/kg) for each side, based on normative thresholds. Background colors indicate performance zones (Poor, Average, Good, Excellent). Vertical dashed lines show the estimated percentile for the Left (Orange) and Right (Blue) values.</li> </ul>
+                     <p><i>To save as PDF: Click 'PDF Preview', then use your browser's Print function (Ctrl+P or Cmd+P) and select 'Save as PDF'. Click 'Exit Preview' to return.</i></p>
+                </div>
+
+                <div id="patient-data-container">
+                    <div id="patient-data-grid">
+                        <div class="patient-data-item">
+                            <label for="fp-nr-input">Patient ID:</label>
+                            <input id="fp-nr-input" type="text" placeholder="Patient ID">
+                        </div>
+                        <div class="patient-data-item">
+                            <label for="age-input">Age:</label>
+                            <input id="age-input" type="number" placeholder="Years">
+                        </div>
+                        <div class="patient-data-item">
+                            <label for="gender-select">Gender:</label>
+                            <select id="gender-select">
+                                <option value="">Select...</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                                <option value="Prefer not to say">Prefer not to say</option>
+                            </select>
+                        </div>
+                        <div class="patient-data-item">
+                            <label for="sport-input">Sport:</label>
+                            <input id="sport-input" type="text" placeholder="Main Sport">
+                        </div>
+                    </div>
+                </div>
+
+
+                <h2 id="input-title">Input Overview</h2>
+                <div id="input-section-container">
+                    <div class="input-position-box">
+                        <h4>ASH Test Position I</h4>
+                        <div class="input-row">
+                            <label>Max Force</label>
+                            <div class="input-wrapper"> <input id="non-injured-max-force-i" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- N</span> </div>
+                        </div>
+                        <div class="input-row">
+                            <label>RFD 100ms</label>
+                            <div class="input-wrapper"> <input id="non-injured-rfd-i" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- Ns<sup>-1</sup></span> </div>
+                        </div>
+                        <div class="input-row">
+                            <label>Max Force</label>
+                            <div class="input-wrapper"> <input id="injured-max-force-i" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- N</span> </div>
+                        </div>
+                        <div class="input-row">
+                            <label>RFD 100ms</label>
+                            <div class="input-wrapper"> <input id="injured-rfd-i" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- Ns<sup>-1</sup></span> </div>
+                        </div>
+                    </div>
+                    <div class="input-position-box">
+                        <h4>ASH Test Position Y</h4>
+                        <div class="input-row">
+                            <label>Max Force</label>
+                             <div class="input-wrapper"><input id="non-injured-max-force-y" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- N</span></div>
+                        </div>
+                        <div class="input-row">
+                            <label>RFD 100ms</label>
+                            <div class="input-wrapper"><input id="non-injured-rfd-y" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- Ns<sup>-1</sup></span></div>
+                        </div>
+                        <div class="input-row">
+                            <label>Max Force</label>
+                            <div class="input-wrapper"><input id="injured-max-force-y" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- N</span></div>
+                        </div>
+                        <div class="input-row">
+                            <label>RFD 100ms</label>
+                            <div class="input-wrapper"><input id="injured-rfd-y" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- Ns<sup>-1</sup></span></div>
+                        </div>
+                    </div>
+                    <div class="input-position-box">
+                        <h4>ASH Test Position T</h4>
+                        <div class="input-row">
+                            <label>Max Force</label>
+                            <div class="input-wrapper"><input id="non-injured-max-force-t" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- N</span></div>
+                        </div>
+                        <div class="input-row">
+                            <label>RFD 100ms</label>
+                            <div class="input-wrapper"><input id="non-injured-rfd-t" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- Ns<sup>-1</sup></span></div>
+                        </div>
+                        <div class="input-row">
+                            <label>Max Force</label>
+                            <div class="input-wrapper"><input id="injured-max-force-t" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- N</span></div>
+                        </div>
+                        <div class="input-row">
+                            <label>RFD 100ms</label>
+                            <div class="input-wrapper"><input id="injured-rfd-t" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- Ns<sup>-1</sup></span></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="canvas-container">
+                    </div>
+                <h2 id="results-title">Results</h2>
+
+                <div class="position-row">
+                    <div class="asymmetry-graph-container">
+                        <div id="position-box-I" class="position-box">
+                            <h3 class="position-title">Position I - Asymmetry</h3>
+                            <div id="bar-chart-I" class="js-plotly-plot"></div>
+                        </div>
+                    </div>
+                    <div class="normative-graph-container">
+                        <div id="normative-chart-container-I" class="normative-box">
+                            <h3 class="normative-title">Position I - Normative Comparison</h3>
+                            <div id="normative-chart-I" class="js-plotly-plot"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="position-row">
+                    <div class="asymmetry-graph-container">
+                         <div id="position-box-Y" class="position-box">
+                            <h3 class="position-title">Position Y - Asymmetry</h3>
+                             <div id="bar-chart-Y" class="js-plotly-plot"></div>
+                        </div>
+                    </div>
+                    <div class="normative-graph-container">
+                        <div id="normative-chart-container-Y" class="normative-box">
+                            <h3 class="normative-title">Position Y - Normative Comparison</h3>
+                            <div id="normative-chart-Y" class="js-plotly-plot"></div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="position-row">
+                    <div class="asymmetry-graph-container">
+                         <div id="position-box-T" class="position-box">
+                            <h3 class="position-title">Position T - Asymmetry</h3>
+                            <div id="bar-chart-T" class="js-plotly-plot"></div>
+                        </div>
+                    </div>
+                    <div class="normative-graph-container">
+                        <div id="normative-chart-container-T" class="normative-box">
+                            <h3 class="normative-title">Position T - Normative Comparison</h3>
+                            <div id="normative-chart-T" class="js-plotly-plot"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="normative-placeholder" style="display: none;">
+                    Enter bodyweight to see normative comparisons.
+                </div>
+                <div id="bottom-area"></div>
+
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    // Check if Plotly is loaded
+    if (typeof Plotly === 'undefined') {
+        console.error("Plotly.js not loaded!");
+        document.body.innerHTML = '<div style="padding: 20px; text-align: center; color: red; font-family: sans-serif;">Error: Plotly library failed to load. Please check your internet connection or contact support.</div>';
+    } else {
+        // --- DOM Element References ---
+        // Controls
+        const injuredSideRadio = document.getElementById('injured-side-radio');
+        const bodyweightInput = document.getElementById('bodyweight-input');
+        // Sidebar Buttons
+        const registerPatientButton = document.getElementById('register-patient-button');
+        const pdfPreviewButton = document.getElementById('pdf-preview-button');
+        const exportExcelButton = document.getElementById('export-excel-button');
+        const viewAnalysisButtonLink = document.getElementById('analysis-link-button');
+        const clearAllButton = document.getElementById('clear-all-button');
+        // Other Elements
+        const previewExitButtonInline = document.getElementById('preview-exit-button-inline');
+        const explanationBox = document.querySelector('.explanation-box');
+        const reportContentDiv = document.getElementById('report-content');
+        const normativePlaceholder = document.getElementById('normative-placeholder');
+        const inputSectionContainer = document.getElementById('input-section-container'); // Reference to NEW container
+        // Select all number inputs within the NEW input container
+        const allNumberInputs = inputSectionContainer.querySelectorAll('input[type="number"]');
+        const patientDataContainer = document.getElementById('patient-data-container');
+        const fpNrInput = document.getElementById('fp-nr-input');
+        const ageInput = document.getElementById('age-input');
+        const genderSelect = document.getElementById('gender-select');
+        const sportInput = document.getElementById('sport-input');
+        // Chart/Box Divs (for Plotly graphs)
+        const asymmetryChartDivs = ['bar-chart-I', 'bar-chart-Y', 'bar-chart-T'];
+        const asymmetryPositionBoxDivs = ['position-box-I', 'position-box-Y', 'position-box-T']; // These are for the Plotly boxes (containing the graphs)
+        const normativeChartDivs = ['normative-chart-I', 'normative-chart-Y', 'normative-chart-T'];
+
+        // --- Input field references (NEW STRUCTURE) ---
+        // Position I
+        const nonInjuredMaxForceInputI = document.getElementById('non-injured-max-force-i');
+        const nonInjuredRfdInputI = document.getElementById('non-injured-rfd-i');
+        const injuredMaxForceInputI = document.getElementById('injured-max-force-i');
+        const injuredRfdInputI = document.getElementById('injured-rfd-i');
+        // Position Y
+        const nonInjuredMaxForceInputY = document.getElementById('non-injured-max-force-y');
+        const nonInjuredRfdInputY = document.getElementById('non-injured-rfd-y');
+        const injuredMaxForceInputY = document.getElementById('injured-max-force-y');
+        const injuredRfdInputY = document.getElementById('injured-rfd-y');
+        // Position T
+        const nonInjuredMaxForceInputT = document.getElementById('non-injured-max-force-t');
+        const nonInjuredRfdInputT = document.getElementById('non-injured-rfd-t');
+        const injuredMaxForceInputT = document.getElementById('injured-max-force-t');
+        const injuredRfdInputT = document.getElementById('injured-rfd-t');
+
+        // Create a map for easy access to injured/non-injured inputs (NEW STRUCTURE)
+        const inputFieldMap = {
+            'I': { nonInjured: [nonInjuredMaxForceInputI, nonInjuredRfdInputI], injured: [injuredMaxForceInputI, injuredRfdInputI] },
+            'Y': { nonInjured: [nonInjuredMaxForceInputY, nonInjuredRfdInputY], injured: [injuredMaxForceInputY, injuredRfdInputY] },
+            'T': { nonInjured: [nonInjuredMaxForceInputT, nonInjuredRfdInputT], injured: [injuredMaxForceInputT, injuredRfdInputT] }
+        };
+
+
+        // --- Normative Data (Unchanged) ---
+        const normativeThresholds = {
+            'I': { poor_max: 1.47, average_mid: 1.65, good_min: 1.85, excellent_min: 2.1 },
+            'Y': { poor_max: 1.25, average_mid: 1.4,  good_min: 1.6,  excellent_min: 1.76 },
+            'T': { poor_max: 1.15, average_mid: 1.25, good_min: 1.4,  excellent_min: 1.58 }
+        };
+        const percentileZones = { poor: 30, average: 70, good: 90, excellent: 100 };
+        const percentileMidpoint = 50;
+        // Get colors from CSS variables
+        const normZoneColors = {
+             poor: getComputedStyle(document.documentElement).getPropertyValue('--norm-poor-bg').trim() || 'rgba(252, 165, 165, 0.5)',
+             average: getComputedStyle(document.documentElement).getPropertyValue('--norm-average-bg').trim() || 'rgba(252, 211, 77, 0.5)',
+             good: getComputedStyle(document.documentElement).getPropertyValue('--norm-good-bg').trim() || 'rgba(167, 243, 208, 0.5)',
+             excellent: getComputedStyle(document.documentElement).getPropertyValue('--norm-excellent-bg').trim() || 'rgba(52, 211, 153, 0.5)'
+        };
+        const normativeLabels = { poor: 'Poor', average: 'Average', good: 'Good', excellent: 'Excellent' };
+
+        // --- Plotly Configuration (Unchanged) ---
+        const plotlyConfig = {
+            displaylogo: false,
+            modeBarButtonsToRemove: ['sendDataToCloud', 'lasso2d', 'select2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d', 'resetScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian'],
+            modeBarButtonsToAdd: [{
+                name: 'Download plot as PNG',
+                icon: Plotly.Icons.camera,
+                click: function(gd) {
+                    const titleText = (gd.layout.title?.text || 'plot').replace(/<br>/g, ' ');
+                    Plotly.downloadImage(gd, { format: 'png', width: gd._fullLayout.width, height: gd._fullLayout.height, filename: titleText });
+                }
+            }]
+        };
+
+        // --- Helper function to convert HEX to RGBA ---
+        function hexToRgba(hex, alpha) {
+            // Remove # if present
+            hex = hex.replace('#', '');
+            // Parse r, g, b values
+            const r = parseInt(hex.substring(0, 2), 16);
+            const g = parseInt(hex.substring(2, 4), 16);
+            const b = parseInt(hex.substring(4, 6), 16);
+            // Return rgba string
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+
+        // --- Initial Setup: Create empty plots (Using normal weight) ---
+        function createEmptyPlot(targetDivId, title = 'Enter Data', height = 320) {
+             const targetDiv = document.getElementById(targetDivId);
+             if (!targetDiv) { console.error(`Target div ${targetDivId} not found.`); return; }
+             try {
+                 Plotly.react(targetDiv, [{ x: [], y: [], type: 'bar' }], {
+                     title: {
+                         text: title,
+                         // Use normal font weight for empty plot title
+                         font: { family: 'Avenir, sans-serif', size: 16, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim(), weight: 400 } // Normal weight
+                     },
+                     height: height, // Bruker parameter
+                     margin: { l: 60, r: 40, b: 40, t: 50, pad: 4 },
+                     paper_bgcolor: 'rgba(0,0,0,0)', // Transparent
+                     plot_bgcolor: 'rgba(0,0,0,0)', // Transparent
+                     xaxis: { visible: false }, // Hide x-axis for empty plots too
+                     yaxis: { showgrid: false, zeroline: true, gridcolor: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), showticklabels: false }, // Removed grid
+                     // Use normal font weight for empty plot base
+                     font: { family: 'Avenir, sans-serif', size: 12, weight: 400 }
+                 }, plotlyConfig);
+             } catch (error) {
+                 console.error(`Error creating empty plot in ${targetDivId}:`, error);
+                 targetDiv.innerHTML = `<p style="color: red; text-align: center; padding: 20px;">Error displaying chart.</p>`;
+             }
+        }
+        // Create empty Plotly graphs on load
+        asymmetryChartDivs.forEach(chartDivId => createEmptyPlot(chartDivId, 'Enter Data')); // Bruker standard høyde 320
+        normativeChartDivs.forEach(chartDivId => createEmptyPlot(chartDivId, 'Enter Bodyweight')); // Bruker standard høyde 320
+
+
+        // --- Core Logic Functions ---
+        // processInputAndCalculate (Uses new IDs from inputFieldMap)
+        function processInputAndCalculate(position) {
+            const inputs = inputFieldMap[position];
+            if (!inputs) {
+                console.error("Invalid position:", position);
+                return null;
+            }
+            const nonInjuredMaxForceInput = inputs.nonInjured[0];
+            const nonInjuredRfdInput = inputs.nonInjured[1];
+            const injuredMaxForceInput = inputs.injured[0];
+            const injuredRfdInput = inputs.injured[1];
+
+            if (!nonInjuredMaxForceInput || !nonInjuredRfdInput || !injuredMaxForceInput || !injuredRfdInput) {
+                console.error(`Input elements not found for position ${position}`);
+                return null;
+            }
+            const nonInjuredMaxForceVal = nonInjuredMaxForceInput.value;
+            const nonInjuredRfdVal = nonInjuredRfdInput.value;
+            const injuredMaxForceVal = injuredMaxForceInput.value;
+            const injuredRfdVal = injuredRfdInput.value;
+
+            // Only return null if ALL fields for the position are empty
+            if (nonInjuredMaxForceVal === '' && nonInjuredRfdVal === '' &&
+                injuredMaxForceVal === '' && injuredRfdVal === '') {
+                return null;
+            }
+            // Parse values, default to 0 if empty or invalid
+            const nonInjuredMaxForce = parseFloat(nonInjuredMaxForceVal) || 0;
+            const nonInjuredRfd = parseFloat(nonInjuredRfdVal) || 0;
+            const injuredMaxForce = parseFloat(injuredMaxForceVal) || 0;
+            const injuredRfd = parseFloat(injuredRfdVal) || 0;
+
+            const selectedInjuredSide = injuredSideRadio.value;
+            let leftData = {};
+            let rightData = {};
+
+            if (selectedInjuredSide === 'Left') {
+                leftData = { max_force: injuredMaxForce, rfd: injuredRfd };
+                rightData = { max_force: nonInjuredMaxForce, rfd: nonInjuredRfd };
+            } else { // Right is injured
+                leftData = { max_force: nonInjuredMaxForce, rfd: nonInjuredRfd };
+                rightData = { max_force: injuredMaxForce, rfd: injuredRfd };
+            }
+            return { left: leftData, right: rightData };
+        }
+
+
+        // createAsymmetryChart (MODIFIED y-axis range and bar text font size/position)
+        function createAsymmetryChart(positionData, injuredSide, posLabel) {
+             if (!positionData?.left || !positionData?.right) {
+                 console.warn(`Incomplete data for ${posLabel} asymmetry chart.`);
+                 return [{}, false];
+             }
+             const leftDataRaw = positionData.left;
+             const rightDataRaw = positionData.right;
+             // Calculate % Max Force at 100ms
+             const leftPctMaxAt100ms = leftDataRaw.max_force !== 0 ? (leftDataRaw.rfd * 0.1 / leftDataRaw.max_force) * 100 : 0;
+             const rightPctMaxAt100ms = rightDataRaw.max_force !== 0 ? (rightDataRaw.rfd * 0.1 / rightDataRaw.max_force) * 100 : 0;
+             // Data arrays for the three metrics
+             const leftData = [leftDataRaw.max_force, leftDataRaw.rfd, leftPctMaxAt100ms];
+             const rightData = [rightDataRaw.max_force, rightDataRaw.rfd, rightPctMaxAt100ms];
+             // Base data (non-injured side)
+             const baseData = injuredSide === 'Right' ? leftData : rightData;
+             // Metric names
+             const metricNames = [ 'Max Force (N)', 'RFD 100ms (Ns⁻¹)', '% Max @ 100ms (%)' ]; // Use Ns⁻¹
+             // Object for ratios and text
+             const barDataRatios = {};
+             const leftTextsAbsolute = []; // Stores absolute values for display inside bar
+             const rightTextsAbsolute = []; // Stores absolute values for display inside bar
+
+             // Calculate ratios and format text
+             metricNames.forEach((metricName, index) => {
+                 let leftValue = leftData[index];
+                 let rightValue = rightData[index];
+                 let baseValue = baseData[index];
+                 const leftRatio = baseValue !== 0 ? (leftValue / baseValue) * 100 : (leftValue === 0 ? 100 : Infinity);
+                 const rightRatio = baseValue !== 0 ? (rightValue / baseValue) * 100 : (rightValue === 0 ? 100 : Infinity);
+                 barDataRatios[metricName] = [rightRatio, leftRatio]; // Used for allGreen check and top annotations
+
+                 // Store formatted absolute values
+                 const decimals = metricName.includes('% Max @ 100ms') ? 1 : 0;
+                 leftTextsAbsolute.push(leftValue.toFixed(decimals));
+                 rightTextsAbsolute.push(rightValue.toFixed(decimals));
+             });
+
+             // Data for Plotly bars
+             const plotX = metricNames;
+             const plotYLeft = plotX.map(name => barDataRatios[name][1]);
+             const plotYRight = plotX.map(name => barDataRatios[name][0]);
+
+             // Validation
+             if (plotX.length !== 3 || plotYLeft.length !== 3 || plotYRight.length !== 3) {
+                 console.error("Asymmetry chart: Plot data arrays length mismatch!");
+                 return [{}, false];
+             }
+
+             // Get colors from CSS
+             const leftColorHex = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim();
+             const rightColorHex = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim();
+             const leftColorRgba = hexToRgba(leftColorHex, 0.8);
+             const rightColorRgba = hexToRgba(rightColorHex, 0.8);
+             const thresholdLineColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim();
+             const darkGrayColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim();
+             const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim();
+             const whiteColor = getComputedStyle(document.documentElement).getPropertyValue('--white').trim(); // Hent hvit farge
+
+             // Y-axis limits and top annotation position
+             const validRatios = plotYLeft.concat(plotYRight).filter(isFinite);
+             const maxYValue = validRatios.length > 0 ? Math.max(110, ...validRatios) : 110;
+             const annotationYTop = maxYValue + 8; // Y-posisjon for topp-annotasjoner (prosent)
+             const yAxisUpperBound = annotationYTop + 15; // Øvre grense basert på topp-annotasjoner
+
+             // --- Plotly figure definition ---
+             const fig = {
+                 data: [
+                     {
+                         type: 'bar',
+                         name: 'Left',
+                         x: plotX,
+                         y: plotYLeft,
+                         marker: { color: leftColorRgba },
+                         text: leftTextsAbsolute,
+                         texttemplate: '%{text}',
+                         textposition: 'none',
+                         hoverinfo: 'x+name',
+                         hovertemplate: 'Left: %{y:.0f}%<extra></extra>'
+                     },
+                     {
+                         type: 'bar',
+                         name: 'Right',
+                         x: plotX,
+                         y: plotYRight,
+                         marker: { color: rightColorRgba },
+                         text: rightTextsAbsolute,
+                         texttemplate: '%{text}',
+                         textposition: 'none',
+                         hoverinfo: 'x+name',
+                         hovertemplate: 'Right: %{y:.0f}%<extra></extra>'
+                     },
+                     {
+                         x: [null], y: [null], mode: 'lines', name: '±10% Thresholds',
+                         line: { color: thresholdLineColor, width: 1, dash: 'dash' },
+                         hoverinfo: 'none', showlegend: true
+                     }
+                 ],
+                 layout: {
+                     height: 320,
+                     barmode: 'group',
+                     font: { color: darkGrayColor, family: 'Avenir, sans-serif', size: 12, weight: 400 },
+                     yaxis: {
+                         title: "Injured Side Asymmetry (%)",
+                         titlefont: { size: 13, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor },
+                         tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor },
+                         range: [18, yAxisUpperBound], // Starter på 18
+                         tickmode: 'array',
+                         tickvals: [50, 100],
+                         showgrid: false,
+                         zeroline: false,
+                     },
+                     xaxis: {
+                         showgrid: false,
+                         zeroline: false,
+                         showline: false,
+                         showticklabels: true,
+                         tickangle: 0,
+                         tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor },
+                         automargin: true,
+                         fixedrange: true
+                     },
+                     paper_bgcolor: 'rgba(0,0,0,0)',
+                     plot_bgcolor: 'rgba(0,0,0,0)',
+                     legend: {
+                         orientation: "h", yanchor: "bottom", y: -0.30, xanchor: "center", x: 0.5,
+                         font: { size: 12, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }
+                     },
+                     margin: { l: 70, r: 30, b: 80, t: 50, pad: 10 },
+                     shapes: [
+                         { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 90, y1: 90, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" },
+                         { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 110, y1: 110, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" }
+                     ],
+                     annotations: []
+                 }
+             };
+
+             // --- Add Annotations ---
+             let allGreen = true;
+             const metricsNamesForAnnotation = plotX;
+
+             for (let i = 0; i < metricsNamesForAnnotation.length; i++) {
+                 const metricName = metricsNamesForAnnotation[i];
+                 const injuredRatio = injuredSide === 'Right' ? plotYRight[i] : plotYLeft[i];
+                 const leftRatio = plotYLeft[i];
+                 const rightRatio = plotYRight[i];
+
+                 // Top Annotation (Percentage Difference)
+                 if (!isFinite(injuredRatio)) {
+                     fig.layout.annotations.push({
+                         x: metricName, y: annotationYTop, text: "N/A", showarrow: false,
+                         font: { color: 'grey', size: 22, family: 'Avenir, sans-serif', weight: 400 },
+                         xanchor: 'center', yanchor: 'bottom'
+                     });
+                     allGreen = false;
+                 } else {
+                     const percentageDiff = injuredRatio - 100;
+                     let color;
+                     if (percentageDiff >= -10) { color = '#2a9d8f'; }
+                     else {
+                         allGreen = false;
+                         if (percentageDiff >= -15) { color = '#ee9b00'; }
+                         else if (percentageDiff >= -20) { color = '#e85d04'; }
+                         else { color = '#ae2012'; }
+                     }
+                     fig.layout.annotations.push({
+                         x: metricName, y: annotationYTop, text: `${percentageDiff.toFixed(0)}%`, showarrow: false,
+                         font: { color: color, size: 22, family: 'Avenir, sans-serif', weight: 400 },
+                         xanchor: 'center', yanchor: 'bottom'
+                     });
+                 }
+
+                 // --- BAR VALUE ANNOTATIONS NEAR BOTTOM ---
+                 // *** ENDRING: Justert Y-posisjon og skriftstørrelse ***
+                 const barTextYPosition = 25; // Ny Y-posisjon
+                 const barTextFontSize = 17;  // Ny skriftstørrelse
+                 // Calculate x position for annotations
+                 const categoryIndex = i;
+                 const numberOfBars = 2;
+                 const groupWidth = 0.8;
+                 const barWidthFraction = groupWidth / numberOfBars;
+                 const leftBarCenter = categoryIndex - (groupWidth / 2) + (barWidthFraction / 2);
+                 const rightBarCenter = categoryIndex + (groupWidth / 2) - (barWidthFraction / 2);
+
+                 // Left bar value annotation
+                 if (leftRatio > barTextYPosition + (barTextFontSize / 2)) { // Sjekker om det er plass
+                     fig.layout.annotations.push({
+                         x: leftBarCenter,
+                         y: barTextYPosition, // Bruker ny Y-posisjon
+                         xref: 'x', yref: 'y',
+                         text: leftTextsAbsolute[i],
+                         showarrow: false,
+                         font: { color: whiteColor, size: barTextFontSize, family: 'Avenir, sans-serif', weight: 400 }, // Bruker ny skriftstørrelse
+                         xanchor: 'center',
+                         yanchor: 'middle'
+                     });
+                 }
+                 // Right bar value annotation
+                 if (rightRatio > barTextYPosition + (barTextFontSize / 2)) { // Sjekker om det er plass
+                     fig.layout.annotations.push({
+                         x: rightBarCenter,
+                         y: barTextYPosition, // Bruker ny Y-posisjon
+                         xref: 'x', yref: 'y',
+                         text: rightTextsAbsolute[i],
+                         showarrow: false,
+                         font: { color: whiteColor, size: barTextFontSize, family: 'Avenir, sans-serif', weight: 400 }, // Bruker ny skriftstørrelse
+                         xanchor: 'center',
+                         yanchor: 'middle'
+                     });
+                 }
+                 // --- END BAR VALUE ANNOTATIONS ---
+             }
+
+             // Return figure and allGreen status
+             return [fig, allGreen];
+        }
+
+
+        // mapNkgToPercentile (Unchanged logic)
+        function mapNkgToPercentile(nkgValue, positionLabel) {
+             const thresholds = normativeThresholds[positionLabel];
+             if (!thresholds || typeof nkgValue !== 'number' || !isFinite(nkgValue)) { return 0; }
+             const pMap = [
+                 { v: 0.5, p: 0 }, { v: thresholds.poor_max, p: percentileZones.poor },
+                 { v: thresholds.average_mid, p: percentileMidpoint }, { v: thresholds.good_min, p: percentileZones.average },
+                 { v: thresholds.excellent_min, p: percentileZones.good }, { v: thresholds.excellent_min * 1.25, p: percentileZones.excellent }
+             ];
+             const minVal = pMap[0].v; const maxVal = pMap[pMap.length - 1].v;
+             const clampedValue = Math.max(minVal, Math.min(nkgValue, maxVal));
+             let lowerPoint = pMap[0]; let upperPoint = pMap[pMap.length - 1];
+              for (let i = 0; i < pMap.length - 1; i++) { if (clampedValue === pMap[i].v) { lowerPoint = upperPoint = pMap[i]; break; } if (clampedValue > pMap[i].v && clampedValue <= pMap[i + 1].v) { lowerPoint = pMap[i]; upperPoint = pMap[i + 1]; break; } }
+             if (clampedValue === upperPoint.v) { lowerPoint = upperPoint; }
+             let percentile = lowerPoint.p; const valueRange = upperPoint.v - lowerPoint.v; const percentileRange = upperPoint.p - lowerPoint.p;
+             if (valueRange > 0) { percentile += ((clampedValue - lowerPoint.v) / valueRange) * percentileRange; }
+             return Math.max(0, Math.min(percentile, 100));
+        }
+
+        // createNormativeComparisonChart (MODIFIED layout height)
+        function createNormativeComparisonChart(positionData, bodyweight, positionLabel) {
+             const bwVal = parseFloat(bodyweight);
+             if (isNaN(bwVal) || bwVal <= 0 || !positionData) { console.warn(`Invalid BW/data for normative chart ${positionLabel}`); return {}; }
+             const leftNkg = positionData.left.max_force / bwVal; const rightNkg = positionData.right.max_force / bwVal;
+             const thresholds = normativeThresholds[positionLabel];
+             if (!thresholds) { console.error(`Normative thresholds missing for ${positionLabel}`); return {}; }
+             const leftPercentile = mapNkgToPercentile(leftNkg, positionLabel); const rightPercentile = mapNkgToPercentile(rightNkg, positionLabel);
+
+             // --- Create visual background distribution curve (aesthetic) ---
+             const baseCurveX = []; const baseCurveY = [];
+             const mean = 55; const stdDev = 22; const amplitude = 0.9;
+             for (let i = 0; i <= 100; i += 0.5) { baseCurveX.push(i); const y = amplitude * Math.exp(-Math.pow(i - mean, 2) / (2 * Math.pow(stdDev, 2))); baseCurveY.push(y); }
+
+             // --- Create filled area traces for each normative zone (under curve) ---
+             const zoneBoundaries = [0, percentileZones.poor, percentileZones.average, percentileZones.good, percentileZones.excellent];
+             const traces = []; const zoneColorsList = [normZoneColors.poor, normZoneColors.average, normZoneColors.good, normZoneColors.excellent];
+
+             for (let i = 0; i < zoneBoundaries.length - 1; i++) {
+                 const x0 = zoneBoundaries[i]; const x1 = zoneBoundaries[i+1];
+                 const zoneFillColor = zoneColorsList[i];
+                 const segmentX = [x0]; const segmentY = [0];
+                 for(let j=0; j < baseCurveX.length; j++) { if (baseCurveX[j] >= x0 && baseCurveX[j] <= x1) { segmentX.push(baseCurveX[j]); segmentY.push(baseCurveY[j]); } }
+                 segmentX.push(x1); segmentY.push(0);
+                 traces.push({
+                     x: segmentX, y: segmentY, type: 'scatter', mode: 'lines', line: { width: 0 },
+                     fill: 'tozeroy', fillcolor: zoneFillColor, hoverinfo: 'none', name: Object.keys(normativeLabels)[i], showlegend: false
+                 });
+             }
+
+             // --- Add Curve trace (white) ---
+             traces.push({
+                 x: baseCurveX, y: baseCurveY, type: 'scatter', mode: 'lines',
+                 line: { color: '#ffffff', width: 1.5, shape: 'spline' },
+                 hoverinfo: 'none', name: 'Distribution (Visual)', showlegend: false
+             });
+
+             // --- Define Layout ---
+             // *** ENDRING: Satt grafhøyde til 320 ***
+             const layout = {
+                 height: 320, margin: { t: 65, b: 95, l: 30, r: 30 }, // Increased top margin
+                 paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+                 xaxis: { title: '', range: [0, 100], showgrid: false, zeroline: false, showticklabels: false },
+                 yaxis: { range: [0, 1.1], showgrid: false, zeroline: false, showticklabels: false, title: '' },
+                 shapes: [], annotations: [],
+                 font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() },
+                 showlegend: false
+             };
+
+             // --- Add Annotations for Thresholds and Zone Labels ---
+             const thresholdAnnotations = [ { p: percentileZones.poor, val: thresholds.poor_max }, { p: percentileZones.average, val: thresholds.good_min }, { p: percentileZones.good, val: thresholds.excellent_min } ];
+             thresholdAnnotations.forEach(t => {
+                 layout.annotations.push({
+                     xref: 'x', yref: 'paper', x: t.p, y: -0.08,
+                     text: `<span class="norm-value">${t.val.toFixed(2)}</span>`,
+                     showarrow: false, xanchor: 'center', yanchor: 'top',
+                     font: { family: 'Avenir, sans-serif', size: 10, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim() }
+                 });
+             });
+             layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: percentileMidpoint, x1: percentileMidpoint, y0: 0, y1: 1, line: { color: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), width: 1.5, dash: 'dot' }, layer: 'below' });
+              const avgValueForPos = thresholds.average_mid.toFixed(2);
+              layout.annotations.push({
+                  xref: 'x', yref: 'paper', x: percentileMidpoint, y: -0.08,
+                  text: `<span class="value-display">${avgValueForPos}</span>`,
+                  showarrow: false, xanchor: 'center', yanchor: 'top',
+                  font: { family: 'Avenir, sans-serif', size: 10, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), weight: 400 }
+              });
+             // --- LABEL POSITION ADJUSTMENT ---
+             const labelYPosition = 1.20; // Increased Y position
+             layout.annotations.push({ xref: 'x', yref: 'paper', x: 15, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.poor}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } });
+             layout.annotations.push({ xref: 'x', yref: 'paper', x: 50, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.average}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() }, align: 'center' });
+             layout.annotations.push({ xref: 'x', yref: 'paper', x: 80, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.good}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } });
+             layout.annotations.push({ xref: 'x', yref: 'paper', x: 95, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.excellent}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } });
+             // --- END LABEL POSITION ADJUSTMENT ---
+
+             // --- Add Lines and Labels for Left/Right Percentiles ---
+             const leftColor = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim();
+             const rightColor = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim();
+             // --- LINE LENGTH ADJUSTMENT ---
+             const lineY0 = 0.05; // Start line slightly above bottom
+             const lineY1 = 0.95; // End line slightly below top curve
+             layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: leftPercentile, x1: leftPercentile, y0: lineY0, y1: lineY1, line: { color: leftColor, width: 2, dash: 'dash' } });
+             layout.annotations.push({ xref: 'x', yref: 'paper', x: leftPercentile, y: 1.02, text: 'L', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: leftColor,
+                                      font: {color: leftColor, size: 14, family: 'Avenir, sans-serif', weight: 400} });
+             layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: rightPercentile, x1: rightPercentile, y0: lineY0, y1: lineY1, line: { color: rightColor, width: 2, dash: 'dash' } });
+             layout.annotations.push({ xref: 'x', yref: 'paper', x: rightPercentile, y: 1.02, text: 'R', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: rightColor,
+                                      font: {color: rightColor, size: 14, family: 'Avenir, sans-serif', weight: 400} });
+             // --- END LINE LENGTH ADJUSTMENT ---
+
+             // --- Add Combined N/kg Display Below Chart (UNIT FORMATTING CHANGE) ---
+             const combinedNkgText = `<span class='nkg-combined-text'>Left: <span class='left-label'>${leftNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>) &nbsp;&nbsp;|&nbsp;&nbsp; Right: <span class='right-label'>${rightNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>)</span>`;
+             layout.annotations.push({
+                 xref: 'paper', yref: 'paper', x: 0.5, y: -0.30,
+                 text: combinedNkgText,
+                 showarrow: false, xanchor: 'center', yanchor: 'top', align: 'center',
+                 font: { size: 15, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), family: 'Avenir, sans-serif', weight: 400 }
+             });
+
+             return { data: traces, layout };
+        }
+
+
+        // --- Main Update Function (Updates ONLY Plotly graphs) ---
+        function updateGraphsAndTable() {
+            const injuredSide = injuredSideRadio.value;
+            const bodyweight = bodyweightInput.value;
+            const bwVal = parseFloat(bodyweight);
+            const bodyweightValid = !isNaN(bwVal) && bwVal > 0;
+
+            // Show/hide normative placeholder and containers based on bodyweight validity
+            if (normativePlaceholder) { normativePlaceholder.style.display = bodyweightValid ? 'none' : 'block'; }
+            normativeChartDivs.forEach(divId => { const container = document.getElementById(divId)?.closest('.normative-graph-container'); if (container) { container.style.display = bodyweightValid ? 'block' : 'none'; } });
+
+            const positions = ['I', 'Y', 'T'];
+            positions.forEach((pos, i) => {
+                const asymmetryChartDivId = asymmetryChartDivs[i];
+                const asymmetryPositionBoxDivId = asymmetryPositionBoxDivs[i];
+                const asymmetryPositionBoxDiv = document.getElementById(asymmetryPositionBoxDivId);
+                const normativeChartDivId = normativeChartDivs[i];
+
+                // Ensure all necessary DOM elements exist
+                if (!asymmetryPositionBoxDiv || !document.getElementById(asymmetryChartDivId) || !document.getElementById(normativeChartDivId)) {
+                    console.error(`Plotly chart elements not found for position ${pos}`);
+                    return; // Skip this position if elements are missing
+                }
+
+                const positionData = processInputAndCalculate(pos);
+
+                // --- Update Asymmetry Chart (Plotly) ---
+                if (positionData) { // Only update if there's some data for the position
+                    try {
+                        const [fig, allGreen] = createAsymmetryChart(positionData, injuredSide, pos);
+                        if (fig?.data && fig?.layout) {
+                            Plotly.react(asymmetryChartDivId, fig.data, fig.layout, plotlyConfig);
+                            // Update the class of the Plotly graph box based on 'allGreen' status
+                            if (allGreen) {
+                                asymmetryPositionBoxDiv.classList.add('green-box');
+                            } else {
+                                asymmetryPositionBoxDiv.classList.remove('green-box');
+                            }
+                        } else { throw new Error("Generated asymmetry figure invalid."); }
+                    } catch (error) {
+                        console.error(`Error creating asymmetry chart for ${pos}:`, error);
+                        createEmptyPlot(asymmetryChartDivId, 'Error loading asymmetry data'); // Bruker standard høyde
+                        asymmetryPositionBoxDiv.classList.remove('green-box'); // Reset class on error
+                    }
+                } else { // If no data for the position, show empty plot
+                    createEmptyPlot(asymmetryChartDivId, 'Enter Data'); // Bruker standard høyde
+                     asymmetryPositionBoxDiv.classList.remove('green-box'); // Ensure default class
+                }
+
+                // --- Update Normative Chart (Plotly) ---
+                if (bodyweightValid && positionData) { // Only update if bodyweight is valid AND there's data
+                    try {
+                        const config = createNormativeComparisonChart(positionData, bodyweight, pos);
+                        if (config?.data && config?.layout) {
+                            Plotly.react(normativeChartDivId, config.data, config.layout, plotlyConfig);
+                        } else { throw new Error("Generated normative figure invalid."); }
+                    } catch (error) {
+                        console.error(`Error creating normative chart for ${pos}:`, error);
+                        createEmptyPlot(normativeChartDivId, 'Error Loading Data'); // Bruker standard høyde
+                    }
+                } else if (!bodyweightValid) { // If bodyweight is invalid, show placeholder
+                    createEmptyPlot(normativeChartDivId, 'Enter Bodyweight'); // Bruker standard høyde
+                } else { // If bodyweight is valid but no data, show placeholder
+                    createEmptyPlot(normativeChartDivId, 'Enter Data'); // Bruker standard høyde
+                }
+            });
+             // Trigger resize for Plotly graphs after updates to ensure proper rendering
+             setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
+        }
+
+        // --- Functions for Patient Data Show/Hide (Unchanged logic) ---
+        function togglePatientData() {
+            if (patientDataContainer) {
+                const isVisible = patientDataContainer.classList.toggle('visible');
+                if (registerPatientButton) {
+                    const buttonTextSpan = registerPatientButton.querySelector('.button-text');
+                    // Update button icon and text based on visibility state
+                    registerPatientButton.innerHTML = isVisible
+                        ? `<i class="fas fa-user-minus"></i> <span class="button-text">Hide Patient Data</span>`
+                        : `<i class="fas fa-user-plus"></i> <span class="button-text">Register Patient</span>`;
+                }
+            }
+        }
+
+        // --- Functions for PDF Preview Mode (Unchanged logic) ---
+        function enterPreviewMode() {
+            document.body.classList.add('pdf-preview-active');
+            if(previewExitButtonInline) previewExitButtonInline.style.display = 'inline-block';
+            if(explanationBox) explanationBox.style.display = 'block';
+            window.dispatchEvent(new Event('resize')); // Trigger resize for Plotly
+            console.log("Entered PDF preview mode");
+        }
+
+        function exitPreviewMode() {
+            document.body.classList.remove('pdf-preview-active');
+            if(previewExitButtonInline) previewExitButtonInline.style.display = 'none';
+            if(explanationBox) explanationBox.style.display = 'none';
+            window.dispatchEvent(new Event('resize')); // Trigger resize for Plotly
+            console.log("Exited PDF preview mode");
+        }
+
+        // --- Function for Exporting to CSV (MODIFIED unit formatting) ---
+         function exportTableToCsv() {
+             const fpNr = fpNrInput ? fpNrInput.value.trim() : '';
+             const age = ageInput ? ageInput.value.trim() : '';
+             const gender = genderSelect ? genderSelect.value : '';
+             const sport = sportInput ? sportInput.value.trim() : '';
+             const bodyweight = bodyweightInput ? bodyweightInput.value.trim() : '';
+             const injuredSide = injuredSideRadio ? injuredSideRadio.value : '';
+             const date = new Date();
+             const year = date.getFullYear();
+             const month = (date.getMonth() + 1).toString().padStart(2, '0');
+             const day = date.getDate().toString().padStart(2, '0');
+             const dateString = `${year}-${month}-${day}`;
+             const safeFpNr = fpNr.replace(/[^a-z0-9]/gi, '_') || 'Unknown';
+             const filename = `ASH_${safeFpNr}_${dateString}.csv`;
+             // --- UNIT FORMATTING CHANGE ---
+             const headers = [ "Patient ID", "Age", "Gender", "Sport", "Bodyweight (kg)", "Injured Side", "Position", "Metric", "Left Value", "Right Value" ];
+             let csv = [headers.join(',')];
+             const positions = ['I', 'Y', 'T'];
+             const metrics = ['Max Force (N)', 'RFD 100ms (Ns-1)']; // Use Ns-1 for CSV header consistency
+
+             positions.forEach(pos => {
+                 const positionName = `ASH Test Position ${pos}`;
+                 const positionData = processInputAndCalculate(pos);
+                 metrics.forEach(metric => {
+                     let leftVal = ''; let rightVal = '';
+                     if (positionData) {
+                         if (metric === 'Max Force (N)') { leftVal = positionData.left.max_force; rightVal = positionData.right.max_force; }
+                         // Match the header 'RFD 100ms (Ns-1)'
+                         else if (metric === 'RFD 100ms (Ns-1)') { leftVal = positionData.left.rfd; rightVal = positionData.right.rfd; }
+                     }
+                     const rowData = [ `"${fpNr}"`, `"${age}"`, `"${gender}"`, `"${sport}"`, `"${bodyweight}"`, `"${injuredSide}"`, `"${positionName}"`, `"${metric}"`, `"${leftVal}"`, `"${rightVal}"` ];
+                     csv.push(rowData.join(','));
+                 });
+             });
+             const csvString = "\uFEFF" + csv.join('\n');
+             const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+             const link = document.createElement('a');
+             if (link.download !== undefined) {
+                 const url = URL.createObjectURL(blob);
+                 link.setAttribute('href', url);
+                 link.setAttribute('download', filename);
+                 link.style.visibility = 'hidden';
+                 document.body.appendChild(link);
+                 link.click();
+                 document.body.removeChild(link);
+                 console.log(`CSV export initiated: ${filename}`);
+             } else {
+                 alert("CSV export is not directly supported in this browser. Please try a modern browser.");
+             }
+         }
+
+        // --- Function to Clear All Input Fields (Adapted for NEW structure) ---
+        function clearAllFields() {
+            console.log("Clearing all fields...");
+            // Clear patient details
+            if (fpNrInput) fpNrInput.value = '';
+            if (ageInput) ageInput.value = '';
+            if (genderSelect) genderSelect.value = '';
+            if (sportInput) sportInput.value = '';
+            // Reset top controls
+            if (injuredSideRadio) injuredSideRadio.value = 'Left'; // Default to Left
+            if (bodyweightInput) bodyweightInput.value = '';
+
+            // Clear all number inputs in the input section using the collected NodeList
+            allNumberInputs.forEach(input => {
+                input.value = '';
+            });
+
+            updateGraphsAndTable(); // Update Plotly graphs to show empty state
+            saveInputsToLocalStorage(); // Save the cleared state
+            console.log("Fields cleared.");
+        }
+
+
+        // --- localStorage Functions (Adapted for NEW structure, using v4 key) ---
+        const localStorageKey = 'screeningAppData_v4'; // Use new key to avoid conflicts with old structure
+        function saveInputsToLocalStorage() {
+             const dataToSave = {
+                 injuredSide: injuredSideRadio.value,
+                 bodyweight: bodyweightInput.value,
+                 fpNr: fpNrInput.value,
+                 age: ageInput.value,
+                 gender: genderSelect.value,
+                 sport: sportInput.value,
+                 // Save values from the new input structure using their IDs
+                 'non-injured-max-force-i': nonInjuredMaxForceInputI.value, 'non-injured-rfd-i': nonInjuredRfdInputI.value,
+                 'injured-max-force-i': injuredMaxForceInputI.value, 'injured-rfd-i': injuredRfdInputI.value,
+                 'non-injured-max-force-y': nonInjuredMaxForceInputY.value, 'non-injured-rfd-y': nonInjuredRfdInputY.value,
+                 'injured-max-force-y': injuredMaxForceInputY.value, 'injured-rfd-y': injuredRfdInputY.value,
+                 'non-injured-max-force-t': nonInjuredMaxForceInputT.value, 'non-injured-rfd-t': nonInjuredRfdInputT.value,
+                 'injured-max-force-t': injuredMaxForceInputT.value, 'injured-rfd-t': injuredRfdInputT.value,
+             };
+             try { localStorage.setItem(localStorageKey, JSON.stringify(dataToSave)); } catch (error) { console.error('Error saving inputs:', error); }
+        }
+        function loadInputsFromLocalStorage() {
+             try {
+                 const savedDataString = localStorage.getItem(localStorageKey);
+                 if (savedDataString) {
+                     const savedData = JSON.parse(savedDataString);
+                     console.log('Loading inputs from localStorage (v4)');
+                     // Load patient details and top controls
+                     injuredSideRadio.value = savedData.injuredSide || 'Left';
+                     bodyweightInput.value = savedData.bodyweight || '';
+                     fpNrInput.value = savedData.fpNr || '';
+                     ageInput.value = savedData.age || '';
+                     genderSelect.value = savedData.gender || '';
+                     sportInput.value = savedData.sport || '';
+                     // Load values into the new input structure using their IDs
+                     nonInjuredMaxForceInputI.value = savedData['non-injured-max-force-i'] || ''; nonInjuredRfdInputI.value = savedData['non-injured-rfd-i'] || '';
+                     injuredMaxForceInputI.value = savedData['injured-max-force-i'] || ''; injuredRfdInputI.value = savedData['injured-rfd-i'] || '';
+                     nonInjuredMaxForceInputY.value = savedData['non-injured-max-force-y'] || ''; nonInjuredRfdInputY.value = savedData['non-injured-rfd-y'] || '';
+                     injuredMaxForceInputY.value = savedData['injured-max-force-y'] || ''; injuredRfdInputY.value = savedData['injured-rfd-y'] || '';
+                     nonInjuredMaxForceInputT.value = savedData['non-injured-max-force-t'] || ''; nonInjuredRfdInputT.value = savedData['non-injured-rfd-t'] || '';
+                     injuredMaxForceInputT.value = savedData['injured-max-force-t'] || ''; injuredRfdInputT.value = savedData['injured-rfd-t'] || '';
+
+                     // Automatically show patient data section if any patient data was loaded
+                     if (fpNrInput.value || ageInput.value || genderSelect.value || sportInput.value) {
+                         if (patientDataContainer && !patientDataContainer.classList.contains('visible')) {
+                             togglePatientData(); // Show the section
+                         }
+                     }
+                 }
+             } catch (error) {
+                 console.error('Error loading inputs:', error);
+                 // Optionally clear local storage if parsing fails
+                 // localStorage.removeItem(localStorageKey);
+             }
+        }
+
+        // --- Event Listeners (Adapted for NEW structure) ---
+        // Top controls listeners
+        if (injuredSideRadio) injuredSideRadio.addEventListener('change', () => { updateGraphsAndTable(); saveInputsToLocalStorage(); });
+        if (bodyweightInput) bodyweightInput.addEventListener('input', () => { updateGraphsAndTable(); saveInputsToLocalStorage(); });
+        // Patient data listeners (save on change/blur)
+        if (fpNrInput) fpNrInput.addEventListener('change', saveInputsToLocalStorage);
+        if (ageInput) ageInput.addEventListener('change', saveInputsToLocalStorage);
+        if (genderSelect) genderSelect.addEventListener('change', saveInputsToLocalStorage);
+        if (sportInput) sportInput.addEventListener('change', saveInputsToLocalStorage);
+
+        // Add listeners to all number inputs in the new input section
+        allNumberInputs.forEach(input => {
+            // Update graphs immediately on input
+            input.addEventListener('input', () => {
+                updateGraphsAndTable(); // Update ONLY Plotly graphs
+            });
+            // Save to local storage on change (when focus is lost)
+            input.addEventListener('change', saveInputsToLocalStorage);
+        });
+
+        // Sidebar/Other button listeners
+        if (pdfPreviewButton) { pdfPreviewButton.addEventListener('click', enterPreviewMode); }
+        if (exportExcelButton) { exportExcelButton.addEventListener('click', exportTableToCsv); }
+        if (registerPatientButton) { registerPatientButton.addEventListener('click', togglePatientData); }
+        if (previewExitButtonInline) { previewExitButtonInline.addEventListener('click', exitPreviewMode); }
+        if (clearAllButton) { clearAllButton.addEventListener('click', clearAllFields); }
+
+        // --- Initial Load (Adapted for NEW structure) ---
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("DOM loaded.");
+            loadInputsFromLocalStorage(); // Load saved data
+            updateGraphsAndTable(); // Update Plotly graphs based on loaded data
+        });
+        // Resize listener for Plotly responsiveness
+        window.addEventListener('load', () => { setTimeout(() => window.dispatchEvent(new Event('resize')), 200); });
+        window.addEventListener('resize', () => {
+             // Optional: Add a slight delay to resizing Plotly graphs if needed
+             // clearTimeout(window.resizeTimer);
+             // window.resizeTimer = setTimeout(() => {
+                 asymmetryChartDivs.concat(normativeChartDivs).forEach(divId => {
+                     const gd = document.getElementById(divId);
+                     if (gd && gd.classList.contains('js-plotly-plot')) { // Check if it's a Plotly graph div
+                         try {
+                             Plotly.Plots.resize(gd);
+                         } catch (e) {
+                             // Ignore errors if the plot hasn't been initialized yet or is hidden
+                         }
+                     }
+                 });
+             // }, 150);
+         });
+
+    } // End of else block (if Plotly loaded)
+</script>
+
+</body>
+</html>
