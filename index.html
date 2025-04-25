@@ -153,6 +153,7 @@
         const correctPassword = "alphatek";
         const nextPageUrl = "screening.html";
         const localStorageEmailKey = 'savedLoginEmail';
+        const sessionAuthKey = 'isLoggedIn'; // Key for the session flag
 
         const loginForm = document.getElementById('login-form');
         const emailInput = document.getElementById('email');
@@ -166,14 +167,10 @@
             return allowedEmails.includes(normalizedEmail);
         }
 
-        // This function now ONLY loads the email, it does not check validity or redirect
         function loadEmailFromStorage() {
             const savedEmail = localStorage.getItem(localStorageEmailKey);
             if (savedEmail) {
                 emailInput.value = savedEmail;
-                console.log("Loaded email from localStorage:", savedEmail);
-            } else {
-                 console.log("No email found in localStorage.");
             }
         }
 
@@ -193,15 +190,20 @@
             errorMessageDiv.textContent = '';
             let loginSuccess = false;
 
-            // Validation happens here on submit
             if (isEmailAllowed(enteredEmail) && enteredPassword === correctPassword) {
                  loginSuccess = true;
             }
 
             if (loginSuccess) {
-                saveEmailToStorage(); // Still save on successful login
-                console.log("Login successful! Redirecting...");
-                window.location.href = nextPageUrl;
+                saveEmailToStorage();
+                console.log("Login successful! Setting session flag and redirecting...");
+                // *** SET SESSION FLAG HERE ***
+                 try {
+                    sessionStorage.setItem(sessionAuthKey, 'true'); // Set the flag
+                } catch (e) {
+                    console.error("Could not set sessionStorage item:", e);
+                }
+                window.location.href = nextPageUrl; // Redirect
             } else {
                  errorMessageDiv.textContent = 'Invalid email or password.';
                  const loginBox = loginForm.parentElement;
@@ -217,9 +219,8 @@
         });
         emailInput.addEventListener('blur', saveEmailToStorage);
 
-        // Only call loadEmailFromStorage on page load
         document.addEventListener('DOMContentLoaded', (event) => {
-            loadEmailFromStorage(); // Just load the email, no check/redirect here
+            loadEmailFromStorage();
         });
     </script>
 
