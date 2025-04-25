@@ -4,7 +4,7 @@
 const allowedObfuscatedEmails = [
   "tromaneromanosromantroman@romaneromanoxromanaromanmromanpromanlromaneroman.romancomanoromanmroman",
   "bromanrromanuromankromaneromanrroman@romandromanommanaromanenromaneroman.romanromanomanoroman",
-  "mromanaromanromanumaneromanlroman@romanaromanlromanpromanharomantromaneromankroman.romanaromanriroman"
+  "romanaromanromanumaneromanlroman@romanaromanlromanpromanharomantromaneromankroman.romanaromanriroman"
 ];
 
 // Ingen annen kode er nødvendig her.
