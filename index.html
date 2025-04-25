@@ -44,4 +44,221 @@
          @keyframes shake {
            10%, 90% { transform: translate3d(-1px, 0, 0); }
            20%, 80% { transform: translate3d(2px, 0, 0); }
-           30%, 50%, 70% { transform: translate3d(-4px, 0
+           30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+           40%, 60% { transform: translate3d(4px, 0, 0); }
+         }
+         .animate-shake {
+           animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+         }
+         .social-icon {
+             color: #e5e7eb;
+             font-size: 1.75rem;
+             transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
+         }
+         .social-icon:hover {
+             color: #fff;
+             transform: scale(1.1);
+         }
+         .login-input {
+             background-color: rgba(255, 255, 255, 0.1);
+             border: 1px solid rgba(255, 255, 255, 0.3);
+             color: #ffffff;
+         }
+         .login-input::placeholder {
+             color: rgba(255, 255, 255, 0.6);
+         }
+         .login-input:focus {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            outline: none;
+         }
+         .dark .login-input {
+             background-color: rgba(0, 0, 0, 0.2);
+             border: 1px solid rgba(255, 255, 255, 0.2);
+             color: #ffffff;
+         }
+         .dark .login-input::placeholder {
+             color: rgba(255, 255, 255, 0.5);
+         }
+          .dark .login-input:focus {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.4);
+         }
+    </style>
+    </head>
+<body class="h-screen flex items-center justify-center">
+
+    <div class="w-full max-w-md p-8 space-y-6 shadow-lg frosted-glass text-white">
+        <h2 class="text-2xl text-center">Login</h2>
+        <form id="login-form" class="space-y-6">
+            <div>
+                <label for="email" class="block text-sm font-light text-gray-200">Email</label>
+                <div class="mt-1">
+                    <input id="email" name="email" type="email" autocomplete="email" required
+                           class="login-input block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 sm:text-sm">
+                </div>
+            </div>
+
+            <div>
+                <label for="password" class="block text-sm font-light text-gray-200">Password</label>
+                <div class="mt-1">
+                    <input id="password" name="password" type="password" autocomplete="current-password" required
+                           class="login-input block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 sm:text-sm">
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end">
+                <div class="text-sm">
+                    <a href="#" id="request-access-link" class="text-gray-300 hover:text-white">
+                        Request Access
+                    </a>
+                </div>
+            </div>
+            <div id="request-access-section" class="text-sm text-center text-gray-200">
+                Send email to:
+                <a href="mailto:manuel@alphatek.ai" class="text-gray-300 hover:text-white underline">
+                    manuel@alphatek.ai
+                </a>
+            </div>
+
+             <div id="error-message"></div>
+
+            <div>
+                 <button type="submit"
+                        class="custom-gradient-button w-full flex justify-center py-2 px-4 rounded-md text-sm text-white focus:outline-none">
+                    Login
+                </button>
+            </div>
+
+            <div class="pt-4 border-t border-white/20">
+                <p class="text-center text-sm text-gray-300 mb-3">Visit us:</p>
+                <div class="flex justify-center space-x-6">
+                    <a href="https://www.instagram.com/alphatekofficial" target="_blank" rel="noopener noreferrer" title="Instagram">
+                        <i class="fab fa-instagram social-icon"></i>
+                    </a>
+                    <a href="https://www.alphatek.no" target="_blank" rel="noopener noreferrer" title="Website">
+                        <i class="fas fa-globe social-icon"></i>
+                    </a>
+                </div>
+            </div>
+            </form>
+    </div>
+
+    <script>
+        function deobfuscateEmail(obfuscatedEmail) {
+            if (typeof obfuscatedEmail !== 'string') {
+                return "";
+            }
+            return obfuscatedEmail.split("roman").join("");
+        }
+
+        // Configuration (Password and URLs remain)
+        const correctPassword = "alphatek";
+        const nextPageUrl = "screening.html";
+        const localStorageEmailKey = 'savedLoginEmail';
+
+        // DOM Elements
+        const loginForm = document.getElementById('login-form');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const errorMessageDiv = document.getElementById('error-message');
+        const requestAccessLink = document.getElementById('request-access-link');
+        const requestAccessSection = document.getElementById('request-access-section');
+
+        // Function to check if an email is in the allowed list
+        function isEmailAllowed(emailToCheck) {
+            const normalizedEmail = emailToCheck.trim().toLowerCase();
+
+            // *** Improved Check: Ensure the list from the external file exists ***
+            if (typeof allowedObfuscatedEmails === 'undefined' || !Array.isArray(allowedObfuscatedEmails)) {
+                console.error("CRITICAL: allowedObfuscatedEmails list not found or is not an array. Check if 'assets/emails.js' loaded correctly and has the correct variable name.");
+                // Display error to user as well, as this is critical
+                errorMessageDiv.textContent = 'Configuration error. Please contact support.';
+                return false; // Cannot check if the list is missing
+            }
+            // *** End of Improved Check ***
+
+            for (const obfuscatedEmail of allowedObfuscatedEmails) {
+                const deobfuscated = deobfuscateEmail(obfuscatedEmail);
+                if (normalizedEmail === deobfuscated) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function loadAndCheckStorage() {
+            const savedEmail = localStorage.getItem(localStorageEmailKey);
+            if (savedEmail) {
+                // *** Added check here too before redirecting ***
+                if (typeof allowedObfuscatedEmails !== 'undefined' && Array.isArray(allowedObfuscatedEmails) && isEmailAllowed(savedEmail)) {
+                    console.log("Valid email found in localStorage. Redirecting...");
+                    window.location.href = nextPageUrl;
+                    return true;
+                } else {
+                    // Pre-fill even if list is missing or email not allowed, but don't redirect
+                    emailInput.value = savedEmail;
+                    console.log("Loaded email from localStorage, but not redirecting (either list missing or email not allowed):", savedEmail);
+                }
+            }
+             return false;
+        }
+
+        function saveEmailToStorage() {
+            const currentEmail = emailInput.value.trim();
+            if (currentEmail) {
+                localStorage.setItem(localStorageEmailKey, currentEmail);
+            } else {
+                localStorage.removeItem(localStorageEmailKey);
+            }
+        }
+
+        loginForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const enteredEmail = emailInput.value.trim().toLowerCase();
+            const enteredPassword = passwordInput.value;
+            errorMessageDiv.textContent = '';
+            let loginSuccess = false;
+
+            // isEmailAllowed now includes the check for the list existence
+            if (isEmailAllowed(enteredEmail) && enteredPassword === correctPassword) {
+                 loginSuccess = true;
+            }
+
+            if (loginSuccess) {
+                saveEmailToStorage();
+                window.location.href = nextPageUrl;
+            } else {
+                // Avoid showing password error if the list failed to load
+                 if (typeof allowedObfuscatedEmails !== 'undefined' && Array.isArray(allowedObfuscatedEmails)) {
+                    errorMessageDiv.textContent = 'Invalid email or password.';
+                    const loginBox = loginForm.parentElement;
+                    loginBox.classList.add('animate-shake');
+                    setTimeout(() => loginBox.classList.remove('animate-shake'), 500);
+                 }
+            }
+        });
+
+        requestAccessLink.addEventListener('click', function(event) {
+            event.preventDefault();
+            const isHidden = requestAccessSection.style.display === 'none' || requestAccessSection.style.display === '';
+            requestAccessSection.style.display = isHidden ? 'block' : 'none';
+        });
+        emailInput.addEventListener('blur', saveEmailToStorage);
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Check if the list loaded correctly during initialization
+             if (typeof allowedObfuscatedEmails === 'undefined' || !Array.isArray(allowedObfuscatedEmails)) {
+                 console.error("Initialization Error: allowedObfuscatedEmails list missing on DOMContentLoaded.");
+                 errorMessageDiv.textContent = 'Configuration error loading email list.';
+             } else {
+                 // Try to load and redirect if list is present
+                if (!loadAndCheckStorage()) {
+                    // Page setup continues if not redirected
+                }
+             }
+        });
+    </script>
+
+</body>
+</html>
