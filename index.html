@@ -6,6 +6,7 @@
     <title>Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="assets/emails.js"></script>
     <style>
         body {
             font-family: 'Avenir Next', 'Avenir', 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -14,18 +15,14 @@
             background-position: center;
             background-repeat: no-repeat;
         }
-        /* Increased blur and adjusted fallback */
         .frosted-glass {
-            -webkit-backdrop-filter: blur(20px); /* Increased blur */
-            backdrop-filter: blur(20px); /* Increased blur */
-            /* Adjusted background color for more transparency */
-            background-color: rgba(255, 255, 255, 0.1); /* More transparent white */
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            background-color: rgba(255, 255, 255, 0.1);
         }
         .dark .frosted-glass {
-             /* Adjusted dark mode background for more transparency */
-            background-color: rgba(0, 0, 0, 0.1); /* More transparent black */
+            background-color: rgba(0, 0, 0, 0.1);
         }
-
         .custom-gradient-button {
             background-image: linear-gradient(to right, rgb(112, 188, 252), #285484);
             transition: background-image 0.2s ease-in-out;
@@ -38,7 +35,7 @@
             margin-top: 0.5rem;
         }
         #error-message {
-            color: #f87171; /* Lighter red for better contrast on potentially dark bg */
+            color: #f87171;
             font-size: 0.875rem;
             margin-top: 0.5rem;
             text-align: center;
@@ -53,32 +50,28 @@
          .animate-shake {
            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
          }
-         /* Updated social icon colors for white text theme */
          .social-icon {
-             color: #e5e7eb; /* Lighter gray for icons */
+             color: #e5e7eb;
              font-size: 1.75rem;
              transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
          }
          .social-icon:hover {
-             color: #fff; /* White on hover */
+             color: #fff;
              transform: scale(1.1);
          }
-         /* Input field styling for white text */
          .login-input {
-             background-color: rgba(255, 255, 255, 0.1); /* Slightly transparent background */
-             border: 1px solid rgba(255, 255, 255, 0.3); /* Lighter border */
-             color: #ffffff; /* White text */
+             background-color: rgba(255, 255, 255, 0.1);
+             border: 1px solid rgba(255, 255, 255, 0.3);
+             color: #ffffff;
          }
          .login-input::placeholder {
-             color: rgba(255, 255, 255, 0.6); /* Lighter placeholder */
+             color: rgba(255, 255, 255, 0.6);
          }
          .login-input:focus {
             background-color: rgba(255, 255, 255, 0.2);
             border-color: rgba(255, 255, 255, 0.5);
             outline: none;
-            /* Removed focus ring color as it might clash */
          }
-         /* Ensure dark mode inputs also have white text */
          .dark .login-input {
              background-color: rgba(0, 0, 0, 0.2);
              border: 1px solid rgba(255, 255, 255, 0.2);
@@ -91,10 +84,9 @@
             background-color: rgba(0, 0, 0, 0.3);
             border-color: rgba(255, 255, 255, 0.4);
          }
-
     </style>
     </head>
-    <body class="h-screen flex items-center justify-center">
+<body class="h-screen flex items-center justify-center">
 
     <div class="w-full max-w-md p-8 space-y-6 shadow-lg frosted-glass text-white">
         <h2 class="text-2xl text-center">Login</h2>
@@ -108,23 +100,23 @@
             </div>
 
             <div>
-                 <label for="password" class="block text-sm font-light text-gray-200">Password</label>
+                <label for="password" class="block text-sm font-light text-gray-200">Password</label>
                 <div class="mt-1">
-                     <input id="password" name="password" type="password" autocomplete="current-password" required
+                    <input id="password" name="password" type="password" autocomplete="current-password" required
                            class="login-input block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 sm:text-sm">
                 </div>
             </div>
 
             <div class="flex items-center justify-end">
                 <div class="text-sm">
-                     <a href="#" id="request-access-link" class="text-gray-300 hover:text-white">
+                    <a href="#" id="request-access-link" class="text-gray-300 hover:text-white">
                         Request Access
                     </a>
                 </div>
             </div>
             <div id="request-access-section" class="text-sm text-center text-gray-200">
                 Send email to:
-                 <a href="mailto:manuel@alphatek.ai" class="text-gray-300 hover:text-white underline">
+                <a href="mailto:manuel@alphatek.ai" class="text-gray-300 hover:text-white underline">
                     manuel@alphatek.ai
                 </a>
             </div>
@@ -138,8 +130,8 @@
                 </button>
             </div>
 
-            <div class="pt-4 border-t border-white/20"> 
-                 <p class="text-center text-sm text-gray-300 mb-3">Visit us:</p>
+            <div class="pt-4 border-t border-white/20">
+                <p class="text-center text-sm text-gray-300 mb-3">Visit us:</p>
                 <div class="flex justify-center space-x-6">
                     <a href="https://www.instagram.com/alphatekofficial" target="_blank" rel="noopener noreferrer" title="Instagram">
                         <i class="fab fa-instagram social-icon"></i>
@@ -160,11 +152,9 @@
             return obfuscatedEmail.split("roman").join("");
         }
 
-        const allowedObfuscatedEmails = [
-            "tromaneromanosromantroman@romaneromanoxromanaromanmromanpromanlromaneroman.romancomanoromanmroman",
-            "bromanrromanuromankromaneromanrroman@romandromanommanaromanenromaneroman.romanromanomanoroman",
-            "mromanaromanromanumaneromanlroman@romanaromanlromanpromanharomantromaneromankroman.romanaromanriroman"
-        ];
+        // *** REMOVED THE HARDCODED LIST HERE - it will now use the one from assets/emails.js ***
+        // const allowedObfuscatedEmails = [ ... ];
+
         const correctPassword = "alphatek";
         const nextPageUrl = "screening.html";
         const localStorageEmailKey = 'savedLoginEmail';
@@ -176,8 +166,14 @@
         const requestAccessLink = document.getElementById('request-access-link');
         const requestAccessSection = document.getElementById('request-access-section');
 
+        // Function to check if an email is in the allowed list
         function isEmailAllowed(emailToCheck) {
             const normalizedEmail = emailToCheck.trim().toLowerCase();
+            // Check if allowedObfuscatedEmails exists (loaded from external file)
+            if (typeof allowedObfuscatedEmails === 'undefined' || !Array.isArray(allowedObfuscatedEmails)) {
+                console.error("allowedObfuscatedEmails list not found or is not an array. Did assets/emails.js load correctly?");
+                return false; // Cannot check if the list is missing
+            }
             for (const obfuscatedEmail of allowedObfuscatedEmails) {
                 const deobfuscated = deobfuscateEmail(obfuscatedEmail);
                 if (normalizedEmail === deobfuscated) {
