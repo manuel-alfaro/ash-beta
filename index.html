@@ -89,17 +89,31 @@
              margin-top: 1rem;
              padding-top: 0.5rem;
              border-top: 1px dashed rgba(255, 255, 255, 0.2);
-             max-height: 100px;
+             max-height: 150px; /* Increased height slightly */
              overflow-y: auto;
              color: #d1d5db;
+             word-break: break-all; /* Break long strings */
          }
          #debug-email-list h4 {
              margin-bottom: 0.25rem;
              font-weight: 500;
          }
          #debug-email-list ul {
-             list-style-type: disc;
-             margin-left: 1rem;
+             list-style-type: none; /* Removed bullets */
+             margin-left: 0;
+             padding-left: 0;
+         }
+          #debug-email-list li {
+             margin-bottom: 0.3rem; /* Spacing between items */
+         }
+         #debug-email-list .obfuscated {
+             color: #9ca3af; /* Gray for obfuscated */
+             display: block; /* Put on new line */
+             font-size: 0.65rem; /* Smaller */
+         }
+         #debug-email-list .deobfuscated {
+             color: #e5e7eb; /* Lighter gray for deobfuscated */
+             font-weight: 500;
          }
     </style>
     </head>
@@ -166,14 +180,12 @@
     </div>
 
     <script>
-        // *** UPDATED De-obfuscation function using index skipping ***
         function deobfuscateEmail(obfuscatedEmail) {
             if (typeof obfuscatedEmail !== 'string') {
                 return "";
             }
             let deobfuscated = "";
-            // Loop through the obfuscated string, taking every 6th character (0, 6, 12, ...)
-            for (let i = 0; i < obfuscatedEmail.length; i += 6) { // Step by 6 (1 character + 5 for "roman")
+            for (let i = 0; i < obfuscatedEmail.length; i += 6) {
                 deobfuscated += obfuscatedEmail[i];
             }
             return deobfuscated;
@@ -199,7 +211,7 @@
                 return false;
             }
             for (const obfuscatedEmail of allowedObfuscatedEmails) {
-                const deobfuscated = deobfuscateEmail(obfuscatedEmail); // Uses the new function
+                const deobfuscated = deobfuscateEmail(obfuscatedEmail);
                 if (normalizedEmail === deobfuscated) {
                     return true;
                 }
@@ -231,11 +243,12 @@
             }
         }
 
+        // *** UPDATED Debug display function ***
         function displayDebugEmailList() {
             if (!debugEmailListDiv) return;
 
             if (typeof allowedObfuscatedEmails === 'undefined' || !Array.isArray(allowedObfuscatedEmails)) {
-                 debugEmailListDiv.innerHTML = '<h4>Allowed Emails (Debug):</h4><p>Error: Could not load email list.</p>';
+                 debugEmailListDiv.innerHTML = '<h4>Allowed Emails (Debug):</h4><p>Error: Could not load email list from assets/emails.js</p>';
                  debugEmailListDiv.style.display = 'block';
                  return;
             }
@@ -243,19 +256,23 @@
             const listElement = debugEmailListDiv.querySelector('ul');
             if (!listElement) return;
 
-            listElement.innerHTML = '';
+            listElement.innerHTML = ''; // Clear previous list items
 
             if (allowedObfuscatedEmails.length === 0) {
-                listElement.innerHTML = '<li>List is empty.</li>';
+                listElement.innerHTML = '<li>List in assets/emails.js is empty.</li>';
             } else {
-                allowedObfuscatedEmails.forEach(obfuscated => {
-                    const deobfuscated = deobfuscateEmail(obfuscated); // Uses the new function
+                allowedObfuscatedEmails.forEach((obfuscated, index) => {
+                    const deobfuscated = deobfuscateEmail(obfuscated);
                     const listItem = document.createElement('li');
-                    listItem.textContent = deobfuscated; // Display the result of the new function
+                    // Show both obfuscated (from file) and deobfuscated result
+                    listItem.innerHTML = `
+                        <span class="deobfuscated">${deobfuscated}</span>
+                        <span class="obfuscated">(From: ${obfuscated})</span>
+                    `;
                     listElement.appendChild(listItem);
                 });
             }
-            debugEmailListDiv.style.display = 'block';
+            debugEmailListDiv.style.display = 'block'; // Show the list
         }
 
 
@@ -280,6 +297,8 @@
                     loginBox.classList.add('animate-shake');
                     setTimeout(() => loginBox.classList.remove('animate-shake'), 500);
                  }
+                 // Display the debug list again on failed login attempt
+                 displayDebugEmailList();
             }
         });
 
