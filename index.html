@@ -83,7 +83,6 @@
             background-color: rgba(0, 0, 0, 0.3);
             border-color: rgba(255, 255, 255, 0.4);
          }
-         /* Removed debug list styles */
     </style>
     </head>
 <body class="h-screen flex items-center justify-center">
@@ -145,14 +144,10 @@
     </div>
 
     <script>
-        // Removed deobfuscateEmail function
-
-        // *** Email list with plain emails ***
         const allowedEmails = [
             "test@example.com",
             "bruker@domene.no",
             "manuel@alphatek.ai"
-            // Add more plain emails here
         ];
 
         const correctPassword = "alphatek";
@@ -165,29 +160,21 @@
         const errorMessageDiv = document.getElementById('error-message');
         const requestAccessLink = document.getElementById('request-access-link');
         const requestAccessSection = document.getElementById('request-access-section');
-        // Removed debugEmailListDiv reference
 
-        // *** Updated function to use plain email list ***
         function isEmailAllowed(emailToCheck) {
             const normalizedEmail = emailToCheck.trim().toLowerCase();
-            // Directly check against the plain email list
             return allowedEmails.includes(normalizedEmail);
         }
 
-        function loadAndCheckStorage() {
+        // *** UPDATED: This function now ONLY loads the email, it does not check or redirect ***
+        function loadEmailFromStorage() {
             const savedEmail = localStorage.getItem(localStorageEmailKey);
             if (savedEmail) {
-                // Check directly if the saved email is allowed
-                if (isEmailAllowed(savedEmail)) {
-                    console.log("Valid email found in localStorage. Redirecting...");
-                    window.location.href = nextPageUrl;
-                    return true;
-                } else {
-                    emailInput.value = savedEmail;
-                    console.log("Loaded email from localStorage, but it's not currently allowed:", savedEmail);
-                }
+                emailInput.value = savedEmail;
+                console.log("Loaded email from localStorage:", savedEmail);
+            } else {
+                 console.log("No email found in localStorage.");
             }
-             return false;
         }
 
         function saveEmailToStorage() {
@@ -199,8 +186,6 @@
             }
         }
 
-        // Removed displayDebugEmailList function
-
         loginForm.addEventListener('submit', function(event) {
             event.preventDefault();
             const enteredEmail = emailInput.value.trim().toLowerCase();
@@ -208,20 +193,20 @@
             errorMessageDiv.textContent = '';
             let loginSuccess = false;
 
-            // Simplified check
+            // Validation happens here on submit
             if (isEmailAllowed(enteredEmail) && enteredPassword === correctPassword) {
                  loginSuccess = true;
             }
 
             if (loginSuccess) {
-                saveEmailToStorage();
+                saveEmailToStorage(); // Still save on successful login
+                console.log("Login successful! Redirecting...");
                 window.location.href = nextPageUrl;
             } else {
                  errorMessageDiv.textContent = 'Invalid email or password.';
                  const loginBox = loginForm.parentElement;
                  loginBox.classList.add('animate-shake');
                  setTimeout(() => loginBox.classList.remove('animate-shake'), 500);
-                 // Removed call to displayDebugEmailList
             }
         });
 
@@ -232,11 +217,9 @@
         });
         emailInput.addEventListener('blur', saveEmailToStorage);
 
+        // *** UPDATED: Only call loadEmailFromStorage on page load ***
         document.addEventListener('DOMContentLoaded', (event) => {
-            // Simplified check on load
-            if (!loadAndCheckStorage()) {
-                 // No debug list to display
-            }
+            loadEmailFromStorage(); // Just load the email, no check/redirect here
         });
     </script>
 
