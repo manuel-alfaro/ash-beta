@@ -58,9 +58,10 @@
              color: #fff;
              transform: scale(1.1);
          }
+         /* Input field styling with no border */
          .login-input {
              background-color: rgba(255, 255, 255, 0.1);
-             border: 1px solid rgba(255, 255, 255, 0.3);
+             border: none; /* Removed border */
              color: #ffffff;
          }
          .login-input::placeholder {
@@ -68,12 +69,13 @@
          }
          .login-input:focus {
             background-color: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
+            border: none; /* Ensure no border on focus */
             outline: none;
          }
+         /* Dark mode input styling with no border */
          .dark .login-input {
              background-color: rgba(0, 0, 0, 0.2);
-             border: 1px solid rgba(255, 255, 255, 0.2);
+             border: none; /* Removed border */
              color: #ffffff;
          }
          .dark .login-input::placeholder {
@@ -81,7 +83,7 @@
          }
           .dark .login-input:focus {
             background-color: rgba(0, 0, 0, 0.3);
-            border-color: rgba(255, 255, 255, 0.4);
+            border: none; /* Ensure no border on focus */
          }
     </style>
     </head>
@@ -101,7 +103,7 @@
             <div>
                 <label for="password" class="block text-sm font-light text-gray-200">Password</label>
                 <div class="mt-1">
-                    <input id="password" name="password" type="password" autocomplete="current-password" required
+                     <input id="password" name="password" type="password" autocomplete="current-password" required
                            class="login-input block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 sm:text-sm">
                 </div>
             </div>
@@ -153,7 +155,7 @@
         const correctPassword = "alphatek";
         const nextPageUrl = "screening.html";
         const localStorageEmailKey = 'savedLoginEmail';
-        const localStoragePasswordKey = 'savedLoginPassword'; // New key for password
+        const localStoragePasswordKey = 'savedLoginPassword';
         const sessionAuthKey = 'isLoggedIn';
 
         const loginForm = document.getElementById('login-form');
@@ -168,24 +170,20 @@
             return allowedEmails.includes(normalizedEmail);
         }
 
-        // Updated function to load both email and password
         function loadCredentialsFromStorage() {
             const savedEmail = localStorage.getItem(localStorageEmailKey);
             const savedPassword = localStorage.getItem(localStoragePasswordKey);
             if (savedEmail) {
                 emailInput.value = savedEmail;
-                console.log("Loaded email from localStorage:", savedEmail);
             }
             if (savedPassword) {
-                passwordInput.value = savedPassword; // Autofill password
-                console.log("Loaded password from localStorage.");
+                passwordInput.value = savedPassword;
             }
         }
 
-        // Updated function to save both email and password
         function saveCredentialsToStorage() {
             const currentEmail = emailInput.value.trim();
-            const currentPassword = passwordInput.value; // Get password value
+            const currentPassword = passwordInput.value;
 
             if (currentEmail) {
                 localStorage.setItem(localStorageEmailKey, currentEmail);
@@ -193,12 +191,11 @@
                 localStorage.removeItem(localStorageEmailKey);
             }
 
-            if (currentPassword) { // Save password if field is not empty
+            if (currentPassword) {
                 localStorage.setItem(localStoragePasswordKey, currentPassword);
             } else {
                 localStorage.removeItem(localStoragePasswordKey);
             }
-            console.log("Saved credentials to localStorage.");
         }
 
         loginForm.addEventListener('submit', function(event) {
@@ -213,8 +210,7 @@
             }
 
             if (loginSuccess) {
-                saveCredentialsToStorage(); // Save both on successful login
-                console.log("Login successful! Setting session flag and redirecting...");
+                saveCredentialsToStorage();
                  try {
                     sessionStorage.setItem(sessionAuthKey, 'true');
                 } catch (e) {
@@ -235,11 +231,9 @@
             requestAccessSection.style.display = isHidden ? 'block' : 'none';
         });
 
-        // Save credentials when user leaves either field
         emailInput.addEventListener('blur', saveCredentialsToStorage);
         passwordInput.addEventListener('blur', saveCredentialsToStorage);
 
-        // Load credentials on page load
         document.addEventListener('DOMContentLoaded', (event) => {
             loadCredentialsFromStorage();
         });
