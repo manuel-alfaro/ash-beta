@@ -9,22 +9,21 @@
     <style>
         body {
             font-family: 'Avenir Next', 'Avenir', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            /* Using placeholder background as original was local */
-            /* Consider adding a fallback color or a more robust placeholder */
-            background-image: url('assets/background.jpeg'); /* Placeholder */
+            /* Original background image path */
+            background-image: url('assets/background.jpeg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+            /* Fallback background color */
+            background-color: #333;
         }
         .frosted-glass {
-            /* --- MODIFIED: Reduced blur and made fully transparent --- */
-            -webkit-backdrop-filter: blur(8px); /* Reduced blur */
-            backdrop-filter: blur(8px); /* Reduced blur */
-            background-color: rgba(255, 255, 255, 0.05); /* Fully transparent */
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            background-color: rgba(255, 255, 255, 0.05);
         }
         .dark .frosted-glass {
-             /* --- MODIFIED: Fully transparent for dark mode --- */
-            background-color: rgba(0, 0, 0, 0); /* Fully transparent */
+            background-color: rgba(0, 0, 0, 0);
         }
         .custom-gradient-button {
             background-image: linear-gradient(to right, rgb(112, 188, 252), #285484);
@@ -35,14 +34,16 @@
         }
         #request-access-section {
             display: none;
-            margin-top: 0.5rem;
+            /* Minimal spacing handled by form structure now */
+             margin-top: 0.25rem; /* Added tiny margin-top */
         }
         #error-message {
-            color: #f87171; /* Equivalent to text-red-400 */
+            color: #f87171; /* text-red-400 */
             font-size: 0.875rem; /* text-sm */
-            margin-top: 0.5rem; /* space-y-2 / space-y-6 related */
             text-align: center;
-            min-height: 1.25rem; /* approx text-sm height + margin */
+            min-height: 1.25rem; /* approx text-sm height */
+            margin-top: 0.25rem; /* Added tiny margin-top */
+            margin-bottom: 0.25rem; /* Added tiny margin-bottom */
         }
          @keyframes shake {
              10%, 90% { transform: translate3d(-1px, 0, 0); }
@@ -65,87 +66,75 @@
          /* Input field styling */
          .login-input {
              background-color: rgba(255, 255, 255, 0.1);
-             border: none; /* Removed border */
-             color: #ffffff; /* text-white */
-             /* Tailwind defaults applied via class */
-             /* Ensure border-radius is 0 if not using Tailwind class */
-             border-radius: 0;
+             border: none;
+             color: #ffffff;
+             border-radius: 0; /* Square corners */
          }
          .login-input::placeholder {
-             color: rgba(255, 255, 255, 0.6); /* Adjusted placeholder */
+             color: rgba(255, 255, 255, 0.6);
          }
          .login-input:focus {
             background-color: rgba(255, 255, 255, 0.2);
-            border: none; /* Ensure no border on focus */
-            outline: none; /* Remove default outline */
-            /* No focus ring from original */
-            box-shadow: none; /* Ensure no shadow on focus if needed */
+            border: none;
+            outline: none;
+            box-shadow: none;
          }
          /* Dark mode input styling */
          .dark .login-input {
              background-color: rgba(0, 0, 0, 0.2);
-             border: none; /* Removed border */
+             border: none;
              color: #ffffff;
-             border-radius: 0; /* Ensure square corners in dark mode */
+             border-radius: 0; /* Square corners */
          }
          .dark .login-input::placeholder {
              color: rgba(255, 255, 255, 0.5);
          }
           .dark .login-input:focus {
             background-color: rgba(0, 0, 0, 0.3);
-            border: none; /* Ensure no border on focus */
-            box-shadow: none; /* Ensure no shadow on focus if needed */
+            border: none;
+            box-shadow: none;
          }
     </style>
     </head>
 <body class="h-screen flex items-center justify-center">
 
-    <div class="w-full max-w-md p-8 space-y-6 shadow-lg frosted-glass text-white">
-        <h2 class="text-2xl text-center">Login</h2>
-        <form id="login-form" class="space-y-6">
-            <div>
-                <label for="email" class="block text-sm font-light text-gray-200">Email</label>
-                <div class="mt-1">
+    <div class="w-full max-w-md p-8 shadow-lg frosted-glass text-white">
+        <h2 class="text-2xl text-center mb-4">Login</h2> <form id="login-form">
+            <div class="mb-2"> <label for="email" class="block text-sm font-light text-gray-200 mb-0.5">Email</label> <div>
                     <input id="email" name="email" type="email" autocomplete="email" required
                            placeholder="you@example.com"
                            class="login-input block w-full px-3 py-2 shadow-sm placeholder-gray-400 sm:text-sm">
                 </div>
             </div>
 
-            <div>
-                <label for="password" class="block text-sm font-light text-gray-200">Password</label>
-                <div class="mt-1">
+            <div class="mb-1"> <label for="password" class="block text-sm font-light text-gray-200 mb-0.5">Password</label> <div>
                      <input id="password" name="password" type="password" autocomplete="current-password" required
                            placeholder="••••••••"
                            class="login-input block w-full px-3 py-2 shadow-sm placeholder-gray-400 sm:text-sm">
                 </div>
             </div>
 
-             <div id="error-message"></div>
-
-            <div class="flex items-center justify-end">
-                <div class="text-sm">
-                    <a href="#" id="request-access-link" class="text-gray-300 hover:text-white">
-                        Request Access
-                    </a>
-                </div>
+             <div id="error-message"></div> <div class="flex items-center justify-end mb-1 text-sm">
+                 <a href="#" id="request-access-link" class="text-gray-300 hover:text-white">
+                     Request Access
+                 </a>
             </div>
-            <div id="request-access-section" class="text-sm text-center text-gray-200">
+
+            <div id="request-access-section" class="text-sm text-center text-gray-200 mb-2">
                 Send email to:
                 <a href="mailto:manuel@alphatek.ai" class="text-gray-300 hover:text-white underline">
                     manuel@alphatek.ai
                 </a>
             </div>
 
-             <div>
+             <div class="mt-3">
                  <button type="submit"
                          class="custom-gradient-button w-full flex justify-center py-2 px-4 text-sm text-white focus:outline-none">
                      Login
                  </button>
              </div>
 
-             <div class="pt-4 border-t border-white/20">
-                 <p class="text-center text-sm text-gray-300 mb-3">Visit us:</p>
+             <div class="pt-4 border-t border-white/20 mt-4"> <p class="text-center text-sm text-gray-300 mb-3">Visit us:</p>
                  <div class="flex justify-center space-x-6">
                      <a href="https://www.instagram.com/alphatekofficial" target="_blank" rel="noopener noreferrer" title="Instagram">
                          <i class="fab fa-instagram social-icon"></i>
@@ -170,6 +159,8 @@
         const localStorageEmailKey = 'savedLoginEmail';
         const localStoragePasswordKey = 'savedLoginPassword'; // Be cautious storing passwords, even in localStorage.
         const sessionAuthKey = 'isLoggedIn'; // Key for session storage flag
+        const originalBgImage = "assets/background.jpeg"; // Store original image path
+        const fallbackBgImage = "url('https://placehold.co/1920x1080/333/ccc?text=Background+Error')"; // Fallback placeholder
 
         // --- DOM Elements ---
         const loginForm = document.getElementById('login-form');
@@ -178,8 +169,8 @@
         const errorMessageDiv = document.getElementById('error-message');
         const requestAccessLink = document.getElementById('request-access-link');
         const requestAccessSection = document.getElementById('request-access-section');
-        // Assuming the parent element of the form is the one to shake
         const loginBox = loginForm.parentElement; // Get the main container for shake animation
+        const bodyElement = document.body; // Get body element for background check
 
 
         // --- Functions ---
@@ -196,7 +187,6 @@
 
         /**
          * Loads saved email and password from localStorage into the input fields.
-         * (Kept password loading from original code, but be aware of security)
          */
         function loadCredentialsFromStorage() {
             const savedEmail = localStorage.getItem(localStorageEmailKey);
@@ -211,7 +201,6 @@
 
         /**
          * Saves the current email and password to localStorage.
-         * (Kept password saving from original code, but be aware of security)
          */
         function saveCredentialsToStorage() {
             const currentEmail = emailInput.value.trim();
@@ -236,83 +225,76 @@
          */
         function displayError(message) {
              errorMessageDiv.textContent = message;
-             if (loginBox) { // Check if loginBox exists
+             if (loginBox) {
                  loginBox.classList.add('animate-shake');
-                 // Remove the shake animation class after it finishes
-                 setTimeout(() => loginBox.classList.remove('animate-shake'), 500); // Duration matches CSS animation
+                 setTimeout(() => loginBox.classList.remove('animate-shake'), 500);
              } else {
                  console.error("Could not find login box element to apply shake animation.");
              }
         }
 
+        /**
+         * Checks if the specified background image loads successfully.
+         * Applies a fallback if it fails.
+         * @param {string} imageUrl - The URL of the image to check.
+         */
+        function checkBackgroundImage(imageUrl) {
+            const img = new Image();
+            img.src = imageUrl;
+            img.onerror = () => {
+                console.warn(`Original background image '${imageUrl}' failed to load. Applying fallback.`);
+                bodyElement.style.backgroundImage = fallbackBgImage;
+                bodyElement.style.backgroundColor = '#333'; // Ensure fallback color
+            };
+            img.onload = () => {
+                 console.log(`Background image '${imageUrl}' loaded successfully.`);
+                 bodyElement.style.backgroundColor = ''; // Remove explicit fallback color
+            };
+        }
+
+
         // --- Event Listeners ---
 
         // Handle form submission
         loginForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
+            event.preventDefault();
             const enteredEmail = emailInput.value.trim().toLowerCase();
             const enteredPassword = passwordInput.value;
-            errorMessageDiv.textContent = ''; // Clear previous errors
-            let loginSuccess = false; // Variable from original code
+            errorMessageDiv.textContent = '';
+            let loginSuccess = false;
 
-            // --- Authentication Check (Original Logic) ---
             if (isEmailAllowed(enteredEmail) && enteredPassword === correctPassword) {
                  loginSuccess = true;
             }
 
             if (loginSuccess) {
-                // --- Login Success ---
-                saveCredentialsToStorage(); // Save email and password (original behavior)
+                saveCredentialsToStorage();
                 try {
-                    // Set a flag in sessionStorage to indicate login status for the current session
                     sessionStorage.setItem(sessionAuthKey, 'true');
                 } catch (e) {
                     console.error("Could not set sessionStorage item:", e);
                 }
-                // Redirect to the next page
                 window.location.href = nextPageUrl;
             } else {
-                // --- Login Failure ---
-                displayError('Invalid email or password.'); // Use displayError function
-                // Original code didn't clear password or set focus, keeping it that way
+                displayError('Invalid email or password.');
             }
         });
 
         // Toggle the visibility of the "Request Access" section
         requestAccessLink.addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent default link behavior
+            event.preventDefault();
             const isHidden = requestAccessSection.style.display === 'none' || requestAccessSection.style.display === '';
             requestAccessSection.style.display = isHidden ? 'block' : 'none';
         });
 
-        // Save credentials when the user navigates away from the input fields (on blur)
+        // Save credentials on blur
         emailInput.addEventListener('blur', saveCredentialsToStorage);
-        passwordInput.addEventListener('blur', saveCredentialsToStorage); // Original behavior
+        passwordInput.addEventListener('blur', saveCredentialsToStorage);
 
         // --- Initialization ---
-
-        // Load any saved credentials when the page finishes loading
         document.addEventListener('DOMContentLoaded', () => {
             loadCredentialsFromStorage();
-            // Added error handling for background image loading
-            const bodyElement = document.body;
-            const currentBgImage = window.getComputedStyle(bodyElement).backgroundImage;
-            if (currentBgImage && currentBgImage !== 'none') {
-                const img = new Image();
-                // Extract URL from 'url("...")'
-                const urlMatch = currentBgImage.match(/url\("?(.+?)"?\)/);
-                if (urlMatch && urlMatch[1]) {
-                    img.src = urlMatch[1];
-                    img.onerror = () => {
-                        console.warn("Original background image failed to load. Using fallback.");
-                        // Apply a fallback background color or a different placeholder if needed
-                         bodyElement.style.backgroundImage = `url('https://placehold.co/1920x1080/333/ccc?text=Background+Error')`;
-                         bodyElement.style.backgroundColor = '#333'; // Fallback color
-                    };
-                }
-            } else {
-                 bodyElement.style.backgroundColor = '#333'; // Fallback color if no image initially
-            }
+            checkBackgroundImage(originalBgImage);
         });
     </script>
 
