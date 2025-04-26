@@ -10,7 +10,8 @@
         body {
             font-family: 'Avenir Next', 'Avenir', 'Helvetica Neue', Helvetica, Arial, sans-serif;
             /* Using placeholder background as original was local */
-            background-image: url('assets/background.jpeg');
+            /* Consider adding a fallback color or a more robust placeholder */
+            background-image: url('assets/background.jpeg'); /* Placeholder */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -37,20 +38,20 @@
             margin-top: 0.5rem;
         }
         #error-message {
-            color: #f87171;
+            color: #f87171; /* Equivalent to text-red-400 */
             font-size: 0.875rem; /* text-sm */
             margin-top: 0.5rem; /* space-y-2 / space-y-6 related */
             text-align: center;
             min-height: 1.25rem; /* approx text-sm height + margin */
         }
          @keyframes shake {
-            10%, 90% { transform: translate3d(-1px, 0, 0); }
-            20%, 80% { transform: translate3d(2px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-            40%, 60% { transform: translate3d(4px, 0, 0); }
+             10%, 90% { transform: translate3d(-1px, 0, 0); }
+             20%, 80% { transform: translate3d(2px, 0, 0); }
+             30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+             40%, 60% { transform: translate3d(4px, 0, 0); }
          }
          .animate-shake {
-            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+             animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
          }
          .social-icon {
              color: #e5e7eb; /* text-gray-200 */
@@ -61,12 +62,14 @@
              color: #fff; /* text-white */
              transform: scale(1.1);
          }
-         /* Original Input field styling with no border */
+         /* Input field styling */
          .login-input {
              background-color: rgba(255, 255, 255, 0.1);
              border: none; /* Removed border */
              color: #ffffff; /* text-white */
              /* Tailwind defaults applied via class */
+             /* Ensure border-radius is 0 if not using Tailwind class */
+             border-radius: 0;
          }
          .login-input::placeholder {
              color: rgba(255, 255, 255, 0.6); /* Adjusted placeholder */
@@ -76,12 +79,14 @@
             border: none; /* Ensure no border on focus */
             outline: none; /* Remove default outline */
             /* No focus ring from original */
+            box-shadow: none; /* Ensure no shadow on focus if needed */
          }
-         /* Original Dark mode input styling */
+         /* Dark mode input styling */
          .dark .login-input {
              background-color: rgba(0, 0, 0, 0.2);
              border: none; /* Removed border */
              color: #ffffff;
+             border-radius: 0; /* Ensure square corners in dark mode */
          }
          .dark .login-input::placeholder {
              color: rgba(255, 255, 255, 0.5);
@@ -89,35 +94,44 @@
           .dark .login-input:focus {
             background-color: rgba(0, 0, 0, 0.3);
             border: none; /* Ensure no border on focus */
+            box-shadow: none; /* Ensure no shadow on focus if needed */
          }
     </style>
     </head>
 <body class="h-screen flex items-center justify-center">
 
-    <div class="w-full max-w-md p-8 space-y-6 shadow-lg frosted-glass text-white rounded-lg"> <h2 class="text-2xl text-center">Login</h2> <form id="login-form" class="space-y-6">
+    <div class="w-full max-w-md p-8 space-y-6 shadow-lg frosted-glass text-white">
+        <h2 class="text-2xl text-center">Login</h2>
+        <form id="login-form" class="space-y-6">
             <div>
                 <label for="email" class="block text-sm font-light text-gray-200">Email</label>
                 <div class="mt-1">
                     <input id="email" name="email" type="email" autocomplete="email" required
-                           placeholder="you@example.com" class="login-input block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 sm:text-sm"> </div>
+                           placeholder="you@example.com"
+                           class="login-input block w-full px-3 py-2 shadow-sm placeholder-gray-400 sm:text-sm">
+                </div>
             </div>
 
             <div>
                 <label for="password" class="block text-sm font-light text-gray-200">Password</label>
                 <div class="mt-1">
                      <input id="password" name="password" type="password" autocomplete="current-password" required
-                           placeholder="••••••••" class="login-input block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 sm:text-sm"> </div>
+                           placeholder="••••••••"
+                           class="login-input block w-full px-3 py-2 shadow-sm placeholder-gray-400 sm:text-sm">
+                </div>
             </div>
 
              <div id="error-message"></div>
 
             <div class="flex items-center justify-end">
                 <div class="text-sm">
-                    <a href="#" id="request-access-link" class="text-gray-300 hover:text-white"> Request Access
+                    <a href="#" id="request-access-link" class="text-gray-300 hover:text-white">
+                        Request Access
                     </a>
                 </div>
             </div>
-            <div id="request-access-section" class="text-sm text-center text-gray-200"> Send email to:
+            <div id="request-access-section" class="text-sm text-center text-gray-200">
+                Send email to:
                 <a href="mailto:manuel@alphatek.ai" class="text-gray-300 hover:text-white underline">
                     manuel@alphatek.ai
                 </a>
@@ -125,11 +139,14 @@
 
              <div>
                  <button type="submit"
-                         class="custom-gradient-button w-full flex justify-center py-2 px-4 rounded-md text-sm text-white focus:outline-none"> Login
+                         class="custom-gradient-button w-full flex justify-center py-2 px-4 text-sm text-white focus:outline-none">
+                     Login
                  </button>
              </div>
 
-             <div class="pt-4 border-t border-white/20"> <p class="text-center text-sm text-gray-300 mb-3">Visit us:</p> <div class="flex justify-center space-x-6">
+             <div class="pt-4 border-t border-white/20">
+                 <p class="text-center text-sm text-gray-300 mb-3">Visit us:</p>
+                 <div class="flex justify-center space-x-6">
                      <a href="https://www.instagram.com/alphatekofficial" target="_blank" rel="noopener noreferrer" title="Instagram">
                          <i class="fab fa-instagram social-icon"></i>
                      </a>
@@ -277,6 +294,25 @@
         // Load any saved credentials when the page finishes loading
         document.addEventListener('DOMContentLoaded', () => {
             loadCredentialsFromStorage();
+            // Added error handling for background image loading
+            const bodyElement = document.body;
+            const currentBgImage = window.getComputedStyle(bodyElement).backgroundImage;
+            if (currentBgImage && currentBgImage !== 'none') {
+                const img = new Image();
+                // Extract URL from 'url("...")'
+                const urlMatch = currentBgImage.match(/url\("?(.+?)"?\)/);
+                if (urlMatch && urlMatch[1]) {
+                    img.src = urlMatch[1];
+                    img.onerror = () => {
+                        console.warn("Original background image failed to load. Using fallback.");
+                        // Apply a fallback background color or a different placeholder if needed
+                         bodyElement.style.backgroundImage = `url('https://placehold.co/1920x1080/333/ccc?text=Background+Error')`;
+                         bodyElement.style.backgroundColor = '#333'; // Fallback color
+                    };
+                }
+            } else {
+                 bodyElement.style.backgroundColor = '#333'; // Fallback color if no image initially
+            }
         });
     </script>
 
