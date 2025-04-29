@@ -6,6 +6,7 @@
     <title>Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="assets/emails.js"></script>
     <style>
         body {
             font-family: 'Avenir Next', 'Avenir', 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -74,10 +75,10 @@
              color: rgba(255, 255, 255, 0.6);
          }
          .login-input:focus {
-            background-color: rgba(255, 255, 255, 0.2);
-            border: none;
-            outline: none;
-            box-shadow: none;
+           background-color: rgba(255, 255, 255, 0.2);
+           border: none;
+           outline: none;
+           box-shadow: none;
          }
          /* Dark mode input styling */
          .dark .login-input {
@@ -93,39 +94,46 @@
             background-color: rgba(0, 0, 0, 0.3);
             border: none;
             box-shadow: none;
-         }
+          }
     </style>
     </head>
 <body class="h-screen flex items-center justify-center">
 
     <div class="w-full max-w-md p-8 shadow-lg frosted-glass text-white">
-        <h2 class="text-2xl text-center mb-4">Login</h2> <form id="login-form">
-            <div class="mb-2"> <label for="email" class="block text-sm font-light text-gray-200 mb-0.5">Email</label> <div>
+        <h2 class="text-2xl text-center mb-4">Login</h2>
+        <form id="login-form">
+            <div class="mb-2">
+                <label for="email" class="block text-sm font-light text-gray-200 mb-0.5">Email</label>
+                <div>
                     <input id="email" name="email" type="email" autocomplete="email" required
                            placeholder="you@example.com"
                            class="login-input block w-full px-3 py-2 shadow-sm placeholder-gray-400 sm:text-sm">
                 </div>
             </div>
 
-            <div class="mb-1"> <label for="password" class="block text-sm font-light text-gray-200 mb-0.5">Password</label> <div>
+            <div class="mb-1">
+                <label for="password" class="block text-sm font-light text-gray-200 mb-0.5">Password</label>
+                <div>
                      <input id="password" name="password" type="password" autocomplete="current-password" required
-                           placeholder="••••••••"
-                           class="login-input block w-full px-3 py-2 shadow-sm placeholder-gray-400 sm:text-sm">
+                            placeholder="••••••••"
+                            class="login-input block w-full px-3 py-2 shadow-sm placeholder-gray-400 sm:text-sm">
                 </div>
             </div>
 
-             <div id="error-message"></div> <div class="flex items-center justify-end mb-1 text-sm">
+             <div id="error-message"></div>
+
+            <div class="flex items-center justify-end mb-1 text-sm">
                  <a href="#" id="request-access-link" class="text-gray-300 hover:text-white">
                      Request Access
                  </a>
-            </div>
+             </div>
 
-            <div id="request-access-section" class="text-sm text-center text-gray-200 mb-2">
-                Send email to:
-                <a href="mailto:manuel@alphatek.ai" class="text-gray-300 hover:text-white underline">
-                    manuel@alphatek.ai
-                </a>
-            </div>
+             <div id="request-access-section" class="text-sm text-center text-gray-200 mb-2">
+                 Send email to:
+                 <a href="mailto:manuel@alphatek.ai" class="text-gray-300 hover:text-white underline">
+                     manuel@alphatek.ai
+                 </a>
+             </div>
 
              <div class="mt-3">
                  <button type="submit"
@@ -134,7 +142,8 @@
                  </button>
              </div>
 
-             <div class="pt-4 border-t border-white/20 mt-4"> <p class="text-center text-sm text-gray-300 mb-3">Visit us:</p>
+             <div class="pt-4 border-t border-white/20 mt-4">
+                 <p class="text-center text-sm text-gray-300 mb-3">Visit us:</p>
                  <div class="flex justify-center space-x-6">
                      <a href="https://www.instagram.com/alphatekofficial" target="_blank" rel="noopener noreferrer" title="Instagram">
                          <i class="fab fa-instagram social-icon"></i>
@@ -149,17 +158,14 @@
 
     <script>
         // --- Constants ---
-        const allowedEmails = [
-            "test@example.com",
-            "bruker@domene.no",
-            "manuel@alphatek.ai"
-        ];
-        const correctPassword = "alphatek"; // Note: Storing passwords client-side is insecure for real applications.
-        const nextPageUrl = "screening.html"; // URL to redirect to on successful login
+        // Bruker nå listen fra emails.js (allowedObfuscatedEmails)
+        // const allowedEmails = [...]; // Denne er ikke lenger nødvendig her
+        const correctPassword = "alphatek"; // Passordet er fortsatt hardkodet
+        const nextPageUrl = "screening.html"; // URL for omdirigering ved suksess
         const localStorageEmailKey = 'savedLoginEmail';
-        const localStoragePasswordKey = 'savedLoginPassword'; // Be cautious storing passwords, even in localStorage.
-        const sessionAuthKey = 'isLoggedIn'; // Key for session storage flag
-        const originalBgImage = "assets/background.jpeg"; // Store original image path
+        const localStoragePasswordKey = 'savedLoginPassword'; // Vær forsiktig med å lagre passord, selv i localStorage.
+        const sessionAuthKey = 'isLoggedIn'; // Nøkkel for session storage flagg
+        const originalBgImage = "assets/background.jpeg"; // Lagrer original bildesti
         const fallbackBgImage = "url('https://placehold.co/1920x1080/333/ccc?text=Background+Error')"; // Fallback placeholder
 
         // --- DOM Elements ---
@@ -169,24 +175,32 @@
         const errorMessageDiv = document.getElementById('error-message');
         const requestAccessLink = document.getElementById('request-access-link');
         const requestAccessSection = document.getElementById('request-access-section');
-        const loginBox = loginForm.parentElement; // Get the main container for shake animation
-        const bodyElement = document.body; // Get body element for background check
+        const loginBox = loginForm.parentElement; // Henter hovedcontaineren for shake-animasjon
+        const bodyElement = document.body; // Henter body-elementet for bakgrunnssjekk
 
 
         // --- Functions ---
 
         /**
-         * Checks if the provided email is in the allowed list (case-insensitive).
+         * Checks if the provided email is in the allowed list from emails.js (case-insensitive).
+         * Sjekker om den oppgitte e-posten er i den tillatte listen fra emails.js (ikke case-sensitiv).
+         * Krever at emails.js er lastet og definerer allowedObfuscatedEmails.
          * @param {string} emailToCheck - The email address to check.
          * @returns {boolean} True if the email is allowed, false otherwise.
          */
         function isEmailAllowed(emailToCheck) {
+            // Sjekker om allowedObfuscatedEmails er definert og er en array
+            if (typeof allowedObfuscatedEmails === 'undefined' || !Array.isArray(allowedObfuscatedEmails)) {
+                 console.error("Error: allowedObfuscatedEmails is not defined or not an array. Ensure assets/emails.js is loaded correctly.");
+                 return false; // Returnerer false hvis listen ikke er tilgjengelig
+            }
             const normalizedEmail = emailToCheck.trim().toLowerCase();
-            return allowedEmails.includes(normalizedEmail);
+            return allowedObfuscatedEmails.includes(normalizedEmail);
         }
 
         /**
          * Loads saved email and password from localStorage into the input fields.
+         * Laster lagret e-post og passord fra localStorage inn i input-feltene.
          */
         function loadCredentialsFromStorage() {
             const savedEmail = localStorage.getItem(localStorageEmailKey);
@@ -201,6 +215,7 @@
 
         /**
          * Saves the current email and password to localStorage.
+         * Lagrer gjeldende e-post og passord til localStorage.
          */
         function saveCredentialsToStorage() {
             const currentEmail = emailInput.value.trim();
@@ -221,6 +236,7 @@
 
         /**
          * Displays an error message and applies a shake animation to the login box.
+         * Viser en feilmelding og legger til en riste-animasjon på login-boksen.
          * @param {string} message - The error message to display.
          */
         function displayError(message) {
@@ -236,6 +252,8 @@
         /**
          * Checks if the specified background image loads successfully.
          * Applies a fallback if it fails.
+         * Sjekker om den spesifiserte bakgrunnsbildet lastes inn riktig.
+         * Bruker en fallback hvis det feiler.
          * @param {string} imageUrl - The URL of the image to check.
          */
         function checkBackgroundImage(imageUrl) {
@@ -244,18 +262,18 @@
             img.onerror = () => {
                 console.warn(`Original background image '${imageUrl}' failed to load. Applying fallback.`);
                 bodyElement.style.backgroundImage = fallbackBgImage;
-                bodyElement.style.backgroundColor = '#333'; // Ensure fallback color
+                bodyElement.style.backgroundColor = '#333'; // Sikrer fallback-farge
             };
             img.onload = () => {
                  console.log(`Background image '${imageUrl}' loaded successfully.`);
-                 bodyElement.style.backgroundColor = ''; // Remove explicit fallback color
+                 bodyElement.style.backgroundColor = ''; // Fjerner eksplisitt fallback-farge
             };
         }
 
 
         // --- Event Listeners ---
 
-        // Handle form submission
+        // Håndterer skjema-innsending
         loginForm.addEventListener('submit', function(event) {
             event.preventDefault();
             const enteredEmail = emailInput.value.trim().toLowerCase();
@@ -263,6 +281,7 @@
             errorMessageDiv.textContent = '';
             let loginSuccess = false;
 
+            // Sjekker mot listen fra emails.js OG hardkodet passord
             if (isEmailAllowed(enteredEmail) && enteredPassword === correctPassword) {
                  loginSuccess = true;
             }
@@ -274,24 +293,25 @@
                 } catch (e) {
                     console.error("Could not set sessionStorage item:", e);
                 }
-                window.location.href = nextPageUrl;
+                 window.location.href = nextPageUrl;
             } else {
-                displayError('Invalid email or password.');
+                 displayError('Ugyldig e-post eller passord.'); // Oppdatert feilmelding
             }
         });
 
-        // Toggle the visibility of the "Request Access" section
+        // Veksler synligheten av "Request Access" seksjonen
         requestAccessLink.addEventListener('click', function(event) {
             event.preventDefault();
             const isHidden = requestAccessSection.style.display === 'none' || requestAccessSection.style.display === '';
             requestAccessSection.style.display = isHidden ? 'block' : 'none';
         });
 
-        // Save credentials on blur
+        // Lagrer legitimasjon ved "blur" (når feltet mister fokus)
         emailInput.addEventListener('blur', saveCredentialsToStorage);
         passwordInput.addEventListener('blur', saveCredentialsToStorage);
 
         // --- Initialization ---
+        // Kjøres når DOM er fullastet
         document.addEventListener('DOMContentLoaded', () => {
             loadCredentialsFromStorage();
             checkBackgroundImage(originalBgImage);
