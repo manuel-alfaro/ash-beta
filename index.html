@@ -243,7 +243,6 @@
 
         const nextPageUrl = "screening.html";
         const localStorageEmailKey = 'savedLoginEmail';
-        const sessionAuthKey = 'isLoggedInPwrAnalytics';
 
         const loginForm = document.getElementById('login-form');
         const emailInput = document.getElementById('email');
@@ -311,11 +310,9 @@
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                console.log('User is signed in (Firebase onAuthStateChanged):', user.uid);
-                try { sessionStorage.setItem(sessionAuthKey, 'true'); } catch (e) { console.error("Session storage error on auth state change:", e); }
+                console.log('INDEX PAGE: User is signed in (Firebase onAuthStateChanged):', user.uid);
             } else {
-                console.log('User is signed out (Firebase onAuthStateChanged).');
-                try { sessionStorage.removeItem(sessionAuthKey); } catch (e) { console.error("Session storage error on auth state change (sign out):", e); }
+                console.log('INDEX PAGE: User is signed out (Firebase onAuthStateChanged).');
             }
         });
 
@@ -336,12 +333,6 @@
                 console.log("Firebase login successful for user:", user.uid);
 
                 saveEmailToStorage();
-                try {
-                    sessionStorage.setItem(sessionAuthKey, 'true');
-                    console.log("Session auth key set.");
-                } catch (e) {
-                    console.error("Could not set sessionStorage item after login:", e);
-                }
 
                 console.log("Attempting to redirect to:", nextPageUrl);
                 window.location.href = nextPageUrl;
