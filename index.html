@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login / Sign Up</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" xintegrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="assets/emails.js"></script>
     <style>
         body {
@@ -33,35 +33,13 @@
         .custom-gradient-button:hover {
             background-image: linear-gradient(to right, #285484, #1e3a5c);
         }
-        .custom-outline-gradient-button {
-            background-color: transparent;
-            position: relative;
-            border: none;
-            color: #FFF;
-            transition: color 0.2s ease-in-out;
-            padding: 1px;
-        }
-        .custom-outline-gradient-button::before {
-            content: '';
-            position: absolute;
-            top: 0; right: 0; bottom: 0; left: 0;
-            z-index: -1;
-            margin: -1px;
-            border-radius: inherit;
-            background-image: linear-gradient(to right, rgb(112, 188, 252), #285484);
-        }
-         .custom-outline-gradient-button .button-content {
-            background: transparent;
-            padding: 0.4rem 0.9rem;
-            border-radius: inherit;
-            display: block;
-            width: 100%;
-            height: 100%;
-            box-sizing: border-box;
-        }
-        .custom-outline-gradient-button:hover {
+
+        /* Fjernet .custom-outline-gradient-button CSS-klassen helt, bruker inline SVG og Tailwind */
+        #open-signup-modal-button:hover span { /* For å endre tekstfarge på hover for SVG-knappen */
              color: rgb(112, 188, 252);
         }
+
+
         #request-access-section { display: none; margin-top: 0.25rem; }
         #error-message, #registration-error-message {
             color: #f87171; font-size: 0.875rem; text-align: center;
@@ -153,8 +131,19 @@
                     Login
                 </button>
                 <button type="button" id="open-signup-modal-button"
-                        class="custom-outline-gradient-button flex-1 text-sm focus:outline-none rounded-md">
-                     <span class="button-content">Sign Up</span>
+                        class="relative flex-1 py-2 px-4 text-sm text-white focus:outline-none rounded-md bg-transparent">
+                    <svg class="absolute top-0 left-0 w-full h-full" style="z-index: 0; border-radius: inherit;">
+                        <defs>
+                            <linearGradient id="buttonBorderGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:rgb(112, 188, 252);stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#285484;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <rect x="1" y="1" width="calc(100% - 2px)" height="calc(100% - 2px)"
+                              rx="calc(0.375rem - 1px)" ry="calc(0.375rem - 1px)"
+                              fill="transparent" stroke="url(#buttonBorderGradient)" stroke-width="2"/>
+                    </svg>
+                    <span class="relative z-10">Sign Up</span>
                 </button>
             </div>
             <div class="pt-4 border-t border-white/20 mt-4">
