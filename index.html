@@ -18,6 +18,8 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 400px;
         }
         h2 {
             text-align: center;
@@ -29,15 +31,6 @@
         label {
             display: block;
             margin-bottom: 5px;
-        }
-        input[type="email"],
-        input[type="password"],
-        input[type="text"] { /* Added for a potential username field */
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
         }
         /* Styles from your previous request for input fields */
         .custom-input {
@@ -70,6 +63,7 @@
             margin-top: 15px;
             padding: 10px;
             border-radius: 4px;
+            word-break: break-word; /* To wrap long error messages */
         }
         .message.success {
             background-color: #d4edda;
@@ -105,82 +99,78 @@
 
     <script type="module">
         // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"; // Updated to v10+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        // IMPORTANT: Import Auth and Firestore functions
         import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
+        // You can keep getAnalytics if you are using it
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
 
         // Your web app's Firebase configuration
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID",
-            // measurementId: "YOUR_MEASUREMENT_ID" // Optional
+          apiKey: "AIzaSyDhEihuoWm4c5MSOHrSqkkzca7tn86roq4",
+          authDomain: "pwr-analytics.firebaseapp.com",
+          projectId: "pwr-analytics",
+          storageBucket: "pwr-analytics.appspot.com", // Please VERIFY this value in your Firebase console.
+                                                     // It's often project-id.appspot.com
+          messagingSenderId: "9839468523", // This is a string, ensure it is if the original had quotes
+          appId: "1:9839468523:web:1d994de254b2a24d91c3ae",
+          measurementId: "G-N35HQ5CMD5"
         };
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
+
+        // Initialize Firebase services
         const auth = getAuth(app);
-        const db = getFirestore(app); // Initialize Firestore
+        const db = getFirestore(app);
+        const analytics = getAnalytics(app); // Initialize Analytics if you're using it
 
         const registrationForm = document.getElementById('registrationForm');
         const messageArea = document.getElementById('messageArea');
 
         registrationForm.addEventListener('submit', async (e) => {
-            e.preventDefault(); // Prevent form from submitting the traditional way
+            e.preventDefault();
 
             const email = document.getElementById('regEmail').value;
             const password = document.getElementById('regPassword').value;
-            const username = document.getElementById('regUsername').value; // Optional username
+            const username = document.getElementById('regUsername').value;
 
-            messageArea.style.display = 'none'; // Hide previous messages
+            messageArea.style.display = 'none';
             messageArea.textContent = '';
 
             try {
-                // 1. Create user in Firebase Authentication
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
                 console.log("User created in Auth:", user.uid, user.email);
-                messageArea.textContent = "User registered successfully in Auth! Saving to database...";
+                messageArea.textContent = "User registered in Auth! Saving to database...";
                 messageArea.className = 'message success';
                 messageArea.style.display = 'block';
 
-
-                // 2. Save additional user information to Firestore
-                // We use user.uid as the document ID in a 'users' collection
                 const userDocRef = doc(db, "users", user.uid);
-
                 const userData = {
                     uid: user.uid,
                     email: user.email,
-                    createdAt: serverTimestamp(), // Good practice to store creation time
-                    // Add any other data you want to store
+                    createdAt: serverTimestamp(),
                 };
-
-                if (username) { // Only add username if provided
+                if (username) {
                     userData.username = username;
                 }
-
                 await setDoc(userDocRef, userData);
 
-                console.log("User data saved to Firestore with ID: ", user.uid);
+                console.log("User data saved to Firestore:", user.uid);
                 messageArea.textContent = "User registered and data saved successfully!";
-                messageArea.className = 'message success'; // Keep it green
-                messageArea.style.display = 'block';
-
-                // Optionally, redirect the user or clear the form
+                messageArea.className = 'message success';
                 registrationForm.reset();
-                // window.location.href = '/login.html'; // Or to a welcome page
+                // window.location.href = '/login.html'; // Or to a welcome/screening page
 
             } catch (error) {
                 console.error("Error during registration:", error);
-                messageArea.textContent = `Error: ${error.message} (Code: ${error.code})`;
+                let errorMessage = `Error: ${error.message}`;
+                if (error.code) {
+                    errorMessage += ` (Code: ${error.code})`;
+                }
+                messageArea.textContent = errorMessage;
                 messageArea.className = 'message error';
                 messageArea.style.display = 'block';
             }
