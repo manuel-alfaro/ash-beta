@@ -6,7 +6,7 @@
     <title>Functional Shoulder Screening</title>
     <script src="https://cdn.plot.ly/plotly-2.27.1.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Avenir:wght@400&family=Futura:wght@400&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" xintegrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
         :root {
@@ -25,7 +25,6 @@
             --app-button-light-gradient-end: var(--app-primary-color);
             --app-button-light-hover-gradient-start: var(--app-primary-color);
             --app-button-light-hover-gradient-end: #1e3a5c;
-
             --light-gray: #f8f9fa;
             --medium-gray: #dee2e6;
             --dark-gray: #495057;
@@ -44,14 +43,12 @@
             --sidebar-border-color: var(--medium-gray);
             --header-border-color: var(--medium-gray);
             --subtle-shadow: 0 1px 3px rgba(0,0,0,0.1);
-
             --left-line-color: #ff7f0e;
             --right-line-color: #1f77b4;
             --norm-poor-bg: rgba(252, 165, 165, 0.5);
             --norm-average-bg: rgba(252, 211, 77, 0.5);
             --norm-good-bg: rgba(167, 243, 208, 0.5);
             --norm-excellent-bg: rgba(52, 211, 153, 0.5);
-
             --base-font-size: 16px;
             --graph-box-height: 340px;
             --sidebar-width: 180px;
@@ -60,7 +57,6 @@
             --bold-font-weight: 400;
             --main-content-margin: 20px;
         }
-
         body {
             font-family: 'Avenir', sans-serif;
             background-color: var(--light-gray);
@@ -76,14 +72,22 @@
             -moz-osx-font-smoothing: grayscale;
             font-synthesis: none;
         }
-
         .app-layout {
-            display: flex;
+            display: none; /* Hidden by default, shown by JS after auth */
+            flex-direction: row; /* Changed from display: flex to display: none initially */
             width: 100%;
             min-height: 100vh;
             margin-top: 0;
         }
-
+        .loading-message {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-size: 1.2em;
+            color: var(--app-primary-color);
+            text-align: center;
+        }
         .app-sidebar {
             width: var(--sidebar-width);
             background-color: var(--light-gray);
@@ -99,26 +103,22 @@
             overflow-y: auto;
             z-index: 10;
         }
-
         .sidebar-logo-placeholder {
             height: 50px;
             margin-bottom: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
-             font-size: 1.5rem;
+            font-size: 1.5rem;
         }
-         .sidebar-logo-placeholder i {
-             color: var(--app-primary-color);
-         }
-
-
+        .sidebar-logo-placeholder i {
+            color: var(--app-primary-color);
+        }
         .sidebar-buttons {
-             display: flex;
-             flex-direction: column;
-             gap: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
-
         .sidebar-social-links {
             margin-top: auto;
             padding-top: 20px;
@@ -127,7 +127,7 @@
         }
         .sidebar-social-links a {
             color: var(--app-secondary-color);
-            margin: 0 28px; /* <<< Økt avstand ytterligere */
+            margin: 0 28px;
             font-size: 1.8rem;
             text-decoration: none;
             transition: color 0.2s ease;
@@ -135,7 +135,6 @@
         .sidebar-social-links a:hover {
             color: var(--app-primary-color);
         }
-
         .app-main-content {
             flex-grow: 1;
             margin-left: calc(var(--sidebar-width) + var(--main-content-margin));
@@ -145,7 +144,6 @@
             height: 100vh;
             box-sizing: border-box;
         }
-
         .app-sidebar button,
         .app-sidebar a button {
             font-family: 'Avenir', sans-serif;
@@ -173,36 +171,30 @@
             color: var(--app-primary-color);
             transition: color 0.3s ease;
         }
-
         .app-sidebar button:hover,
         .app-sidebar a button:hover {
             background-image: linear-gradient(to right, var(--app-button-light-gradient-start), var(--app-button-light-gradient-end));
             color: var(--app-text-on-primary);
             transform: translateY(-1px);
         }
-
         .app-sidebar button:active,
         .app-sidebar a button:active {
             transform: translateY(0px);
         }
-
         .app-sidebar button:hover i,
         .app-sidebar a button:hover i,
         .app-sidebar button:active i,
         .app-sidebar a button:active i {
-             color: var(--app-text-on-primary);
+            color: var(--app-text-on-primary);
         }
-
         .app-sidebar a {
             text-decoration: none;
             display: block;
         }
-
         .content-container {
             max-width: 1100px;
             margin: 0 auto;
         }
-
         h1, h2, h3 {
             font-family: 'Avenir', sans-serif;
             margin-bottom: 0.75em;
@@ -231,9 +223,7 @@
             font-weight: var(--normal-font-weight);
         }
         h3.normative-title { text-align: center;}
-
         #report-content { background-color: var(--white); padding: 15px 0; }
-
         #top-controls {
             display: flex;
             justify-content: flex-start;
@@ -247,17 +237,16 @@
             padding: 0;
             box-shadow: none;
         }
-
         #top-controls .control-item {
-             border: none;
-             border-radius: 0;
-             background-color: var(--light-gray);
-             padding: 15px 20px;
-             display: flex;
-             align-items: center;
-             gap: 8px;
-             box-shadow: var(--subtle-shadow);
-             transition: none;
+            border: none;
+            border-radius: 0;
+            background-color: var(--light-gray);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--subtle-shadow);
+            transition: none;
         }
         #top-controls .control-item:focus-within {
             box-shadow: var(--subtle-shadow);
@@ -281,7 +270,7 @@
             transition: background-color 0.3s ease;
             font-weight: var(--normal-font-weight);
             width: 80px;
-             border-bottom: none;
+            border-bottom: none;
         }
         #top-controls #injured-side-radio:focus,
         #top-controls #bodyweight-input:focus {
@@ -290,18 +279,16 @@
             background-color: var(--light-gray);
         }
         #top-controls #bodyweight-input { width: 60px; }
-
-         #top-controls #injured-side-radio {
-             appearance: none;
-             -webkit-appearance: none;
-             -moz-appearance: none;
-             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23212529'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
-             background-repeat: no-repeat;
-             background-position: right 0.5rem center;
-             background-size: 1.5em 1.5em;
-             padding-right: 2.5rem;
-         }
-
+        #top-controls #injured-side-radio {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23212529'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
         #patient-data-container {
             display: none;
             background-color: var(--light-gray);
@@ -344,27 +331,25 @@
             width: 100%;
             box-sizing: border-box;
             font-weight: var(--normal-font-weight);
-             border-bottom: none;
+            border-bottom: none;
         }
         #patient-data-container input[type="text"]:focus,
         #patient-data-container input[type="number"]:focus,
         #patient-data-container select:focus {
             border-color: var(--app-primary-color);
             outline: none;
-             background-color: var(--white);
+            background-color: var(--white);
         }
-
-         #patient-data-container select {
-             appearance: none;
-             -webkit-appearance: none;
-             -moz-appearance: none;
-             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23212529'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
-             background-repeat: no-repeat;
-             background-position: right 0.5rem center;
-             background-size: 1.5em 1.5em;
-             padding-right: 2.5rem;
-         }
-
+        #patient-data-container select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23212529'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
         #input-section-container {
             display: flex;
             flex-wrap: wrap;
@@ -382,7 +367,6 @@
             position: relative;
             overflow: hidden;
         }
-
         .input-position-box h4 {
             font-family: 'Avenir', sans-serif;
             font-weight: var(--normal-font-weight);
@@ -460,16 +444,13 @@
             font-size: 0.7em;
             vertical-align: super;
         }
-
         #canvas-container {
             display: none;
         }
-
         .position-row { display: flex; flex-wrap: wrap; gap: 30px; margin-bottom: 35px; padding-bottom: 30px; align-items: stretch; }
         .position-row:last-child { border-bottom: none; margin-bottom: 0; }
         .asymmetry-graph-container { flex: 6; min-width: 320px; }
         .normative-graph-container { flex: 4; min-width: 260px; }
-
         .position-box, .normative-box {
             border: none;
             padding: 10px 20px 15px 20px;
@@ -485,9 +466,8 @@
             overflow: hidden;
         }
         .position-box.green-box {
-             box-shadow: 0 0 15px 5px var(--success-shadow-color);
+            box-shadow: 0 0 15px 5px var(--success-shadow-color);
         }
-
         .position-box::after {
             content: '';
             position: absolute;
@@ -505,21 +485,16 @@
             border-radius: 50%;
             transition: opacity 0.3s ease;
         }
-
         .position-box.green-box::after {
             opacity: 0.85;
         }
-
         .js-plotly-plot {
             flex-grow: 1;
             position: relative;
             z-index: 1;
-         }
-
+        }
         #normative-placeholder { text-align: center; color: var(--dark-gray); font-style: italic; padding: 20px; background-color: var(--light-gray); border-radius: var(--border-radius); margin-top: 1em;}
         #bottom-area { margin-top: 30px; padding-top: 15px; border-top: 1px solid var(--medium-gray); min-height: 30px; }
-
-
         #preview-exit-button-inline {
             display: none;
             position: fixed;
@@ -538,16 +513,13 @@
             transition: all 0.3s ease;
             font-family: inherit;
         }
-         #preview-exit-button-inline:hover { background-color: #b91c1c; box-shadow: 0 4px 10px rgba(185, 28, 28, 0.3); transform: translateY(-1px); }
-         #preview-exit-button-inline:active { transform: translateY(0px); box-shadow: 0 2px 5px rgba(185, 28, 28, 0.2); }
-         #preview-exit-button-inline i { margin-right: 6px; }
-
-
+        #preview-exit-button-inline:hover { background-color: #b91c1c; box-shadow: 0 4px 10px rgba(185, 28, 28, 0.3); transform: translateY(-1px); }
+        #preview-exit-button-inline:active { transform: translateY(0px); box-shadow: 0 2px 5px rgba(185, 28, 28, 0.2); }
+        #preview-exit-button-inline i { margin-right: 6px; }
         .explanation-box { display: none; background-color: var(--light-gray); border: 1px solid var(--medium-gray); border-left: 5px solid var(--app-primary-color); padding: 15px; margin: 1em 0 2em 0; border-radius: var(--border-radius); font-size: 0.9em; color: var(--dark-gray); }
         .explanation-box h4 { margin-top: 0; color: var(--app-primary-color); font-family: inherit; font-weight: var(--normal-font-weight); }
         .explanation-box p { margin-bottom: 0.5em; }
         .explanation-box ul { margin-top: 0.5em; padding-left: 20px; }
-
         body.pdf-preview-active { font-size: var(--base-font-size); background-color: var(--white) !important; padding-top: 0 !important; display: block; }
         body.pdf-preview-active .top-header-bar { display: none; }
         body.pdf-preview-active .app-sidebar { display: none; }
@@ -576,175 +548,184 @@
             height: var(--graph-box-height);
             background-color: var(--light-gray);
         }
-         body.pdf-preview-active .position-box.green-box::after {
-             opacity: 0.85;
-         }
-         body.pdf-preview-active .position-box.green-box {
-              box-shadow: 0 0 15px 5px var(--success-shadow-color) !important;
-              border: none !important;
-         }
+        body.pdf-preview-active .position-box.green-box::after {
+            opacity: 0.85;
+        }
+        body.pdf-preview-active .position-box.green-box {
+            box-shadow: 0 0 15px 5px var(--success-shadow-color) !important;
+            border: none !important;
+        }
         body.pdf-preview-active h3 { font-size: 1.1rem; font-weight: var(--normal-font-weight); }
         body.pdf-preview-active h3.normative-title { font-size: 1.0rem; font-weight: var(--normal-font-weight); }
-
-
         @media (max-width: 992px) {
-             :root { --sidebar-width: 70px; }
-             .app-main-content { margin-left: calc(var(--sidebar-width) + var(--main-content-margin)); padding: 25px 30px; }
-             .app-sidebar { padding: 20px 10px; top: 0; height: 100vh; }
-             .app-sidebar .sidebar-logo-placeholder { height: 40px; margin-bottom: 40px; font-size: 1.3rem; }
-             .app-sidebar .button-text { display: none; }
-             .app-sidebar button, .app-sidebar a button { justify-content: center; padding: 10px 0; gap: 0; font-size: 0.85rem; }
-             .app-sidebar button i { width: auto; margin: 0; }
-             .sidebar-social-links { display: none; }
-
-             .position-row { flex-direction: column; align-items: stretch; }
-             .asymmetry-graph-container, .normative-graph-container { flex: none; width: 100%; min-width: unset; }
-             .position-box, .normative-box { height: auto; min-height: unset; }
-             #patient-data-grid { grid-template-columns: 1fr; }
-             #input-section-container { flex-direction: column; }
-             .input-position-box { min-width: unset; }
-
-             body.pdf-preview-active .app-main-content { padding: 15px 30px; }
-             body.pdf-preview-active .position-row { align-items: stretch; }
-              body.pdf-preview-active .position-box,
-              body.pdf-preview-active .normative-box { height: auto; min-height: unset; }
+            :root { --sidebar-width: 70px; }
+            .app-main-content { margin-left: calc(var(--sidebar-width) + var(--main-content-margin)); padding: 25px 30px; }
+            .app-sidebar { padding: 20px 10px; top: 0; height: 100vh; }
+            .app-sidebar .sidebar-logo-placeholder { height: 40px; margin-bottom: 40px; font-size: 1.3rem; }
+            .app-sidebar .button-text { display: none; }
+            .app-sidebar button, .app-sidebar a button { justify-content: center; padding: 10px 0; gap: 0; font-size: 0.85rem; }
+            .app-sidebar button i { width: auto; margin: 0; }
+            .sidebar-social-links { display: none; }
+            .position-row { flex-direction: column; align-items: stretch; }
+            .asymmetry-graph-container, .normative-graph-container { flex: none; width: 100%; min-width: unset; }
+            .position-box, .normative-box { height: auto; min-height: unset; }
+            #patient-data-grid { grid-template-columns: 1fr; }
+            #input-section-container { flex-direction: column; }
+            .input-position-box { min-width: unset; }
+            body.pdf-preview-active .app-main-content { padding: 15px 30px; }
+            body.pdf-preview-active .position-row { align-items: stretch; }
+            body.pdf-preview-active .position-box,
+            body.pdf-preview-active .normative-box { height: auto; min-height: unset; }
         }
-
         @media (max-width: 768px) {
-             .app-layout { flex-direction: column; min-height: 100vh; }
-             .app-sidebar {
-                 width: 100%; height: auto; position: relative;
-                 top: 0;
-                 flex-direction: row; flex-wrap: wrap; justify-content: center;
-                 padding: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-                 border-right: none;
-                 z-index: 5;
-                 overflow-y: visible;
-             }
-             .sidebar-logo-placeholder { display: none; }
-             .sidebar-buttons { flex-direction: row; flex-wrap: wrap; justify-content: center; width: 100%; flex-grow: 0; }
-             .app-sidebar button, .app-sidebar a button {
-                 width: auto; flex-grow: 1; max-width: 180px;
-                 justify-content: center; font-size: 0.85rem;
-                 font-weight: var(--normal-font-weight);
-                 padding: 8px 10px; margin: 5px; gap: 8px;
-             }
-              .app-sidebar .button-text { display: inline-block; }
-              .app-sidebar button i { width: auto; margin-right: 5px; }
-
-             .sidebar-social-links {
-                 display: block;
-                 width: 100%;
-                 margin-top: 10px;
-                 padding-top: 0;
-                 border-top: none;
-                 text-align: center;
-             }
-             .sidebar-social-links a {
-                 margin: 0 10px;
-                 font-size: 1.1rem;
-             }
-
-             .app-main-content { margin-left: 0; padding: 20px 15px; height: auto; }
-
-             h1 { font-size: 1.6rem; font-weight: var(--normal-font-weight);}
-             h2 { font-size: 1.3rem; font-weight: var(--normal-font-weight);}
-             h3.position-title, h3.normative-title { font-size: 1.0rem; font-weight: var(--normal-font-weight);}
-             #top-controls { flex-direction: column; align-items: stretch; gap: 10px; margin-bottom: 15px; padding-bottom: 10px;}
-             .control-item { justify-content: space-between; }
-
-             .input-row { flex-direction: column; align-items: flex-start; gap: 5px; }
-             .input-row label { flex-basis: auto; width: 100%; text-align: left; margin-bottom: 3px;}
-             .input-row .input-wrapper { flex-basis: auto; width: 100%; justify-content: flex-start; }
-             .input-row input { width: auto; font-size: 1.2rem; font-weight: var(--normal-font-weight); }
-             .input-row input::placeholder { font-size: 0.8rem; font-weight: var(--normal-font-weight);}
-             .unit-text { margin-left: 8px; }
-
-             .position-box, .normative-box { padding: 10px; margin-bottom: 0;}
-
-             #preview-exit-button-inline {
-                 top: 10px;
-                 right: 10px;
-                 font-size: 0.8rem;
-                 padding: 6px 10px;
-             }
-
-             body.pdf-preview-active .app-main-content { padding: 10px 15px; }
+            .app-layout { flex-direction: column; min-height: 100vh; }
+            .app-sidebar {
+                width: 100%; height: auto; position: relative;
+                top: 0;
+                flex-direction: row; flex-wrap: wrap; justify-content: center;
+                padding: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                border-right: none;
+                z-index: 5;
+                overflow-y: visible;
+            }
+            .sidebar-logo-placeholder { display: none; }
+            .sidebar-buttons { flex-direction: row; flex-wrap: wrap; justify-content: center; width: 100%; flex-grow: 0; }
+            .app-sidebar button, .app-sidebar a button {
+                width: auto; flex-grow: 1; max-width: 180px;
+                justify-content: center; font-size: 0.85rem;
+                font-weight: var(--normal-font-weight);
+                padding: 8px 10px; margin: 5px; gap: 8px;
+            }
+            .app-sidebar .button-text { display: inline-block; }
+            .app-sidebar button i { width: auto; margin-right: 5px; }
+            .sidebar-social-links {
+                display: block;
+                width: 100%;
+                margin-top: 10px;
+                padding-top: 0;
+                border-top: none;
+                text-align: center;
+            }
+            .sidebar-social-links a {
+                margin: 0 10px;
+                font-size: 1.1rem;
+            }
+            .app-main-content { margin-left: 0; padding: 20px 15px; height: auto; }
+            h1 { font-size: 1.6rem; font-weight: var(--normal-font-weight);}
+            h2 { font-size: 1.3rem; font-weight: var(--normal-font-weight);}
+            h3.position-title, h3.normative-title { font-size: 1.0rem; font-weight: var(--normal-font-weight);}
+            #top-controls { flex-direction: column; align-items: stretch; gap: 10px; margin-bottom: 15px; padding-bottom: 10px;}
+            .control-item { justify-content: space-between; }
+            .input-row { flex-direction: column; align-items: flex-start; gap: 5px; }
+            .input-row label { flex-basis: auto; width: 100%; text-align: left; margin-bottom: 3px;}
+            .input-row .input-wrapper { flex-basis: auto; width: 100%; justify-content: flex-start; }
+            .input-row input { width: auto; font-size: 1.2rem; font-weight: var(--normal-font-weight); }
+            .input-row input::placeholder { font-size: 0.8rem; font-weight: var(--normal-font-weight);}
+            .unit-text { margin-left: 8px; }
+            .position-box, .normative-box { padding: 10px; margin-bottom: 0;}
+            #preview-exit-button-inline {
+                top: 10px;
+                right: 10px;
+                font-size: 0.8rem;
+                padding: 6px 10px;
+            }
+            body.pdf-preview-active .app-main-content { padding: 10px 15px; }
         }
-
-         @media (max-width: 480px) {
-             h1 { font-size: 1.4rem; font-weight: var(--normal-font-weight);}
-             h2 { font-size: 1.1rem; font-weight: var(--normal-font-weight);}
-             .app-sidebar button, .app-sidebar a button { font-size: 0.8rem; padding: 6px 8px; max-width: 150px; font-weight: var(--normal-font-weight);}
-         }
-
+        @media (max-width: 480px) {
+            h1 { font-size: 1.4rem; font-weight: var(--normal-font-weight);}
+            h2 { font-size: 1.1rem; font-weight: var(--normal-font-weight);}
+            .app-sidebar button, .app-sidebar a button { font-size: 0.8rem; padding: 6px 8px; max-width: 150px; font-weight: var(--normal-font-weight);}
+        }
         @media print {
-             body { background-color: white !important; color: black !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; font-size: 9pt !important; padding: 0 !important; display: block !important; font-weight: normal !important;}
-             .top-header-bar, .app-sidebar, #top-controls, #patient-data-container, #input-section-container, #canvas-container, #bottom-area, .print-instruction, #preview-exit-button-inline { display: none !important; }
-             .app-layout { display: block !important; }
-             .app-main-content { margin: 0 !important; padding: 5mm !important; width: 100% !important; max-width: 100% !important; box-shadow: none !important; border: none !important; height: auto !important; }
-             .content-container { margin: 0 !important; padding: 0 !important; max-width: 100% !important; }
-
-             h1 { font-size: 16pt !important; margin-bottom: 5mm !important; text-align: center !important; display: block !important; color: black !important; font-weight: normal !important; }
-             h2 { display: block !important; font-size: 12pt !important; margin-top: 8mm; margin-bottom: 4mm; border: none !important; color: black !important; font-weight: normal !important; }
-             h3 { font-size: 10pt !important; margin-bottom: 3mm !important; color: black !important; font-weight: normal !important; }
-             #report-content { padding: 0 !important; }
-             .position-row { display: block !important; width: 100% !important; page-break-inside: avoid !important; border: none !important; margin-bottom: 5mm !important; padding: 0 !important;}
-             .asymmetry-graph-container, .normative-graph-container { width: 100% !important; display: block !important; margin-bottom: 5mm; page-break-inside: avoid !important; padding: 0 !important; }
-             .position-box, .normative-box {
-                 box-shadow: none !important;
-                 border: none !important;
-                 margin-bottom: 3mm;
-                 height: auto !important;
-                 min-height: unset !important;
-                 padding: 5px !important;
-                 page-break-inside: avoid !important;
-                 background-color: var(--light-gray) !important;
-             }
-             .position-box.green-box {
-                  box-shadow: 0 0 15px 5px var(--success-shadow-color) !important;
-                  border: none !important;
-             }
-             .position-box::after {
-                  display: none !important;
-             }
-             .js-plotly-plot { width: 100% !important; height: auto !important; }
-             .plotly .scatterlayer .trace.fill { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-             .plotly .annotation text,
-             .plotly .annotation .norm-label,
-             .plotly .annotation .left-label,
-             .plotly .annotation .right-label,
-             .plotly .annotation .value-display,
-             .plotly .annotation .nkg-combined-text span,
-             .plotly .annotation .asymmetry-percent { fill: black !important; color: black !important; font-weight: normal !important; }
-              .plotly .annotation .norm-value { font-weight: normal !important; }
-
-             .plotly .gtitle { fill: black !important; font-weight: normal !important; }
-             .plotly .axistitle { fill: black !important; font-size: 9pt !important; font-weight: normal !important; }
-             .plotly .tick text { fill: black !important; font-size: 8pt !important; font-weight: normal !important; }
-             .plotly .legend { display: none !important; }
-             .plotly .modebar { display: none !important; }
-             #bar-chart-I, #bar-chart-Y, #bar-chart-T { height: 180px !important; }
-             #normative-chart-I, #normative-chart-Y, #normative-chart-T { height: 180px !important; }
+            body { background-color: white !important; color: black !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; font-size: 9pt !important; padding: 0 !important; display: block !important; font-weight: normal !important;}
+            .top-header-bar, .app-sidebar, #top-controls, #patient-data-container, #input-section-container, #canvas-container, #bottom-area, .print-instruction, #preview-exit-button-inline { display: none !important; }
+            .app-layout { display: block !important; }
+            .app-main-content { margin: 0 !important; padding: 5mm !important; width: 100% !important; max-width: 100% !important; box-shadow: none !important; border: none !important; height: auto !important; }
+            .content-container { margin: 0 !important; padding: 0 !important; max-width: 100% !important; }
+            h1 { font-size: 16pt !important; margin-bottom: 5mm !important; text-align: center !important; display: block !important; color: black !important; font-weight: normal !important; }
+            h2 { display: block !important; font-size: 12pt !important; margin-top: 8mm; margin-bottom: 4mm; border: none !important; color: black !important; font-weight: normal !important; }
+            h3 { font-size: 10pt !important; margin-bottom: 3mm !important; color: black !important; font-weight: normal !important; }
+            #report-content { padding: 0 !important; }
+            .position-row { display: block !important; width: 100% !important; page-break-inside: avoid !important; border: none !important; margin-bottom: 5mm !important; padding: 0 !important;}
+            .asymmetry-graph-container, .normative-graph-container { width: 100% !important; display: block !important; margin-bottom: 5mm; page-break-inside: avoid !important; padding: 0 !important; }
+            .position-box, .normative-box {
+                box-shadow: none !important;
+                border: none !important;
+                margin-bottom: 3mm;
+                height: auto !important;
+                min-height: unset !important;
+                padding: 5px !important;
+                page-break-inside: avoid !important;
+                background-color: var(--light-gray) !important;
+            }
+            .position-box.green-box {
+                box-shadow: 0 0 15px 5px var(--success-shadow-color) !important;
+                border: none !important;
+            }
+            .position-box::after {
+                display: none !important;
+            }
+            .js-plotly-plot { width: 100% !important; height: auto !important; }
+            .plotly .scatterlayer .trace.fill { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            .plotly .annotation text,
+            .plotly .annotation .norm-label,
+            .plotly .annotation .left-label,
+            .plotly .annotation .right-label,
+            .plotly .annotation .value-display,
+            .plotly .annotation .nkg-combined-text span,
+            .plotly .annotation .asymmetry-percent { fill: black !important; color: black !important; font-weight: normal !important; }
+            .plotly .annotation .norm-value { font-weight: normal !important; }
+            .plotly .gtitle { fill: black !important; font-weight: normal !important; }
+            .plotly .axistitle { fill: black !important; font-size: 9pt !important; font-weight: normal !important; }
+            .plotly .tick text { fill: black !important; font-size: 8pt !important; font-weight: normal !important; }
+            .plotly .legend { display: none !important; }
+            .plotly .modebar { display: none !important; }
+            #bar-chart-I, #bar-chart-Y, #bar-chart-T { height: 180px !important; }
+            #normative-chart-I, #normative-chart-Y, #normative-chart-T { height: 180px !important; }
         }
-
     </style>
 </head>
 <body>
-<script>
-    const sessionAuthKeyCheck = 'isLoggedInPwrAnalytics';
-    const loginPageUrl = 'index.html';
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    try {
-        if (sessionStorage.getItem(sessionAuthKeyCheck) !== 'true') {
-            console.log("User not logged in. Redirecting...");
-            window.location.replace(loginPageUrl);
-        } else {
-            console.log("User is logged in.");
-        }
-    } catch (e) {
-        console.error("Could not access sessionStorage:", e);
+    const firebaseConfig = {
+        apiKey: "AIzaSyDhEihuoWm4c5MSOHrSqkkzca7tn86roq4",
+        authDomain: "pwr-analytics.firebaseapp.com",
+        projectId: "pwr-analytics",
+        storageBucket: "pwr-analytics.appspot.com",
+        messagingSenderId: "9839468523",
+        appId: "1:9839468523:web:1d994de254b2a24d91c3ae",
+        measurementId: "G-N35HQ5CMD5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const loginPageUrl = 'index.html';
+    const appLayout = document.querySelector('.app-layout');
+    const loadingMessage = document.createElement('div');
+    loadingMessage.className = 'loading-message';
+    loadingMessage.textContent = 'Loading screening data... Please wait.';
+    
+    if (appLayout) {
+        appLayout.insertAdjacentElement('beforebegin', loadingMessage);
+    } else {
+        document.body.prepend(loadingMessage);
     }
+
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            console.log("Screening page (Firebase Auth): User is authenticated.", user.uid);
+            if (loadingMessage) loadingMessage.style.display = 'none';
+            if (appLayout) appLayout.style.display = 'flex';
+        } else {
+            console.log("Screening page (Firebase Auth): User is NOT authenticated. Redirecting to login.");
+            if (loadingMessage) loadingMessage.textContent = 'Redirecting to login...';
+            window.location.replace(loginPageUrl);
+        }
+    });
 </script>
 <div class="app-layout">
     <aside class="app-sidebar">
@@ -768,10 +749,10 @@
             <button id="export-excel-button">
                 <i class="fas fa-file-excel"></i>
                 <span class="button-text">Export Data</span> </button>
-             <button id="clear-all-button">
+            <button id="clear-all-button">
                 <i class="fas fa-eraser"></i>
                 <span class="button-text">Clear All</span>
-             </button>
+            </button>
         </div>
         <div class="sidebar-social-links">
             <a href="https://www.instagram.com/alphatekofficial" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
@@ -805,9 +786,9 @@
                 </div>
 
                 <div class="explanation-box">
-                     <h4>About This Report</h4> <p>This report summarizes the results of the Functional Shoulder Screening using the ASH test (Positions I, Y, T).</p>
-                     <ul> <li><strong>Asymmetry Graphs:</strong> Show the percentage difference between the injured and uninjured side for key metrics (Max Force, RFD, % Max Force at 100ms). Values closer to 100% indicate better symmetry. Annotations above the bars show the percentage difference relative to the uninjured side (100%). Numbers inside the bars show the absolute values for each side.</li> <li><strong>Normative Graphs:</strong> Visually represent the estimated percentile rank for Max Force / Bodyweight (N/kg) for each side, based on normative thresholds. Background colors indicate performance zones (Poor, Average, Good, Excellent). Vertical dashed lines show the estimated percentile for the Left (Orange) and Right (Blue) values.</li> </ul>
-                     <p><i>To save as PDF: Click 'PDF Preview', then use your browser's Print function (Ctrl+P or Cmd+P) and select 'Save as PDF'. Click 'Exit Preview' to return.</i></p>
+                    <h4>About This Report</h4> <p>This report summarizes the results of the Functional Shoulder Screening using the ASH test (Positions I, Y, T).</p>
+                    <ul> <li><strong>Asymmetry Graphs:</strong> Show the percentage difference between the injured and uninjured side for key metrics (Max Force, RFD, % Max Force at 100ms). Values closer to 100% indicate better symmetry. Annotations above the bars show the percentage difference relative to the uninjured side (100%). Numbers inside the bars show the absolute values for each side.</li> <li><strong>Normative Graphs:</strong> Visually represent the estimated percentile rank for Max Force / Bodyweight (N/kg) for each side, based on normative thresholds. Background colors indicate performance zones (Poor, Average, Good, Excellent). Vertical dashed lines show the estimated percentile for the Left (Orange) and Right (Blue) values.</li> </ul>
+                    <p><i>To save as PDF: Click 'PDF Preview', then use your browser's Print function (Ctrl+P or Cmd+P) and select 'Save as PDF'. Click 'Exit Preview' to return.</i></p>
                 </div>
 
                 <div id="patient-data-container">
@@ -863,7 +844,7 @@
                         <h4>ASH Test Position Y</h4>
                         <div class="input-row">
                             <label>Max Force</label>
-                             <div class="input-wrapper"><input id="non-injured-max-force-y" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- N</span></div>
+                            <div class="input-wrapper"><input id="non-injured-max-force-y" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- N</span></div>
                         </div>
                         <div class="input-row">
                             <label>RFD 100ms</label>
@@ -899,7 +880,7 @@
                     </div>
                 </div>
                 <div id="canvas-container">
-                 </div>
+                </div>
                 <h2 id="results-title">Results</h2>
 
                 <div class="position-row">
@@ -918,9 +899,9 @@
                 </div>
                 <div class="position-row">
                     <div class="asymmetry-graph-container">
-                         <div id="position-box-Y" class="position-box">
+                        <div id="position-box-Y" class="position-box">
                             <h3 class="position-title">Position Y - Asymmetry</h3>
-                             <div id="bar-chart-Y" class="js-plotly-plot"></div>
+                            <div id="bar-chart-Y" class="js-plotly-plot"></div>
                         </div>
                     </div>
                     <div class="normative-graph-container">
@@ -930,9 +911,9 @@
                         </div>
                     </div>
                 </div>
-                 <div class="position-row">
+                <div class="position-row">
                     <div class="asymmetry-graph-container">
-                         <div id="position-box-T" class="position-box">
+                        <div id="position-box-T" class="position-box">
                             <h3 class="position-title">Position T - Asymmetry</h3>
                             <div id="bar-chart-T" class="js-plotly-plot"></div>
                         </div>
@@ -1009,10 +990,10 @@
         const percentileZones = { poor: 30, average: 70, good: 90, excellent: 100 };
         const percentileMidpoint = 50;
         const normZoneColors = {
-             poor: getComputedStyle(document.documentElement).getPropertyValue('--norm-poor-bg').trim() || 'rgba(252, 165, 165, 0.5)',
-             average: getComputedStyle(document.documentElement).getPropertyValue('--norm-average-bg').trim() || 'rgba(252, 211, 77, 0.5)',
-             good: getComputedStyle(document.documentElement).getPropertyValue('--norm-good-bg').trim() || 'rgba(167, 243, 208, 0.5)',
-             excellent: getComputedStyle(document.documentElement).getPropertyValue('--norm-excellent-bg').trim() || 'rgba(52, 211, 153, 0.5)'
+            poor: getComputedStyle(document.documentElement).getPropertyValue('--norm-poor-bg').trim() || 'rgba(252, 165, 165, 0.5)',
+            average: getComputedStyle(document.documentElement).getPropertyValue('--norm-average-bg').trim() || 'rgba(252, 211, 77, 0.5)',
+            good: getComputedStyle(document.documentElement).getPropertyValue('--norm-good-bg').trim() || 'rgba(167, 243, 208, 0.5)',
+            excellent: getComputedStyle(document.documentElement).getPropertyValue('--norm-excellent-bg').trim() || 'rgba(52, 211, 153, 0.5)'
         };
         const normativeLabels = { poor: 'Poor', average: 'Average', good: 'Good', excellent: 'Excellent' };
 
@@ -1038,26 +1019,26 @@
         }
 
         function createEmptyPlot(targetDivId, title = 'Enter Data', height = 300, topMargin = 20) {
-             const targetDiv = document.getElementById(targetDivId);
-             if (!targetDiv) { return; }
-             try {
-                 Plotly.react(targetDiv, [{ x: [], y: [], type: 'bar' }], {
-                     title: {
-                         text: title,
-                         font: { family: 'Avenir, sans-serif', size: 16, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim(), weight: 400 }
-                     },
-                     height: height,
-                     margin: { l: 60, r: 40, b: 40, t: topMargin, pad: 4 },
-                     paper_bgcolor: 'rgba(0,0,0,0)',
-                     plot_bgcolor: 'rgba(0,0,0,0)',
-                     xaxis: { visible: false },
-                     yaxis: { showgrid: false, zeroline: true, gridcolor: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), showticklabels: false },
-                     font: { family: 'Avenir, sans-serif', size: 12, weight: 400 }
-                 }, plotlyConfig);
-             } catch (error) {
-                 console.error(`Error creating empty plot in ${targetDivId}:`, error);
-                 targetDiv.innerHTML = `<p style="color: red; text-align: center; padding: 20px;">Error displaying chart.</p>`;
-             }
+            const targetDiv = document.getElementById(targetDivId);
+            if (!targetDiv) { return; }
+            try {
+                Plotly.react(targetDiv, [{ x: [], y: [], type: 'bar' }], {
+                    title: {
+                        text: title,
+                        font: { family: 'Avenir, sans-serif', size: 16, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim(), weight: 400 }
+                    },
+                    height: height,
+                    margin: { l: 60, r: 40, b: 40, t: topMargin, pad: 4 },
+                    paper_bgcolor: 'rgba(0,0,0,0)',
+                    plot_bgcolor: 'rgba(0,0,0,0)',
+                    xaxis: { visible: false },
+                    yaxis: { showgrid: false, zeroline: true, gridcolor: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), showticklabels: false },
+                    font: { family: 'Avenir, sans-serif', size: 12, weight: 400 }
+                }, plotlyConfig);
+            } catch (error) {
+                console.error(`Error creating empty plot in ${targetDivId}:`, error);
+                targetDiv.innerHTML = `<p style="color: red; text-align: center; padding: 20px;">Error displaying chart.</p>`;
+            }
         }
         asymmetryChartDivs.forEach(chartDivId => createEmptyPlot(chartDivId, 'Enter Data', 300, 20));
         normativeChartDivs.forEach(chartDivId => createEmptyPlot(chartDivId, 'Enter Bodyweight', 250, 35));
@@ -1104,273 +1085,273 @@
         }
 
         function createAsymmetryChart(positionData, injuredSide, posLabel) {
-             if (!positionData?.left || !positionData?.right) {
-                 return [{}, false];
-             }
-             const leftDataRaw = positionData.left;
-             const rightDataRaw = positionData.right;
-             const leftPctMaxAt100ms = leftDataRaw.max_force !== 0 ? (leftDataRaw.rfd * 0.1 / leftDataRaw.max_force) * 100 : 0;
-             const rightPctMaxAt100ms = rightDataRaw.max_force !== 0 ? (rightDataRaw.rfd * 0.1 / rightDataRaw.max_force) * 100 : 0;
-             const leftData = [leftDataRaw.max_force, leftDataRaw.rfd, leftPctMaxAt100ms];
-             const rightData = [rightDataRaw.max_force, rightDataRaw.rfd, rightPctMaxAt100ms];
-             const baseData = injuredSide === 'Right' ? leftData : rightData;
-             const metricNames = [ 'Max Force (N)', 'RFD 100ms (Ns⁻¹)', '% Max @ 100ms (%)' ];
-             const barDataRatios = {};
-             const leftTextsAbsolute = [];
-             const rightTextsAbsolute = [];
+            if (!positionData?.left || !positionData?.right) {
+                return [{}, false];
+            }
+            const leftDataRaw = positionData.left;
+            const rightDataRaw = positionData.right;
+            const leftPctMaxAt100ms = leftDataRaw.max_force !== 0 ? (leftDataRaw.rfd * 0.1 / leftDataRaw.max_force) * 100 : 0;
+            const rightPctMaxAt100ms = rightDataRaw.max_force !== 0 ? (rightDataRaw.rfd * 0.1 / rightDataRaw.max_force) * 100 : 0;
+            const leftData = [leftDataRaw.max_force, leftDataRaw.rfd, leftPctMaxAt100ms];
+            const rightData = [rightDataRaw.max_force, rightDataRaw.rfd, rightPctMaxAt100ms];
+            const baseData = injuredSide === 'Right' ? leftData : rightData;
+            const metricNames = [ 'Max Force (N)', 'RFD 100ms (Ns⁻¹)', '% Max @ 100ms (%)' ];
+            const barDataRatios = {};
+            const leftTextsAbsolute = [];
+            const rightTextsAbsolute = [];
 
-             metricNames.forEach((metricName, index) => {
-                 let leftValue = leftData[index];
-                 let rightValue = rightData[index];
-                 let baseValue = baseData[index];
-                 const leftRatio = baseValue !== 0 ? (leftValue / baseValue) * 100 : (leftValue === 0 ? 100 : Infinity);
-                 const rightRatio = baseValue !== 0 ? (rightValue / baseValue) * 100 : (rightValue === 0 ? 100 : Infinity);
-                 barDataRatios[metricName] = [rightRatio, leftRatio];
+            metricNames.forEach((metricName, index) => {
+                let leftValue = leftData[index];
+                let rightValue = rightData[index];
+                let baseValue = baseData[index];
+                const leftRatio = baseValue !== 0 ? (leftValue / baseValue) * 100 : (leftValue === 0 ? 100 : Infinity);
+                const rightRatio = baseValue !== 0 ? (rightValue / baseValue) * 100 : (rightValue === 0 ? 100 : Infinity);
+                barDataRatios[metricName] = [rightRatio, leftRatio];
 
-                 const decimals = metricName.includes('% Max @ 100ms') ? 1 : 0;
-                 leftTextsAbsolute.push(leftValue.toFixed(decimals));
-                 rightTextsAbsolute.push(rightValue.toFixed(decimals));
-             });
+                const decimals = metricName.includes('% Max @ 100ms') ? 1 : 0;
+                leftTextsAbsolute.push(leftValue.toFixed(decimals));
+                rightTextsAbsolute.push(rightValue.toFixed(decimals));
+            });
 
-             const plotX = metricNames;
-             const plotYLeft = plotX.map(name => barDataRatios[name][1]);
-             const plotYRight = plotX.map(name => barDataRatios[name][0]);
+            const plotX = metricNames;
+            const plotYLeft = plotX.map(name => barDataRatios[name][1]);
+            const plotYRight = plotX.map(name => barDataRatios[name][0]);
 
-             if (plotX.length !== 3 || plotYLeft.length !== 3 || plotYRight.length !== 3) {
-                 return [{}, false];
-             }
+            if (plotX.length !== 3 || plotYLeft.length !== 3 || plotYRight.length !== 3) {
+                return [{}, false];
+            }
 
-             const leftColorHex = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim();
-             const rightColorHex = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim();
-             const leftColorRgba = hexToRgba(leftColorHex, 0.8);
-             const rightColorRgba = hexToRgba(rightColorHex, 0.8);
-             const thresholdLineColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim();
-             const darkGrayColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim();
-             const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim();
-             const whiteColor = getComputedStyle(document.documentElement).getPropertyValue('--white').trim();
+            const leftColorHex = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim();
+            const rightColorHex = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim();
+            const leftColorRgba = hexToRgba(leftColorHex, 0.8);
+            const rightColorRgba = hexToRgba(rightColorHex, 0.8);
+            const thresholdLineColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim();
+            const darkGrayColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim();
+            const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim();
+            const whiteColor = getComputedStyle(document.documentElement).getPropertyValue('--white').trim();
 
-             const validRatios = plotYLeft.concat(plotYRight).filter(isFinite);
-             const maxYValue = validRatios.length > 0 ? Math.max(110, ...validRatios) : 110;
-             const annotationYTop = maxYValue + 8;
-             const yAxisUpperBound = annotationYTop + 15;
+            const validRatios = plotYLeft.concat(plotYRight).filter(isFinite);
+            const maxYValue = validRatios.length > 0 ? Math.max(110, ...validRatios) : 110;
+            const annotationYTop = maxYValue + 8;
+            const yAxisUpperBound = annotationYTop + 15;
 
-             const fig = {
-                 data: [
-                     {
-                         type: 'bar', name: 'Left', x: plotX, y: plotYLeft, marker: { color: leftColorRgba },
-                         text: leftTextsAbsolute, texttemplate: '%{text}', textposition: 'none',
-                         hoverinfo: 'x+name', hovertemplate: 'Left: %{y:.0f}%<extra></extra>'
-                     },
-                     {
-                         type: 'bar', name: 'Right', x: plotX, y: plotYRight, marker: { color: rightColorRgba },
-                         text: rightTextsAbsolute, texttemplate: '%{text}', textposition: 'none',
-                         hoverinfo: 'x+name', hovertemplate: 'Right: %{y:.0f}%<extra></extra>'
-                     },
-                     {
-                         x: [null], y: [null], mode: 'lines', name: '±10% Thresholds',
-                         line: { color: thresholdLineColor, width: 1, dash: 'dash' },
-                         hoverinfo: 'none', showlegend: true
-                     }
-                 ],
-                 layout: {
-                     height: 300,
-                     barmode: 'group',
-                     font: { color: darkGrayColor, family: 'Avenir, sans-serif', size: 12, weight: 400 },
-                     yaxis: {
-                         title: "Injured Side Asymmetry (%)",
-                         titlefont: { size: 13, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor },
-                         tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor },
-                         range: [18, yAxisUpperBound],
-                         tickmode: 'array', tickvals: [50, 100],
-                         showgrid: false, zeroline: false,
-                     },
-                     xaxis: {
-                         showgrid: false, zeroline: false, showline: false, showticklabels: true,
-                         tickangle: 0, tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor },
-                         automargin: true, fixedrange: true
-                     },
-                     paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
-                     legend: {
-                         orientation: "h", yanchor: "bottom", y: -0.30, xanchor: "center", x: 0.5,
-                         font: { size: 12, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }
-                     },
-                     margin: { l: 70, r: 30, b: 85, t: 20, pad: 10 },
-                     shapes: [
-                         { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 90, y1: 90, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" },
-                         { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 110, y1: 110, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" }
-                     ],
-                     annotations: []
-                 }
-             };
+            const fig = {
+                data: [
+                    {
+                        type: 'bar', name: 'Left', x: plotX, y: plotYLeft, marker: { color: leftColorRgba },
+                        text: leftTextsAbsolute, texttemplate: '%{text}', textposition: 'none',
+                        hoverinfo: 'x+name', hovertemplate: 'Left: %{y:.0f}%<extra></extra>'
+                    },
+                    {
+                        type: 'bar', name: 'Right', x: plotX, y: plotYRight, marker: { color: rightColorRgba },
+                        text: rightTextsAbsolute, texttemplate: '%{text}', textposition: 'none',
+                        hoverinfo: 'x+name', hovertemplate: 'Right: %{y:.0f}%<extra></extra>'
+                    },
+                    {
+                        x: [null], y: [null], mode: 'lines', name: '±10% Thresholds',
+                        line: { color: thresholdLineColor, width: 1, dash: 'dash' },
+                        hoverinfo: 'none', showlegend: true
+                    }
+                ],
+                layout: {
+                    height: 300,
+                    barmode: 'group',
+                    font: { color: darkGrayColor, family: 'Avenir, sans-serif', size: 12, weight: 400 },
+                    yaxis: {
+                        title: "Injured Side Asymmetry (%)",
+                        titlefont: { size: 13, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor },
+                        tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor },
+                        range: [18, yAxisUpperBound],
+                        tickmode: 'array', tickvals: [50, 100],
+                        showgrid: false, zeroline: false,
+                    },
+                    xaxis: {
+                        showgrid: false, zeroline: false, showline: false, showticklabels: true,
+                        tickangle: 0, tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor },
+                        automargin: true, fixedrange: true
+                    },
+                    paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+                    legend: {
+                        orientation: "h", yanchor: "bottom", y: -0.30, xanchor: "center", x: 0.5,
+                        font: { size: 12, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }
+                    },
+                    margin: { l: 70, r: 30, b: 85, t: 20, pad: 10 },
+                    shapes: [
+                        { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 90, y1: 90, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" },
+                        { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 110, y1: 110, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" }
+                    ],
+                    annotations: []
+                }
+            };
 
-             let allGreen = true;
-             const metricsNamesForAnnotation = plotX;
+            let allGreen = true;
+            const metricsNamesForAnnotation = plotX;
 
-             for (let i = 0; i < metricsNamesForAnnotation.length; i++) {
-                 const metricName = metricsNamesForAnnotation[i];
-                 const injuredRatio = injuredSide === 'Right' ? plotYRight[i] : plotYLeft[i];
-                 const leftRatio = plotYLeft[i];
-                 const rightRatio = plotYRight[i];
+            for (let i = 0; i < metricsNamesForAnnotation.length; i++) {
+                const metricName = metricsNamesForAnnotation[i];
+                const injuredRatio = injuredSide === 'Right' ? plotYRight[i] : plotYLeft[i];
+                const leftRatio = plotYLeft[i];
+                const rightRatio = plotYRight[i];
 
-                 if (!isFinite(injuredRatio)) {
-                     fig.layout.annotations.push({
-                         x: metricName, y: annotationYTop, text: "N/A", showarrow: false,
-                         font: { color: 'grey', size: 22, family: 'Avenir, sans-serif', weight: 400 },
-                         xanchor: 'center', yanchor: 'bottom'
-                     });
-                     allGreen = false;
-                 } else {
-                     const percentageDiff = injuredRatio - 100;
-                     let color;
-                     if (percentageDiff >= -10) { color = '#2a9d8f'; }
-                     else {
-                         allGreen = false;
-                         if (percentageDiff >= -15) { color = '#ee9b00'; }
-                         else if (percentageDiff >= -20) { color = '#e85d04'; }
-                         else { color = '#ae2012'; }
-                     }
-                     fig.layout.annotations.push({
-                         x: metricName, y: annotationYTop, text: `${percentageDiff.toFixed(0)}%`, showarrow: false,
-                         font: { color: color, size: 22, family: 'Avenir, sans-serif', weight: 400 },
-                         xanchor: 'center', yanchor: 'bottom'
-                     });
-                 }
+                if (!isFinite(injuredRatio)) {
+                    fig.layout.annotations.push({
+                        x: metricName, y: annotationYTop, text: "N/A", showarrow: false,
+                        font: { color: 'grey', size: 22, family: 'Avenir, sans-serif', weight: 400 },
+                        xanchor: 'center', yanchor: 'bottom'
+                    });
+                    allGreen = false;
+                } else {
+                    const percentageDiff = injuredRatio - 100;
+                    let color;
+                    if (percentageDiff >= -10) { color = '#2a9d8f'; }
+                    else {
+                        allGreen = false;
+                        if (percentageDiff >= -15) { color = '#ee9b00'; }
+                        else if (percentageDiff >= -20) { color = '#e85d04'; }
+                        else { color = '#ae2012'; }
+                    }
+                    fig.layout.annotations.push({
+                        x: metricName, y: annotationYTop, text: `${percentageDiff.toFixed(0)}%`, showarrow: false,
+                        font: { color: color, size: 22, family: 'Avenir, sans-serif', weight: 400 },
+                        xanchor: 'center', yanchor: 'bottom'
+                    });
+                }
 
-                 const barTextYPosition = 31;
-                 const barTextFontSize = 17;
-                 const categoryIndex = i;
-                 const numberOfBars = 2;
-                 const groupWidth = 0.8;
-                 const barWidthFraction = groupWidth / numberOfBars;
-                 const leftBarCenter = categoryIndex - (groupWidth / 2) + (barWidthFraction / 2);
-                 const rightBarCenter = categoryIndex + (groupWidth / 2) - (barWidthFraction / 2);
+                const barTextYPosition = 31;
+                const barTextFontSize = 17;
+                const categoryIndex = i;
+                const numberOfBars = 2;
+                const groupWidth = 0.8;
+                const barWidthFraction = groupWidth / numberOfBars;
+                const leftBarCenter = categoryIndex - (groupWidth / 2) + (barWidthFraction / 2);
+                const rightBarCenter = categoryIndex + (groupWidth / 2) - (barWidthFraction / 2);
 
-                 if (leftRatio > barTextYPosition + (barTextFontSize / 2)) {
-                     fig.layout.annotations.push({
-                         x: leftBarCenter, y: barTextYPosition, xref: 'x', yref: 'y',
-                         text: leftTextsAbsolute[i], showarrow: false,
-                         font: { color: whiteColor, size: barTextFontSize, family: 'Avenir, sans-serif', weight: 400 },
-                         xanchor: 'center', yanchor: 'middle'
-                     });
-                 }
-                 if (rightRatio > barTextYPosition + (barTextFontSize / 2)) {
-                     fig.layout.annotations.push({
-                         x: rightBarCenter, y: barTextYPosition, xref: 'x', yref: 'y',
-                         text: rightTextsAbsolute[i], showarrow: false,
-                         font: { color: whiteColor, size: barTextFontSize, family: 'Avenir, sans-serif', weight: 400 },
-                         xanchor: 'center', yanchor: 'middle'
-                     });
-                 }
-             }
+                if (leftRatio > barTextYPosition + (barTextFontSize / 2)) {
+                    fig.layout.annotations.push({
+                        x: leftBarCenter, y: barTextYPosition, xref: 'x', yref: 'y',
+                        text: leftTextsAbsolute[i], showarrow: false,
+                        font: { color: whiteColor, size: barTextFontSize, family: 'Avenir, sans-serif', weight: 400 },
+                        xanchor: 'center', yanchor: 'middle'
+                    });
+                }
+                if (rightRatio > barTextYPosition + (barTextFontSize / 2)) {
+                    fig.layout.annotations.push({
+                        x: rightBarCenter, y: barTextYPosition, xref: 'x', yref: 'y',
+                        text: rightTextsAbsolute[i], showarrow: false,
+                        font: { color: whiteColor, size: barTextFontSize, family: 'Avenir, sans-serif', weight: 400 },
+                        xanchor: 'center', yanchor: 'middle'
+                    });
+                }
+            }
 
-             return [fig, allGreen];
+            return [fig, allGreen];
         }
 
         function mapNkgToPercentile(nkgValue, positionLabel) {
-             const thresholds = normativeThresholds[positionLabel];
-             if (!thresholds || typeof nkgValue !== 'number' || !isFinite(nkgValue)) { return 0; }
-             const pMap = [
-                 { v: 0.5, p: 0 }, { v: thresholds.poor_max, p: percentileZones.poor },
-                 { v: thresholds.average_mid, p: percentileMidpoint }, { v: thresholds.good_min, p: percentileZones.average },
-                 { v: thresholds.excellent_min, p: percentileZones.good }, { v: thresholds.excellent_min * 1.25, p: percentileZones.excellent }
-             ];
-             const minVal = pMap[0].v; const maxVal = pMap[pMap.length - 1].v;
-             const clampedValue = Math.max(minVal, Math.min(nkgValue, maxVal));
-             let lowerPoint = pMap[0]; let upperPoint = pMap[pMap.length - 1];
-              for (let i = 0; i < pMap.length - 1; i++) { if (clampedValue === pMap[i].v) { lowerPoint = upperPoint = pMap[i]; break; } if (clampedValue > pMap[i].v && clampedValue <= pMap[i + 1].v) { lowerPoint = pMap[i]; upperPoint = pMap[i + 1]; break; } }
-             if (clampedValue === upperPoint.v) { lowerPoint = upperPoint; }
-             let percentile = lowerPoint.p; const valueRange = upperPoint.v - lowerPoint.v; const percentileRange = upperPoint.p - lowerPoint.p;
-             if (valueRange > 0) { percentile += ((clampedValue - lowerPoint.v) / valueRange) * percentileRange; }
-             return Math.max(0, Math.min(percentile, 100));
+            const thresholds = normativeThresholds[positionLabel];
+            if (!thresholds || typeof nkgValue !== 'number' || !isFinite(nkgValue)) { return 0; }
+            const pMap = [
+                { v: 0.5, p: 0 }, { v: thresholds.poor_max, p: percentileZones.poor },
+                { v: thresholds.average_mid, p: percentileMidpoint }, { v: thresholds.good_min, p: percentileZones.average },
+                { v: thresholds.excellent_min, p: percentileZones.good }, { v: thresholds.excellent_min * 1.25, p: percentileZones.excellent }
+            ];
+            const minVal = pMap[0].v; const maxVal = pMap[pMap.length - 1].v;
+            const clampedValue = Math.max(minVal, Math.min(nkgValue, maxVal));
+            let lowerPoint = pMap[0]; let upperPoint = pMap[pMap.length - 1];
+            for (let i = 0; i < pMap.length - 1; i++) { if (clampedValue === pMap[i].v) { lowerPoint = upperPoint = pMap[i]; break; } if (clampedValue > pMap[i].v && clampedValue <= pMap[i + 1].v) { lowerPoint = pMap[i]; upperPoint = pMap[i + 1]; break; } }
+            if (clampedValue === upperPoint.v) { lowerPoint = upperPoint; }
+            let percentile = lowerPoint.p; const valueRange = upperPoint.v - lowerPoint.v; const percentileRange = upperPoint.p - lowerPoint.p;
+            if (valueRange > 0) { percentile += ((clampedValue - lowerPoint.v) / valueRange) * percentileRange; }
+            return Math.max(0, Math.min(percentile, 100));
         }
 
         function createNormativeComparisonChart(positionData, bodyweight, positionLabel) {
-             const bwVal = parseFloat(bodyweight);
-             if (isNaN(bwVal) || bwVal <= 0 || !positionData) { return {}; }
-             const leftNkg = positionData.left.max_force / bwVal; const rightNkg = positionData.right.max_force / bwVal;
-             const thresholds = normativeThresholds[positionLabel];
-             if (!thresholds) { return {}; }
-             const leftPercentile = mapNkgToPercentile(leftNkg, positionLabel); const rightPercentile = mapNkgToPercentile(rightNkg, positionLabel);
+            const bwVal = parseFloat(bodyweight);
+            if (isNaN(bwVal) || bwVal <= 0 || !positionData) { return {}; }
+            const leftNkg = positionData.left.max_force / bwVal; const rightNkg = positionData.right.max_force / bwVal;
+            const thresholds = normativeThresholds[positionLabel];
+            if (!thresholds) { return {}; }
+            const leftPercentile = mapNkgToPercentile(leftNkg, positionLabel); const rightPercentile = mapNkgToPercentile(rightNkg, positionLabel);
 
-             const baseCurveX = []; const baseCurveY = [];
-             const mean = 55; const stdDev = 22; const amplitude = 0.9;
-             for (let i = 0; i <= 100; i += 0.5) { baseCurveX.push(i); const y = amplitude * Math.exp(-Math.pow(i - mean, 2) / (2 * Math.pow(stdDev, 2))); baseCurveY.push(y); }
+            const baseCurveX = []; const baseCurveY = [];
+            const mean = 55; const stdDev = 22; const amplitude = 0.9;
+            for (let i = 0; i <= 100; i += 0.5) { baseCurveX.push(i); const y = amplitude * Math.exp(-Math.pow(i - mean, 2) / (2 * Math.pow(stdDev, 2))); baseCurveY.push(y); }
 
-             const zoneBoundaries = [0, percentileZones.poor, percentileZones.average, percentileZones.good, percentileZones.excellent];
-             const traces = []; const zoneColorsList = [normZoneColors.poor, normZoneColors.average, normZoneColors.good, normZoneColors.excellent];
+            const zoneBoundaries = [0, percentileZones.poor, percentileZones.average, percentileZones.good, percentileZones.excellent];
+            const traces = []; const zoneColorsList = [normZoneColors.poor, normZoneColors.average, normZoneColors.good, normZoneColors.excellent];
 
-             for (let i = 0; i < zoneBoundaries.length - 1; i++) {
-                 const x0 = zoneBoundaries[i]; const x1 = zoneBoundaries[i+1];
-                 const zoneFillColor = zoneColorsList[i];
-                 const segmentX = [x0]; const segmentY = [0];
-                 for(let j=0; j < baseCurveX.length; j++) { if (baseCurveX[j] >= x0 && baseCurveX[j] <= x1) { segmentX.push(baseCurveX[j]); segmentY.push(baseCurveY[j]); } }
-                 segmentX.push(x1); segmentY.push(0);
-                 traces.push({
-                     x: segmentX, y: segmentY, type: 'scatter', mode: 'lines', line: { width: 0 },
-                     fill: 'tozeroy', fillcolor: zoneFillColor, hoverinfo: 'none', name: Object.keys(normativeLabels)[i], showlegend: false
-                 });
-             }
+            for (let i = 0; i < zoneBoundaries.length - 1; i++) {
+                const x0 = zoneBoundaries[i]; const x1 = zoneBoundaries[i+1];
+                const zoneFillColor = zoneColorsList[i];
+                const segmentX = [x0]; const segmentY = [0];
+                for(let j=0; j < baseCurveX.length; j++) { if (baseCurveX[j] >= x0 && baseCurveX[j] <= x1) { segmentX.push(baseCurveX[j]); segmentY.push(baseCurveY[j]); } }
+                segmentX.push(x1); segmentY.push(0);
+                traces.push({
+                    x: segmentX, y: segmentY, type: 'scatter', mode: 'lines', line: { width: 0 },
+                    fill: 'tozeroy', fillcolor: zoneFillColor, hoverinfo: 'none', name: Object.keys(normativeLabels)[i], showlegend: false
+                });
+            }
 
-             traces.push({
-                 x: baseCurveX, y: baseCurveY, type: 'scatter', mode: 'lines',
-                 line: { color: '#ffffff', width: 1.5, shape: 'spline' },
-                 hoverinfo: 'none', name: 'Distribution (Visual)', showlegend: false
-             });
+            traces.push({
+                x: baseCurveX, y: baseCurveY, type: 'scatter', mode: 'lines',
+                line: { color: '#ffffff', width: 1.5, shape: 'spline' },
+                hoverinfo: 'none', name: 'Distribution (Visual)', showlegend: false
+            });
 
-             const layout = {
-                 height: 250,
-                 margin: { t: 35, b: 95, l: 30, r: 30 },
-                 paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
-                 xaxis: { title: '', range: [0, 100], showgrid: false, zeroline: false, showticklabels: false },
-                 yaxis: { range: [0, 1.1], showgrid: false, zeroline: false, showticklabels: false, title: '' },
-                 shapes: [], annotations: [],
-                 font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() },
-                 showlegend: false
-             };
+            const layout = {
+                height: 250,
+                margin: { t: 35, b: 95, l: 30, r: 30 },
+                paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+                xaxis: { title: '', range: [0, 100], showgrid: false, zeroline: false, showticklabels: false },
+                yaxis: { range: [0, 1.1], showgrid: false, zeroline: false, showticklabels: false, title: '' },
+                shapes: [], annotations: [],
+                font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() },
+                showlegend: false
+            };
 
-             const thresholdAnnotations = [ { p: percentileZones.poor, val: thresholds.poor_max }, { p: percentileZones.average, val: thresholds.good_min }, { p: percentileZones.good, val: thresholds.excellent_min } ];
-             thresholdAnnotations.forEach(t => {
-                 layout.annotations.push({
-                     xref: 'x', yref: 'paper', x: t.p, y: -0.08,
-                     text: `<span class="norm-value">${t.val.toFixed(2)}</span>`,
-                     showarrow: false, xanchor: 'center', yanchor: 'top',
-                     font: { family: 'Avenir, sans-serif', size: 10, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim() }
-                 });
-             });
-             layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: percentileMidpoint, x1: percentileMidpoint, y0: 0, y1: 1, line: { color: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), width: 1.5, dash: 'dot' }, layer: 'below' });
-              const avgValueForPos = thresholds.average_mid.toFixed(2);
-              layout.annotations.push({
-                  xref: 'x', yref: 'paper', x: percentileMidpoint, y: -0.08,
-                  text: `<span class="value-display">${avgValueForPos}</span>`,
-                  showarrow: false, xanchor: 'center', yanchor: 'top',
-                  font: { family: 'Avenir, sans-serif', size: 10, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), weight: 400 }
-              });
-             const labelYPosition = 1.10;
-             layout.annotations.push({ xref: 'x', yref: 'paper', x: 15, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.poor}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } });
-             layout.annotations.push({ xref: 'x', yref: 'paper', x: 50, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.average}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() }, align: 'center' });
-             layout.annotations.push({ xref: 'x', yref: 'paper', x: 80, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.good}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } });
-             layout.annotations.push({ xref: 'x', yref: 'paper', x: 95, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.excellent}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } });
+            const thresholdAnnotations = [ { p: percentileZones.poor, val: thresholds.poor_max }, { p: percentileZones.average, val: thresholds.good_min }, { p: percentileZones.good, val: thresholds.excellent_min } ];
+            thresholdAnnotations.forEach(t => {
+                layout.annotations.push({
+                    xref: 'x', yref: 'paper', x: t.p, y: -0.08,
+                    text: `<span class="norm-value">${t.val.toFixed(2)}</span>`,
+                    showarrow: false, xanchor: 'center', yanchor: 'top',
+                    font: { family: 'Avenir, sans-serif', size: 10, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim() }
+                });
+            });
+            layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: percentileMidpoint, x1: percentileMidpoint, y0: 0, y1: 1, line: { color: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), width: 1.5, dash: 'dot' }, layer: 'below' });
+            const avgValueForPos = thresholds.average_mid.toFixed(2);
+            layout.annotations.push({
+                xref: 'x', yref: 'paper', x: percentileMidpoint, y: -0.08,
+                text: `<span class="value-display">${avgValueForPos}</span>`,
+                showarrow: false, xanchor: 'center', yanchor: 'top',
+                font: { family: 'Avenir, sans-serif', size: 10, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), weight: 400 }
+            });
+            const labelYPosition = 1.10;
+            layout.annotations.push({ xref: 'x', yref: 'paper', x: 15, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.poor}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } });
+            layout.annotations.push({ xref: 'x', yref: 'paper', x: 50, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.average}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() }, align: 'center' });
+            layout.annotations.push({ xref: 'x', yref: 'paper', x: 80, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.good}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } });
+            layout.annotations.push({ xref: 'x', yref: 'paper', x: 95, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.excellent}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } });
 
-             const leftColor = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim();
-             const rightColor = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim();
-             const lineY0 = 0.05;
-             const lineY1 = 0.95;
-             layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: leftPercentile, x1: leftPercentile, y0: lineY0, y1: lineY1, line: { color: leftColor, width: 2, dash: 'dash' } });
-             layout.annotations.push({ xref: 'x', yref: 'paper', x: leftPercentile, y: 0.90, text: 'L', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: leftColor,
-                                      font: {color: leftColor, size: 14, family: 'Avenir, sans-serif', weight: 400} });
-             layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: rightPercentile, x1: rightPercentile, y0: lineY0, y1: lineY1, line: { color: rightColor, width: 2, dash: 'dash' } });
-             layout.annotations.push({ xref: 'x', yref: 'paper', x: rightPercentile, y: 0.90, text: 'R', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: rightColor,
-                                      font: {color: rightColor, size: 14, family: 'Avenir, sans-serif', weight: 400} });
+            const leftColor = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim();
+            const rightColor = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim();
+            const lineY0 = 0.05;
+            const lineY1 = 0.95;
+            layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: leftPercentile, x1: leftPercentile, y0: lineY0, y1: lineY1, line: { color: leftColor, width: 2, dash: 'dash' } });
+            layout.annotations.push({ xref: 'x', yref: 'paper', x: leftPercentile, y: 0.90, text: 'L', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: leftColor,
+                font: {color: leftColor, size: 14, family: 'Avenir, sans-serif', weight: 400} });
+            layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: rightPercentile, x1: rightPercentile, y0: lineY0, y1: lineY1, line: { color: rightColor, width: 2, dash: 'dash' } });
+            layout.annotations.push({ xref: 'x', yref: 'paper', x: rightPercentile, y: 0.90, text: 'R', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: rightColor,
+                font: {color: rightColor, size: 14, family: 'Avenir, sans-serif', weight: 400} });
 
-             const combinedNkgText = `<span class='nkg-combined-text'>Left: <span class='left-label'>${leftNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>) &nbsp;&nbsp;|&nbsp;&nbsp; Right: <span class='right-label'>${rightNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>)</span>`;
-             layout.annotations.push({
-                 xref: 'paper', yref: 'paper', x: 0.5, y: -0.30,
-                 text: combinedNkgText,
-                 showarrow: false, xanchor: 'center', yanchor: 'top', align: 'center',
-                 font: { size: 15, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), family: 'Avenir, sans-serif', weight: 400 }
-             });
+            const combinedNkgText = `<span class='nkg-combined-text'>Left: <span class='left-label'>${leftNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>) &nbsp;&nbsp;|&nbsp;&nbsp; Right: <span class='right-label'>${rightNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>)</span>`;
+            layout.annotations.push({
+                xref: 'paper', yref: 'paper', x: 0.5, y: -0.30,
+                text: combinedNkgText,
+                showarrow: false, xanchor: 'center', yanchor: 'top', align: 'center',
+                font: { size: 15, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), family: 'Avenir, sans-serif', weight: 400 }
+            });
 
-             return { data: traces, layout };
+            return { data: traces, layout };
         }
 
         function updateGraphsAndTable() {
@@ -1413,7 +1394,7 @@
                     }
                 } else {
                     createEmptyPlot(asymmetryChartDivId, 'Enter Data', 300, 20);
-                     asymmetryPositionBoxDiv.classList.remove('green-box');
+                    asymmetryPositionBoxDiv.classList.remove('green-box');
                 }
 
                 if (bodyweightValid && positionData) {
@@ -1432,7 +1413,7 @@
                     createEmptyPlot(normativeChartDivId, 'Enter Data', 250, 35);
                 }
             });
-             setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
+            setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
         }
 
         function togglePatientData() {
@@ -1463,73 +1444,73 @@
             console.log("Exited PDF preview mode");
         }
 
-         function exportTableToCsv() {
-             const fpNr = fpNrInput ? fpNrInput.value.trim() : '';
-             const age = ageInput ? ageInput.value.trim() : '';
-             const gender = genderSelect ? genderSelect.value : '';
-             const sport = sportInput ? sportInput.value.trim() : '';
-             const bodyweight = bodyweightInput ? bodyweightInput.value.trim() : '';
-             const injuredSide = injuredSideRadio ? injuredSideRadio.value : '';
-             const date = new Date();
-             const year = date.getFullYear();
-             const month = (date.getMonth() + 1).toString().padStart(2, '0');
-             const day = date.getDate().toString().padStart(2, '0');
-             const dateString = `${year}-${month}-${day}`;
-             const safeFpNr = fpNr.replace(/[^a-z0-9]/gi, '_') || 'Unknown';
-             const filename = `ASH_${safeFpNr}_${dateString}.csv`;
+        function exportTableToCsv() {
+            const fpNr = fpNrInput ? fpNrInput.value.trim() : '';
+            const age = ageInput ? ageInput.value.trim() : '';
+            const gender = genderSelect ? genderSelect.value : '';
+            const sport = sportInput ? sportInput.value.trim() : '';
+            const bodyweight = bodyweightInput ? bodyweightInput.value.trim() : '';
+            const injuredSide = injuredSideRadio ? injuredSideRadio.value : '';
+            const date = new Date();
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            const dateString = `${year}-${month}-${day}`;
+            const safeFpNr = fpNr.replace(/[^a-z0-9]/gi, '_') || 'Unknown';
+            const filename = `ASH_${safeFpNr}_${dateString}.csv`;
 
-             const headers = [ "Patient ID", "Age", "Gender", "Sport", "Bodyweight (kg)", "Injured Side", "Position", "Metric", "Left Value", "Right Value" ];
-             let csv = [headers.join(',')];
-             const positions = ['I', 'Y', 'T'];
-             const metricsForCsv = ['Max Force (N)', 'RFD 100ms (N/s)'];
+            const headers = [ "Patient ID", "Age", "Gender", "Sport", "Bodyweight (kg)", "Injured Side", "Position", "Metric", "Left Value", "Right Value" ];
+            let csv = [headers.join(',')];
+            const positions = ['I', 'Y', 'T'];
+            const metricsForCsv = ['Max Force (N)', 'RFD 100ms (N/s)'];
 
-             positions.forEach(pos => {
-                 const positionName = `ASH Test Position ${pos}`;
-                 const positionData = processInputAndCalculate(pos);
+            positions.forEach(pos => {
+                const positionName = `ASH Test Position ${pos}`;
+                const positionData = processInputAndCalculate(pos);
 
-                 metricsForCsv.forEach(metricDisplay => {
-                     let leftVal = '';
-                     let rightVal = '';
-                     let metricIdentifier = metricDisplay;
+                metricsForCsv.forEach(metricDisplay => {
+                    let leftVal = '';
+                    let rightVal = '';
+                    let metricIdentifier = metricDisplay;
 
-                     if (metricDisplay === 'Max Force (N)') {
-                         if (positionData) {
-                             leftVal = positionData.left.max_force;
-                             rightVal = positionData.right.max_force;
-                         }
-                     } else if (metricDisplay === 'RFD 100ms (N/s)') {
-                         if (positionData) {
-                             leftVal = positionData.left.rfd;
-                             rightVal = positionData.right.rfd;
-                         }
-                         metricIdentifier = 'RFD 100ms (N/s)';
-                     }
+                    if (metricDisplay === 'Max Force (N)') {
+                        if (positionData) {
+                            leftVal = positionData.left.max_force;
+                            rightVal = positionData.right.max_force;
+                        }
+                    } else if (metricDisplay === 'RFD 100ms (N/s)') {
+                        if (positionData) {
+                            leftVal = positionData.left.rfd;
+                            rightVal = positionData.right.rfd;
+                        }
+                        metricIdentifier = 'RFD 100ms (N/s)';
+                    }
 
-                     const rowData = [
-                         `"${fpNr}"`, `"${age}"`, `"${gender}"`, `"${sport}"`, `"${bodyweight}"`, `"${injuredSide}"`,
-                         `"${positionName}"`, `"${metricIdentifier}"`,
-                         `"${leftVal}"`, `"${rightVal}"`
-                     ];
-                     csv.push(rowData.join(','));
-                 });
-             });
+                    const rowData = [
+                        `"${fpNr}"`, `"${age}"`, `"${gender}"`, `"${sport}"`, `"${bodyweight}"`, `"${injuredSide}"`,
+                        `"${positionName}"`, `"${metricIdentifier}"`,
+                        `"${leftVal}"`, `"${rightVal}"`
+                    ];
+                    csv.push(rowData.join(','));
+                });
+            });
 
-             const csvString = "\uFEFF" + csv.join('\n');
-             const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
-             const link = document.createElement('a');
-             if (link.download !== undefined) {
-                 const url = URL.createObjectURL(blob);
-                 link.setAttribute('href', url);
-                 link.setAttribute('download', filename);
-                 link.style.visibility = 'hidden';
-                 document.body.appendChild(link);
-                 link.click();
-                 document.body.removeChild(link);
-                 console.log(`CSV export initiated: ${filename}`);
-             } else {
-                 alert("CSV export is not directly supported in this browser. Please try a modern browser.");
-             }
-         }
+            const csvString = "\uFEFF" + csv.join('\n');
+            const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                console.log(`CSV export initiated: ${filename}`);
+            } else {
+                alert("CSV export is not directly supported in this browser. Please try a modern browser.");
+            }
+        }
 
         function clearAllFields() {
             console.log("Clearing all fields...");
@@ -1625,16 +1606,16 @@
         });
         window.addEventListener('load', () => { setTimeout(() => window.dispatchEvent(new Event('resize')), 200); });
         window.addEventListener('resize', () => {
-                 asymmetryChartDivs.concat(normativeChartDivs).forEach(divId => {
-                     const gd = document.getElementById(divId);
-                     if (gd && gd.classList.contains('js-plotly-plot')) {
-                         try {
-                             Plotly.Plots.resize(gd);
-                         } catch (e) {
-                         }
-                     }
-                 });
-         });
+            asymmetryChartDivs.concat(normativeChartDivs).forEach(divId => {
+                const gd = document.getElementById(divId);
+                if (gd && gd.classList.contains('js-plotly-plot')) {
+                    try {
+                        Plotly.Plots.resize(gd);
+                    } catch (e) {
+                    }
+                }
+            });
+        });
 
     }
 </script>
