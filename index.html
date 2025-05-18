@@ -3,504 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analysis - Functional Shoulder Screening</title>
-    <script src="https://cdn.plot.ly/plotly-2.27.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Avenir:wght@400;600&family=Futura:wght@400&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    <title>Firebase Registration with Firestore</title>
     <style>
-        /* --- Root Variables --- */
-        :root {
-            --app-primary-color: #285484;
-            --app-secondary-color: rgb(112, 188, 252);
-            --app-tertiary-color: #121630;
-            --app-text-on-primary: #ffffff;
-            --app-text-on-secondary: var(--app-primary-color);
-            --app-button-text-color: var(--app-text-on-primary);
-            --app-button-icon-color: var(--app-secondary-color);
-            --app-button-gradient-start: var(--app-primary-color);
-            --app-button-gradient-end: var(--app-tertiary-color);
-            --app-button-hover-gradient-start: #1e3a5c;
-            --app-button-hover-gradient-end: var(--app-primary-color);
-            --app-button-light-gradient-start: var(--app-secondary-color);
-            --app-button-light-gradient-end: var(--app-primary-color);
-            --app-button-light-hover-gradient-start: var(--app-primary-color);
-            --app-button-light-hover-gradient-end: #1e3a5c;
-
-            --light-gray: #f8f9fa;
-            --medium-gray: #dee2e6;
-            --dark-gray: #495057;
-            --text-color: #212529;
-
-            /* Print specific fallbacks or overrides if needed */
-            --print-text-color: #000000;
-            --print-primary-color: #285484;
-            --print-secondary-color: #5C90C0;
-            --print-light-gray: #f8f9fa;
-            --print-medium-gray: #dee2e6;
-            --print-dark-gray: #495057;
-            --print-table-header-bg: #f0f3f5; 
-            --print-left-value-cell-bg: rgba(31, 119, 180, 0.08);
-            --print-right-value-cell-bg: rgba(255, 127, 14, 0.08);
-
-            --success-color: #16a34a;
-            --danger-color-dark: #dc2626;
-            --white: #ffffff;
-            --border-radius: 0px;
-            --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.06);
-            
-            --left-line-color: #1f77b4;
-            --right-line-color: #ff7f0e;
-            --left-bar-color-rgba: rgba(31, 119, 180, 0.8);
-            --right-bar-color-rgba: rgba(255, 127, 14, 0.8);
-            --norm-poor-bg: rgba(252, 165, 165, 0.5);
-            --norm-average-bg: rgba(252, 211, 77, 0.5);
-            --norm-good-bg: rgba(167, 243, 208, 0.5);
-            --norm-excellent-bg: rgba(52, 211, 153, 0.5);
-
-            --base-font-size: 16px;
-            --graph-box-height: auto;
-            --graph-min-height: 320px;
-            --sidebar-width: 180px;
-            --normal-font-weight: 400;
-            --semibold-font-weight: 600;
-            --main-content-margin: 20px;
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 50px;
+            background-color: #f4f4f4;
         }
-
-        /* Base, Layout, Sidebar, Content Area, Section Boxes, Upload, Patient Selection, Results Header - Styles are assumed to be the same as previously provided and are omitted for brevity here. Ensure they are present in your actual file. */
-        body { font-family: 'Avenir', sans-serif; background-color: var(--light-gray); color: var(--text-color); margin: 0; padding: 0; width: 100%; box-sizing: border-box; line-height: 1.6; font-size: var(--base-font-size); font-weight: var(--normal-font-weight); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; font-synthesis: none; }
-        .app-layout { display: flex; width: 100%; min-height: 100vh; margin-top: 0; }
-        .app-sidebar { width: var(--sidebar-width); background-color: var(--sidebar-background-color, #f8f9fa); color: var(--text-color); padding: 20px 15px; box-shadow: 2px 0 5px rgba(0,0,0,0.05); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; height: 100vh; overflow: hidden; z-index: 1000; }
-        .app-sidebar::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-position: left center; background-size: cover; background-repeat: no-repeat; filter: blur(5px); z-index: -1; transform: scale(1.1); }
-        .sidebar-content-wrapper { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; overflow-y: auto; }
-        .sidebar-logo-placeholder { height: 50px; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
-        .sidebar-logo-placeholder i { color: var(--app-primary-color); }
-        .sidebar-buttons { display: flex; flex-direction: column; gap: 12px; flex-shrink: 0; }
-        .sidebar-social-links { margin-top: auto; padding-top: 20px; margin-bottom: 25px; text-align: center; flex-shrink: 0; }
-        .sidebar-social-links a { color: var(--app-secondary-color); margin: 0 30px; font-size: 1.8rem; text-decoration: none; transition: color 0.2s ease; }
-        .sidebar-social-links a:hover { color: var(--app-primary-color); }
-        .app-main-content { flex-grow: 1; margin-left: calc(var(--sidebar-width) + var(--main-content-margin)); padding: 30px 40px; background-color: var(--white); overflow-y: auto; height: 100vh; box-sizing: border-box; }
-        .app-sidebar button, .app-sidebar a button { font-family: 'Avenir', sans-serif; font-size: 0.9rem; font-weight: var(--normal-font-weight); padding: 10px 15px; color: var(--app-primary-color); background-color: transparent; background-image: none; border: none; border-radius: 0; cursor: pointer; transition: all 0.3s ease; box-shadow: none; letter-spacing: 0.5px; width: 100%; text-align: left; display: flex; align-items: center; gap: 10px; }
-        .app-sidebar button i { width: 20px; text-align: center; color: var(--app-primary-color); transition: color 0.3s ease; }
-        .app-sidebar button:hover, .app-sidebar a button:hover { background-image: linear-gradient(to right, var(--app-button-light-gradient-start), var(--app-button-light-gradient-end)); color: var(--app-text-on-primary); transform: translateY(-1px); }
-        .app-sidebar button:active, .app-sidebar a button:active { transform: translateY(0px); }
-        .app-sidebar button:hover i, .app-sidebar a button:hover i, .app-sidebar button:active i, .app-sidebar a button:active i { color: var(--app-text-on-primary); }
-        .app-sidebar a { text-decoration: none; display: block; }
-        .content-container { max-width: 1100px; margin: 0 auto; }
-        h1, h2, h3 { font-family: 'Avenir', sans-serif; margin-bottom: 0.5em; font-weight: var(--normal-font-weight); }
-        h1 { text-align: left; font-size: 2.0rem; margin-top: 0; margin-bottom: 0.8em; color: var(--app-primary-color); font-weight: var(--semibold-font-weight); }
-        h2.section-title { font-size: 1.5rem; margin-top: 1.8em; margin-bottom: 0.6em; color: var(--app-secondary-color); font-weight: var(--semibold-font-weight); }
-        h3.section-title { font-size: 1.15rem; color: var(--app-primary-color); margin-top: 0; margin-bottom: 0.5em; font-weight: var(--semibold-font-weight); }
-        h3.toggle-dates-title, h3.demographic-title { font-size: 0.9rem; color: var(--app-primary-color); margin-top: 0; margin-bottom: 0.5em; font-weight: var(--semibold-font-weight); }
-        .graph-box-title { font-size: 1.15rem; color: var(--app-primary-color); margin-bottom: 0.5em; font-weight: var(--semibold-font-weight); padding-bottom: 0; border-bottom: none; }
-        .section-box { background-color: var(--light-gray); border: none; border-radius: var(--border-radius); padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--box-shadow); }
-        .graph-section-box { background-color: var(--light-gray); border: none; border-radius: var(--border-radius); padding: 1rem 1.5rem 1.5rem 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--box-shadow); height: var(--graph-box-height); }
-        #upload-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 1.5rem; padding: 0; }
-        #upload-box { border: 2px dashed var(--medium-gray); background-color: var(--white); padding: 2.5rem 3rem; text-align: center; cursor: pointer; transition: background-color 0.3s ease, border-color 0.3s ease; width: 100%; max-width: 550px; border-radius: var(--border-radius); box-shadow: none; margin: 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 180px; }
-        #upload-box.dragover { border-color: var(--app-primary-color); background-color: rgba(40, 84, 132, 0.05); }
-        #upload-box .upload-icon { font-size: 3rem; color: var(--app-primary-color); margin-bottom: 1rem; }
-        #upload-box p { margin: 0.25rem 0; color: var(--dark-gray); }
-        #upload-box .upload-cta { margin-top: 1rem; }
-        .upload-button { background-image: linear-gradient(to right, var(--app-button-light-gradient-start), var(--app-button-light-gradient-end)); color: white; padding: 0.6rem 1.5rem; border-radius: var(--border-radius); cursor: pointer; transition: all 0.3s ease; font-weight: var(--normal-font-weight); display: inline-flex; align-items: center; box-shadow: none; border: none; font-family: 'Avenir', sans-serif; }
-        .upload-button i { margin-right: 0.5rem; }
-        .upload-button:hover { background-image: linear-gradient(to right, var(--app-button-light-hover-gradient-start), var(--app-button-light-hover-gradient-end)); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); transform: translateY(-1px); }
-        #upload-csv-hidden { display: none; }
-        #file-info-container { text-align: center; margin-top: 1rem; min-height: 40px; }
-        #file-info { font-size: 0.85rem; color: var(--dark-gray); margin-top: 1rem; }
-        #loading-spinner { display: none; color: var(--app-primary-color); justify-content: center; align-items: center; margin-top: 1rem; }
-        #loading-spinner i { font-size: 1.5rem; }
-        #loading-spinner span { margin-left: 0.5rem; }
-        #error-message { color: #dc2626; font-weight: var(--semibold-font-weight); margin-top: 1rem; }
-        #select-patient-section { margin-bottom: 1.5rem; }
-        #patient-search { border: none; border-radius: var(--border-radius); padding: 0.6rem 0.75rem; box-shadow: none; font-family: inherit; font-size: 0.9rem; width: 100%; max-width: 400px; display: block; margin-bottom: 1rem; background-color: var(--white); }
-        #patient-search:focus { outline: none; background-color: #f0f0f0; box-shadow: none; }
-        #patient-button-container { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
-        .patient-button { transition: all 0.2s ease-in-out; background-color: transparent; border: 1px solid var(--medium-gray); color: var(--app-primary-color); font-weight: var(--normal-font-weight); border-radius: var(--border-radius); padding: 0.5rem 1rem; cursor: pointer; }
-        .patient-button:hover { background-color: var(--light-gray); color: var(--app-primary-color); border-color: var(--medium-gray); transform: none; background-image: none; }
-        .patient-button.selected { background-image: linear-gradient(to right, var(--app-button-light-hover-gradient-start), var(--app-button-light-hover-gradient-end)); color: white; border-color: transparent; transform: translateY(0); box-shadow: inset 0 1px 3px rgba(0,0,0,0.2); }
-        .patient-button.selected:hover { box-shadow: inset 0 1px 3px rgba(0,0,0,0.2); transform: translateY(0); background-image: linear-gradient(to right, var(--app-button-light-hover-gradient-start), var(--app-button-light-hover-gradient-end)); }
-        .results-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; margin-bottom: 0.6em; margin-top: 1.8em; }
-        .results-header .section-title { margin-top: 0; margin-bottom: 0.5em; margin-right: 1em; flex-shrink: 0; }
-        #view-toggle-container { margin-top: 0; margin-bottom: 0.5em; }
-        .view-toggle-button { transition: all 0.2s ease-in-out; border: 1px solid var(--medium-gray); font-weight: var(--normal-font-weight); padding: 0.4rem 0.8rem; font-size: 0.875rem; cursor: pointer; background-color: transparent; color: var(--app-primary-color); }
-        .view-toggle-button:first-of-type { border-top-left-radius: var(--border-radius); border-bottom-left-radius: var(--border-radius); }
-        .view-toggle-button:last-of-type { border-top-right-radius: var(--border-radius); border-bottom-right-radius: var(--border-radius); border-left: none; }
-        .view-toggle-button.active { background-color: var(--app-primary-color); color: white; border-color: var(--app-primary-color); }
-        .view-toggle-button:not(.active):hover { background-color: var(--medium-gray); }
-        .graph-grid { display: grid; gap: 1.5rem; }
-        .graph-grid-scatter { grid-template-columns: repeat(1, 1fr); }
-        .graph-grid-bar { grid-template-columns: repeat(1, 1fr); }
-        @media (min-width: 1024px) { .graph-grid-scatter { grid-template-columns: repeat(3, 1fr); } .graph-grid-bar { grid-template-columns: repeat(2, 1fr); } }
-        .plotly-graph-div { min-height: var(--graph-min-height); width: 100%; }
-        .summary-container-box { background-color: var(--light-gray); border: none; border-radius: var(--border-radius); padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--box-shadow); }
-        .summary-position-block { margin-bottom: 2.5rem; } .summary-position-block:last-child { margin-bottom: 0; }
-        .summary-table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; font-size: 0.875rem; table-layout: fixed; }
-        .summary-table th, .summary-table td { border: 1px solid var(--medium-gray); padding: 0.5rem 0.5rem; text-align: center; vertical-align: middle; white-space: nowrap; }
-        .summary-table th { background-color: var(--light-gray); font-weight: var(--semibold-font-weight); color: var(--text-color); }
-        .summary-table .metric-header { width: 140px; text-align: left; font-weight: var(--semibold-font-weight); background-color: var(--print-table-header-bg); padding-left: 0.75rem; }
-        .summary-table .date-header { background-color: var(--print-table-header-bg); font-weight: var(--semibold-font-weight); text-align: center; }
-        .summary-table .sub-header { background-color: var(--print-table-header-bg); font-weight: var(--normal-font-weight); font-size: 0.8rem; color: var(--dark-gray); }
-        .summary-table .metric-label { text-align: left; font-weight: var(--normal-font-weight); padding-left: 1rem; background-color: var(--print-table-header-bg); }
-        .summary-table .left-value-cell { background-color: var(--print-left-value-cell-bg); }
-        .summary-table .right-value-cell { background-color: var(--print-right-value-cell-bg); }
-        .summary-table .change-pos { color: #16a34a; } .summary-table .change-neg { color: #dc2626; } .summary-table .change-zero { color: #64748b; } .summary-table .na { color: #94a3b8; font-style: italic; }
-        .loading-placeholder { display: flex; align-items: center; justify-content: center; height: 100%; color: #94a3b8; font-style: italic; padding: 20px; }
-        .error-message { color: #dc2626; font-weight: var(--semibold-font-weight); }
-        .summary-footer-note { font-size: 0.75rem; color: var(--dark-gray); margin-top: -0.5rem; margin-bottom: 1.5rem; text-align: center; }
-        .action-button { display: inline-block; margin-bottom: 1.5rem; padding: 0.6rem 1.2rem; color: white; font-weight: var(--normal-font-weight); border-radius: var(--border-radius); text-decoration: none; transition: all 0.3s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; border: none; font-family: 'Avenir', sans-serif; }
-        .action-button:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .action-button i { margin-right: 0.5rem; }
-        .clear-button { background-color: var(--danger-color-dark); margin-left: 0.5rem; } .clear-button:hover { background-color: #b91c1c; }
-        #toggle-dates-container { margin-top: 1rem; margin-bottom: 1.5rem; padding: 1rem 1.5rem; }
-        .test-date-list { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0; background-color: transparent; border: none; }
-        .test-date-button { padding: 0.4rem 0.8rem; border-radius: var(--border-radius); border: 1px solid; cursor: pointer; font-size: 0.875rem; font-weight: var(--normal-font-weight); transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 0.3rem; }
-        .test-date-button.visible { background-color: var(--date-visible-bg); border-color: var(--date-visible-border); color: var(--date-visible-text); }
-        .test-date-button.visible:hover { background-color: var(--date-visible-hover-bg); }
-        .test-date-button.hidden { background-color: var(--date-hidden-bg); border-color: var(--date-hidden-border); color: var(--date-hidden-text); }
-        .test-date-button.hidden:hover { background-color: var(--date-hidden-hover-bg); }
-        .test-date-button .icon { font-size: 0.8em; }
-        .demographic-row { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 1.5rem; text-align: left; font-size: 0.9rem; margin-top: 1em; }
-        .demographic-row > div { flex-grow: 0; min-width: auto; }
-        .demographic-row strong { text-decoration: underline; font-weight: var(--semibold-font-weight); margin-right: 0.5em; }
-        .js-plotly-plot .plotly { font-family: 'Avenir', sans-serif !important; }
-        .js-plotly-plot .plotly .gtitle { font-family: 'Avenir', sans-serif !important; font-size: 1rem !important; fill: var(--app-primary-color) !important; font-weight: var(--semibold-font-weight) !important; }
-        .js-plotly-plot .plotly .axistitle { font-size: 0.85rem !important; fill: var(--dark-gray) !important; font-weight: var(--normal-font-weight) !important; }
-        .js-plotly-plot .plotly .tick text { font-size: 0.8rem !important; fill: var(--dark-gray) !important; }
-        .js-plotly-plot .plotly .legendtext { font-size: 0.85rem !important; }
-        .js-plotly-plot .plotly .annotation text { font-family: 'Avenir', sans-serif !important; }
-        @media (max-width: 992px) { /* ... */ } @media (max-width: 768px) { /* ... */ } @media (max-width: 480px) { /* ... */ }
-
-        /* --- Print Styles --- */
-        @media print {
-            body { font-family: 'Avenir', sans-serif !important; background-color: var(--white) !important; color: var(--print-text-color) !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; font-size: 9pt !important; padding: 0 !important; margin:0 !important; display: block !important; font-weight: var(--normal-font-weight) !important; }
-            .app-sidebar, #upload-container, #select-patient-section, #view-toggle-container, .action-button, #toggle-dates-container, .results-header > h2.section-title, .summary-footer-note, #demographic-info-area { display: none !important; }
-            .app-layout { display: block !important; }
-            .app-main-content { margin: 0 !important; padding: 5mm !important; width: 100% !important; max-width: 100% !important; box-shadow: none !important; border: none !important; height: auto !important; overflow: visible !important;}
-            .content-container { box-shadow: none !important; padding: 0 !important; max-width:100% !important; }
-
-            .graph-section-box, .summary-container-box {
-                border: 1px solid var(--print-medium-gray) !important; padding: 10px !important; background-color: var(--print-light-gray) !important;
-                box-shadow: none !important; margin-bottom: 8mm !important; page-break-inside: avoid !important;
-            }
-            .summary-position-block { page-break-inside: avoid !important; margin-bottom: 5mm !important; }
-            .summary-position-block:last-child { margin-bottom: 0 !important; }
-
-            h1 { font-size: 14pt !important; margin-bottom: 5mm !important; text-align: center !important; display: block !important; color: var(--print-primary-color) !important; font-weight: var(--semibold-font-weight) !important; }
-            h2.section-title:not(:has(~ .summary-container-box)) { display: none !important; }
-            h2.section-title:has(~ .summary-container-box) { display: block !important; font-size: 11pt !important; margin-top: 8mm; margin-bottom: 4mm; border: none !important; color: var(--print-secondary-color) !important; font-weight: var(--semibold-font-weight) !important; }
-            h3.section-title, h3.toggle-dates-title, .graph-box-title { font-size: 10pt !important; margin-bottom: 3mm !important; color: var(--print-primary-color) !important; font-weight: var(--semibold-font-weight) !important; }
-
-            .plotly .modebar { display: none !important; }
-            .plotly .scatterlayer .trace.fill, .plotly .barlayer .trace.bars path { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-            
-            .js-plotly-plot .plotly .gtitle { fill: var(--print-primary-color) !important; font-weight: var(--semibold-font-weight) !important; font-size: 0.9rem !important; }
-            .js-plotly-plot .plotly .axistitle { fill: var(--print-dark-gray) !important; font-weight: var(--normal-font-weight) !important; font-size: 0.75rem !important;}
-            .js-plotly-plot .plotly .tick text { fill: var(--print-dark-gray) !important; font-size: 0.7rem !important;}
-            .js-plotly-plot .plotly .annotation text { font-family: 'Avenir', sans-serif !important; }
-            .js-plotly-plot .plotly .legendtext {font-size: 0.75rem !important;}
-
-            body.pdf-view-active { background-color: var(--white) !important; color: var(--print-text-color) !important; font-family: 'Avenir', sans-serif !important; height: auto !important; overflow: visible !important; padding: 0 !important; margin: 0 !important; font-size: 9pt !important; }
-            body.pdf-view-active .app-main-content { margin: 0 !important; padding: 10mm !important; width: auto !important; max-width: none !important; box-shadow: none !important; border: none !important; }
-            body.pdf-view-active .content-container { max-width: 180mm !important; margin: 0 auto !important; }
-            /* PDF Header is now styled via inline styles from JS for better control over font and variable resolution */
-            body.pdf-view-active #pdf-explanation-header {
-                /* Basic structural CSS, specific text styling is now inline via JS for robustness */
-                display: block !important; margin-bottom: 6mm !important; padding: 4mm !important;
-                border: 1px solid var(--print-medium-gray, #dee2e6) !important; page-break-after: avoid !important;
-                background-color: var(--print-light-gray, #f8f9fa) !important;
-            }
-            body.pdf-view-active .app-sidebar, body.pdf-view-active #upload-container, body.pdf-view-active #select-patient-section, body.pdf-view-active h1, body.pdf-view-active .results-header, body.pdf-view-active #toggle-dates-container, body.pdf-view-active .action-button, body.pdf-view-active #clear-files-btn, body.pdf-view-active #demographic-info-area { display: none !important; }
-            body.pdf-view-graphs .summary-container-box, body.pdf-view-graphs h2.section-title:has(~ .summary-container-box), body.pdf-view-graphs .summary-footer-note { display: none !important; }
-            body.pdf-view-graphs .graph-section-box { display: block !important; page-break-inside: avoid !important; margin-bottom: 6mm !important; }
-            body.pdf-view-graphs .graph-section-box .graph-grid-scatter { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 5mm !important; }
-            body.pdf-view-graphs .graph-section-box .graph-grid-scatter > .plotly-graph-div { width: 100% !important; margin-bottom: 0 !important; min-height: 160px !important; }
-            body.pdf-view-graphs.pdf-view-active-bar-mode .graph-section-box .graph-grid-bar { display: grid !important; grid-template-columns: repeat(2, 1fr) !important; gap: 6mm !important; }
-            body.pdf-view-graphs.pdf-view-active-bar-mode .graph-section-box .graph-grid-bar > .plotly-graph-div { width: 100% !important; margin-bottom: 0 !important; min-height: 180px !important; }
-            body.pdf-view-tables .graph-section-box { display: none !important; }
-            body.pdf-view-tables .summary-container-box, body.pdf-view-tables h2.section-title:has(~ .summary-container-box), body.pdf-view-tables .summary-footer-note { display: block !important; }
-            body.pdf-view-tables .summary-position-block { page-break-inside: avoid !important; }
-            body.pdf-view-tables .summary-table { font-size: 7.5pt !important; margin-top: 3mm !important; border-collapse: collapse !important; width: 100% !important; table-layout: fixed !important; }
-            body.pdf-view-tables .summary-table th, body.pdf-view-tables .summary-table td { border: 1px solid var(--print-medium-gray, #dee2e6) !important; padding: 0.3rem 0.25rem !important; text-align: center !important; vertical-align: middle !important; white-space: nowrap !important; }
-            body.pdf-view-tables .summary-table th { background-color: var(--print-table-header-bg, #f0f3f5) !important; font-weight: var(--semibold-font-weight, 600) !important; color: var(--print-text-color, #000000) !important; }
-            body.pdf-view-tables .summary-table .metric-header { width: auto !important; text-align: left !important; font-weight: var(--semibold-font-weight, 600) !important; background-color: var(--print-table-header-bg, #f0f3f5) !important; padding-left: 0.5rem !important; }
-            body.pdf-view-tables .summary-table .date-header { background-color: var(--print-table-header-bg, #f0f3f5) !important; font-weight: var(--semibold-font-weight, 600) !important; text-align: center !important; }
-            body.pdf-view-tables .summary-table .sub-header { background-color: var(--print-table-header-bg, #f0f3f5) !important; font-weight: var(--normal-font-weight, 400) !important; font-size: 0.9em !important; color: var(--print-dark-gray, #495057) !important; }
-            body.pdf-view-tables .summary-table .metric-label { text-align: left !important; font-weight: var(--normal-font-weight, 400) !important; padding-left: 0.5rem !important; background-color: var(--print-table-header-bg, #f0f3f5) !important; }
-            body.pdf-view-tables .summary-table .left-value-cell { background-color: var(--print-left-value-cell-bg, rgba(31, 119, 180, 0.08)) !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-            body.pdf-view-tables .summary-table .right-value-cell { background-color: var(--print-right-value-cell-bg, rgba(255, 127, 14, 0.08)) !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;}
-            body.pdf-view-tables .summary-table .change-pos { color: var(--success-color, #16a34a) !important; }
-            body.pdf-view-tables .summary-table .change-neg { color: var(--danger-color-dark, #dc2626) !important; }
-            body.pdf-view-tables .summary-table .change-zero { color: #64748b !important; }
-            body.pdf-view-tables .summary-table .na { color: #94a3b8 !important; font-style: italic !important; }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-
-        body.pdf-view-active-preparing .app-sidebar, body.pdf-view-active-preparing #upload-container, body.pdf-view-active-preparing #select-patient-section, body.pdf-view-active-preparing h1, body.pdf-view-active-preparing h2.section-title, body.pdf-view-active-preparing .results-header, body.pdf-view-active-preparing #toggle-dates-container, body.pdf-view-active-preparing .app-main-content > .content-container > #clear-files-btn, body.pdf-view-active-preparing .app-main-content > .content-container > .action-button, body.pdf-view-active-preparing #demographic-info-area { display: none !important; }
-        body.pdf-view-active-preparing .app-main-content { margin-left: 0 !important; padding: 20px !important; }
-        #pdf-explanation-header { padding: 15px; margin-bottom: 20px; border: 1px solid var(--medium-gray); background-color: var(--light-gray); border-radius: var(--border-radius); font-family: 'Avenir', sans-serif; }
-        #pdf-explanation-header h2 { font-size: 1.5rem; color: var(--app-primary-color); margin-top: 0; margin-bottom: 10px; font-weight: var(--semibold-font-weight); }
-        #pdf-explanation-header p { margin-bottom: 5px; font-size: 0.9rem; }
-        #pdf-explanation-header strong { font-weight: var(--semibold-font-weight); }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="email"],
+        input[type="password"],
+        input[type="text"] { /* Added for a potential username field */
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        /* Styles from your previous request for input fields */
+        .custom-input {
+            background-color: #f0f0f0; /* Light gray */
+            border: none;             /* Removes the default border */
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            border-radius: 4px;
+        }
+        .custom-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5); /* Blue glow on focus */
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .message {
+            text-align: center;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
     </style>
 </head>
-<body class="text-slate-800"> <div class="app-layout">
-    <aside class="app-sidebar">
-        <div class="sidebar-content-wrapper">
-            <div class="sidebar-logo-placeholder">
-                <i class="fas fa-bars"></i> </div>
-            <div class="sidebar-buttons">
-                <a href="../screening.html" id="back-to-screening-link">
-                    <button>
-                        <i class="fas fa-arrow-left"></i>
-                        <span class="button-text">Screening</span>
-                    </button>
-                </a>
-                <button id="pdf-graphs-btn">
-                    <i class="fas fa-file-pdf"></i>
-                    <span class="button-text">PDF Graphs</span>
-                </button>
-                <button id="pdf-table-btn">
-                    <i class="fas fa-file-pdf"></i>
-                    <span class="button-text">PDF Table</span>
-                </button>
-                <button id="export-excel-button">
-                    <i class="fas fa-file-excel"></i>
-                    <span class="button-text">Export Data</span>
-                </button>
-                <button id="clear-files-btn"> <i class="fas fa-trash-alt"></i>
-                    <span class="button-text">Clear Files</span> </button>
+<body>
+
+    <div class="container">
+        <h2>Register New User</h2>
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="regEmail">Email:</label>
+                <input type="email" id="regEmail" class="custom-input" required>
             </div>
-            <div class="sidebar-social-links">
-                <a href="https://www.instagram.com/alphatekofficial" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="https://www.alphatek.no" target="_blank" title="Website"><i class="fas fa-globe"></i></a>
-                <a href="#" title="Info/Help"><i class="fas fa-circle-info"></i></a>
+            <div class="form-group">
+                <label for="regPassword">Password (min. 6 characters):</label>
+                <input type="password" id="regPassword" class="custom-input" required>
             </div>
-        </div>
-    </aside>
-
-    <main class="app-main-content">
-        <div class="content-container">
-            <h1>Patient History</h1>
-            <div id="upload-container">
-                <div id="upload-box">
-                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                    <p>Drag and drop CSV files here</p>
-                    <p>or</p>
-                    <div class="upload-cta">
-                        <button type="button" class="upload-button" onclick="event.stopPropagation(); document.getElementById('upload-csv-hidden').click();">
-                            <i class="fas fa-folder-open"></i> Select/Add Patient Data Files
-                        </button>
-                    </div>
-                    <input type="file" id="upload-csv-hidden" accept=".csv" multiple>
-                    <div id="file-info-container">
-                        <p id="file-info">Select patient data files or drag and drop here to begin.</p>
-                        <div id="loading-spinner">
-                            <i class="fas fa-spinner fa-spin"></i>
-                            <span>Processing files...</span>
-                        </div>
-                        <div id="error-message" class="error-message"></div>
-                    </div>
-                </div>
+            <div class="form-group">
+                <label for="regUsername">Username (Optional):</label>
+                <input type="text" id="regUsername" class="custom-input">
             </div>
+            <button type="submit">Register</button>
+        </form>
+        <div id="messageArea" class="message" style="display: none;"></div>
+    </div>
 
-            <h2 class="section-title">Select Patient</h2>
-            <div id="select-patient-section" class="section-box">
-                <div><input type="text" id="patient-search" placeholder="Search Patient ID (FP)..."></div>
-                <div id="patient-button-container">
-                    <span class="text-slate-500 italic">Upload files or load saved data to see patients.</span>
-                </div>
-                <div id="demographic-info-area"></div>
-            </div>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"; // Updated to v10+
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-            <div id="output-area" class="mt-8"></div>
-        </div>
-    </main>
-</div>
-<script>
-    // Global Variables, Constants, DOM Refs - UNCHANGED
-    let allPatientData = {}; let uniquePatientIds = []; let selectedPatientId = null; let currentViewMode = 'scatter'; let latestInjuredSide = null; let testDateVisibility = {}; const localStorageKey = 'analysisAppData';
-    const LEFT_COLOR = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim() || '#1f77b4'; const RIGHT_COLOR = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim() || '#ff7f0e'; const LEFT_BAR_COLOR_RGBA = getComputedStyle(document.documentElement).getPropertyValue('--left-bar-color-rgba').trim(); const RIGHT_BAR_COLOR_RGBA = getComputedStyle(document.documentElement).getPropertyValue('--right-bar-color-rgba').trim();
-    const NORMATIVE_THRESHOLDS = { 'I': {poor_max:1.47, average_mid:1.65,  good_min:1.85,  excellent_min:2.1}, 'Y': {poor_max:1.25, average_mid:1.4,  good_min:1.6,  excellent_min:1.76}, 'T': {poor_max:1.15, average_mid:1.25, good_min:1.4,  excellent_min:1.58}}; const NORM_ZONE_COLORS = { poor: getComputedStyle(document.documentElement).getPropertyValue('--norm-poor-bg').trim(), average: getComputedStyle(document.documentElement).getPropertyValue('--norm-average-bg').trim(), good: getComputedStyle(document.documentElement).getPropertyValue('--norm-good-bg').trim(), excellent: getComputedStyle(document.documentElement).getPropertyValue('--norm-excellent-bg').trim() };
-    const POSITIONS = ['I', 'Y', 'T']; const METRIC_KEYS = { MAX_FORCE: 'Max Force (N)', RFD: 'RFD 100ms (N/s)', NORM: 'Max Force / BW' }; const METRICS_DISPLAY_ORDER = [METRIC_KEYS.MAX_FORCE, METRIC_KEYS.RFD, METRIC_KEYS.NORM];
-    const uploadInputHidden = document.getElementById('upload-csv-hidden'); const fileInfo = document.getElementById('file-info'); const patientSearchInput = document.getElementById('patient-search'); const patientButtonContainer = document.getElementById('patient-button-container'); const outputArea = document.getElementById('output-area'); const loadingSpinner = document.getElementById('loading-spinner'); const errorMessage = document.getElementById('error-message'); const backButtonLink = document.getElementById('back-to-screening-link'); const clearFilesButton = document.getElementById('clear-files-btn'); const demographicInfoArea = document.getElementById('demographic-info-area'); const uploadBox = document.getElementById('upload-box'); const exportExcelButton = document.getElementById('export-excel-button'); const pdfGraphsButton = document.getElementById('pdf-graphs-btn'); const pdfTableButton = document.getElementById('pdf-table-btn'); let viewScatterBtn = null; let viewBarBtn = null;
-    const basePlotlyConfig = { displaylogo: false, modeBarButtonsToRemove: ['sendDataToCloud', 'lasso2d', 'select2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d', 'resetScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian']};
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
 
-    function saveAnalysisStateToLocalStorage() { const stateToSave = { allPatientData: {}, uniquePatientIds, selectedPatientId, currentViewMode, testDateVisibility }; try { const dataWithIsoDates = JSON.parse(JSON.stringify(allPatientData)); for (const pid in dataWithIsoDates) { if (Array.isArray(dataWithIsoDates[pid])) { dataWithIsoDates[pid].forEach(r => { if (r['Test Date'] && typeof r['Test Date'].toISOString === 'function') try { r['Test Date'] = r['Test Date'].toISOString(); } catch (e) { r['Test Date'] = null; } else if (r['Test Date']) { const pD = new Date(r['Test Date']); if (!isNaN(pD)) r['Test Date'] = pD.toISOString(); else r['Test Date'] = null; } else r['Test Date'] = null; }); dataWithIsoDates[pid] = dataWithIsoDates[pid].filter(r => r['Test Date'] !== null); } } stateToSave.allPatientData = dataWithIsoDates; localStorage.setItem(localStorageKey, JSON.stringify(stateToSave)); } catch (e) { console.error('Error saving state:', e); errorMessage.textContent = 'Could not save state.'; } }
-    function loadAnalysisStateFromLocalStorage() { try { const s = localStorage.getItem(localStorageKey); if (s) { const state = JSON.parse(s); allPatientData = state.allPatientData || {}; uniquePatientIds = state.uniquePatientIds || []; selectedPatientId = state.selectedPatientId || null; currentViewMode = state.currentViewMode || 'scatter'; testDateVisibility = state.testDateVisibility || {}; for (const pid in allPatientData) { if (Array.isArray(allPatientData[pid])) { allPatientData[pid].forEach(r => { if (r['Test Date'] && typeof r['Test Date'] === 'string') { const pD = new Date(r['Test Date']); r['Test Date'] = !isNaN(pD) ? pD : null; } else if (!(r['Test Date'] instanceof Date)) r['Test Date'] = null; }); allPatientData[pid] = allPatientData[pid].filter(r => r['Test Date'] instanceof Date).sort((a, b) => a['Test Date'] - b['Test Date']); } } fileInfo.textContent = `${Object.keys(allPatientData).length} patient(s) loaded.`; displayPatientButtons(); if (selectedPatientId && allPatientData[selectedPatientId]) selectPatient(selectedPatientId, true); else { const tdc=document.getElementById('toggle-dates-container'); if(tdc)tdc.innerHTML=''; demographicInfoArea.innerHTML=''; outputArea.innerHTML=''; } } else { fileInfo.textContent = 'Select files or drag & drop to begin.'; displayPatientButtons(); } } catch (e) { console.error('Error loading state:', e); errorMessage.textContent='Could not load state.'; allPatientData={};uniquePatientIds=[];selectedPatientId=null;currentViewMode='scatter';testDateVisibility={};displayPatientButtons();const tdc=document.getElementById('toggle-dates-container');if(tdc)tdc.innerHTML='';demographicInfoArea.innerHTML='';outputArea.innerHTML='';} }
-    function clearAnalysisHistory() { if (confirm('Clear all saved data? This action cannot be undone.')) { try { localStorage.removeItem(localStorageKey); allPatientData={}; uniquePatientIds=[]; selectedPatientId=null; latestInjuredSide=null; currentViewMode='scatter'; testDateVisibility={}; outputArea.innerHTML=''; const tdc=document.getElementById('toggle-dates-container'); if(tdc)tdc.innerHTML=''; demographicInfoArea.innerHTML=''; fileInfo.textContent='Select files or drag & drop to begin.'; patientSearchInput.value=''; displayPatientButtons(); errorMessage.textContent=''; console.log("Local storage cleared and app reset."); } catch (e) { console.error('Error clearing history:', e); errorMessage.textContent='Could not clear all data from local storage.'; } } }
-    function handleFileUpload(files) { if (!files || files.length === 0) { fileInfo.textContent = 'No files selected.'; return; } errorMessage.textContent = ''; loadingSpinner.style.display = 'flex'; fileInfo.textContent = `Loading ${files.length} file(s)...`; let skipped=0; const promises=[]; let newData={}; for (const f of files) { const m=f.name.match(/ASH_([^_]+)_(\d{4}-\d{2}-\d{2})\.csv/i); if (!m||!m[1]||!m[2]){skipped++;console.warn(`Skipped file due to invalid name format: ${f.name}`);continue;} const pId=m[1], dStr=m[2], tDate=new Date(dStr+'T00:00:00'); if(isNaN(tDate)){skipped++;console.warn(`Skipped file due to invalid date in name: ${f.name}`);continue;} let isDup=false; if(allPatientData[pId])isDup=allPatientData[pId].some(r=>r['Test Date'] instanceof Date&&!isNaN(r['Test Date'])&&r['Test Date'].toISOString().split('T')[0]===dStr); if(isDup){skipped++;console.warn(`Skipped duplicate file (same patient ID and date): ${f.name}`);promises.push(Promise.resolve({skipped:true,filename:f.name}));continue;} promises.push(new Promise((res,rej)=>{ Papa.parse(f,{header:true,skipEmptyLines:true,dynamicTyping:true, complete:(rs)=>{ try{if(!newData[pId])newData[pId]=[];rs.data.forEach(row=>{if(row&&typeof row==='object'&&row.Metric&&row.Position){let pC=String(row.Position).replace(/ASH Test Position\s+/i,'').trim();if(POSITIONS.includes(pC)){const lV=row['Left Value']==null||isNaN(N=Number(row['Left Value']))?null:N,rV=row['Right Value']==null||isNaN(N=Number(row['Right Value']))?null:N,bW=row['Bodyweight (kg)']==null||isNaN(N=Number(row['Bodyweight (kg)']))?null:N;newData[pId].push({...row,'Left Value':lV,'Right Value':rV,'Bodyweight (kg)':bW,'Test Date':tDate,Filename:f.name,'Position Clean':pC});}}});}catch(e){console.error(`Error processing data in file ${f.name}:`, e);rej(`Error processing data in ${f.name}`);return;} res({skipped:false});}, error:(e)=>{console.error(`PapaParse error for file ${f.name}:`, e);rej(`Parsing error in ${f.name}: ${e.message}`);} }); })); } Promise.allSettled(promises).then(results=>{ loadingSpinner.style.display='none'; let addedCount=0, updatedPatientCount=0, newPatientCount=0; for(const pId in newData){if(!allPatientData[pId]){allPatientData[pId]=[];newPatientCount++;} newData[pId].forEach(newRecord => { allPatientData[pId].push(newRecord); addedCount++; }); allPatientData[pId].sort((a,b)=>new Date(a['Test Date']) - new Date(b['Test Date'])); initializeVisibility(pId); if(newData[pId].length > 0 && !newPatientCount) updatedPatientCount++;} uniquePatientIds=Object.keys(allPatientData).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true})); displayPatientButtons();saveAnalysisStateToLocalStorage(); let msg=`Processed ${files.length} file(s). `; if(addedCount > 0) msg += `Added ${addedCount} new record(s). `; if(newPatientCount > 0) msg += `${newPatientCount} new patient(s) created. `; if(updatedPatientCount > 0 && newPatientCount === 0 && addedCount > 0) msg += `${updatedPatientCount} existing patient(s) updated. `; if(skipped>0)msg+=`Skipped ${skipped} file(s). `; fileInfo.textContent=msg + (uniquePatientIds.length > 0 ? 'Select a patient to view data.' : 'No patient data loaded.'); const errs=results.filter(r=>r.status==='rejected').map(r=>r.reason); if(errs.length>0)errorMessage.textContent=`File processing errors: ${errs.join('; ')}`; if(selectedPatientId && newData[selectedPatientId])displayPatientDataAndGraphs(selectedPatientId); else if (selectedPatientId && allPatientData[selectedPatientId]) displayPatientDataAndGraphs(selectedPatientId); uploadInputHidden.value=null; }).catch(e=>{loadingSpinner.style.display='none';errorMessage.textContent=`Unexpected error during file processing: ${e.message}`;console.error("File processing chain error:", e);displayPatientButtons();uploadInputHidden.value=null;}); }
-    function displayPatientButtons() { const sTerm=patientSearchInput.value.toLowerCase(); patientButtonContainer.innerHTML=''; if(uniquePatientIds.length===0){if(loadingSpinner.style.display==='none')patientButtonContainer.innerHTML='<span class="italic">Upload or load patient data files.</span>';return;} const fIds=uniquePatientIds.filter(id=>id.toLowerCase().includes(sTerm)); if(fIds.length===0){patientButtonContainer.innerHTML='<span class="italic">No patients match your search.</span>';return;} fIds.forEach(pid=>{const b=document.createElement('button');b.textContent=pid;b.className=`patient-button ${pid===selectedPatientId?'selected':''}`;b.onclick=()=>selectPatient(pid);patientButtonContainer.appendChild(b);}); }
-    function selectPatient(patientId, isLoading=false) { selectedPatientId=patientId;window.selectedPatientId=patientId;displayPatientButtons();initializeVisibility(patientId);displayPatientDataAndGraphs(patientId);if(!isLoading)saveAnalysisStateToLocalStorage(); }
-    function getUniqueTestDates(patientId) { if(!allPatientData[patientId])return[];const dS=new Set();allPatientData[patientId].forEach(r=>{if(r['Test Date']instanceof Date&&!isNaN(r['Test Date']))dS.add(r['Test Date'].toISOString().split('T')[0]);});return Array.from(dS).sort((a,b) => new Date(a) - new Date(b)); }
-    function initializeVisibility(patientId) { if(!testDateVisibility[patientId])testDateVisibility[patientId]={};getUniqueTestDates(patientId).forEach(dStr=>{if(testDateVisibility[patientId][dStr]===undefined)testDateVisibility[patientId][dStr]=true;}); }
-    function handleDateToggle(patientId,dToToggle){ if(!testDateVisibility[patientId])return;testDateVisibility[patientId][dToToggle]=!testDateVisibility[patientId][dToToggle];displayPatientDataAndGraphs(patientId);saveAnalysisStateToLocalStorage();}
-    function renderTestDateList(pId,targetEl){ targetEl.innerHTML='';const uDates=getUniqueTestDates(pId);if(uDates.length<=1){targetEl.style.display='none';return;} targetEl.style.display='block';targetEl.className='section-box toggle-dates-section'; initializeVisibility(pId);const t=document.createElement('h3');t.className='toggle-dates-title';t.textContent='Toggle Test Dates for Graphs & Summary';targetEl.appendChild(t); const lC=document.createElement('div');lC.className='test-date-list';targetEl.appendChild(lC); uDates.forEach(dS=>{const isVis=testDateVisibility[pId]?.[dS]??true;const b=document.createElement('button');b.className=`test-date-button ${isVis?'visible':'hidden'}`;b.textContent=dS;b.dataset.date=dS;const i=document.createElement('i');i.className=`icon fas ${isVis?'fa-check-circle':'fa-times'}`;b.prepend(i);b.onclick=()=>handleDateToggle(pId,dS);lC.appendChild(b);}); }
-    function getProcessedPatientData(pId) { const pRecs=allPatientData[pId];if(!pRecs||pRecs.length===0)return null;initializeVisibility(pId); const visDStrs=testDateVisibility[pId]?Object.keys(testDateVisibility[pId]).filter(dS=>testDateVisibility[pId][dS]):getUniqueTestDates(pId); const visRecs=pRecs.filter(r=>{if(!(r['Test Date']instanceof Date)||isNaN(r['Test Date']))return false;return visDStrs.includes(r['Test Date'].toISOString().split('T')[0]);}); if(visRecs.length===0)return[];visRecs.sort((a,b)=>new Date(a['Test Date'])-new Date(b['Test Date']));const fVisTDate=visRecs[0]['Test Date'];if(!fVisTDate)return[]; return visRecs.map(r=>({...r,'Weeks Since First':Math.round((new Date(r['Test Date'])-new Date(fVisTDate))/(1000*60*60*24*7))})); }
-    
-    function displayPatientDataAndGraphs(pId) {
-        console.log(`Displaying data for patient: ${pId}, View mode: ${currentViewMode}`);
-        outputArea.innerHTML = '<div class="loading-placeholder"><i class="fas fa-spinner fa-spin"></i> Loading patient data...</div>';
-        demographicInfoArea.innerHTML = '';
-        let tdt = document.getElementById('toggle-dates-container');
-        if (!tdt) { // Create if not exists, might be first load or cleared
-            tdt = document.createElement('div');
-            tdt.id = 'toggle-dates-container';
-            // Insert it before outputArea or in a designated spot if outputArea is cleared.
-            // For simplicity, let's assume it's always present or handled by render functions if they clear outputArea.
-            // If outputArea is fully cleared, tdt needs to be re-added or handled by render functions.
-            // A common parent for tdt and outputArea is better. For now, we'll re-query inside render functions.
-        }
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID",
+            // measurementId: "YOUR_MEASUREMENT_ID" // Optional
+        };
 
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app); // Initialize Firestore
 
-        try {
-            const patientDataExists = allPatientData[pId] && allPatientData[pId].length > 0;
+        const registrationForm = document.getElementById('registrationForm');
+        const messageArea = document.getElementById('messageArea');
 
-            if (!patientDataExists) {
-                outputArea.innerHTML = `<p class="error-message" style="padding:20px;">No data records found for patient ID: ${pId}.</p>`;
-                if (tdt) tdt.style.display = 'none';
-                latestInjuredSide = null;
-                return;
-            }
+        registrationForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Prevent form from submitting the traditional way
 
-            const procData = getProcessedPatientData(pId);
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const username = document.getElementById('regUsername').value; // Optional username
 
-            // Update Demographics
-            const sortedRecords = [...allPatientData[pId]].sort((a, b) => new Date(b['Test Date']) - new Date(a['Test Date']));
-            latestInjuredSide = null; 
-            let latDemo = { Age: 'N/A', Gender: 'N/A', Sport: 'N/A', 'Bodyweight (kg)': null, 'Injured Side': null };
-            let foundInjuredSideOverall = null;
-            for (const r of sortedRecords) {
-                if (latDemo.Age === 'N/A' && r.Age != null) latDemo.Age = r.Age;
-                if (latDemo.Gender === 'N/A' && r.Gender != null) latDemo.Gender = r.Gender;
-                if (latDemo.Sport === 'N/A' && r.Sport != null) latDemo.Sport = r.Sport;
-                if (latDemo['Bodyweight (kg)'] === null && r['Bodyweight (kg)'] != null) latDemo['Bodyweight (kg)'] = r['Bodyweight (kg)'];
-                if (latDemo['Injured Side'] === null && r['Injured Side'] != null) latDemo['Injured Side'] = r['Injured Side'];
-                if (foundInjuredSideOverall === null && r['Injured Side'] != null) foundInjuredSideOverall = r['Injured Side'];
-            }
-            latestInjuredSide = latDemo['Injured Side'] || foundInjuredSideOverall || 'Left'; // Default if no info
-            demographicInfoArea.innerHTML = `<h3 class="demographic-title">Demographics (Last Available)</h3><div class="demographic-row"><div><strong>Age:</strong>&nbsp;${latDemo.Age}</div><div><strong>Gender:</strong>&nbsp;${latDemo.Gender}</div><div><strong>Sport:</strong>&nbsp;${latDemo.Sport}</div><div><strong>BW:</strong>&nbsp;${latDemo['Bodyweight (kg)'] != null ? latDemo['Bodyweight (kg)'].toFixed(1) + ' kg' : 'N/A'}</div><div><strong>Injured:</strong>&nbsp;${latestInjuredSide}</div></div>`;
+            messageArea.style.display = 'none'; // Hide previous messages
+            messageArea.textContent = '';
 
-            if (!procData || procData.length === 0) {
-                outputArea.innerHTML = `<p class="error-message" style="padding:20px;">No data to display for patient ${pId} with the currently selected test dates.</p>`;
-                renderTestDateList(pId, tdt); // Show date toggles so user can select dates
-                return;
-            }
-            
-            const dGBD = groupDataByDate(procData);
-
-            if (!dGBD || dGBD.length === 0) {
-                 // This case means procData had items, but grouping resulted in nothing (e.g. invalid positions, etc.)
-                outputArea.innerHTML = `<p class="error-message" style="padding:20px;">Processed data for patient ${pId} resulted in no groupable entries for graphs/summary. Check data integrity.</p>`;
-                renderTestDateList(pId, tdt);
-                return;
-            }
-
-            outputArea.innerHTML = currentViewMode === 'scatter' ? renderScatterView(dGBD, pId) : renderBarChartView(dGBD, pId);
-            // Re-query tdt as outputArea.innerHTML overwrites it if it was inside.
-            const currentTdt = document.getElementById('toggle-dates-container'); 
-            if (currentTdt) renderTestDateList(pId, currentTdt);
+            try {
+                // 1. Create user in Firebase Authentication
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                console.log("User created in Auth:", user.uid, user.email);
+                messageArea.textContent = "User registered successfully in Auth! Saving to database...";
+                messageArea.className = 'message success';
+                messageArea.style.display = 'block';
 
 
-            setTimeout(() => {
-                try {
-                    if (typeof Plotly === 'undefined') {
-                        console.error("Plotly library is not loaded!");
-                        const graphsArea = document.getElementById('graphs-and-summary-area');
-                        if (graphsArea) graphsArea.innerHTML = '<p class="error-message" style="padding:20px;">Graphing library (Plotly) could not be loaded. Check internet connection and console.</p>';
-                        return;
-                    }
-                    if (currentViewMode === 'scatter') {
-                        renderScatterPlots(dGBD);
-                    } else {
-                        renderBarCharts(dGBD, latestInjuredSide);
-                    }
-                    viewScatterBtn = document.getElementById('view-scatter-btn');
-                    viewBarBtn = document.getElementById('view-bar-btn');
-                    if (viewScatterBtn) viewScatterBtn.onclick = () => switchViewMode('scatter');
-                    if (viewBarBtn) viewBarBtn.onclick = () => switchViewMode('bar');
-                    if (viewScatterBtn) viewScatterBtn.classList.toggle('active', currentViewMode === 'scatter');
-                    if (viewBarBtn) viewBarBtn.classList.toggle('active', currentViewMode === 'bar');
-                } catch (e) {
-                    console.error("Error rendering plots in setTimeout:", e);
-                    const graphsArea = document.getElementById('graphs-and-summary-area');
-                    if (graphsArea) graphsArea.innerHTML += `<p class="error-message" style="padding:10px;">Could not render graphs: ${e.message}</p>`;
+                // 2. Save additional user information to Firestore
+                // We use user.uid as the document ID in a 'users' collection
+                const userDocRef = doc(db, "users", user.uid);
+
+                const userData = {
+                    uid: user.uid,
+                    email: user.email,
+                    createdAt: serverTimestamp(), // Good practice to store creation time
+                    // Add any other data you want to store
+                };
+
+                if (username) { // Only add username if provided
+                    userData.username = username;
                 }
-            }, 100);
-        } catch (e) {
-            console.error("Critical error in displayPatientDataAndGraphs for patient " + pId + ":", e);
-            outputArea.innerHTML = `<p class="error-message" style="padding:20px;">A critical error occurred while trying to display data for patient ${pId}. Please check the console. Error: ${e.message}</p>`;
-            if (tdt) tdt.style.display = 'none';
-        }
-    }
 
-    function groupDataByDate(procD){ const dBD={};if(!procD) return []; procD.forEach(r=>{if(!(r['Test Date']instanceof Date)||isNaN(r['Test Date']))return;const dS=r['Test Date'].toISOString().split('T')[0];if(!dBD[dS]){dBD[dS]={'Test Date':r['Test Date'],'Weeks Since First':r['Weeks Since First'],'Bodyweight (kg)':r['Bodyweight (kg)'],'I':{[METRIC_KEYS.MAX_FORCE]:{Left:null,Right:null},[METRIC_KEYS.RFD]:{Left:null,Right:null},[METRIC_KEYS.NORM]:{Left:null,Right:null}},'Y':{[METRIC_KEYS.MAX_FORCE]:{Left:null,Right:null},[METRIC_KEYS.RFD]:{Left:null,Right:null},[METRIC_KEYS.NORM]:{Left:null,Right:null}},'T':{[METRIC_KEYS.MAX_FORCE]:{Left:null,Right:null},[METRIC_KEYS.RFD]:{Left:null,Right:null},[METRIC_KEYS.NORM]:{Left:null,Right:null}}};}const pos=r['Position Clean'],met=r.Metric;if(pos&&dBD[dS][pos]&&dBD[dS][pos][met]){dBD[dS][pos][met].Left=r['Left Value']??dBD[dS][pos][met].Left;dBD[dS][pos][met].Right=r['Right Value']??dBD[dS][pos][met].Right;}if(r['Bodyweight (kg)']!=null)dBD[dS]['Bodyweight (kg)']=r['Bodyweight (kg)'];for(const p of POSITIONS){const bw=dBD[dS]['Bodyweight (kg)'],mfD=dBD[dS][p]?.[METRIC_KEYS.MAX_FORCE];if(!mfD)continue;let nL=null,nR=null;if(bw!=null&&bw>0){if(mfD.Left!=null)nL=mfD.Left/bw;if(mfD.Right!=null)nR=mfD.Right/bw;}if(dBD[dS][p])dBD[dS][p][METRIC_KEYS.NORM]={Left:nL,Right:nR};}});return Object.values(dBD);}
-    function renderScatterView(dGBD,pId){ let h=`<div class="results-header"><h2 class="section-title">Results Over Time (Scatter)</h2><div id="view-toggle-container"><button id="view-scatter-btn" class="view-toggle-button ${currentViewMode==='scatter'?'active':''}">Scatter</button><button id="view-bar-btn" class="view-toggle-button ${currentViewMode==='bar'?'active':''}">Bar</button></div></div><div id="toggle-dates-container" style="display:none;"></div><div id="graphs-and-summary-area">`;POSITIONS.forEach(pos=>{h+=`<div class="graph-section-box"><h3 class="graph-box-title">Position ${pos}</h3><div class="graph-grid graph-grid-scatter">${METRICS_DISPLAY_ORDER.map(mk=>`<div id="scatter-graph-${pos}-${mk.replace(/\s|\(|\)|\//g,'-')}" class="plotly-graph-div"><div class="loading-placeholder">Loading graph for ${mk}...</div></div>`).join('')}</div></div>`;});h+=`<div id="summary-table-container"></div></div>`;return h;}
-    function renderScatterPlots(dGBD){ POSITIONS.forEach(pos=>METRICS_DISPLAY_ORDER.forEach(mk=>createTimeScatter(dGBD,`scatter-graph-${pos}-${mk.replace(/\s|\(|\)|\//g,'-')}`,mk,pos,mk===METRIC_KEYS.NORM)));const tc=document.getElementById('summary-table-container');if(tc)tc.innerHTML=renderCombinedSummaryTable(dGBD);}
-    function renderBarChartView(dGBD,pId){ let h=`<div class="results-header"><h2 class="section-title">Results Over Time (Bar Chart)</h2><div id="view-toggle-container"><button id="view-scatter-btn" class="view-toggle-button ${currentViewMode==='scatter'?'active':''}">Scatter</button><button id="view-bar-btn" class="view-toggle-button ${currentViewMode==='bar'?'active':''}">Bar</button></div></div><div id="toggle-dates-container" style="display:none;"></div><div id="graphs-and-summary-area">`;POSITIONS.forEach(pos=>{h+=`<div class="graph-section-box"><h3 class="graph-box-title">Position ${pos}</h3><div class="graph-grid graph-grid-bar">${[METRIC_KEYS.MAX_FORCE,METRIC_KEYS.RFD].map(mk=>`<div id="bar-graph-${pos}-${mk.replace(/\s|\(|\)|\//g,'-')}" class="plotly-graph-div"><div class="loading-placeholder">Loading graph for ${mk}...</div></div>`).join('')}</div></div>`;});h+=`<div id="summary-table-container"></div></div>`;return h;}
-    function renderBarCharts(dGBD,injS){ POSITIONS.forEach(pos=>[METRIC_KEYS.MAX_FORCE,METRIC_KEYS.RFD].forEach(mk=>createTimeSeriesBarChart(dGBD,`bar-graph-${pos}-${mk.replace(/\s|\(|\)|\//g,'-')}`,mk,pos,injS)));const tc=document.getElementById('summary-table-container');if(tc)tc.innerHTML=renderCombinedSummaryTable(dGBD);}
-    function renderCombinedSummaryTable(dGBD){ if(!dGBD||dGBD.length===0)return'<p class="italic p-4 text-center">No data available for summary table with the selected dates.</p>';let h=`<h2 class="section-title">Detailed Summary</h2><div class="summary-container-box">`;dGBD.forEach((_,dateIdx)=>{});POSITIONS.forEach(pos=>{h+=`<div class="summary-position-block"><h3 class="section-title">Position ${pos}</h3><div class="overflow-x-auto"><table class="summary-table"><thead><tr><th class="metric-header">Metric</th>`;dGBD.forEach(td=>h+=`<th colspan="4" class="date-header">${td['Test Date'].toLocaleDateString('en-CA')}<br>(Week ${td['Weeks Since First']})</th>`);h+=`</tr><tr><th class="metric-header">&nbsp;</th>`;dGBD.forEach(()=>h+=`<th class="sub-header">L Val</th><th class="sub-header">R Val</th><th class="sub-header">L Ch%</th><th class="sub-header">R Ch%</th>`);h+=`</tr></thead><tbody>`;METRICS_DISPLAY_ORDER.forEach(mk=>{h+=`<tr><td class="metric-label">${mk}</td>`;for(let i=0;i<dGBD.length;i++){const cur=dGBD[i],prev=i>0?dGBD[i-1]:null;const cM=cur[pos]?.[mk],pM=prev?.[pos]?.[mk];const chL=calculatePercentageChange(cM?.Left,pM?.Left),chR=calculatePercentageChange(cM?.Right,pM?.Right);h+=`<td class="left-value-cell">${formatValue(cM?.Left,mk===METRIC_KEYS.NORM)}</td><td class="right-value-cell">${formatValue(cM?.Right,mk===METRIC_KEYS.NORM)}</td><td class="${getChangeClass(chL)}">${formatChange(chL)}</td><td class="${getChangeClass(chR)}">${formatChange(chR)}</td>`;}h+=`</tr>`;});h+=`</tbody></table></div></div>`;});h+=`</div><p class="summary-footer-note">* Change calculated vs. previous test date shown in the table.</p>`;return h;}
-    function calculatePercentageChange(lat,prev){ return(lat==null||prev==null||prev===0)?null:((lat-prev)/Math.abs(prev))*100;}
-    function formatValue(val,isN=false){ return val==null?'<span class="na">N/A</span>':(isN?val.toFixed(2):val.toFixed(1));}
-    function formatChange(chg){ return chg==null?'<span class="na">N/A</span>':`${chg>=0?'+':''}${chg.toFixed(0)}%`;}
-    function getChangeClass(chg){ return chg==null?'na':(chg>0?'change-pos':(chg<0?'change-neg':'change-zero'));}
-    function getPlotlyConfigForContext(targetDocumentContext) { const config = JSON.parse(JSON.stringify(basePlotlyConfig)); if (targetDocumentContext === document) { config.modeBarButtonsToAdd = [{ name: 'Download plot as PNG', icon: Plotly.Icons.camera, click: function(gd){ const titleText = gd.layout.title?.text || gd.layout.yaxis?.title?.text || 'plot'; const t = titleText.replace(/<br>/g,' '); Plotly.downloadImage(gd,{format:'png',width:gd._fullLayout.width,height:gd._fullLayout.height,filename:t});}}]; } else { config.modeBarButtonsToAdd = []; } return config; }
+                await setDoc(userDocRef, userData);
 
-    function createTimeScatter(dGBD, elId, yMK, pos, addNorm, targetDoc = document, pW, pH, autosize = !pW && !pH) { const pEl = targetDoc.getElementById(elId); if (!pEl) { console.error(`Plotly: Element '${elId}' not found.`); if (targetDoc !== document && targetDoc.body) { const errDiv = targetDoc.createElement('div'); errDiv.style.color = 'red'; errDiv.textContent = `ERROR: Plot container '${elId}' not found.`; pEl.appendChild(errDiv); } return; } pEl.innerHTML = '<div class="loading-placeholder" style="color:blue; padding:10px;">Attempting to load graph...</div>'; if (!dGBD || dGBD.length === 0) { pEl.innerHTML = `<div class="error-message" style="padding:10px;">No data for Position ${pos}, Metric ${yMK}.</div>`; return; } const xI = dGBD.map((_, i) => i), xW = dGBD.map(d => d['Weeks Since First']); let yL = [], yR = [], hL = [], hR = [], yRV = []; let yAT = yMK === METRIC_KEYS.NORM ? 'Max Force / BW (N/kg)' : yMK; dGBD.forEach((d, i) => { let vL = null, vR = null, mD = d[pos]?.[yMK]; if (yMK === METRIC_KEYS.NORM) { mD = d[pos]?.[METRIC_KEYS.NORM]; vL = mD?.Left; vR = mD?.Right; } else if (mD) { vL = mD.Left; vR = mD.Right; } yL.push(vL); yR.push(vR); if (vL != null) yRV.push(vL); if (vR != null) yRV.push(vR); hL.push(`Wk ${xW[i]}<br>${yAT}: ${vL != null ? formatValue(vL, yMK === METRIC_KEYS.NORM) : 'N/A'} (L)`); hR.push(`Wk ${xW[i]}<br>${yAT}: ${vR != null ? formatValue(vR, yMK === METRIC_KEYS.NORM) : 'N/A'} (R)`); }); const isPDF = targetDoc !== document; const trs = [{ x: xI, y: yL, mode: 'lines+markers', name: 'Left', line: { color: LEFT_COLOR, shape: 'spline', width: isPDF ? 2 : 2.5 }, marker: { color: LEFT_COLOR, size: isPDF ? 5 : 8 }, text: hL, hoverinfo: 'text' }, { x: xI, y: yR, mode: 'lines+markers', name: 'Right', line: { color: RIGHT_COLOR, shape: 'spline', width: isPDF ? 2 : 2.5 }, marker: { color: RIGHT_COLOR, size: isPDF ? 5 : 8, symbol: 'square' }, text: hR, hoverinfo: 'text' }]; let yRng = calculateAxisRange(yRV, addNorm ? NORMATIVE_THRESHOLDS[pos] : null, null, 0.1); const lay = { xaxis: { tickmode: 'array', tickvals: xI, ticktext: xW.map(w => w === 0 ? 'First Test' : `Wk ${w}`), showgrid: true, gridcolor: isPDF ? 'var(--print-medium-gray)' : 'var(--medium-gray)', automargin: true }, yaxis: { title: { text: isPDF ? '' : yAT }, zeroline: true, showgrid: true, gridcolor: isPDF ? 'var(--print-medium-gray)' : 'var(--medium-gray)', range: yRng, automargin: true }, margin: { l: isPDF ? 40 : 60, r: isPDF ? 10 : 20, t: isPDF ? (addNorm ? 30: 20) : 30, b: isPDF ? 35 : 40 }, legend: { orientation: "h", yanchor: "bottom", y: isPDF ? -0.40 : -0.25, xanchor: "center", x: 0.5 }, shapes: [], paper_bgcolor: 'transparent', plot_bgcolor: 'transparent', font: { family: 'Avenir, sans-serif', size: isPDF ? 8 : 12, color: isPDF? 'var(--print-dark-gray)' : 'var(--dark-gray)' }, autosize: autosize }; if (isPDF) { lay.title = { text: yAT, font: { size: 9, color: 'var(--print-primary-color)', family: 'Avenir, sans-serif'}, x: 0.03, y: 0.98, xanchor: 'left', yanchor: 'top' }; lay.yaxis.title.font = {size: 8}; lay.xaxis.title.font = {size:8}; lay.legend.font = {size:7}; lay.xaxis.tickfont = {size:7}; lay.yaxis.tickfont = {size:7};} if (pW) lay.width = pW; if (pH) lay.height = pH; if (addNorm && NORMATIVE_THRESHOLDS[pos]) { const th = NORMATIVE_THRESHOLDS[pos], yrMin = lay.yaxis.range[0], yrMax = lay.yaxis.range[1]; [{ y0: yrMin, y1: th.poor_max, c: NORM_ZONE_COLORS.poor }, { y0: th.poor_max, y1: th.good_min, c: NORM_ZONE_COLORS.average }, { y0: th.good_min, y1: th.excellent_min, c: NORM_ZONE_COLORS.good }, { y0: th.excellent_min, y1: yrMax, c: NORM_ZONE_COLORS.excellent }].forEach(z => { let ey0 = Math.max(z.y0, yrMin), ey1 = Math.min(z.y1, yrMax); if (ey1 > ey0) lay.shapes.push({ type: 'rect', xref: 'paper', yref: 'y', x0: 0, y0: ey0, x1: 1, y1: ey1, fillcolor: z.c, opacity: 0.5, layer: 'below', line: { width: 0 } }); }); } try { if (typeof Plotly === 'undefined' || !Plotly.newPlot) { pEl.innerHTML = `<div class="error-message" style="padding:10px;">Plotly library error.</div>`; console.error('Plotly lib error.'); return; } Plotly.newPlot(pEl, trs, lay, getPlotlyConfigForContext(targetDoc)); } catch (e) { console.error(`Plotly.newPlot error for '${elId}':`, e); pEl.innerHTML = `<div class="error-message" style="padding:10px;">Render error for ${yMK}: ${e.message}</div>`; } }
-    function createTimeSeriesBarChart(dGBD, elId, yMK, pos, injS, targetDoc = document, pW, pH, autosize = !pW && !pH) { const pEl = targetDoc.getElementById(elId); if (!pEl) { console.error(`Plotly: Element '${elId}' not found.`); if (targetDoc !== document && targetDoc.body) { const errDiv = targetDoc.createElement('div'); errDiv.style.color = 'red'; errDiv.textContent = `ERROR: Plot container '${elId}' not found.`; pEl.appendChild(errDiv); } return; } pEl.innerHTML = '<div class="loading-placeholder" style="color:blue; padding:10px;">Attempting to load graph...</div>'; if (!dGBD || dGBD.length === 0) { pEl.innerHTML = `<div class="error-message" style="padding:10px;">No data for Position ${pos}, Metric ${yMK}.</div>`; return; } const xI = dGBD.map((_, i) => i), xW = dGBD.map(d => d['Weeks Since First']); let yL = [], yR = [], chL = [], chR = [], yRV = []; const hS = injS === 'Left' ? 'Right' : 'Left', injK = injS === 'Left' ? 'Left' : 'Right', hK = hS; for (let i = 0; i < dGBD.length; i++) { const cur = dGBD[i], prev = i > 0 ? dGBD[i - 1] : null; const cM = cur[pos]?.[yMK], pM = prev?.[pos]?.[yMK]; const vL = cM?.Left, vR = cM?.Right, pV_L = pM?.Left, pV_R = pM?.Right; yL.push(vL); yR.push(vR); chL.push(calculatePercentageChange(vL, pV_L)); chR.push(calculatePercentageChange(vR, pV_R)); if (vL != null) yRV.push(vL); if (vR != null) yRV.push(vR); } const isPDF = targetDoc !== document; const tL = { x: xI, y: yL, type: 'bar', name: 'Left', marker: { color: LEFT_BAR_COLOR_RGBA }, width: 0.4, text: yL.map(v => v != null ? formatValue(v) : ''), textposition: 'inside', insidetextanchor: 'middle', textfont: { color: '#fff', size: isPDF ? 7 : 10, weight: 'bold' }, hoverinfo: 'x+y+name' }; const tR = { x: xI, y: yR, type: 'bar', name: 'Right', marker: { color: RIGHT_BAR_COLOR_RGBA }, width: 0.4, text: yR.map(v => v != null ? formatValue(v) : ''), textposition: 'inside', insidetextanchor: 'middle', textfont: { color: '#fff', size: isPDF ? 7 : 10, weight: 'bold' }, hoverinfo: 'x+y+name' }; const annos = []; const asymYSh = isPDF ? 18 : 30, chYSh = isPDF ? 8 : 15; for (let i = 0; i < xI.length; i++) { const cL_v = chL[i], cR_v = chR[i], cMet = dGBD[i][pos]?.[yMK]; const injV = cMet?.[injK], hV = cMet?.[hK]; let diff = null; if (hV != null && injV != null && hV !== 0) diff = ((injV / hV) * 100) - 100; else if (hV === 0 && injV === 0) diff = 0; let asymC = diff == null ? '#94a3b8' : (diff >= -10 ? '#16a34a' : '#dc2626'); const asymT = diff != null ? `${diff >= 0 ? '+' : ''}${diff.toFixed(0)}%` : 'N/A'; const maxY = Math.max(yL[i] ?? -Infinity, yR[i] ?? -Infinity); if (yL[i] != null || yR[i] != null) annos.push({ x: xI[i], y: maxY >= 0 ? maxY : 0, text: asymT, showarrow: false, font: { color: asymC, size: isPDF ? 9 : 12, weight: 'bold' }, xanchor: 'center', yanchor: 'bottom', yshift: asymYSh }); if (yL[i] != null && i > 0) annos.push({ x: xI[i], y: maxY >= 0 ? maxY : 0, text: formatChange(cL_v), showarrow: false, font: { color: cL_v == null ? '#94a3b8' : (cL_v >= 0 ? '#16a34a' : '#dc2626'), size: isPDF ? 6 : 9 }, xanchor: 'center', yanchor: 'bottom', yshift: chYSh, xshift: isPDF ? -14 : -20 }); if (yR[i] != null && i > 0) annos.push({ x: xI[i], y: maxY >= 0 ? maxY : 0, text: formatChange(cR_v), showarrow: false, font: { color: cR_v == null ? '#94a3b8' : (cR_v >= 0 ? '#16a34a' : '#dc2626'), size: isPDF ? 6 : 9 }, xanchor: 'center', yanchor: 'bottom', yshift: chYSh, xshift: isPDF ? 14 : 20 }); } let yRng = calculateAxisRange(yRV, null, annos, 0.25); const lay = { barmode: 'group', bargap: 0.2, bargroupgap: 0.1, xaxis: { tickmode: 'array', tickvals: xI, ticktext: xW.map(w => w === 0 ? 'First Test' : `Wk ${w}`), showgrid: false, zeroline: false, showline: false, automargin: true }, yaxis: { title: { text: isPDF ? '' : yMK }, zeroline: false, showgrid: false, showline: false, range: yRng, automargin: true }, margin: { l: isPDF ? 40 : 60, r: isPDF ? 10 : 20, t: isPDF ? 30 : 50, b: isPDF ? 35 : 40 }, legend: { orientation: "h", yanchor: "bottom", y: isPDF ? -0.40 : -0.25, xanchor: "center", x: 0.5 }, annotations: annos, paper_bgcolor: 'transparent', plot_bgcolor: 'transparent', font: { family: 'Avenir, sans-serif', size: isPDF ? 8 : 12, color: isPDF ? 'var(--print-dark-gray)' : 'var(--dark-gray)' }, uniformtext: { mode: 'hide', minsize: 10 }, autosize: autosize }; if (isPDF) { lay.title = { text: yMK, font: { size: 9, color: 'var(--print-primary-color)', family: 'Avenir, sans-serif'}, x: 0.03, y: 0.98, xanchor: 'left', yanchor: 'top' }; lay.yaxis.title.font = {size: 8}; lay.xaxis.title.font = {size:8}; lay.legend.font = {size:7}; lay.xaxis.tickfont = {size:7}; lay.yaxis.tickfont = {size:7};} if (pW) lay.width = pW; if (pH) lay.height = pH; try { if (typeof Plotly === 'undefined' || !Plotly.newPlot) { pEl.innerHTML = `<div class="error-message" style="padding:10px;">Plotly library error.</div>`; console.error('Plotly lib error.'); return; } Plotly.newPlot(pEl, [tL, tR], lay, getPlotlyConfigForContext(targetDoc)); } catch (e) { console.error(`Plotly.newPlot error for '${elId}':`, e); pEl.innerHTML = `<div class="error-message" style="padding:10px;">Render error for ${yMK}: ${e.message}</div>`; } }
-    
-    function generateExplanationHeaderHTML(pId){ // Reverted to a simpler structure, relying more on CSS for PDF styling
-        const today=new Date().toLocaleDateString('en-CA');
-        let pName=pId||"N/A";
-        let patientDemographics = { Age: 'N/A', Gender: 'N/A', Sport: 'N/A', Bodyweight: 'N/A', InjuredSide: latestInjuredSide || 'N/A' };
+                console.log("User data saved to Firestore with ID: ", user.uid);
+                messageArea.textContent = "User registered and data saved successfully!";
+                messageArea.className = 'message success'; // Keep it green
+                messageArea.style.display = 'block';
 
-        if(allPatientData[pId] && allPatientData[pId].length > 0){
-            const sortedRecords = [...allPatientData[pId]].sort((a,b) => new Date(b['Test Date']) - new Date(a['Test Date']));
-            const latestRecordWithName = sortedRecords[0]; 
-            if (latestRecordWithName) { // Ensure latestRecordWithName is not undefined
-                 pName = latestRecordWithName['Full Name'] || latestRecordWithName['Patient Name'] || pId;
+                // Optionally, redirect the user or clear the form
+                registrationForm.reset();
+                // window.location.href = '/login.html'; // Or to a welcome page
+
+            } catch (error) {
+                console.error("Error during registration:", error);
+                messageArea.textContent = `Error: ${error.message} (Code: ${error.code})`;
+                messageArea.className = 'message error';
+                messageArea.style.display = 'block';
             }
+        });
+    </script>
 
-            for(const r of sortedRecords){
-                if(patientDemographics.Age === 'N/A' && r.Age!=null) patientDemographics.Age=r.Age;
-                if(patientDemographics.Gender === 'N/A' && r.Gender!=null) patientDemographics.Gender=r.Gender;
-                if(patientDemographics.Sport === 'N/A' && r.Sport!=null) patientDemographics.Sport=r.Sport;
-                if(patientDemographics.Bodyweight === 'N/A' && r['Bodyweight (kg)']!=null) patientDemographics.Bodyweight=r['Bodyweight (kg)'].toFixed(1) + ' kg';
-                if(patientDemographics.InjuredSide === 'N/A' && r['Injured Side']!=null) patientDemographics.InjuredSide=r['Injured Side'];
-            }
-            if (patientDemographics.InjuredSide === 'N/A' && latestInjuredSide) patientDemographics.InjuredSide = latestInjuredSide;
-        }
-
-        const procDataForDates = getProcessedPatientData(pId);
-        let testDatesString = "N/A";
-        if (procDataForDates && procDataForDates.length > 0) {
-            const uniqueDatesInView = [...new Set(procDataForDates.map(d => d['Test Date'].toLocaleDateString('en-CA')))].sort((a,b) => new Date(a) - new Date(b));
-            testDatesString = uniqueDatesInView.join(', ');
-        }
-
-        // Simpler HTML structure for PDF header, relying on CSS classes defined in @media print for styling
-        return `<div id="pdf-explanation-header">
-                    <h2>Functional Shoulder Screening Report</h2>
-                    <div class="pdf-header-row"><span class="pdf-header-label">Patient:</span> ${pName}</div>
-                    <div class="pdf-header-row">
-                        <span class="pdf-header-item"><span class="pdf-header-label">Age:</span> ${patientDemographics.Age}</span>
-                        <span class="pdf-header-item"><span class="pdf-header-label">Gender:</span> ${patientDemographics.Gender}</span>
-                        <span class="pdf-header-item"><span class="pdf-header-label">Sport:</span> ${patientDemographics.Sport}</span>
-                    </div>
-                    <div class="pdf-header-row">
-                        <span class="pdf-header-item"><span class="pdf-header-label">Bodyweight (last):</span> ${patientDemographics.Bodyweight}</span>
-                        <span class="pdf-header-item"><span class="pdf-header-label">Injured Side (last):</span> ${patientDemographics.InjuredSide}</span>
-                    </div>
-                    <div class="pdf-header-row"><span class="pdf-header-label">Test Dates Included:</span> ${testDatesString}</div>
-                    <div class="pdf-header-row"><span class="pdf-header-label">Report Date:</span> ${today}</div>
-                    <p class="pdf-report-summary">This report summarizes shoulder function assessment results. ${currentViewMode==='scatter'?"Scatter plots illustrate trends over time for Max Force, RFD (Rate of Force Development), and Max Force normalized to Bodyweight. Normative zones for Max Force/Bodyweight are indicated: Poor (Red Area), Average (Yellow Area), Good (Light Green Area), and Excellent (Dark Green Area).":"Bar charts display Max Force and RFD values for each test session. Annotations indicate asymmetry percentage compared to the healthy side (shown above bars) and percentage change from the previous test (shown near bars)."}</p>
-                </div>`;
-    }
-
-    function generatePdfView(contentType) { if(!selectedPatientId){alert("Please select a patient.");return;} const procData=getProcessedPatientData(selectedPatientId); if(!procData||procData.length===0){alert("No data for selected patient/dates. Please select dates to include in the PDF.");return;} const dGBD=groupDataByDate(procData); if (!dGBD || dGBD.length === 0) { alert("No processed data available for the selected dates to generate PDF."); return; } document.body.classList.add('pdf-view-active-preparing'); const pdfW=window.open('','_blank'); if(!pdfW){alert("Please allow pop-ups for this site to generate PDF.");document.body.classList.remove('pdf-view-active-preparing');return;} const getCssVar = (varName) => { const val = getComputedStyle(document.documentElement).getPropertyValue(varName); return val ? val.trim() : 'initial'; }; const cssVariablesToInject = [ '--print-text-color', '--print-primary-color', '--print-secondary-color', '--print-light-gray', '--print-medium-gray', '--print-dark-gray', '--print-table-header-bg', '--print-left-value-cell-bg', '--print-right-value-cell-bg', '--success-color', '--danger-color-dark', '--white', '--semibold-font-weight', '--normal-font-weight', '--left-line-color', '--right-line-color', '--left-bar-color-rgba', '--right-bar-color-rgba', '--norm-poor-bg', '--norm-average-bg', '--norm-good-bg', '--norm-excellent-bg' ]; let injectedCssRules = ':root {\n'; cssVariablesToInject.forEach(varName => { injectedCssRules += `    ${varName}: ${getCssVar(varName)};\n`; }); injectedCssRules += '}'; const mainPageStyles = document.querySelector('style') ? document.querySelector('style').innerHTML : ''; pdfW.document.write(`<html><head><title>Report - ${selectedPatientId} - ${contentType}</title><script src="https://cdn.plot.ly/plotly-2.27.1.min.js"><\/script><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Avenir:wght@400;600&family=Futura:wght@400&display=swap"><style>${injectedCssRules}\n${mainPageStyles} body{margin:0;padding:0;font-family:"Avenir",sans-serif;}.plotly-graph-div{page-break-inside:avoid!important;}</style></head><body><div class="app-main-content"><div class="content-container">${generateExplanationHeaderHTML(selectedPatientId)}<div id="pdf-content-area"></div></div></div></body></html>`); pdfW.document.close(); const setupPdf=()=>{ const pdfB=pdfW.document.body, pdfCA=pdfW.document.getElementById('pdf-content-area'); if(!pdfCA){console.error("PDF content area not found.");document.body.classList.remove('pdf-view-active-preparing');return;} pdfB.classList.add('pdf-view-active',contentType==='graphs'?'pdf-view-graphs':'pdf-view-tables'); if (contentType === 'graphs' && currentViewMode === 'bar') { pdfB.classList.add('pdf-view-active-bar-mode'); } let htmlC=''; const totalContentWidthMm = 180; const mmToPxRatio = 3.78; const totalContentWidthPx = totalContentWidthMm * mmToPxRatio; const gap3PlotsMm = 5; const gap2PlotsMm = 6; const gap3PlotsPx = gap3PlotsMm * mmToPxRatio; const gap2PlotsPx = gap2PlotsMm * mmToPxRatio; const scatterPlotWidthPDF = Math.max(150, Math.floor((totalContentWidthPx - (2 * gap3PlotsPx)) / 3)); const scatterPlotHeightPDF = Math.max(120, Math.floor(scatterPlotWidthPDF * 0.75)); const barPlotWidthPDF = Math.max(200, Math.floor((totalContentWidthPx - gap2PlotsPx) / 2)); const barPlotHeightPDF = Math.max(150, Math.floor(barPlotWidthPDF * 0.70)); if(contentType==='graphs'){ if(currentViewMode==='scatter'){ POSITIONS.forEach(p=>{htmlC+=`<div class="graph-section-box"><h3 class="graph-box-title">Position ${p}</h3><div class="graph-grid graph-grid-scatter">${METRICS_DISPLAY_ORDER.map(mk=>`<div id="pdf-scatter-${p}-${mk.replace(/\s|\(|\)|\//g,'-')}" class="plotly-graph-div"></div>`).join('')}</div></div>`;}); }else{ POSITIONS.forEach(p=>{htmlC+=`<div class="graph-section-box"><h3 class="graph-box-title">Position ${p}</h3><div class="graph-grid graph-grid-bar">${[METRIC_KEYS.MAX_FORCE,METRIC_KEYS.RFD].map(mk=>`<div id="pdf-bar-${p}-${mk.replace(/\s|\(|\)|\//g,'-')}" class="plotly-graph-div"></div>`).join('')}</div></div>`;}); } pdfCA.innerHTML=htmlC; pdfW.setTimeout(()=>{ if (typeof pdfW.Plotly === 'undefined') { console.error("Plotly is not defined in the PDF window after timeout."); if (pdfCA) pdfCA.innerHTML = "<p class='error-message' style='padding:20px;'>Critical Error: Plotly library did not load in PDF window. Check network and console in the new window.</p>"; return; } if(currentViewMode==='scatter'){ POSITIONS.forEach(p=>METRICS_DISPLAY_ORDER.forEach(mk=>createTimeScatter(dGBD,`pdf-scatter-${p}-${mk.replace(/\s|\(|\)|\//g,'-')}`,mk,p,mk===METRIC_KEYS.NORM,pdfW.document, scatterPlotWidthPDF, scatterPlotHeightPDF, false))); }else{ POSITIONS.forEach(p=>[METRIC_KEYS.MAX_FORCE,METRIC_KEYS.RFD].forEach(mk=>createTimeSeriesBarChart(dGBD,`pdf-bar-${p}-${mk.replace(/\s|\(|\)|\//g,'-')}`,mk,p,latestInjuredSide,pdfW.document, barPlotWidthPDF, barPlotHeightPDF, false))); } setTimeout(() => { try { pdfW.print(); } catch(e) { console.error("Error calling print:", e); pdfCA.innerHTML += "<p class='error-message'>Could not initiate print dialog.</p>";} }, 200); },500); }else if(contentType==='tables'){pdfCA.innerHTML=renderCombinedSummaryTable(dGBD);pdfW.setTimeout(()=>{ try { pdfW.print(); } catch(e) { console.error("Error calling print for tables:", e); pdfCA.innerHTML += "<p class='error-message'>Could not initiate print dialog.</p>";} },100);} document.body.classList.remove('pdf-view-active-preparing');pdfW.focus(); }; if(pdfW.document.readyState==="complete" || pdfW.document.readyState === "interactive"){setupPdf();}else{pdfW.onload=setupPdf;} setTimeout(()=>{if(pdfW.document.getElementById('pdf-content-area')&&!pdfW.document.getElementById('pdf-content-area').hasChildNodes() && pdfW.document.readyState === "complete"){console.warn("PDF content area was empty after load, attempting setupPdf again."); setupPdf();}},1200); }
-    function exportTableDataToCsv(){ if(!selectedPatientId){alert("Select patient.");return;}const procD=getProcessedPatientData(selectedPatientId);if(!procD||procD.length===0){alert("No data to export.");return;}const dG=groupDataByDate(procD);if(!dG||dG.length===0){alert("No grouped data.");return;}let csv=`Patient ID,${selectedPatientId}\nExport Date,${new Date().toLocaleDateString('en-CA')}\n\n`;POSITIONS.forEach(pos=>{csv+=`Position: ${pos}\nMetric`;dG.forEach(d=>csv+=`,${d['Test Date'].toLocaleDateString('en-CA')} (W${d['Weeks Since First']}),,,`);csv=csv.slice(0,-1)+"\n,";dG.forEach(()=>csv+="L Val,R Val,L Ch%,R Ch%,");csv=csv.slice(0,-1)+"\n";METRICS_DISPLAY_ORDER.forEach(mk=>{csv+=`${mk}`;for(let i=0;i<dG.length;i++){const cur=dG[i],prev=i>0?dGBD[i-1]:null;const cM=cur[pos]?.[mk],pM=prev?.[pos]?.[mk];const cL=calculatePercentageChange(cM?.Left,pM?.Left),cR=calculatePercentageChange(cM?.Right,pM?.Right);csv+=`,${cM?.Left!=null?formatValue(cM.Left,mk===METRIC_KEYS.NORM).replace(/<[^>]*>/g,''):'N/A'},${cM?.Right!=null?formatValue(cM.Right,mk===METRIC_KEYS.NORM).replace(/<[^>]*>/g,''):'N/A'},${cL!=null?formatChange(cL).replace(/<[^>]*>/g,''):'N/A'},${cR!=null?formatChange(cR).replace(/<[^>]*>/g,''):'N/A'}`;}csv+="\n";});csv+="\n";});const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});const link=document.createElement("a");if(link.download!==undefined){const url=URL.createObjectURL(blob);link.setAttribute("href",url);link.setAttribute("download",`Report_${selectedPatientId}_Tables_${new Date().toLocaleDateString('en-CA')}.csv`);link.style.visibility='hidden';document.body.appendChild(link);link.click();document.body.removeChild(link);}else alert("CSV download not supported.");}
-    function switchViewMode(mode) { if (currentViewMode === mode) { return; } currentViewMode = mode; if (selectedPatientId) { displayPatientDataAndGraphs(selectedPatientId); } else { outputArea.innerHTML = '<p class="italic">Vennligst velg en pasient for å se resultater.</p>'; const localViewScatterBtn = document.getElementById('view-scatter-btn'); const localViewBarBtn = document.getElementById('view-bar-btn'); if (localViewScatterBtn) { localViewScatterBtn.classList.toggle('active', currentViewMode === 'scatter'); } if (localViewBarBtn) { localViewBarBtn.classList.toggle('active', currentViewMode === 'bar'); } } saveAnalysisStateToLocalStorage(); }
-    document.addEventListener('DOMContentLoaded', () => { console.log("DOM fully loaded and parsed. Initializing application."); try { loadAnalysisStateFromLocalStorage(); } catch(e) { console.error("Error in loadAnalysisStateFromLocalStorage:", e); if(errorMessage) errorMessage.textContent = "Failed to load saved state. Please try clearing data or reloading."; } if (pdfGraphsButton) { pdfGraphsButton.addEventListener('click', () => { generatePdfView('graphs'); }); } else { console.error("PDF Graphs button not found"); } if (pdfTableButton) { pdfTableButton.addEventListener('click', () => { generatePdfView('tables'); }); } else { console.error("PDF Table button not found"); } if (exportExcelButton) { exportExcelButton.addEventListener('click', exportTableDataToCsv); } else { console.error("Export Excel button not found"); } if (clearFilesButton) { clearFilesButton.addEventListener('click', clearAnalysisHistory); } else { console.error("Clear Files button not found"); } if (uploadBox && uploadInputHidden) { uploadBox.addEventListener('click', () => uploadInputHidden.click()); uploadBox.addEventListener('dragover', (event) => { event.preventDefault(); event.stopPropagation(); uploadBox.classList.add('dragover'); }); uploadBox.addEventListener('dragleave', (event) => { event.preventDefault(); event.stopPropagation(); uploadBox.classList.remove('dragover'); }); uploadBox.addEventListener('drop', (event) => { event.preventDefault(); event.stopPropagation(); uploadBox.classList.remove('dragover'); const files = event.dataTransfer.files; if (files && files.length > 0) { handleFileUpload(files); } }); } else { console.error("Upload box or hidden input not found"); } if (uploadInputHidden) { uploadInputHidden.addEventListener('change', (event) => { handleFileUpload(event.target.files); }); } else { console.error("Hidden upload input not found"); } if (patientSearchInput) { patientSearchInput.addEventListener('input', displayPatientButtons); } else { console.error("Patient search input not found."); } if (!outputArea) { console.error("Output area div not found!"); } });
-
-</script>
 </body>
 </html>
