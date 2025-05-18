@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Login & Registrering</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         body {
             font-family: 'Avenir Next', 'Avenir', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background-image: url('assets/background.jpeg');
+            background-image: url('assets/background.jpeg'); /* Sørg for at denne stien er korrekt */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -20,139 +20,169 @@
             backdrop-filter: blur(8px);
             background-color: rgba(255, 255, 255, 0.05);
         }
-        .dark .frosted-glass { background-color: rgba(0, 0, 0, 0); }
         .custom-gradient-button {
             background-image: linear-gradient(to right, rgb(112, 188, 252), #285484);
             transition: background-image 0.2s ease-in-out;
         }
         .custom-gradient-button:hover { background-image: linear-gradient(to right, #285484, #1e3a5c); }
         #request-access-section { display: none; margin-top: 0.25rem; }
-        #error-message-div {
-            color: #f87171; /* text-red-400 */
-            font-size: 0.875rem; /* text-sm */
-            text-align: center;
-            min-height: 1.25rem;
-            margin-top: 0.25rem;
-            margin-bottom: 0.25rem;
+        #error-message-div, #register-error-message-div {
+            color: #f87171; font-size: 0.875rem; text-align: center;
+            min-height: 1.25rem; margin-top: 0.25rem; margin-bottom: 0.25rem;
         }
         @keyframes shake {
-            10%, 90% { transform: translate3d(-1px, 0, 0); }
-            20%, 80% { transform: translate3d(2px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-            40%, 60% { transform: translate3d(4px, 0, 0); }
+            10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); }
         }
         .animate-shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
         .social-icon { color: #e5e7eb; font-size: 1.75rem; transition: color 0.2s ease-in-out, transform 0.2s ease-in-out; }
         .social-icon:hover { color: #fff; transform: scale(1.1); }
-        .login-input { background-color: rgba(255, 255, 255, 0.1); border: none; color: #ffffff; border-radius: 0; }
-        .login-input::placeholder { color: rgba(255, 255, 255, 0.6); }
-        .login-input:focus { background-color: rgba(255, 255, 255, 0.2); border: none; outline: none; box-shadow: none; }
-        .dark .login-input { background-color: rgba(0, 0, 0, 0.2); border: none; color: #ffffff; border-radius: 0; }
-        .dark .login-input::placeholder { color: rgba(255, 255, 255, 0.5); }
-        .dark .login-input:focus { background-color: rgba(0, 0, 0, 0.3); border: none; box-shadow: none; }
+        .login-input, .modal-input {
+            background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.2); color: #ffffff;
+            border-radius: 0.25rem; padding: 0.5rem 0.75rem; width: 100%;
+        }
+        .login-input { margin-bottom: 0.5rem; } /* Litt mindre mellomrom for login-skjema */
+        .modal-input { margin-bottom: 0.75rem; } /* Mer plass i modal */
 
+        .login-input::placeholder, .modal-input::placeholder { color: rgba(255, 255, 255, 0.6); }
+        .login-input:focus, .modal-input:focus {
+            background-color: rgba(255, 255, 255, 0.2); border-color: rgba(255,255,255,0.5);
+            outline: none; box-shadow: none;
+        }
+        .modal-backdrop {
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.3);
+            -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px);
+            z-index: 999; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background-color: rgba(30, 41, 59, 0.85); /* Mørkere for bedre kontrast */
+            -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+            padding: 2rem; border-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            width: 90%; max-width: 500px;
+            z-index: 1000; color: #e5e7eb;
+            max-height: 90vh; overflow-y: auto; position: relative; /* For lukkeknapp */
+        }
+        .modal-content h3 {
+            color: #fff; text-align: center; margin-bottom: 1.5rem; font-size: 1.5rem;
+        }
+        .modal-close-btn {
+            position: absolute; top: 0.75rem; right: 0.75rem;
+            background: none; border: none;
+            color: #9ca3af; font-size: 1.75rem; line-height: 1;
+            cursor: pointer; padding: 0.25rem;
+        }
+        .modal-close-btn:hover { color: #fff; }
         #userInfo { display: none; text-align: center; margin-top: 20px; }
     </style>
 </head>
 <body class="h-screen flex items-center justify-center">
 
-    <div class="w-full max-w-md p-8 shadow-lg frosted-glass text-white">
-        <h2 id="formTitle" class="text-2xl text-center mb-4">Login</h2>
+    <div class="w-full max-w-md p-6 md:p-8 shadow-lg frosted-glass text-white">
+        <h2 id="formTitle" class="text-2xl text-center mb-6">Login</h2>
         
         <form id="login-form">
+            <div class="mb-3">
+                <label for="email" class="block text-sm font-light text-gray-200 mb-1">E-post</label>
+                <input id="email" name="email" type="email" autocomplete="email" required placeholder="you@example.com" class="login-input">
+            </div>
             <div class="mb-2">
-                <label for="email" class="block text-sm font-light text-gray-200 mb-0.5">Email</label>
-                <div>
-                    <input id="email" name="email" type="email" autocomplete="email" required
-                           placeholder="you@example.com"
-                           class="login-input block w-full px-3 py-2 shadow-sm placeholder-gray-400 sm:text-sm">
-                </div>
+                <label for="password" class="block text-sm font-light text-gray-200 mb-1">Passord</label>
+                <input id="password" name="password" type="password" autocomplete="current-password" required placeholder="••••••••" class="login-input">
             </div>
-
-            <div class="mb-1">
-                <label for="password" class="block text-sm font-light text-gray-200 mb-0.5">Password</label>
-                <div>
-                    <input id="password" name="password" type="password" autocomplete="current-password" required
-                           placeholder="••••••••"
-                           class="login-input block w-full px-3 py-2 shadow-sm placeholder-gray-400 sm:text-sm">
-                </div>
-            </div>
-
             <div id="error-message-div"></div>
-
-            <div class="flex items-center justify-end mb-1 text-sm">
-                <a href="#" id="request-access-link" class="text-gray-300 hover:text-white">
-                    Request Access
-                </a>
+            <div class="flex items-center justify-end mb-3 text-sm">
+                <a href="#" id="request-access-link" class="text-gray-300 hover:text-white">Request Access</a>
             </div>
-
-            <div id="request-access-section" class="text-sm text-center text-gray-200 mb-2">
-                Send email to:
-                <a href="mailto:manuel@alphatek.ai" class="text-gray-300 hover:text-white underline">
-                    manuel@alphatek.ai
-                </a>
+            <div id="request-access-section" class="text-sm text-center text-gray-200 mb-4">
+                Send e-post til: <a href="mailto:manuel@alphatek.ai" class="text-gray-300 hover:text-white underline">manuel@alphatek.ai</a>
             </div>
-
-            <div class="mt-3">
-                <button type="submit"
-                        class="custom-gradient-button w-full flex justify-center py-2 px-4 text-sm text-white focus:outline-none">
-                    Login
+            <div class="mt-4">
+                <button type="submit" class="custom-gradient-button w-full flex justify-center py-2.5 px-4 text-sm font-medium text-white focus:outline-none">Login</button>
+            </div>
+            
+            <div class="my-5 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-white/20 after:mt-0.5 after:flex-1 after:border-t after:border-white/20">
+                <p class="mx-4 mb-0 text-center font-semibold text-gray-300">Eller</p>
+            </div>
+            <div>
+                <button type="button" id="openRegisterModalButton" class="w-full flex justify-center py-2.5 px-4 text-sm font-medium text-white border border-white/30 hover:bg-white/10 focus:outline-none">
+                    Opprett ny konto
                 </button>
             </div>
 
-            <div class="pt-4 border-t border-white/20 mt-4">
+            <div class="pt-5 border-t border-white/20 mt-5">
                 <p class="text-center text-sm text-gray-300 mb-3">Visit us:</p>
                 <div class="flex justify-center space-x-6">
-                    <a href="https://www.instagram.com/alphatekofficial" target="_blank" rel="noopener noreferrer" title="Instagram">
-                        <i class="fab fa-instagram social-icon"></i>
-                    </a>
-                    <a href="https://www.alphatek.no" target="_blank" rel="noopener noreferrer" title="Website">
-                        <i class="fas fa-globe social-icon"></i>
-                    </a>
+                    <a href="https://www.instagram.com/alphatekofficial" target="_blank" rel="noopener noreferrer" title="Instagram"><i class="fab fa-instagram social-icon"></i></a>
+                    <a href="https://www.alphatek.no" target="_blank" rel="noopener noreferrer" title="Website"><i class="fas fa-globe social-icon"></i></a>
                 </div>
             </div>
         </form>
 
         <div id="userInfo">
-            <p id="userEmailDisplay" class="mb-2 text-center"></p>
-            <button id="logoutButton" class="custom-gradient-button w-full flex justify-center py-2 px-4 text-sm text-white focus:outline-none">
-                Logg ut
-            </button>
+            <p id="userEmailDisplay" class="mb-3 text-center"></p>
+            <button id="logoutButton" class="custom-gradient-button w-full flex justify-center py-2.5 px-4 text-sm font-medium text-white focus:outline-none">Logg ut</button>
+        </div>
+    </div>
+
+    <div id="registerModalBackdrop" class="modal-backdrop">
+        <div id="registerModalContent" class="modal-content">
+            <button id="closeRegisterModalButton" class="modal-close-btn" title="Lukk">&times;</button>
+            <h3>Registrer ny bruker</h3>
+            <form id="register-form">
+                <input type="text" id="registerFirstName" class="modal-input" placeholder="Fornavn" required>
+                <input type="text" id="registerLastName" class="modal-input" placeholder="Etternavn" required>
+                <input type="email" id="registerEmail" class="modal-input" placeholder="E-post" autocomplete="email" required>
+                <input type="password" id="registerPassword" class="modal-input" placeholder="Passord (min. 6 tegn)" autocomplete="new-password" required>
+                <input type="text" id="registerCountry" class="modal-input" placeholder="Land" required>
+                <input type="text" id="registerOrganization" class="modal-input" placeholder="Organisasjon (valgfritt)">
+                <input type="text" id="registerProfession" class="modal-input" placeholder="Profesjon (valgfritt)">
+                
+                <div id="register-error-message-div"></div>
+
+                <button type="submit" class="custom-gradient-button w-full flex justify-center py-2.5 px-4 text-sm font-medium text-white focus:outline-none mt-3">
+                    Registrer
+                </button>
+            </form>
         </div>
     </div>
 
     <script type="module">
         // Firebase SDK imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"; // Sjekk for nyeste versjon
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js"; // For Analytics
         import {
             getAuth,
+            createUserWithEmailAndPassword,
             signInWithEmailAndPassword,
             onAuthStateChanged,
             signOut,
             setPersistence,
-            browserLocalPersistence // Forblir innlogget mellom økter
-            // browserSessionPersistence // Logger ut når nettleser lukkes
-        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"; // Sjekk for nyeste versjon
-        // import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js"; // Hvis du bruker analytics
+            browserLocalPersistence
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // Your web app's Firebase configuration
+        // Your web app's Firebase configuration (NY KONFIGURASJON)
         const firebaseConfig = {
-            apiKey: "AIzaSyBr1q18dfJLry_y5UXUbV3cYWLNwszth_s", // DIN API NØKKEL
-            authDomain: "logging-pwr-analytics.firebaseapp.com",
-            projectId: "logging-pwr-analytics",
-            storageBucket: "logging-pwr-analytics.firebasestorage.app", // Vanligvis .appspot.com, sjekk i console
-            messagingSenderId: "541710665560",
-            appId: "1:541710665560:web:764fa136ef693be10ac72d",
-            measurementId: "G-0LCVK51202"
+            apiKey: "AIzaSyDhEihuoWm4c5MSOHrSqkkzca7tn86roq4",
+            authDomain: "pwr-analytics.firebaseapp.com",
+            projectId: "pwr-analytics",
+            storageBucket: "pwr-analytics.firebasestorage.app", // Sjekk at dette er .appspot.com hvis du bruker default storage
+            messagingSenderId: "9839468523",
+            appId: "1:9839468523:web:1d994de254b2a24d91c3ae",
+            measurementId: "G-N35HQ5CMD5"
         };
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        // const analytics = getAnalytics(app); // Hvis du bruker analytics
+        const db = getFirestore(app); // Firestore database instance
+        const analytics = getAnalytics(app); // Analytics instance
 
         // --- Constants ---
-        const nextPageUrl = "screening.html"; // Siden du omdirigerer til etter innlogging
+        const nextPageUrl = "screening.html";
         const localStorageEmailKey = 'savedLoginEmail';
 
         // --- DOM Elements ---
@@ -162,30 +192,33 @@
         const errorMessageDiv = document.getElementById('error-message-div');
         const requestAccessLink = document.getElementById('request-access-link');
         const requestAccessSection = document.getElementById('request-access-section');
-        const loginBox = loginForm.parentElement; // For shake-animasjon
+        const loginBox = loginForm.parentElement;
         const bodyElement = document.body;
-        const originalBgImage = "assets/background.jpeg"; // Sti til bakgrunnsbilde
+        const originalBgImage = "assets/background.jpeg";
         const fallbackBgImage = "url('https://placehold.co/1920x1080/333/ccc?text=Background+Error')";
-
         const userInfoDiv = document.getElementById('userInfo');
         const userEmailDisplay = document.getElementById('userEmailDisplay');
         const logoutButton = document.getElementById('logoutButton');
         const formTitle = document.getElementById('formTitle');
+        const openRegisterModalButton = document.getElementById('openRegisterModalButton');
+        const registerModalBackdrop = document.getElementById('registerModalBackdrop');
+        const registerModalContent = document.getElementById('registerModalContent');
+        const closeRegisterModalButton = document.getElementById('closeRegisterModalButton');
+        const registerForm = document.getElementById('register-form');
+        const registerErrorMessageDiv = document.getElementById('register-error-message-div');
 
-        /**
-         * Displays an error message and applies a shake animation to the login box.
-         */
-        function displayError(message) {
-            errorMessageDiv.textContent = message;
-            if (loginBox && !loginBox.classList.contains('animate-shake')) {
-                loginBox.classList.add('animate-shake');
-                setTimeout(() => loginBox.classList.remove('animate-shake'), 500);
+        // --- Helper Functions ---
+        function displayError(message, element = errorMessageDiv) {
+            element.textContent = message;
+            const boxToShake = element === registerErrorMessageDiv ? registerModalContent : loginBox;
+            if (boxToShake && !boxToShake.classList.contains('animate-shake')) {
+                boxToShake.classList.add('animate-shake');
+                setTimeout(() => {
+                    if (boxToShake) boxToShake.classList.remove('animate-shake');
+                } , 500);
             }
         }
 
-        /**
-         * Loads saved email from localStorage into the email input field.
-         */
         function loadEmailFromStorage() {
             const savedEmail = localStorage.getItem(localStorageEmailKey);
             if (savedEmail) {
@@ -193,9 +226,6 @@
             }
         }
 
-        /**
-         * Saves the current email to localStorage.
-         */
         function saveEmailToStorage() {
             const currentEmail = emailInput.value.trim();
             if (currentEmail) {
@@ -205,135 +235,179 @@
             }
         }
 
-        /**
-         * Checks if the specified background image loads successfully.
-         * Applies a fallback if it fails.
-         */
         function checkBackgroundImage(imageUrl) {
             const img = new Image();
             img.src = imageUrl;
             img.onerror = () => {
                 console.warn(`Original background image '${imageUrl}' failed to load. Applying fallback.`);
-                bodyElement.style.backgroundImage = fallbackBgImage;
-                bodyElement.style.backgroundColor = '#333';
+                if (bodyElement) {
+                    bodyElement.style.backgroundImage = fallbackBgImage;
+                    bodyElement.style.backgroundColor = '#333';
+                }
             };
             img.onload = () => {
-                // console.log(`Background image '${imageUrl}' loaded successfully.`); // Valgfri logg
-                bodyElement.style.backgroundColor = ''; // Fjerner eksplisitt fallback-farge
+                if (bodyElement) bodyElement.style.backgroundColor = '';
             };
         }
 
-        // --- Firebase Auth Logic ---
+        // --- Modal Handling ---
+        function showRegisterModal() {
+            if (registerModalBackdrop) registerModalBackdrop.style.display = 'flex';
+            if (registerErrorMessageDiv) registerErrorMessageDiv.textContent = '';
+            if (registerForm) registerForm.reset();
+        }
 
-        // Handle login form submission
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = emailInput.value.trim();
-            const password = passwordInput.value;
-            errorMessageDiv.textContent = ''; // Clear previous errors
+        function hideRegisterModal() {
+            if (registerModalBackdrop) registerModalBackdrop.style.display = 'none';
+        }
 
-            signInWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    console.log('User signed in:', user.email);
-                    saveEmailToStorage(); // Save email for next time
-                    // UI updates and redirection are handled by onAuthStateChanged
-                })
-                .catch((error) => {
-                    console.error("Login error:", error.code, error.message);
-                    let friendlyMessage = "Ugyldig e-post eller passord.";
-                    // Firebase v9+ uses 'auth/invalid-credential' for most common login failures
-                    if (error.code === 'auth/invalid-credential') {
-                        friendlyMessage = "Ugyldig e-post eller passord. Vennligst sjekk og prøv igjen.";
-                    } else if (error.code === 'auth/user-not-found') { // Eldre feilkode, kan forekomme
-                        friendlyMessage = "Ingen bruker funnet med denne e-posten.";
-                    } else if (error.code === 'auth/wrong-password') { // Eldre feilkode
-                        friendlyMessage = "Feil passord. Prøv igjen.";
-                    } else if (error.code === 'auth/invalid-email') {
-                        friendlyMessage = "Vennligst skriv inn en gyldig e-postadresse.";
-                    }
-                    displayError(friendlyMessage);
-                });
-        });
-
-        // Handle logout
-        logoutButton.addEventListener('click', () => {
-            signOut(auth).then(() => {
-                console.log('User signed out');
-                // UI will be updated by onAuthStateChanged
-            }).catch((error) => {
-                console.error('Sign out error', error);
-                displayError("En feil oppstod under utlogging. Prøv igjen.");
+        if (openRegisterModalButton) openRegisterModalButton.addEventListener('click', showRegisterModal);
+        if (closeRegisterModalButton) closeRegisterModalButton.addEventListener('click', hideRegisterModal);
+        if (registerModalBackdrop) {
+            registerModalBackdrop.addEventListener('click', function(event) {
+                if (event.target === registerModalBackdrop) {
+                    hideRegisterModal();
+                }
             });
-        });
+        }
+        
+        // --- Firebase Auth Logic ---
+        if (loginForm) {
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = emailInput.value.trim();
+                const password = passwordInput.value;
+                if (errorMessageDiv) errorMessageDiv.textContent = '';
 
-        // Listen for auth state changes (user logs in or out)
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // User is signed in
-                console.log('Auth state changed: User is signed in -', user.email);
-                loginForm.style.display = 'none';
-                requestAccessLink.style.display = 'none';
-                requestAccessSection.style.display = 'none'; // Skjul også denne
-                userInfoDiv.style.display = 'block';
-                userEmailDisplay.textContent = `Innlogget som: ${user.email}`;
-                formTitle.textContent = 'Velkommen!';
+                signInWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => {
+                        saveEmailToStorage();
+                    })
+                    .catch((error) => {
+                        console.error("Login error:", error.code, error.message);
+                        let friendlyMessage = "Ugyldig e-post eller passord.";
+                        if (error.code === 'auth/invalid-credential') {
+                            friendlyMessage = "Ugyldig e-post eller passord. Vennligst sjekk og prøv igjen.";
+                        } else if (error.code === 'auth/invalid-email') {
+                            friendlyMessage = "Vennligst skriv inn en gyldig e-postadresse.";
+                        }
+                        displayError(friendlyMessage, errorMessageDiv);
+                    });
+            });
+        }
 
-                // Omdiriger til neste side.
-                // Sjekk for å unngå redirect loop hvis brukeren allerede er på målsiden
-                // (selv om denne logikken primært er for innloggingssiden).
-                const currentPath = window.location.pathname.split("/").pop();
-                if (currentPath !== nextPageUrl && currentPath !== nextPageUrl.replace('./','')) {
-                    // window.location.href = nextPageUrl; // <-- FJERNKOMMENTER DENNE LINJEN FOR Å AKTIVERE Omdirigering
-                    console.log("Bruker er logget inn. Omdirigering til", nextPageUrl, "er klar (kommentert ut).");
+        if (registerForm) {
+            registerForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (registerErrorMessageDiv) registerErrorMessageDiv.textContent = '';
+
+                const firstName = registerForm.registerFirstName.value.trim();
+                const lastName = registerForm.registerLastName.value.trim();
+                const email = registerForm.registerEmail.value.trim();
+                const password = registerForm.registerPassword.value;
+                const country = registerForm.registerCountry.value.trim();
+                const organization = registerForm.registerOrganization.value.trim();
+                const profession = registerForm.registerProfession.value.trim();
+
+                if (password.length < 6) {
+                    displayError("Passordet må være minst 6 tegn.", registerErrorMessageDiv);
+                    return;
+                }
+                if (!firstName || !lastName || !email || !country) {
+                     displayError("Vennligst fyll ut alle påkrevde felt.", registerErrorMessageDiv);
+                    return;
                 }
 
-            } else {
-                // User is signed out
-                console.log('Auth state changed: User is signed out');
-                loginForm.style.display = 'block';
-                requestAccessLink.style.display = 'block';
-                // requestAccessSection forblir skjult til lenken klikkes
-                userInfoDiv.style.display = 'none';
-                formTitle.textContent = 'Login'; // Tilbakestill tittel
+                try {
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
+                   
+                    const userProfile = {
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email,
+                        country: country,
+                        organization: organization || null,
+                        profession: profession || null,
+                        createdAt: new Date().toISOString() 
+                    };
 
-                // Valgfritt: Hvis brukeren er på en beskyttet side og logger ut, omdiriger til login.
-                // Denne logikken hører egentlig hjemme på de beskyttede sidene.
-                // const protectedPages = [nextPageUrl];
-                // if (protectedPages.includes(window.location.pathname.split("/").pop())) {
-                //     window.location.href = 'index.html'; // Eller din hoved-innloggingsside
-                // }
+                    await setDoc(doc(db, "users", user.uid), userProfile);
+                    console.log("Bruker registrert og profil lagret for UID:", user.uid);
+                    hideRegisterModal();
+                } catch (error) {
+                    console.error("Registreringsfeil:", error.code, error.message);
+                    let friendlyMessage = "Kunne ikke registrere bruker. Prøv igjen.";
+                    if (error.code === 'auth/email-already-in-use') {
+                        friendlyMessage = "Denne e-postadressen er allerede registrert.";
+                    } else if (error.code === 'auth/weak-password') {
+                        friendlyMessage = "Passordet er for svakt.";
+                    } else if (error.code === 'auth/invalid-email') {
+                        friendlyMessage = "Ugyldig e-postadresse.";
+                    }
+                    displayError(friendlyMessage, registerErrorMessageDiv);
+                }
+            });
+        }
+
+        if (logoutButton) {
+            logoutButton.addEventListener('click', () => {
+                signOut(auth).catch((error) => {
+                    console.error('Sign out error', error);
+                    displayError("En feil oppstod under utlogging.", errorMessageDiv);
+                });
+            });
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                if (loginForm) loginForm.style.display = 'none';
+                if (openRegisterModalButton) openRegisterModalButton.parentElement.style.display = 'none'; // Skjul "Eller" og knapp
+                if (requestAccessLink) requestAccessLink.style.display = 'none';
+                if (requestAccessSection) requestAccessSection.style.display = 'none';
+                if (userInfoDiv) userInfoDiv.style.display = 'block';
+                if (userEmailDisplay) userEmailDisplay.textContent = `Innlogget som: ${user.email}`;
+                if (formTitle) formTitle.textContent = 'Velkommen!';
+
+                const currentPath = window.location.pathname.split("/").pop();
+                if (nextPageUrl && currentPath !== nextPageUrl && currentPath !== nextPageUrl.replace('./','')) {
+                    // window.location.href = nextPageUrl; // <-- FJERNKOMMENTER FOR Å AKTIVERE Omdirigering
+                    console.log("Bruker er logget inn. Omdirigering til", nextPageUrl, "er klar (kommentert ut).");
+                }
+            } else {
+                if (loginForm) loginForm.style.display = 'block';
+                if (openRegisterModalButton) openRegisterModalButton.parentElement.style.display = 'block';
+                if (requestAccessLink) requestAccessLink.style.display = 'block';
+                if (userInfoDiv) userInfoDiv.style.display = 'none';
+                if (formTitle) formTitle.textContent = 'Login';
             }
         });
-
-        // --- Event Listeners for UI (ikke Firebase-relatert) ---
-        requestAccessLink.addEventListener('click', function(event) {
-            event.preventDefault();
-            const isHidden = requestAccessSection.style.display === 'none' || requestAccessSection.style.display === '';
-            requestAccessSection.style.display = isHidden ? 'block' : 'none';
-        });
-
-        // Lagrer kun e-post når brukeren navigerer vekk fra e-postfeltet
-        emailInput.addEventListener('blur', saveEmailToStorage);
+        
+        // --- UI Event Listeners (ikke Firebase-relatert) ---
+        if (requestAccessLink) {
+            requestAccessLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                if (requestAccessSection) {
+                    const isHidden = requestAccessSection.style.display === 'none' || requestAccessSection.style.display === '';
+                    requestAccessSection.style.display = isHidden ? 'block' : 'none';
+                }
+            });
+        }
+        if (emailInput) emailInput.addEventListener('blur', saveEmailToStorage);
 
         // --- Initialization ---
-        // Kjøres når HTML-strukturen er fullstendig lastet og parset
         document.addEventListener('DOMContentLoaded', () => {
-            loadEmailFromStorage(); // Last inn lagret e-post hvis den finnes
-            checkBackgroundImage(originalBgImage); // Sjekk om bakgrunnsbildet lastes
+            loadEmailFromStorage();
+            checkBackgroundImage(originalBgImage);
 
-            // Sett Firebase persistence (hvordan sesjonen skal håndteres)
             setPersistence(auth, browserLocalPersistence)
               .then(() => {
-                console.log("Firebase persistence satt til 'local' (forblir innlogget).");
-                // `onAuthStateChanged` vil allerede ha kjørt eller vil kjøre kort tid etter
-                // for å sjekke initiell innloggingsstatus.
+                console.log("Firebase persistence satt til 'local'.");
               })
               .catch((error) => {
-                console.error("Feil ved setting av Firebase persistence: ", error.code, error.message);
+                console.error("Feil ved setting av Firebase persistence: ", error.message);
               });
         });
     </script>
-
 </body>
 </html>
