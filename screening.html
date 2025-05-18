@@ -7,7 +7,6 @@
     <script src="https://cdn.plot.ly/plotly-2.27.1.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Avenir:wght@400&family=Futura:wght@400&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" xintegrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
     <style>
         :root {
             --app-primary-color: #285484;
@@ -79,7 +78,7 @@
             min-height: 100vh;
             margin-top: 0;
         }
-        .loading-message, .status-message { /* Added .status-message */
+        .loading-message, .status-message {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -87,163 +86,45 @@
             font-size: 1.2em;
             color: var(--app-primary-color);
             text-align: center;
-            position: fixed; /* To ensure it's centered even if app-layout is hidden */
+            position: fixed;
             top: 0; left: 0; width: 100%;
-            background-color: var(--light-gray); /* So it covers content if app-layout flashes */
-            z-index: 2000; /* High z-index */
+            background-color: var(--light-gray);
+            z-index: 2000;
         }
         .status-message {
-            height: auto; /* Adjust for non-fullscreen messages */
+            height: auto;
             padding: 10px;
             border-radius: 5px;
             min-width: 200px;
-            top: 20px; /* Position at the top */
+            top: 20px;
             left: 50%;
             transform: translateX(-50%);
             width: auto;
             box-shadow: var(--box-shadow);
-            display: none; /* Hidden by default */
+            display: none;
         }
         .status-message.success { background-color: var(--norm-good-bg); color: var(--text-color); }
         .status-message.error { background-color: var(--norm-poor-bg); color: var(--text-color); }
-
-        .app-sidebar {
-            width: var(--sidebar-width);
-            background-color: var(--light-gray);
-            color: var(--text-color);
-            padding: 20px 15px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            overflow-y: auto;
-            z-index: 10;
-        }
-        .sidebar-logo-placeholder {
-            height: 50px;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-        .sidebar-logo-placeholder i {
-            color: var(--app-primary-color);
-        }
-        .sidebar-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .sidebar-social-links {
-            margin-top: auto;
-            padding-top: 20px;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-        .sidebar-social-links a {
-            color: var(--app-secondary-color);
-            margin: 0 28px;
-            font-size: 1.8rem;
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-        .sidebar-social-links a:hover {
-            color: var(--app-primary-color);
-        }
-        .app-main-content {
-            flex-grow: 1;
-            margin-left: calc(var(--sidebar-width) + var(--main-content-margin));
-            padding: 30px 40px 30px 40px;
-            background-color: var(--white);
-            overflow-y: auto;
-            height: 100vh;
-            box-sizing: border-box;
-        }
-        .app-sidebar button,
-        .app-sidebar a button {
-            font-family: 'Avenir', sans-serif;
-            font-size: 0.9rem;
-            font-weight: var(--normal-font-weight);
-            padding: 10px 15px;
-            color: var(--app-primary-color);
-            background-color: transparent;
-            background-image: none;
-            border: none;
-            border-radius: 0;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: none;
-            letter-spacing: 0.5px;
-            width: 100%;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .app-sidebar button i {
-            width: 20px;
-            text-align: center;
-            color: var(--app-primary-color);
-            transition: color 0.3s ease;
-        }
-        .app-sidebar button:hover,
-        .app-sidebar a button:hover {
-            background-image: linear-gradient(to right, var(--app-button-light-gradient-start), var(--app-button-light-gradient-end));
-            color: var(--app-text-on-primary);
-            transform: translateY(-1px);
-        }
-        .app-sidebar button:active,
-        .app-sidebar a button:active {
-            transform: translateY(0px);
-        }
-        .app-sidebar button:hover i,
-        .app-sidebar a button:hover i,
-        .app-sidebar button:active i,
-        .app-sidebar a button:active i {
-            color: var(--app-text-on-primary);
-        }
-        .app-sidebar a {
-            text-decoration: none;
-            display: block;
-        }
-        .content-container {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-        h1, h2, h3 {
-            font-family: 'Avenir', sans-serif;
-            margin-bottom: 0.75em;
-            font-weight: var(--normal-font-weight);
-        }
-        h1 {
-            text-align: left;
-            font-size: 2.0rem;
-            margin-top: 0;
-            margin-bottom: 1em;
-            color: var(--app-primary-color);
-            font-weight: var(--normal-font-weight);
-        }
-        h2 {
-            font-size: 1.5rem;
-            padding-bottom: 0.4em;
-            margin-top: 1.8em;
-            color: var(--app-secondary-color);
-            font-weight: var(--normal-font-weight);
-        }
-        h3.position-title,
-        h3.normative-title {
-            font-size: 1.15rem;
-            color: var(--app-primary-color);
-            margin-bottom: 0.3em;
-            font-weight: var(--normal-font-weight);
-        }
+        .app-sidebar { width: var(--sidebar-width); background-color: var(--light-gray); color: var(--text-color); padding: 20px 15px; box-shadow: 2px 0 5px rgba(0,0,0,0.05); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto; z-index: 10; }
+        .sidebar-logo-placeholder { height: 50px; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .sidebar-logo-placeholder i { color: var(--app-primary-color); }
+        .sidebar-buttons { display: flex; flex-direction: column; gap: 12px; }
+        .sidebar-social-links { margin-top: auto; padding-top: 20px; margin-bottom: 25px; text-align: center; }
+        .sidebar-social-links a { color: var(--app-secondary-color); margin: 0 28px; font-size: 1.8rem; text-decoration: none; transition: color 0.2s ease; }
+        .sidebar-social-links a:hover { color: var(--app-primary-color); }
+        .app-main-content { flex-grow: 1; margin-left: calc(var(--sidebar-width) + var(--main-content-margin)); padding: 30px 40px 30px 40px; background-color: var(--white); overflow-y: auto; height: 100vh; box-sizing: border-box; }
+        .app-sidebar button, .app-sidebar a button { font-family: 'Avenir', sans-serif; font-size: 0.9rem; font-weight: var(--normal-font-weight); padding: 10px 15px; color: var(--app-primary-color); background-color: transparent; background-image: none; border: none; border-radius: 0; cursor: pointer; transition: all 0.3s ease; box-shadow: none; letter-spacing: 0.5px; width: 100%; text-align: left; display: flex; align-items: center; gap: 10px; }
+        .app-sidebar button i { width: 20px; text-align: center; color: var(--app-primary-color); transition: color 0.3s ease; }
+        .app-sidebar button:hover, .app-sidebar a button:hover { background-image: linear-gradient(to right, var(--app-button-light-gradient-start), var(--app-button-light-gradient-end)); color: var(--app-text-on-primary); transform: translateY(-1px); }
+        .app-sidebar button:active, .app-sidebar a button:active { transform: translateY(0px); }
+        .app-sidebar button:hover i, .app-sidebar a button:hover i, .app-sidebar button:active i, .app-sidebar a button:active i { color: var(--app-text-on-primary); }
+        .app-sidebar a { text-decoration: none; display: block; }
+        .content-container { max-width: 1100px; margin: 0 auto; }
+        h1, h2, h3 { font-family: 'Avenir', sans-serif; margin-bottom: 0.75em; font-weight: var(--normal-font-weight); }
+        h1 { text-align: left; font-size: 2.0rem; margin-top: 0; margin-bottom: 1em; color: var(--app-primary-color); font-weight: var(--normal-font-weight); }
+        h2 { font-size: 1.5rem; padding-bottom: 0.4em; margin-top: 1.8em; color: var(--app-secondary-color); font-weight: var(--normal-font-weight); }
+        h3.position-title, h3.normative-title { font-size: 1.15rem; color: var(--app-primary-color); margin-bottom: 0.3em; font-weight: var(--normal-font-weight); }
         h3.normative-title { text-align: center;}
-        /* (Resten av din eksisterende CSS for graf-elementer etc. forblir her) */
-        /* ... (mange CSS regler fra din opprinnelige screening.html) ... */
         #report-content { background-color: var(--white); padding: 15px 0; }
         #top-controls { display: flex; justify-content: flex-start; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; background-color: transparent; border: none; border-radius: 0; padding: 0; box-shadow: none; }
         #top-controls .control-item { border: none; border-radius: 0; background-color: var(--light-gray); padding: 15px 20px; display: flex; align-items: center; gap: 8px; box-shadow: var(--subtle-shadow); transition: none; }
@@ -292,27 +173,13 @@
         .explanation-box h4 { margin-top: 0; color: var(--app-primary-color); font-family: inherit; font-weight: var(--normal-font-weight); }
         .explanation-box p { margin-bottom: 0.5em; }
         .explanation-box ul { margin-top: 0.5em; padding-left: 20px; }
-
-        /* Modal styles for "Last Tests" */
-        .modal-backdrop-fs { /* Suffix -fs for "firestore" to avoid conflict if any */
-            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-            background-color: rgba(0, 0, 0, 0.3); z-index: 1040;
-        }
-        .modal-fs {
-            display: none; position: fixed; top: 50%; left: 50%;
-            transform: translate(-50%, -50%); width: 90%; max-width: 600px;
-            background-color: rgba(255, 255, 255, 0.05); /* Frosted glass */
-            -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-            padding: 1.5rem; border-radius: 0.5rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); z-index: 1050;
-            color: var(--text-color); max-height: 80vh; display: flex; flex-direction: column;
-        }
+        .modal-backdrop-fs { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); background-color: rgba(0, 0, 0, 0.3); z-index: 1040; }
+        .modal-fs { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 600px; background-color: rgba(255, 255, 255, 0.05); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); z-index: 1050; color: var(--text-color); max-height: 80vh; display: flex; flex-direction: column; }
         .modal-fs-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--medium-gray); padding-bottom: 0.75rem;}
         .modal-fs-title { font-size: 1.25rem; color: var(--app-primary-color); font-weight: var(--semibold-font-weight); }
         .modal-fs-close-button { background: none; border: none; font-size: 1.5rem; line-height: 1; color: var(--dark-gray); cursor: pointer; padding:0.25rem 0.5rem; }
         .modal-fs-close-button:hover { color: var(--app-primary-color); }
-        .modal-fs-body { overflow-y: auto; flex-grow: 1; padding-right: 10px; /* for scrollbar */ }
+        .modal-fs-body { overflow-y: auto; flex-grow: 1; padding-right: 10px; }
         .modal-fs-body #patient-id-list { list-style: none; padding: 0; margin:0; }
         .modal-fs-body #patient-id-list li { padding: 0.75rem; border-bottom: 1px solid var(--medium-gray); cursor: pointer; transition: background-color 0.2s ease; }
         .modal-fs-body #patient-id-list li:hover { background-color: var(--medium-gray); }
@@ -325,61 +192,28 @@
         .modal-fs-body #test-dates-list button.delete-test-btn { background-color: transparent; border:none; color: var(--danger-color-dark); cursor:pointer; padding: 0.25rem; margin-left:10px;}
         .modal-fs-body #test-dates-list button.delete-test-btn:hover { color: #a80000; }
         .modal-fs-footer { padding-top: 1rem; text-align: right; border-top: 1px solid var(--medium-gray); margin-top: auto; }
-        /* Responsive styles from original file */
-        /* ... (media queries for responsive design are here) ... */
-        @media (max-width: 992px) { /* ... existing ... */ }
-        @media (max-width: 768px) { /* ... existing ... */ }
-        @media (max-width: 480px) { /* ... existing ... */ }
-        @media print { /* ... existing ... */ }
+        @media (max-width: 992px) { :root { --sidebar-width: 70px; } .app-main-content { margin-left: calc(var(--sidebar-width) + var(--main-content-margin)); padding: 25px 30px; } .app-sidebar { padding: 20px 10px; top: 0; height: 100vh; } .app-sidebar .sidebar-logo-placeholder { height: 40px; margin-bottom: 40px; font-size: 1.3rem; } .app-sidebar .button-text { display: none; } .app-sidebar button, .app-sidebar a button { justify-content: center; padding: 10px 0; gap: 0; font-size: 0.85rem; } .app-sidebar button i { width: auto; margin: 0; } .sidebar-social-links { display: none; } .position-row { flex-direction: column; align-items: stretch; } .asymmetry-graph-container, .normative-graph-container { flex: none; width: 100%; min-width: unset; } .position-box, .normative-box { height: auto; min-height: unset; } #patient-data-grid { grid-template-columns: 1fr; } #input-section-container { flex-direction: column; } .input-position-box { min-width: unset; } body.pdf-preview-active .app-main-content { padding: 15px 30px; } body.pdf-preview-active .position-row { align-items: stretch; } body.pdf-preview-active .position-box, body.pdf-preview-active .normative-box { height: auto; min-height: unset; } }
+        @media (max-width: 768px) { .app-layout { flex-direction: column; min-height: 100vh; } .app-sidebar { width: 100%; height: auto; position: relative; top: 0; flex-direction: row; flex-wrap: wrap; justify-content: center; padding: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-right: none; z-index: 5; overflow-y: visible; } .sidebar-logo-placeholder { display: none; } .sidebar-buttons { flex-direction: row; flex-wrap: wrap; justify-content: center; width: 100%; flex-grow: 0; } .app-sidebar button, .app-sidebar a button { width: auto; flex-grow: 1; max-width: 180px; justify-content: center; font-size: 0.85rem; font-weight: var(--normal-font-weight); padding: 8px 10px; margin: 5px; gap: 8px; } .app-sidebar .button-text { display: inline-block; } .app-sidebar button i { width: auto; margin-right: 5px; } .sidebar-social-links { display: block; width: 100%; margin-top: 10px; padding-top: 0; border-top: none; text-align: center; } .sidebar-social-links a { margin: 0 10px; font-size: 1.1rem; } .app-main-content { margin-left: 0; padding: 20px 15px; height: auto; } h1 { font-size: 1.6rem; font-weight: var(--normal-font-weight);} h2 { font-size: 1.3rem; font-weight: var(--normal-font-weight);} h3.position-title, h3.normative-title { font-size: 1.0rem; font-weight: var(--normal-font-weight);} #top-controls { flex-direction: column; align-items: stretch; gap: 10px; margin-bottom: 15px; padding-bottom: 10px;} .control-item { justify-content: space-between; } .input-row { flex-direction: column; align-items: flex-start; gap: 5px; } .input-row label { flex-basis: auto; width: 100%; text-align: left; margin-bottom: 3px;} .input-row .input-wrapper { flex-basis: auto; width: 100%; justify-content: flex-start; } .input-row input { width: auto; font-size: 1.2rem; font-weight: var(--normal-font-weight); } .input-row input::placeholder { font-size: 0.8rem; font-weight: var(--normal-font-weight);} .unit-text { margin-left: 8px; } .position-box, .normative-box { padding: 10px; margin-bottom: 0;} #preview-exit-button-inline { top: 10px; right: 10px; font-size: 0.8rem; padding: 6px 10px; } body.pdf-preview-active .app-main-content { padding: 10px 15px; } }
+        @media (max-width: 480px) { h1 { font-size: 1.4rem; font-weight: var(--normal-font-weight);} h2 { font-size: 1.1rem; font-weight: var(--normal-font-weight);} .app-sidebar button, .app-sidebar a button { font-size: 0.8rem; padding: 6px 8px; max-width: 150px; font-weight: var(--normal-font-weight);} }
+        @media print { body { background-color: white !important; color: black !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; font-size: 9pt !important; padding: 0 !important; display: block !important; font-weight: normal !important;} .top-header-bar, .app-sidebar, #top-controls, #patient-data-container, #input-section-container, #canvas-container, #bottom-area, .print-instruction, #preview-exit-button-inline { display: none !important; } .app-layout { display: block !important; } .app-main-content { margin: 0 !important; padding: 5mm !important; width: 100% !important; max-width: 100% !important; box-shadow: none !important; border: none !important; height: auto !important; } .content-container { margin: 0 !important; padding: 0 !important; max-width: 100% !important; } h1 { font-size: 16pt !important; margin-bottom: 5mm !important; text-align: center !important; display: block !important; color: black !important; font-weight: normal !important; } h2 { display: block !important; font-size: 12pt !important; margin-top: 8mm; margin-bottom: 4mm; border: none !important; color: black !important; font-weight: normal !important; } h3 { font-size: 10pt !important; margin-bottom: 3mm !important; color: black !important; font-weight: normal !important; } #report-content { padding: 0 !important; } .position-row { display: block !important; width: 100% !important; page-break-inside: avoid !important; border: none !important; margin-bottom: 5mm !important; padding: 0 !important;} .asymmetry-graph-container, .normative-graph-container { width: 100% !important; display: block !important; margin-bottom: 5mm; page-break-inside: avoid !important; padding: 0 !important; } .position-box, .normative-box { box-shadow: none !important; border: none !important; margin-bottom: 3mm; height: auto !important; min-height: unset !important; padding: 5px !important; page-break-inside: avoid !important; background-color: var(--light-gray) !important; } .position-box.green-box { box-shadow: 0 0 15px 5px var(--success-shadow-color) !important; border: none !important; } .position-box::after { display: none !important; } .js-plotly-plot { width: 100% !important; height: auto !important; } .plotly .scatterlayer .trace.fill { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; } .plotly .annotation text, .plotly .annotation .norm-label, .plotly .annotation .left-label, .plotly .annotation .right-label, .plotly .annotation .value-display, .plotly .annotation .nkg-combined-text span, .plotly .annotation .asymmetry-percent { fill: black !important; color: black !important; font-weight: normal !important; } .plotly .annotation .norm-value { font-weight: normal !important; } .plotly .gtitle { fill: black !important; font-weight: normal !important; } .plotly .axistitle { fill: black !important; font-size: 9pt !important; font-weight: normal !important; } .plotly .tick text { fill: black !important; font-size: 8pt !important; font-weight: normal !important; } .plotly .legend { display: none !important; } .plotly .modebar { display: none !important; } #bar-chart-I, #bar-chart-Y, #bar-chart-T { height: 180px !important; } #normative-chart-I, #normative-chart-Y, #normative-chart-T { height: 180px !important; } }
     </style>
 </head>
 <body>
-
-<div id="appLoadingMessage" class="loading-message">
-    Authenticating... Please wait.
-</div>
-
+<div id="appLoadingMessage" class="loading-message">Authenticating... Please wait.</div>
 <div id="appStatusMessage" class="status-message"></div>
-
 
 <div class="app-layout">
     <aside class="app-sidebar">
-        <div class="sidebar-logo-placeholder">
-            <i class="fas fa-bars"></i>
-        </div>
+        <div class="sidebar-logo-placeholder"><i class="fas fa-bars"></i></div>
         <div class="sidebar-buttons">
-            <button id="register-patient-button">
-                <i class="fas fa-user-plus"></i>
-                <span class="button-text">Register Patient</span>
-            </button>
-            <button id="save-data-button">
-                <i class="fas fa-save"></i>
-                <span class="button-text">Save Data</span>
-            </button>
-            <button id="load-tests-button">
-                <i class="fas fa-folder-open"></i>
-                <span class="button-text">Last Tests</span>
-            </button>
-            <a href="assets/analysis.html" id="analysis-link-button">
-                <button type="button" id="view-analysis-button">
-                    <i class="fas fa-history"></i> <span class="button-text">Patient History</span>
-                </button>
-            </a>
-            <button id="pdf-preview-button">
-                <i class="fas fa-file-pdf"></i>
-                <span class="button-text">PDF Preview</span>
-            </button>
-            <button id="export-excel-button">
-                <i class="fas fa-file-excel"></i>
-                <span class="button-text">Export Data</span> </button>
-            <button id="clear-all-button">
-                <i class="fas fa-eraser"></i>
-                <span class="button-text">Clear All</span>
-            </button>
-             <button id="logout-button" style="margin-top: auto;">
-                <i class="fas fa-sign-out-alt"></i>
-                <span class="button-text">Logout</span>
-            </button>
+            <button id="register-patient-button"><i class="fas fa-user-plus"></i><span class="button-text">Register Patient</span></button>
+            <button id="save-data-button"><i class="fas fa-save"></i><span class="button-text">Save Data</span></button>
+            <button id="load-tests-button"><i class="fas fa-folder-open"></i><span class="button-text">Last Tests</span></button>
+            <a href="assets/analysis.html" id="analysis-link-button"><button type="button" id="view-analysis-button"><i class="fas fa-history"></i> <span class="button-text">Patient History</span></button></a>
+            <button id="pdf-preview-button"><i class="fas fa-file-pdf"></i><span class="button-text">PDF Preview</span></button>
+            <button id="export-excel-button"><i class="fas fa-file-excel"></i><span class="button-text">Export Data</span></button>
+            <button id="clear-all-button"><i class="fas fa-eraser"></i><span class="button-text">Clear All</span></button>
+            <button id="logout-button" style="margin-top: auto;"><i class="fas fa-sign-out-alt"></i><span class="button-text">Logout</span></button>
         </div>
         <div class="sidebar-social-links">
             <a href="https://www.instagram.com/alphatekofficial" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
@@ -387,7 +221,6 @@
             <a href="#" title="Info/Help"><i class="fas fa-circle-info"></i></a>
         </div>
     </aside>
-
     <main class="app-main-content">
         <button id="preview-exit-button-inline"><i class="fas fa-times-circle"></i> Exit Preview</button>
         <div class="content-container">
@@ -395,73 +228,13 @@
                 <h1>Functional Shoulder Screening</h1>
                 <h2 id="patient-details-title">Patient Details</h2>
                 <div id="top-controls">
-                    <div class="control-item">
-                        <label class="control-label" for="injured-side-radio">Injured Side:</label>
-                        <select id="injured-side-radio">
-                            <option value="Left">Left</option>
-                            <option value="Right">Right</option>
-                        </select>
-                    </div>
-                    <div class="control-item">
-                        <label class="control-label" for="bodyweight-input">Bodyweight (kg):</label>
-                        <input id="bodyweight-input" type="number" placeholder="kg">
-                    </div>
+                    <div class="control-item"><label class="control-label" for="injured-side-radio">Injured Side:</label><select id="injured-side-radio"><option value="Left">Left</option><option value="Right">Right</option></select></div>
+                    <div class="control-item"><label class="control-label" for="bodyweight-input">Bodyweight (kg):</label><input id="bodyweight-input" type="number" placeholder="kg"></div>
                 </div>
-                <div class="explanation-box">
-                    <h4>About This Report</h4> <p>This report summarizes the results of the Functional Shoulder Screening using the ASH test (Positions I, Y, T).</p>
-                    <ul> <li><strong>Asymmetry Graphs:</strong> Show the percentage difference between the injured and uninjured side for key metrics (Max Force, RFD, % Max Force at 100ms). Values closer to 100% indicate better symmetry. Annotations above the bars show the percentage difference relative to the uninjured side (100%). Numbers inside the bars show the absolute values for each side.</li> <li><strong>Normative Graphs:</strong> Visually represent the estimated percentile rank for Max Force / Bodyweight (N/kg) for each side, based on normative thresholds. Background colors indicate performance zones (Poor, Average, Good, Excellent). Vertical dashed lines show the estimated percentile for the Left (Orange) and Right (Blue) values.</li> </ul>
-                    <p><i>To save as PDF: Click 'PDF Preview', then use your browser's Print function (Ctrl+P or Cmd+P) and select 'Save as PDF'. Click 'Exit Preview' to return.</i></p>
-                </div>
-                <div id="patient-data-container">
-                    <div id="patient-data-grid">
-                        <div class="patient-data-item">
-                            <label for="fp-nr-input">Patient ID:</label>
-                            <input id="fp-nr-input" type="text" placeholder="Patient ID">
-                        </div>
-                        <div class="patient-data-item">
-                            <label for="age-input">Age:</label>
-                            <input id="age-input" type="number" placeholder="Years">
-                        </div>
-                        <div class="patient-data-item">
-                            <label for="gender-select">Gender:</label>
-                            <select id="gender-select">
-                                <option value="">Select...</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                                <option value="Other">Other</option>
-                                <option value="Prefer not to say">Prefer not to say</option>
-                            </select>
-                        </div>
-                        <div class="patient-data-item">
-                            <label for="sport-input">Sport:</label>
-                            <input id="sport-input" type="text" placeholder="Main Sport">
-                        </div>
-                    </div>
-                </div>
+                <div class="explanation-box"><h4>About This Report</h4> <p>This report summarizes the results of the Functional Shoulder Screening using the ASH test (Positions I, Y, T).</p><ul> <li><strong>Asymmetry Graphs:</strong> Show the percentage difference between the injured and uninjured side for key metrics (Max Force, RFD, % Max Force at 100ms). Values closer to 100% indicate better symmetry. Annotations above the bars show the percentage difference relative to the uninjured side (100%). Numbers inside the bars show the absolute values for each side.</li> <li><strong>Normative Graphs:</strong> Visually represent the estimated percentile rank for Max Force / Bodyweight (N/kg) for each side, based on normative thresholds. Background colors indicate performance zones (Poor, Average, Good, Excellent). Vertical dashed lines show the estimated percentile for the Left (Orange) and Right (Blue) values.</li> </ul><p><i>To save as PDF: Click 'PDF Preview', then use your browser's Print function (Ctrl+P or Cmd+P) and select 'Save as PDF'. Click 'Exit Preview' to return.</i></p></div>
+                <div id="patient-data-container"><div id="patient-data-grid"><div class="patient-data-item"><label for="fp-nr-input">Patient ID:</label><input id="fp-nr-input" type="text" placeholder="Patient ID"></div><div class="patient-data-item"><label for="age-input">Age:</label><input id="age-input" type="number" placeholder="Years"></div><div class="patient-data-item"><label for="gender-select">Gender:</label><select id="gender-select"><option value="">Select...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option><option value="Prefer not to say">Prefer not to say</option></select></div><div class="patient-data-item"><label for="sport-input">Sport:</label><input id="sport-input" type="text" placeholder="Main Sport"></div></div></div>
                 <h2 id="input-title">Input Overview</h2>
-                <div id="input-section-container">
-                    <div class="input-position-box">
-                        <h4>ASH Test Position I</h4>
-                        <div class="input-row"> <label>Max Force</label> <div class="input-wrapper"> <input id="non-injured-max-force-i" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- N</span> </div> </div>
-                        <div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"> <input id="non-injured-rfd-i" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- Ns<sup>-1</sup></span> </div> </div>
-                        <div class="input-row"> <label>Max Force</label> <div class="input-wrapper"> <input id="injured-max-force-i" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- N</span> </div> </div>
-                        <div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"> <input id="injured-rfd-i" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- Ns<sup>-1</sup></span> </div> </div>
-                    </div>
-                    <div class="input-position-box">
-                        <h4>ASH Test Position Y</h4>
-                        <div class="input-row"> <label>Max Force</label> <div class="input-wrapper"><input id="non-injured-max-force-y" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- N</span></div> </div>
-                        <div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="non-injured-rfd-y" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div>
-                        <div class="input-row"> <label>Max Force</label> <div class="input-wrapper"><input id="injured-max-force-y" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- N</span></div> </div>
-                        <div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="injured-rfd-y" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div>
-                    </div>
-                    <div class="input-position-box">
-                        <h4>ASH Test Position T</h4>
-                        <div class="input-row"> <label>Max Force</label> <div class="input-wrapper"><input id="non-injured-max-force-t" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- N</span></div> </div>
-                        <div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="non-injured-rfd-t" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div>
-                        <div class="input-row"> <label>Max Force</label> <div class="input-wrapper"><input id="injured-max-force-t" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- N</span></div> </div>
-                        <div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="injured-rfd-t" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div>
-                    </div>
-                </div>
+                <div id="input-section-container"><div class="input-position-box"><h4>ASH Test Position I</h4><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"> <input id="non-injured-max-force-i" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- N</span> </div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"> <input id="non-injured-rfd-i" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- Ns<sup>-1</sup></span> </div> </div><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"> <input id="injured-max-force-i" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- N</span> </div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"> <input id="injured-rfd-i" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- Ns<sup>-1</sup></span> </div> </div></div><div class="input-position-box"><h4>ASH Test Position Y</h4><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"><input id="non-injured-max-force-y" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- N</span></div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="non-injured-rfd-y" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"><input id="injured-max-force-y" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- N</span></div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="injured-rfd-y" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div></div><div class="input-position-box"><h4>ASH Test Position T</h4><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"><input id="non-injured-max-force-t" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- N</span></div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="non-injured-rfd-t" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"><input id="injured-max-force-t" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- N</span></div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="injured-rfd-t" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div></div></div>
                 <div id="canvas-container"></div>
                 <h2 id="results-title">Results</h2>
                 <div class="position-row"> <div class="asymmetry-graph-container"> <div id="position-box-I" class="position-box"> <h3 class="position-title">Position I - Asymmetry</h3> <div id="bar-chart-I" class="js-plotly-plot"></div> </div> </div> <div class="normative-graph-container"> <div id="normative-chart-container-I" class="normative-box"> <h3 class="normative-title">Position I - Normative Comparison</h3> <div id="normative-chart-I" class="js-plotly-plot"></div> </div> </div> </div>
@@ -482,14 +255,10 @@
     </div>
     <div class="modal-fs-body">
         <h4>Patient IDs:</h4>
-        <ul id="patient-id-list">
-            <li data-patient-id="TEMP_FP123">TEMP_FP123 (Click to see tests)</li>
-            <li data-patient-id="TEMP_FP456">TEMP_FP456 (Click to see tests)</li>
-        </ul>
+        <ul id="patient-id-list"></ul>
         <div id="test-dates-container">
             <h4>Tests for Patient <span id="selected-patient-id-for-tests"></span>:</h4>
-            <ul id="test-dates-list">
-                </ul>
+            <ul id="test-dates-list"></ul>
         </div>
         <div id="load-tests-loading-message" style="display:none; text-align:center; padding:1rem;">Loading...</div>
         <div id="load-tests-error-message" style="display:none; text-align:center; padding:1rem; color:var(--danger-color-dark);"></div>
@@ -498,7 +267,6 @@
         <button type="button" id="cancelLoadTestButton" class="app-sidebar-button" style="background-image:none; color: var(--dark-gray); width:auto; padding: 8px 15px; border: 1px solid var(--medium-gray); margin-right:10px;">Cancel</button>
     </div>
 </div>
-
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -524,16 +292,45 @@
     const appLoadingMessage = document.getElementById('appLoadingMessage');
     const appStatusMessage = document.getElementById('appStatusMessage');
 
+    const plotlyConfig = {
+        displaylogo: false,
+        modeBarButtonsToRemove: ['sendDataToCloud', 'lasso2d', 'select2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d', 'resetScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian'],
+        modeBarButtonsToAdd: [{
+            name: 'Download plot as PNG',
+            icon: Plotly.Icons.camera,
+            click: function(gd) {
+                const titleText = (gd.layout.title?.text || 'plot').replace(/<br>/g, ' ');
+                Plotly.downloadImage(gd, { format: 'png', width: gd._fullLayout.width, height: gd._fullLayout.height, filename: titleText });
+            }
+        }]
+    };
+    const normativeThresholds = {
+        'I': { poor_max: 1.47, average_mid: 1.65, good_min: 1.85, excellent_min: 2.1 },
+        'Y': { poor_max: 1.25, average_mid: 1.4,  good_min: 1.6,  excellent_min: 1.76 },
+        'T': { poor_max: 1.15, average_mid: 1.25, good_min: 1.4,  excellent_min: 1.58 }
+    };
+    const percentileZones = { poor: 30, average: 70, good: 90, excellent: 100 };
+    const percentileMidpoint = 50;
+    const normZoneColors = {
+        poor: getComputedStyle(document.documentElement).getPropertyValue('--norm-poor-bg').trim() || 'rgba(252, 165, 165, 0.5)',
+        average: getComputedStyle(document.documentElement).getPropertyValue('--norm-average-bg').trim() || 'rgba(252, 211, 77, 0.5)',
+        good: getComputedStyle(document.documentElement).getPropertyValue('--norm-good-bg').trim() || 'rgba(167, 243, 208, 0.5)',
+        excellent: getComputedStyle(document.documentElement).getPropertyValue('--norm-excellent-bg').trim() || 'rgba(52, 211, 153, 0.5)'
+    };
+    const normativeLabels = { poor: 'Poor', average: 'Average', good: 'Good', excellent: 'Excellent' };
+    const asymmetryChartDivs = ['bar-chart-I', 'bar-chart-Y', 'bar-chart-T'];
+    const asymmetryPositionBoxDivs = ['position-box-I', 'position-box-Y', 'position-box-T'];
+    const normativeChartDivs = ['normative-chart-I', 'normative-chart-Y', 'normative-chart-T'];
+
     function showStatusMessage(message, type = 'info', duration = 3000) {
         if (!appStatusMessage) return;
         appStatusMessage.textContent = message;
-        appStatusMessage.className = `status-message ${type}`; // type can be 'success', 'error'
+        appStatusMessage.className = `status-message ${type}`;
         appStatusMessage.style.display = 'block';
         setTimeout(() => {
             appStatusMessage.style.display = 'none';
         }, duration);
     }
-
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
@@ -557,7 +354,6 @@
     const viewAnalysisButtonLink = document.getElementById('analysis-link-button');
     const clearAllButton = document.getElementById('clear-all-button');
     const logoutButton = document.getElementById('logout-button');
-
     const previewExitButtonInline = document.getElementById('preview-exit-button-inline');
     const explanationBox = document.querySelector('.explanation-box');
     const patientDataContainer = document.getElementById('patient-data-container');
@@ -565,15 +361,12 @@
     const ageInput = document.getElementById('age-input');
     const genderSelect = document.getElementById('gender-select');
     const sportInput = document.getElementById('sport-input');
-    
     const inputFieldMap = {
         'I': { nonInjured: [document.getElementById('non-injured-max-force-i'), document.getElementById('non-injured-rfd-i')], injured: [document.getElementById('injured-max-force-i'), document.getElementById('injured-rfd-i')] },
         'Y': { nonInjured: [document.getElementById('non-injured-max-force-y'), document.getElementById('non-injured-rfd-y')], injured: [document.getElementById('injured-max-force-y'), document.getElementById('injured-rfd-y')] },
         'T': { nonInjured: [document.getElementById('non-injured-max-force-t'), document.getElementById('non-injured-rfd-t')], injured: [document.getElementById('injured-max-force-t'), document.getElementById('injured-rfd-t')] }
     };
     const allNumberInputs = Array.from(document.querySelectorAll('#input-section-container input[type="number"]'));
-
-
     const lastTestsModalBackdrop = document.getElementById('lastTestsModalBackdrop');
     const lastTestsModal = document.getElementById('lastTestsModal');
     const closeLastTestsModalButton = document.getElementById('closeLastTestsModalButton');
@@ -584,279 +377,57 @@
     const selectedPatientIdForTestsSpan = document.getElementById('selected-patient-id-for-tests');
     const loadTestsLoadingMessage = document.getElementById('load-tests-loading-message');
     const loadTestsErrorMessage = document.getElementById('load-tests-error-message');
+    const normativePlaceholderLocal = document.getElementById('normative-placeholder');
 
 
-    function openLastTestsModal() {
-        if(lastTestsModalBackdrop) lastTestsModalBackdrop.style.display = 'block';
-        if(lastTestsModal) lastTestsModal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-        loadPatientIdsForModal();
-    }
-
-    function closeLastTestsModal() {
-        if(lastTestsModalBackdrop) lastTestsModalBackdrop.style.display = 'none';
-        if(lastTestsModal) lastTestsModal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-        if(patientIdListUL) patientIdListUL.innerHTML = ''; // Clear previous list
-        if(testDatesListUL) testDatesListUL.innerHTML = ''; // Clear previous list
-        if(testDatesContainer) testDatesContainer.style.display = 'none';
-        if(loadTestsLoadingMessage) loadTestsLoadingMessage.style.display = 'none';
-        if(loadTestsErrorMessage) loadTestsErrorMessage.style.display = 'none';
-    }
-
-    if(loadTestsButton) loadTestsButton.addEventListener('click', openLastTestsModal);
-    if(closeLastTestsModalButton) closeLastTestsModalButton.addEventListener('click', closeLastTestsModal);
-    if(cancelLoadTestButton) cancelLoadTestButton.addEventListener('click', closeLastTestsModal);
-    if(lastTestsModalBackdrop) lastTestsModalBackdrop.addEventListener('click', closeLastTestsModal);
-
-    async function loadPatientIdsForModal() {
-        if (!auth.currentUser || !patientIdListUL || !loadTestsLoadingMessage || !loadTestsErrorMessage) return;
-        
-        patientIdListUL.innerHTML = '';
-        testDatesContainer.style.display = 'none';
-        testDatesListUL.innerHTML = '';
-        loadTestsLoadingMessage.style.display = 'block';
-        loadTestsErrorMessage.style.display = 'none';
-
-        try {
-            const q = query(
-                collection(db, "screenings"),
-                where("clinicianId", "==", auth.currentUser.uid),
-                orderBy("patientId"), // Order by patientId first
-                orderBy("testTimestamp", "desc") // Then by timestamp to get unique patientIds later
-            );
-            const querySnapshot = await getDocs(q);
-            const patientScreenings = {}; // { patientId: [{screeningId, timestamp}, ...], ... }
-
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                if (!patientScreenings[data.patientId]) {
-                    patientScreenings[data.patientId] = [];
-                }
-                patientScreenings[data.patientId].push({
-                    screeningId: doc.id,
-                    timestamp: data.testTimestamp 
-                });
-            });
-            
-            loadTestsLoadingMessage.style.display = 'none';
-
-            if (Object.keys(patientScreenings).length === 0) {
-                patientIdListUL.innerHTML = '<li>No saved tests found for your account.</li>';
-                return;
-            }
-
-            for (const patientId in patientScreenings) {
-                const li = document.createElement('li');
-                li.textContent = patientId;
-                li.dataset.patientId = patientId;
-                li.addEventListener('click', () => loadTestDatesForPatient(patientId, patientScreenings[patientId]));
-                patientIdListUL.appendChild(li);
-            }
-
-        } catch (error) {
-            console.error("Error loading patient IDs: ", error);
-            loadTestsLoadingMessage.style.display = 'none';
-            loadTestsErrorMessage.textContent = "Failed to load patient list. Please try again.";
-            loadTestsErrorMessage.style.display = 'block';
-        }
-    }
-
-    function loadTestDatesForPatient(patientId, screenings) {
-        if (!testDatesContainer || !testDatesListUL || !selectedPatientIdForTestsSpan) return;
-
-        selectedPatientIdForTestsSpan.textContent = patientId;
-        testDatesListUL.innerHTML = ''; 
-
-        if (!screenings || screenings.length === 0) {
-            const li = document.createElement('li');
-            li.textContent = "No tests found for this patient.";
-            testDatesListUL.appendChild(li);
-            testDatesContainer.style.display = 'block';
-            return;
-        }
-        
-        screenings.sort((a, b) => b.timestamp.seconds - a.timestamp.seconds); // Ensure descending by time
-
-        screenings.forEach(screening => {
-            const li = document.createElement('li');
-            const dateSpan = document.createElement('span');
-            const date = screening.timestamp.toDate();
-            dateSpan.textContent = date.toLocaleString('nb-NO', { dateStyle: 'medium', timeStyle: 'short' });
-            dateSpan.title = "Load this test";
-            dateSpan.addEventListener('click', () => loadScreeningData(screening.screeningId));
-            
-            const deleteButton = document.createElement('button');
-            deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
-            deleteButton.title = "Delete this test";
-            deleteButton.classList.add('delete-test-btn');
-            deleteButton.addEventListener('click', (e) => {
-                e.stopPropagation(); // Prevent li click event
-                confirmAndDeleteScreening(screening.screeningId, patientId, date);
-            });
-
-            li.appendChild(dateSpan);
-            li.appendChild(deleteButton);
-            testDatesListUL.appendChild(li);
-        });
-        testDatesContainer.style.display = 'block';
-    }
-
-    async function loadScreeningData(screeningId) {
-        if (!screeningId || !loadTestsLoadingMessage || !loadTestsErrorMessage) return;
-        loadTestsLoadingMessage.style.display = 'block';
-        loadTestsErrorMessage.style.display = 'none';
-        try {
-            const docRef = doc(db, "screenings", screeningId);
-            const docSnap = await getDoc(docRef);
-
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                
-                if(fpNrInput) fpNrInput.value = data.patientId || '';
-                if(ageInput) ageInput.value = data.age || '';
-                if(genderSelect) genderSelect.value = data.gender || '';
-                if(sportInput) sportInput.value = data.sport || '';
-                if(bodyweightInput) bodyweightInput.value = data.bodyweight || '';
-                if(injuredSideRadio) injuredSideRadio.value = data.injuredSide || 'Left';
-
-                ['I', 'Y', 'T'].forEach(pos => {
-                    if (data.ashTest && data.ashTest[pos]) {
-                        if(inputFieldMap[pos].nonInjured[0]) inputFieldMap[pos].nonInjured[0].value = data.ashTest[pos].nonInjuredMaxForce || '';
-                        if(inputFieldMap[pos].nonInjured[1]) inputFieldMap[pos].nonInjured[1].value = data.ashTest[pos].nonInjuredRfd || '';
-                        if(inputFieldMap[pos].injured[0]) inputFieldMap[pos].injured[0].value = data.ashTest[pos].injuredMaxForce || '';
-                        if(inputFieldMap[pos].injured[1]) inputFieldMap[pos].injured[1].value = data.ashTest[pos].injuredRfd || '';
-                    }
-                });
-
-                if (patientDataContainer && !patientDataContainer.classList.contains('visible')) {
-                     if (data.patientId || data.age || data.gender || data.sport) {
-                        togglePatientData(); // Show patient data section if it has data
-                     }
-                }
-                
-                updateGraphsAndTable();
-                saveInputsToLocalStorage(); // Save loaded data to local storage for consistency
-                closeLastTestsModal();
-                showStatusMessage('Test data loaded successfully!', 'success');
-            } else {
-                console.log("No such screening document!");
-                loadTestsErrorMessage.textContent = "Could not find the selected test data.";
-                loadTestsErrorMessage.style.display = 'block';
-            }
-        } catch (error) {
-            console.error("Error loading screening data: ", error);
-            loadTestsErrorMessage.textContent = "Error loading test data. Please try again.";
-            loadTestsErrorMessage.style.display = 'block';
-        } finally {
-            loadTestsLoadingMessage.style.display = 'none';
-        }
-    }
+    function hexToRgba(hex, alpha) { hex = hex.replace('#', ''); const r = parseInt(hex.substring(0, 2), 16); const g = parseInt(hex.substring(2, 4), 16); const b = parseInt(hex.substring(4, 6), 16); return `rgba(${r}, ${g}, ${b}, ${alpha})`; }
     
-    async function confirmAndDeleteScreening(screeningId, patientId, date) {
-        const formattedDate = date.toLocaleString('nb-NO', { dateStyle: 'medium', timeStyle: 'short' });
-        if (confirm(`Are you sure you want to delete the test for patient "${patientId}" from ${formattedDate}? This action cannot be undone.`)) {
-            if (!screeningId || !loadTestsLoadingMessage || !loadTestsErrorMessage) return;
-            loadTestsLoadingMessage.style.display = 'block';
-            loadTestsErrorMessage.style.display = 'none';
-            try {
-                await deleteDoc(doc(db, "screenings", screeningId));
-                console.log("Screening deleted successfully:", screeningId);
-                showStatusMessage('Test deleted successfully!', 'success');
-                // Refresh the list in the modal
-                const currentlySelectedPatientId = selectedPatientIdForTestsSpan.textContent;
-                if(currentlySelectedPatientId === patientId) { // if deleting from currently viewed patient
-                    loadPatientIdsForModal(); // This will re-query and re-render patient IDs and then clear test dates
-                    // Or, more efficiently, find the parent patient ID and reload its tests
-                    const patientListItem = Array.from(patientIdListUL.children).find(li => li.dataset.patientId === patientId);
-                    if(patientListItem) patientListItem.click(); // Re-click to refresh test dates, or manually remove from UI
-                    else { loadPatientIdsForModal(); } // Fallback
-                } else {
-                     loadPatientIdsForModal(); // general refresh
-                }
+    function createEmptyPlot(targetDivId, title = 'Enter Data', height = 300, topMargin = 20) { const targetDiv = document.getElementById(targetDivId); if (!targetDiv) { return; } try { Plotly.react(targetDiv, [{ x: [], y: [], type: 'bar' }], { title: { text: title, font: { family: 'Avenir, sans-serif', size: 16, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim(), weight: 400 } }, height: height, margin: { l: 60, r: 40, b: 40, t: topMargin, pad: 4 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', xaxis: { visible: false }, yaxis: { showgrid: false, zeroline: true, gridcolor: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), showticklabels: false }, font: { family: 'Avenir, sans-serif', size: 12, weight: 400 } }, plotlyConfig); } catch (error) { console.error(`Error creating empty plot in ${targetDivId}:`, error); targetDiv.innerHTML = `<p style="color: red; text-align: center; padding: 20px;">Error displaying chart.</p>`; } }
+    
+    function processInputAndCalculate(position) { const inputs = inputFieldMap[position]; if (!inputs) return null; const nonInjuredMaxForceVal = inputs.nonInjured[0].value; const nonInjuredRfdVal = inputs.nonInjured[1].value; const injuredMaxForceVal = inputs.injured[0].value; const injuredRfdVal = inputs.injured[1].value; if (nonInjuredMaxForceVal === '' && nonInjuredRfdVal === '' && injuredMaxForceVal === '' && injuredRfdVal === '') return null; const nonInjuredMaxForce = parseFloat(nonInjuredMaxForceVal) || 0; const nonInjuredRfd = parseFloat(nonInjuredRfdVal) || 0; const injuredMaxForce = parseFloat(injuredMaxForceVal) || 0; const injuredRfd = parseFloat(injuredRfdVal) || 0; const selectedInjuredSide = injuredSideRadio.value; let leftData = {}; let rightData = {}; if (selectedInjuredSide === 'Left') { leftData = { max_force: injuredMaxForce, rfd: injuredRfd }; rightData = { max_force: nonInjuredMaxForce, rfd: nonInjuredRfd }; } else { leftData = { max_force: nonInjuredMaxForce, rfd: nonInjuredRfd }; rightData = { max_force: injuredMaxForce, rfd: injuredRfd }; } return { left: leftData, right: rightData }; }
+    
+    function createAsymmetryChart(positionData, injuredSide, posLabel) { if (!positionData?.left || !positionData?.right) return [{}, false]; const leftDataRaw = positionData.left; const rightDataRaw = positionData.right; const leftPctMaxAt100ms = leftDataRaw.max_force !== 0 ? (leftDataRaw.rfd * 0.1 / leftDataRaw.max_force) * 100 : 0; const rightPctMaxAt100ms = rightDataRaw.max_force !== 0 ? (rightDataRaw.rfd * 0.1 / rightDataRaw.max_force) * 100 : 0; const leftData = [leftDataRaw.max_force, leftDataRaw.rfd, leftPctMaxAt100ms]; const rightData = [rightDataRaw.max_force, rightDataRaw.rfd, rightPctMaxAt100ms]; const baseData = injuredSide === 'Right' ? leftData : rightData; const metricNames = [ 'Max Force (N)', 'RFD 100ms (Ns⁻¹)', '% Max @ 100ms (%)' ]; const barDataRatios = {}; const leftTextsAbsolute = []; const rightTextsAbsolute = []; metricNames.forEach((metricName, index) => { let leftValue = leftData[index]; let rightValue = rightData[index]; let baseValue = baseData[index]; const leftRatio = baseValue !== 0 ? (leftValue / baseValue) * 100 : (leftValue === 0 ? 100 : Infinity); const rightRatio = baseValue !== 0 ? (rightValue / baseValue) * 100 : (rightValue === 0 ? 100 : Infinity); barDataRatios[metricName] = [rightRatio, leftRatio]; const decimals = metricName.includes('% Max @ 100ms') ? 1 : 0; leftTextsAbsolute.push(leftValue.toFixed(decimals)); rightTextsAbsolute.push(rightValue.toFixed(decimals)); }); const plotX = metricNames; const plotYLeft = plotX.map(name => barDataRatios[name][1]); const plotYRight = plotX.map(name => barDataRatios[name][0]); if (plotX.length !== 3 || plotYLeft.length !== 3 || plotYRight.length !== 3) return [{}, false]; const leftColorHex = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim(); const rightColorHex = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim(); const leftColorRgba = hexToRgba(leftColorHex, 0.8); const rightColorRgba = hexToRgba(rightColorHex, 0.8); const thresholdLineColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(); const darkGrayColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(); const whiteColor = getComputedStyle(document.documentElement).getPropertyValue('--white').trim(); const validRatios = plotYLeft.concat(plotYRight).filter(isFinite); const maxYValue = validRatios.length > 0 ? Math.max(110, ...validRatios) : 110; const annotationYTop = maxYValue + 8; const yAxisUpperBound = annotationYTop + 15; const fig = { data: [ { type: 'bar', name: 'Left', x: plotX, y: plotYLeft, marker: { color: leftColorRgba }, text: leftTextsAbsolute, texttemplate: '%{text}', textposition: 'none', hoverinfo: 'x+name', hovertemplate: 'Left: %{y:.0f}%<extra></extra>' }, { type: 'bar', name: 'Right', x: plotX, y: plotYRight, marker: { color: rightColorRgba }, text: rightTextsAbsolute, texttemplate: '%{text}', textposition: 'none', hoverinfo: 'x+name', hovertemplate: 'Right: %{y:.0f}%<extra></extra>' }, { x: [null], y: [null], mode: 'lines', name: '±10% Thresholds', line: { color: thresholdLineColor, width: 1, dash: 'dash' }, hoverinfo: 'none', showlegend: true } ], layout: { height: 300, barmode: 'group', font: { color: darkGrayColor, family: 'Avenir, sans-serif', size: 12, weight: 400 }, yaxis: { title: "Injured Side Asymmetry (%)", titlefont: { size: 13, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, range: [18, yAxisUpperBound], tickmode: 'array', tickvals: [50, 100], showgrid: false, zeroline: false, }, xaxis: { showgrid: false, zeroline: false, showline: false, showticklabels: true, tickangle: 0, tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, automargin: true, fixedrange: true }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', legend: { orientation: "h", yanchor: "bottom", y: -0.30, xanchor: "center", x: 0.5, font: { size: 12, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor } }, margin: { l: 70, r: 30, b: 85, t: 20, pad: 10 }, shapes: [ { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 90, y1: 90, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" }, { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 110, y1: 110, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" } ], annotations: [] } }; let allGreen = true; const metricsNamesForAnnotation = plotX; for (let i = 0; i < metricsNamesForAnnotation.length; i++) { const metricName = metricsNamesForAnnotation[i]; const injuredRatio = injuredSide === 'Right' ? plotYRight[i] : plotYLeft[i]; const leftRatio = plotYLeft[i]; const rightRatio = plotYRight[i]; if (!isFinite(injuredRatio)) { fig.layout.annotations.push({ x: metricName, y: annotationYTop, text: "N/A", showarrow: false, font: { color: 'grey', size: 22, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'bottom' }); allGreen = false; } else { const percentageDiff = injuredRatio - 100; let color; if (percentageDiff >= -10) { color = '#2a9d8f'; } else { allGreen = false; if (percentageDiff >= -15) { color = '#ee9b00'; } else if (percentageDiff >= -20) { color = '#e85d04'; } else { color = '#ae2012'; } } fig.layout.annotations.push({ x: metricName, y: annotationYTop, text: `${percentageDiff.toFixed(0)}%`, showarrow: false, font: { color: color, size: 22, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'bottom' }); } const barTextYPosition = 31; const barTextFontSize = 17; const categoryIndex = i; const numberOfBars = 2; const groupWidth = 0.8; const barWidthFraction = groupWidth / numberOfBars; const leftBarCenter = categoryIndex - (groupWidth / 2) + (barWidthFraction / 2); const rightBarCenter = categoryIndex + (groupWidth / 2) - (barWidthFraction / 2); if (leftRatio > barTextYPosition + (barTextFontSize / 2)) { fig.layout.annotations.push({ x: leftBarCenter, y: barTextYPosition, xref: 'x', yref: 'y', text: leftTextsAbsolute[i], showarrow: false, font: { color: whiteColor, size: barTextFontSize, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'middle' }); } if (rightRatio > barTextYPosition + (barTextFontSize / 2)) { fig.layout.annotations.push({ x: rightBarCenter, y: barTextYPosition, xref: 'x', yref: 'y', text: rightTextsAbsolute[i], showarrow: false, font: { color: whiteColor, size: barTextFontSize, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'middle' }); } } return [fig, allGreen]; }
+    
+    function mapNkgToPercentile(nkgValue, positionLabel) { const thresholds = normativeThresholds[positionLabel]; if (!thresholds || typeof nkgValue !== 'number' || !isFinite(nkgValue)) return 0; const pMap = [ { v: 0.5, p: 0 }, { v: thresholds.poor_max, p: percentileZones.poor }, { v: thresholds.average_mid, p: percentileMidpoint }, { v: thresholds.good_min, p: percentileZones.average }, { v: thresholds.excellent_min, p: percentileZones.good }, { v: thresholds.excellent_min * 1.25, p: percentileZones.excellent } ]; const minVal = pMap[0].v; const maxVal = pMap[pMap.length - 1].v; const clampedValue = Math.max(minVal, Math.min(nkgValue, maxVal)); let lowerPoint = pMap[0]; let upperPoint = pMap[pMap.length - 1]; for (let i = 0; i < pMap.length - 1; i++) { if (clampedValue === pMap[i].v) { lowerPoint = upperPoint = pMap[i]; break; } if (clampedValue > pMap[i].v && clampedValue <= pMap[i + 1].v) { lowerPoint = pMap[i]; upperPoint = pMap[i + 1]; break; } } if (clampedValue === upperPoint.v) { lowerPoint = upperPoint; } let percentile = lowerPoint.p; const valueRange = upperPoint.v - lowerPoint.v; const percentileRange = upperPoint.p - lowerPoint.p; if (valueRange > 0) { percentile += ((clampedValue - lowerPoint.v) / valueRange) * percentileRange; } return Math.max(0, Math.min(percentile, 100)); }
+    
+    function createNormativeComparisonChart(positionData, bodyweight, positionLabel) { const bwVal = parseFloat(bodyweight); if (isNaN(bwVal) || bwVal <= 0 || !positionData) return {}; const leftNkg = positionData.left.max_force / bwVal; const rightNkg = positionData.right.max_force / bwVal; const thresholds = normativeThresholds[positionLabel]; if (!thresholds) return {}; const leftPercentile = mapNkgToPercentile(leftNkg, positionLabel); const rightPercentile = mapNkgToPercentile(rightNkg, positionLabel); const baseCurveX = []; const baseCurveY = []; const mean = 55; const stdDev = 22; const amplitude = 0.9; for (let i = 0; i <= 100; i += 0.5) { baseCurveX.push(i); const y = amplitude * Math.exp(-Math.pow(i - mean, 2) / (2 * Math.pow(stdDev, 2))); baseCurveY.push(y); } const zoneBoundaries = [0, percentileZones.poor, percentileZones.average, percentileZones.good, percentileZones.excellent]; const traces = []; const zoneColorsList = [normZoneColors.poor, normZoneColors.average, normZoneColors.good, normZoneColors.excellent]; for (let i = 0; i < zoneBoundaries.length - 1; i++) { const x0 = zoneBoundaries[i]; const x1 = zoneBoundaries[i+1]; const zoneFillColor = zoneColorsList[i]; const segmentX = [x0]; const segmentY = [0]; for(let j=0; j < baseCurveX.length; j++) { if (baseCurveX[j] >= x0 && baseCurveX[j] <= x1) { segmentX.push(baseCurveX[j]); segmentY.push(baseCurveY[j]); } } segmentX.push(x1); segmentY.push(0); traces.push({ x: segmentX, y: segmentY, type: 'scatter', mode: 'lines', line: { width: 0 }, fill: 'tozeroy', fillcolor: zoneFillColor, hoverinfo: 'none', name: Object.keys(normativeLabels)[i], showlegend: false }); } traces.push({ x: baseCurveX, y: baseCurveY, type: 'scatter', mode: 'lines', line: { color: '#ffffff', width: 1.5, shape: 'spline' }, hoverinfo: 'none', name: 'Distribution (Visual)', showlegend: false }); const layout = { height: 250, margin: { t: 35, b: 95, l: 30, r: 30 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', xaxis: { title: '', range: [0, 100], showgrid: false, zeroline: false, showticklabels: false }, yaxis: { range: [0, 1.1], showgrid: false, zeroline: false, showticklabels: false, title: '' }, shapes: [], annotations: [], font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() }, showlegend: false }; const thresholdAnnotations = [ { p: percentileZones.poor, val: thresholds.poor_max }, { p: percentileZones.average, val: thresholds.good_min }, { p: percentileZones.good, val: thresholds.excellent_min } ]; thresholdAnnotations.forEach(t => { layout.annotations.push({ xref: 'x', yref: 'paper', x: t.p, y: -0.08, text: `<span class="norm-value">${t.val.toFixed(2)}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', font: { family: 'Avenir, sans-serif', size: 10, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim() } }); }); layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: percentileMidpoint, x1: percentileMidpoint, y0: 0, y1: 1, line: { color: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), width: 1.5, dash: 'dot' }, layer: 'below' }); const avgValueForPos = thresholds.average_mid.toFixed(2); layout.annotations.push({ xref: 'x', yref: 'paper', x: percentileMidpoint, y: -0.08, text: `<span class="value-display">${avgValueForPos}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', font: { family: 'Avenir, sans-serif', size: 10, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), weight: 400 } }); const labelYPosition = 1.10; layout.annotations.push({ xref: 'x', yref: 'paper', x: 15, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.poor}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 50, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.average}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() }, align: 'center' }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 80, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.good}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 95, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.excellent}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); const leftColor = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim(); const rightColor = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim(); const lineY0 = 0.05; const lineY1 = 0.95; layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: leftPercentile, x1: leftPercentile, y0: lineY0, y1: lineY1, line: { color: leftColor, width: 2, dash: 'dash' } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: leftPercentile, y: 0.90, text: 'L', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: leftColor, font: {color: leftColor, size: 14, family: 'Avenir, sans-serif', weight: 400} }); layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: rightPercentile, x1: rightPercentile, y0: lineY0, y1: lineY1, line: { color: rightColor, width: 2, dash: 'dash' } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: rightPercentile, y: 0.90, text: 'R', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: rightColor, font: {color: rightColor, size: 14, family: 'Avenir, sans-serif', weight: 400} }); const combinedNkgText = `<span class='nkg-combined-text'>Left: <span class='left-label'>${leftNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>) &nbsp;&nbsp;|&nbsp;&nbsp; Right: <span class='right-label'>${rightNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>)</span>`; layout.annotations.push({ xref: 'paper', yref: 'paper', x: 0.5, y: -0.30, text: combinedNkgText, showarrow: false, xanchor: 'center', yanchor: 'top', align: 'center', font: { size: 15, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), family: 'Avenir, sans-serif', weight: 400 } }); return { data: traces, layout }; }
+    
+    function updateGraphsAndTable() { const injuredSide = injuredSideRadio.value; const bodyweight = bodyweightInput.value; const bwVal = parseFloat(bodyweight); const bodyweightValid = !isNaN(bwVal) && bwVal > 0; if (normativePlaceholderLocal) { normativePlaceholderLocal.style.display = bodyweightValid ? 'none' : 'block'; } normativeChartDivs.forEach(divId => { const container = document.getElementById(divId)?.closest('.normative-graph-container'); if (container) { container.style.display = bodyweightValid ? 'block' : 'none'; } }); const positions = ['I', 'Y', 'T']; positions.forEach((pos, i) => { const asymmetryChartDivId = asymmetryChartDivs[i]; const asymmetryPositionBoxDivId = asymmetryPositionBoxDivs[i]; const asymmetryPositionBoxDiv = document.getElementById(asymmetryPositionBoxDivId); const normativeChartDivId = normativeChartDivs[i]; if (!asymmetryPositionBoxDiv || !document.getElementById(asymmetryChartDivId) || !document.getElementById(normativeChartDivId)) return; const positionData = processInputAndCalculate(pos); if (positionData) { try { const [fig, allGreen] = createAsymmetryChart(positionData, injuredSide, pos); if (fig?.data && fig?.layout) { Plotly.react(asymmetryChartDivId, fig.data, fig.layout, plotlyConfig); if (allGreen) asymmetryPositionBoxDiv.classList.add('green-box'); else asymmetryPositionBoxDiv.classList.remove('green-box'); } else { throw new Error("Generated asymmetry figure invalid."); } } catch (error) { console.error(`Error creating asymmetry chart for ${pos}:`, error); createEmptyPlot(asymmetryChartDivId, 'Error loading asymmetry data', 300, 20); asymmetryPositionBoxDiv.classList.remove('green-box'); } } else { createEmptyPlot(asymmetryChartDivId, 'Enter Data', 300, 20); asymmetryPositionBoxDiv.classList.remove('green-box'); } if (bodyweightValid && positionData) { try { const config = createNormativeComparisonChart(positionData, bodyweight, pos); if (config?.data && config?.layout) Plotly.react(normativeChartDivId, config.data, config.layout, plotlyConfig); else throw new Error("Generated normative figure invalid."); } catch (error) { console.error(`Error creating normative chart for ${pos}:`, error); createEmptyPlot(normativeChartDivId, 'Error Loading Data', 250, 35); } } else if (!bodyweightValid) { createEmptyPlot(normativeChartDivId, 'Enter Bodyweight', 250, 35); } else { createEmptyPlot(normativeChartDivId, 'Enter Data', 250, 35); } }); setTimeout(() => window.dispatchEvent(new Event('resize')), 100); }
+    
+    function togglePatientData() { if (patientDataContainer) { const isVisible = patientDataContainer.classList.toggle('visible'); if (registerPatientButton) { registerPatientButton.innerHTML = isVisible ? `<i class="fas fa-user-minus"></i> <span class="button-text">Hide Patient Data</span>` : `<i class="fas fa-user-plus"></i> <span class="button-text">Register Patient</span>`; } } }
+    
+    function enterPreviewMode() { document.body.classList.add('pdf-preview-active'); if(previewExitButtonInline) previewExitButtonInline.style.display = 'inline-block'; if(explanationBox) explanationBox.style.display = 'block'; window.dispatchEvent(new Event('resize')); console.log("Entered PDF preview mode"); }
+    
+    function exitPreviewMode() { document.body.classList.remove('pdf-preview-active'); if(previewExitButtonInline) previewExitButtonInline.style.display = 'none'; if(explanationBox) explanationBox.style.display = 'none'; window.dispatchEvent(new Event('resize')); console.log("Exited PDF preview mode"); }
+    
+    function exportTableToCsv() { const fpNr = fpNrInput ? fpNrInput.value.trim() : ''; const age = ageInput ? ageInput.value.trim() : ''; const gender = genderSelect ? genderSelect.value : ''; const sport = sportInput ? sportInput.value.trim() : ''; const bodyweight = bodyweightInput ? bodyweightInput.value.trim() : ''; const injuredSide = injuredSideRadio ? injuredSideRadio.value : ''; const date = new Date(); const year = date.getFullYear(); const month = (date.getMonth() + 1).toString().padStart(2, '0'); const day = date.getDate().toString().padStart(2, '0'); const dateString = `${year}-${month}-${day}`; const safeFpNr = fpNr.replace(/[^a-z0-9]/gi, '_') || 'Unknown'; const filename = `ASH_${safeFpNr}_${dateString}.csv`; const headers = [ "Patient ID", "Age", "Gender", "Sport", "Bodyweight (kg)", "Injured Side", "Position", "Metric", "Left Value", "Right Value" ]; let csv = [headers.join(',')]; const positions = ['I', 'Y', 'T']; const metricsForCsv = ['Max Force (N)', 'RFD 100ms (N/s)']; positions.forEach(pos => { const positionName = `ASH Test Position ${pos}`; const positionData = processInputAndCalculate(pos); metricsForCsv.forEach(metricDisplay => { let leftVal = ''; let rightVal = ''; let metricIdentifier = metricDisplay; if (metricDisplay === 'Max Force (N)') { if (positionData) { leftVal = positionData.left.max_force; rightVal = positionData.right.max_force; } } else if (metricDisplay === 'RFD 100ms (N/s)') { if (positionData) { leftVal = positionData.left.rfd; rightVal = positionData.right.rfd; } metricIdentifier = 'RFD 100ms (N/s)'; } const rowData = [ `"${fpNr}"`, `"${age}"`, `"${gender}"`, `"${sport}"`, `"${bodyweight}"`, `"${injuredSide}"`, `"${positionName}"`, `"${metricIdentifier}"`, `"${leftVal}"`, `"${rightVal}"` ]; csv.push(rowData.join(',')); }); }); const csvString = "\uFEFF" + csv.join('\n'); const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); if (link.download !== undefined) { const url = URL.createObjectURL(blob); link.setAttribute('href', url); link.setAttribute('download', filename); link.style.visibility = 'hidden'; document.body.appendChild(link); link.click(); document.body.removeChild(link); console.log(`CSV export initiated: ${filename}`); } else { alert("CSV export is not directly supported in this browser. Please try a modern browser."); } }
+    
+    function clearAllFields() { console.log("Clearing all fields..."); if (fpNrInput) fpNrInput.value = ''; if (ageInput) ageInput.value = ''; if (genderSelect) genderSelect.value = ''; if (sportInput) sportInput.value = ''; if (injuredSideRadio) injuredSideRadio.value = 'Left'; if (bodyweightInput) bodyweightInput.value = ''; allNumberInputs.forEach(input => { input.value = ''; }); updateGraphsAndTable(); saveInputsToLocalStorage(); console.log("Fields cleared."); }
+    
+    const localStorageKey = 'screeningAppData_v4';
+    function saveInputsToLocalStorage() { const dataToSave = { injuredSide: injuredSideRadio.value, bodyweight: bodyweightInput.value, fpNr: fpNrInput.value, age: ageInput.value, gender: genderSelect.value, sport: sportInput.value, 'non-injured-max-force-i': inputFieldMap['I'].nonInjured[0].value, 'non-injured-rfd-i': inputFieldMap['I'].nonInjured[1].value, 'injured-max-force-i': inputFieldMap['I'].injured[0].value, 'injured-rfd-i': inputFieldMap['I'].injured[1].value, 'non-injured-max-force-y': inputFieldMap['Y'].nonInjured[0].value, 'non-injured-rfd-y': inputFieldMap['Y'].nonInjured[1].value, 'injured-max-force-y': inputFieldMap['Y'].injured[0].value, 'injured-rfd-y': inputFieldMap['Y'].injured[1].value, 'non-injured-max-force-t': inputFieldMap['T'].nonInjured[0].value, 'non-injured-rfd-t': inputFieldMap['T'].nonInjured[1].value, 'injured-max-force-t': inputFieldMap['T'].injured[0].value, 'injured-rfd-t': inputFieldMap['T'].injured[1].value, }; try { localStorage.setItem(localStorageKey, JSON.stringify(dataToSave)); } catch (error) { console.error('Error saving inputs:', error); } }
+    
+    function loadInputsFromLocalStorage() { try { const savedDataString = localStorage.getItem(localStorageKey); if (savedDataString) { const savedData = JSON.parse(savedDataString); console.log('Loading inputs from localStorage (v4)'); injuredSideRadio.value = savedData.injuredSide || 'Left'; bodyweightInput.value = savedData.bodyweight || ''; fpNrInput.value = savedData.fpNr || ''; ageInput.value = savedData.age || ''; genderSelect.value = savedData.gender || ''; sportInput.value = savedData.sport || ''; inputFieldMap['I'].nonInjured[0].value = savedData['non-injured-max-force-i'] || ''; inputFieldMap['I'].nonInjured[1].value = savedData['non-injured-rfd-i'] || ''; inputFieldMap['I'].injured[0].value = savedData['injured-max-force-i'] || ''; inputFieldMap['I'].injured[1].value = savedData['injured-rfd-i'] || ''; inputFieldMap['Y'].nonInjured[0].value = savedData['non-injured-max-force-y'] || ''; inputFieldMap['Y'].nonInjured[1].value = savedData['non-injured-rfd-y'] || ''; inputFieldMap['Y'].injured[0].value = savedData['injured-max-force-y'] || ''; inputFieldMap['Y'].injured[1].value = savedData['injured-rfd-y'] || ''; inputFieldMap['T'].nonInjured[0].value = savedData['non-injured-max-force-t'] || ''; inputFieldMap['T'].nonInjured[1].value = savedData['non-injured-rfd-t'] || ''; inputFieldMap['T'].injured[0].value = savedData['injured-max-force-t'] || ''; inputFieldMap['T'].injured[1].value = savedData['injured-rfd-t'] || ''; if (fpNrInput.value || ageInput.value || genderSelect.value || sportInput.value) { if (patientDataContainer && !patientDataContainer.classList.contains('visible')) { togglePatientData(); } } } } catch (error) { console.error('Error loading inputs:', error); } }
 
-            } catch (error) {
-                console.error("Error deleting screening: ", error);
-                loadTestsErrorMessage.textContent = "Failed to delete test. Please try again.";
-                loadTestsErrorMessage.style.display = 'block';
-                showStatusMessage('Failed to delete test.', 'error');
-            } finally {
-                 loadTestsLoadingMessage.style.display = 'none';
-            }
-        }
-    }
-
-
-    async function saveDataToFirestore() {
-        if (!auth.currentUser) {
-            showStatusMessage("You must be logged in to save data.", "error");
-            return;
-        }
-        if (!fpNrInput || !fpNrInput.value.trim()) {
-            showStatusMessage("Patient ID is required to save data.", "error");
-            fpNrInput.focus();
-            return;
-        }
-
-        const screeningData = {
-            patientId: fpNrInput.value.trim(),
-            clinicianId: auth.currentUser.uid,
-            testTimestamp: serverTimestamp(),
-            age: ageInput.value ? parseInt(ageInput.value) : null,
-            gender: genderSelect.value || null,
-            sport: sportInput.value.trim() || null,
-            bodyweight: bodyweightInput.value ? parseFloat(bodyweightInput.value) : null,
-            injuredSide: injuredSideRadio.value,
-            ashTest: {}
-        };
-
-        let dataEnteredForAsh = false;
-        ['I', 'Y', 'T'].forEach(pos => {
-            const positionData = processInputAndCalculate(pos);
-            if (positionData) {
-                 screeningData.ashTest[pos] = {
-                    nonInjuredMaxForce: positionData.left.max_force, // Assuming nonInjured is always 'left' when Right is injured, and vice-versa
-                    nonInjuredRfd: positionData.left.rfd,
-                    injuredMaxForce: positionData.right.max_force,
-                    injuredRfd: positionData.right.rfd
-                };
-                 if (injuredSideRadio.value === 'Left') { // Correctly assign based on injured side
-                    screeningData.ashTest[pos] = {
-                        nonInjuredMaxForce: positionData.right.max_force,
-                        nonInjuredRfd: positionData.right.rfd,
-                        injuredMaxForce: positionData.left.max_force,
-                        injuredRfd: positionData.left.rfd
-                    };
-                }
-                dataEnteredForAsh = true;
-            } else {
-                screeningData.ashTest[pos] = { nonInjuredMaxForce: null, nonInjuredRfd: null, injuredMaxForce: null, injuredRfd: null };
-            }
-        });
-        
-        if (!dataEnteredForAsh && (!screeningData.age && !screeningData.gender && !screeningData.sport && !screeningData.bodyweight)) {
-             showStatusMessage("No data entered to save.", "warning");
-             return;
-        }
-
-
-        try {
-            const docRef = await addDoc(collection(db, "screenings"), screeningData);
-            console.log("Screening data saved with ID: ", docRef.id);
-            showStatusMessage("Data saved successfully!", "success");
-        } catch (error) {
-            console.error("Error saving screening data: ", error);
-            showStatusMessage("Error saving data. Please try again.", "error");
-        }
-    }
+    if (injuredSideRadio) injuredSideRadio.addEventListener('change', () => { updateGraphsAndTable(); saveInputsToLocalStorage(); });
+    if (bodyweightInput) bodyweightInput.addEventListener('input', () => { updateGraphsAndTable(); saveInputsToLocalStorage(); });
+    if (fpNrInput) fpNrInput.addEventListener('change', saveInputsToLocalStorage);
+    if (ageInput) ageInput.addEventListener('change', saveInputsToLocalStorage);
+    if (genderSelect) genderSelect.addEventListener('change', saveInputsToLocalStorage);
+    if (sportInput) sportInput.addEventListener('change', saveInputsToLocalStorage);
+    allNumberInputs.forEach(input => { input.addEventListener('input', updateGraphsAndTable); input.addEventListener('change', saveInputsToLocalStorage); });
+    if (pdfPreviewButton) pdfPreviewButton.addEventListener('click', enterPreviewMode);
+    if (exportExcelButton) exportExcelButton.addEventListener('click', exportTableToCsv);
+    if (registerPatientButton) registerPatientButton.addEventListener('click', togglePatientData);
+    if (previewExitButtonInline) previewExitButtonInline.addEventListener('click', exitPreviewMode);
+    if (clearAllButton) clearAllButton.addEventListener('click', clearAllFields);
     
     if(saveDataButton) saveDataButton.addEventListener('click', saveDataToFirestore);
-    
     if(logoutButton) {
         logoutButton.addEventListener('click', () => {
             signOut(auth).then(() => {
                 console.log("User signed out successfully.");
-                window.location.href = loginPageUrl; // Redirect to login page
+                window.location.href = loginPageUrl;
             }).catch((error) => {
                 console.error("Sign out error", error);
                 showStatusMessage("Error signing out. Please try again.", "error");
@@ -864,46 +435,19 @@
         });
     }
 
-    const { createAsymmetryChart, createNormativeComparisonChart, updateGraphsAndTable, togglePatientData, enterPreviewMode, exitPreviewMode, exportTableToCsv, clearAllFields, saveInputsToLocalStorage, loadInputsFromLocalStorage, plotlyConfig, normativeThresholds, percentileZones, percentileMidpoint, normZoneColors, normativeLabels, hexToRgba, createEmptyPlot, processInputAndCalculate, mapNkgToPercentile } = (() => {
-        const asymmetryChartDivsLocal = ['bar-chart-I', 'bar-chart-Y', 'bar-chart-T'];
-        const asymmetryPositionBoxDivsLocal = ['position-box-I', 'position-box-Y', 'position-box-T'];
-        const normativeChartDivsLocal = ['normative-chart-I', 'normative-chart-Y', 'normative-chart-T'];
-        const normativePlaceholderLocal = document.getElementById('normative-placeholder');
-
-        function hexToRgbaLocal(hex, alpha) { hex = hex.replace('#', ''); const r = parseInt(hex.substring(0, 2), 16); const g = parseInt(hex.substring(2, 4), 16); const b = parseInt(hex.substring(4, 6), 16); return `rgba(${r}, ${g}, ${b}, ${alpha})`; }
-        function createEmptyPlotLocal(targetDivId, title = 'Enter Data', height = 300, topMargin = 20) { const targetDiv = document.getElementById(targetDivId); if (!targetDiv) { return; } try { Plotly.react(targetDiv, [{ x: [], y: [], type: 'bar' }], { title: { text: title, font: { family: 'Avenir, sans-serif', size: 16, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim(), weight: 400 } }, height: height, margin: { l: 60, r: 40, b: 40, t: topMargin, pad: 4 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', xaxis: { visible: false }, yaxis: { showgrid: false, zeroline: true, gridcolor: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), showticklabels: false }, font: { family: 'Avenir, sans-serif', size: 12, weight: 400 } }, plotlyConfig); } catch (error) { console.error(`Error creating empty plot in ${targetDivId}:`, error); targetDiv.innerHTML = `<p style="color: red; text-align: center; padding: 20px;">Error displaying chart.</p>`; } }
-        function processInputAndCalculateLocal(position) { const inputs = inputFieldMap[position]; if (!inputs) return null; const nonInjuredMaxForceVal = inputs.nonInjured[0].value; const nonInjuredRfdVal = inputs.nonInjured[1].value; const injuredMaxForceVal = inputs.injured[0].value; const injuredRfdVal = inputs.injured[1].value; if (nonInjuredMaxForceVal === '' && nonInjuredRfdVal === '' && injuredMaxForceVal === '' && injuredRfdVal === '') return null; const nonInjuredMaxForce = parseFloat(nonInjuredMaxForceVal) || 0; const nonInjuredRfd = parseFloat(nonInjuredRfdVal) || 0; const injuredMaxForce = parseFloat(injuredMaxForceVal) || 0; const injuredRfd = parseFloat(injuredRfdVal) || 0; const selectedInjuredSide = injuredSideRadio.value; let leftData = {}; let rightData = {}; if (selectedInjuredSide === 'Left') { leftData = { max_force: injuredMaxForce, rfd: injuredRfd }; rightData = { max_force: nonInjuredMaxForce, rfd: nonInjuredRfd }; } else { leftData = { max_force: nonInjuredMaxForce, rfd: nonInjuredRfd }; rightData = { max_force: injuredMaxForce, rfd: injuredRfd }; } return { left: leftData, right: rightData }; }
-        function createAsymmetryChartLocal(positionData, injuredSide, posLabel) { if (!positionData?.left || !positionData?.right) return [{}, false]; const leftDataRaw = positionData.left; const rightDataRaw = positionData.right; const leftPctMaxAt100ms = leftDataRaw.max_force !== 0 ? (leftDataRaw.rfd * 0.1 / leftDataRaw.max_force) * 100 : 0; const rightPctMaxAt100ms = rightDataRaw.max_force !== 0 ? (rightDataRaw.rfd * 0.1 / rightDataRaw.max_force) * 100 : 0; const leftData = [leftDataRaw.max_force, leftDataRaw.rfd, leftPctMaxAt100ms]; const rightData = [rightDataRaw.max_force, rightDataRaw.rfd, rightPctMaxAt100ms]; const baseData = injuredSide === 'Right' ? leftData : rightData; const metricNames = [ 'Max Force (N)', 'RFD 100ms (Ns⁻¹)', '% Max @ 100ms (%)' ]; const barDataRatios = {}; const leftTextsAbsolute = []; const rightTextsAbsolute = []; metricNames.forEach((metricName, index) => { let leftValue = leftData[index]; let rightValue = rightData[index]; let baseValue = baseData[index]; const leftRatio = baseValue !== 0 ? (leftValue / baseValue) * 100 : (leftValue === 0 ? 100 : Infinity); const rightRatio = baseValue !== 0 ? (rightValue / baseValue) * 100 : (rightValue === 0 ? 100 : Infinity); barDataRatios[metricName] = [rightRatio, leftRatio]; const decimals = metricName.includes('% Max @ 100ms') ? 1 : 0; leftTextsAbsolute.push(leftValue.toFixed(decimals)); rightTextsAbsolute.push(rightValue.toFixed(decimals)); }); const plotX = metricNames; const plotYLeft = plotX.map(name => barDataRatios[name][1]); const plotYRight = plotX.map(name => barDataRatios[name][0]); if (plotX.length !== 3 || plotYLeft.length !== 3 || plotYRight.length !== 3) return [{}, false]; const leftColorHex = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim(); const rightColorHex = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim(); const leftColorRgba = hexToRgbaLocal(leftColorHex, 0.8); const rightColorRgba = hexToRgbaLocal(rightColorHex, 0.8); const thresholdLineColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(); const darkGrayColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(); const whiteColor = getComputedStyle(document.documentElement).getPropertyValue('--white').trim(); const validRatios = plotYLeft.concat(plotYRight).filter(isFinite); const maxYValue = validRatios.length > 0 ? Math.max(110, ...validRatios) : 110; const annotationYTop = maxYValue + 8; const yAxisUpperBound = annotationYTop + 15; const fig = { data: [ { type: 'bar', name: 'Left', x: plotX, y: plotYLeft, marker: { color: leftColorRgba }, text: leftTextsAbsolute, texttemplate: '%{text}', textposition: 'none', hoverinfo: 'x+name', hovertemplate: 'Left: %{y:.0f}%<extra></extra>' }, { type: 'bar', name: 'Right', x: plotX, y: plotYRight, marker: { color: rightColorRgba }, text: rightTextsAbsolute, texttemplate: '%{text}', textposition: 'none', hoverinfo: 'x+name', hovertemplate: 'Right: %{y:.0f}%<extra></extra>' }, { x: [null], y: [null], mode: 'lines', name: '±10% Thresholds', line: { color: thresholdLineColor, width: 1, dash: 'dash' }, hoverinfo: 'none', showlegend: true } ], layout: { height: 300, barmode: 'group', font: { color: darkGrayColor, family: 'Avenir, sans-serif', size: 12, weight: 400 }, yaxis: { title: "Injured Side Asymmetry (%)", titlefont: { size: 13, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, range: [18, yAxisUpperBound], tickmode: 'array', tickvals: [50, 100], showgrid: false, zeroline: false, }, xaxis: { showgrid: false, zeroline: false, showline: false, showticklabels: true, tickangle: 0, tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, automargin: true, fixedrange: true }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', legend: { orientation: "h", yanchor: "bottom", y: -0.30, xanchor: "center", x: 0.5, font: { size: 12, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor } }, margin: { l: 70, r: 30, b: 85, t: 20, pad: 10 }, shapes: [ { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 90, y1: 90, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" }, { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 110, y1: 110, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" } ], annotations: [] } }; let allGreen = true; const metricsNamesForAnnotation = plotX; for (let i = 0; i < metricsNamesForAnnotation.length; i++) { const metricName = metricsNamesForAnnotation[i]; const injuredRatio = injuredSide === 'Right' ? plotYRight[i] : plotYLeft[i]; const leftRatio = plotYLeft[i]; const rightRatio = plotYRight[i]; if (!isFinite(injuredRatio)) { fig.layout.annotations.push({ x: metricName, y: annotationYTop, text: "N/A", showarrow: false, font: { color: 'grey', size: 22, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'bottom' }); allGreen = false; } else { const percentageDiff = injuredRatio - 100; let color; if (percentageDiff >= -10) { color = '#2a9d8f'; } else { allGreen = false; if (percentageDiff >= -15) { color = '#ee9b00'; } else if (percentageDiff >= -20) { color = '#e85d04'; } else { color = '#ae2012'; } } fig.layout.annotations.push({ x: metricName, y: annotationYTop, text: `${percentageDiff.toFixed(0)}%`, showarrow: false, font: { color: color, size: 22, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'bottom' }); } const barTextYPosition = 31; const barTextFontSize = 17; const categoryIndex = i; const numberOfBars = 2; const groupWidth = 0.8; const barWidthFraction = groupWidth / numberOfBars; const leftBarCenter = categoryIndex - (groupWidth / 2) + (barWidthFraction / 2); const rightBarCenter = categoryIndex + (groupWidth / 2) - (barWidthFraction / 2); if (leftRatio > barTextYPosition + (barTextFontSize / 2)) { fig.layout.annotations.push({ x: leftBarCenter, y: barTextYPosition, xref: 'x', yref: 'y', text: leftTextsAbsolute[i], showarrow: false, font: { color: whiteColor, size: barTextFontSize, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'middle' }); } if (rightRatio > barTextYPosition + (barTextFontSize / 2)) { fig.layout.annotations.push({ x: rightBarCenter, y: barTextYPosition, xref: 'x', yref: 'y', text: rightTextsAbsolute[i], showarrow: false, font: { color: whiteColor, size: barTextFontSize, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'middle' }); } } return [fig, allGreen]; }
-        function mapNkgToPercentileLocal(nkgValue, positionLabel) { const thresholds = normativeThresholds[positionLabel]; if (!thresholds || typeof nkgValue !== 'number' || !isFinite(nkgValue)) return 0; const pMap = [ { v: 0.5, p: 0 }, { v: thresholds.poor_max, p: percentileZones.poor }, { v: thresholds.average_mid, p: percentileMidpoint }, { v: thresholds.good_min, p: percentileZones.average }, { v: thresholds.excellent_min, p: percentileZones.good }, { v: thresholds.excellent_min * 1.25, p: percentileZones.excellent } ]; const minVal = pMap[0].v; const maxVal = pMap[pMap.length - 1].v; const clampedValue = Math.max(minVal, Math.min(nkgValue, maxVal)); let lowerPoint = pMap[0]; let upperPoint = pMap[pMap.length - 1]; for (let i = 0; i < pMap.length - 1; i++) { if (clampedValue === pMap[i].v) { lowerPoint = upperPoint = pMap[i]; break; } if (clampedValue > pMap[i].v && clampedValue <= pMap[i + 1].v) { lowerPoint = pMap[i]; upperPoint = pMap[i + 1]; break; } } if (clampedValue === upperPoint.v) { lowerPoint = upperPoint; } let percentile = lowerPoint.p; const valueRange = upperPoint.v - lowerPoint.v; const percentileRange = upperPoint.p - lowerPoint.p; if (valueRange > 0) { percentile += ((clampedValue - lowerPoint.v) / valueRange) * percentileRange; } return Math.max(0, Math.min(percentile, 100)); }
-        function createNormativeComparisonChartLocal(positionData, bodyweight, positionLabel) { const bwVal = parseFloat(bodyweight); if (isNaN(bwVal) || bwVal <= 0 || !positionData) return {}; const leftNkg = positionData.left.max_force / bwVal; const rightNkg = positionData.right.max_force / bwVal; const thresholds = normativeThresholds[positionLabel]; if (!thresholds) return {}; const leftPercentile = mapNkgToPercentileLocal(leftNkg, positionLabel); const rightPercentile = mapNkgToPercentileLocal(rightNkg, positionLabel); const baseCurveX = []; const baseCurveY = []; const mean = 55; const stdDev = 22; const amplitude = 0.9; for (let i = 0; i <= 100; i += 0.5) { baseCurveX.push(i); const y = amplitude * Math.exp(-Math.pow(i - mean, 2) / (2 * Math.pow(stdDev, 2))); baseCurveY.push(y); } const zoneBoundaries = [0, percentileZones.poor, percentileZones.average, percentileZones.good, percentileZones.excellent]; const traces = []; const zoneColorsList = [normZoneColors.poor, normZoneColors.average, normZoneColors.good, normZoneColors.excellent]; for (let i = 0; i < zoneBoundaries.length - 1; i++) { const x0 = zoneBoundaries[i]; const x1 = zoneBoundaries[i+1]; const zoneFillColor = zoneColorsList[i]; const segmentX = [x0]; const segmentY = [0]; for(let j=0; j < baseCurveX.length; j++) { if (baseCurveX[j] >= x0 && baseCurveX[j] <= x1) { segmentX.push(baseCurveX[j]); segmentY.push(baseCurveY[j]); } } segmentX.push(x1); segmentY.push(0); traces.push({ x: segmentX, y: segmentY, type: 'scatter', mode: 'lines', line: { width: 0 }, fill: 'tozeroy', fillcolor: zoneFillColor, hoverinfo: 'none', name: Object.keys(normativeLabels)[i], showlegend: false }); } traces.push({ x: baseCurveX, y: baseCurveY, type: 'scatter', mode: 'lines', line: { color: '#ffffff', width: 1.5, shape: 'spline' }, hoverinfo: 'none', name: 'Distribution (Visual)', showlegend: false }); const layout = { height: 250, margin: { t: 35, b: 95, l: 30, r: 30 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', xaxis: { title: '', range: [0, 100], showgrid: false, zeroline: false, showticklabels: false }, yaxis: { range: [0, 1.1], showgrid: false, zeroline: false, showticklabels: false, title: '' }, shapes: [], annotations: [], font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() }, showlegend: false }; const thresholdAnnotations = [ { p: percentileZones.poor, val: thresholds.poor_max }, { p: percentileZones.average, val: thresholds.good_min }, { p: percentileZones.good, val: thresholds.excellent_min } ]; thresholdAnnotations.forEach(t => { layout.annotations.push({ xref: 'x', yref: 'paper', x: t.p, y: -0.08, text: `<span class="norm-value">${t.val.toFixed(2)}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', font: { family: 'Avenir, sans-serif', size: 10, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim() } }); }); layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: percentileMidpoint, x1: percentileMidpoint, y0: 0, y1: 1, line: { color: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), width: 1.5, dash: 'dot' }, layer: 'below' }); const avgValueForPos = thresholds.average_mid.toFixed(2); layout.annotations.push({ xref: 'x', yref: 'paper', x: percentileMidpoint, y: -0.08, text: `<span class="value-display">${avgValueForPos}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', font: { family: 'Avenir, sans-serif', size: 10, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), weight: 400 } }); const labelYPosition = 1.10; layout.annotations.push({ xref: 'x', yref: 'paper', x: 15, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.poor}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 50, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.average}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() }, align: 'center' }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 80, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.good}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 95, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.excellent}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); const leftColor = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim(); const rightColor = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim(); const lineY0 = 0.05; const lineY1 = 0.95; layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: leftPercentile, x1: leftPercentile, y0: lineY0, y1: lineY1, line: { color: leftColor, width: 2, dash: 'dash' } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: leftPercentile, y: 0.90, text: 'L', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: leftColor, font: {color: leftColor, size: 14, family: 'Avenir, sans-serif', weight: 400} }); layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: rightPercentile, x1: rightPercentile, y0: lineY0, y1: lineY1, line: { color: rightColor, width: 2, dash: 'dash' } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: rightPercentile, y: 0.90, text: 'R', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: rightColor, font: {color: rightColor, size: 14, family: 'Avenir, sans-serif', weight: 400} }); const combinedNkgText = `<span class='nkg-combined-text'>Left: <span class='left-label'>${leftNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>) &nbsp;&nbsp;|&nbsp;&nbsp; Right: <span class='right-label'>${rightNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>)</span>`; layout.annotations.push({ xref: 'paper', yref: 'paper', x: 0.5, y: -0.30, text: combinedNkgText, showarrow: false, xanchor: 'center', yanchor: 'top', align: 'center', font: { size: 15, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), family: 'Avenir, sans-serif', weight: 400 } }); return { data: traces, layout }; }
-        function updateGraphsAndTableLocal() { const injuredSide = injuredSideRadio.value; const bodyweight = bodyweightInput.value; const bwVal = parseFloat(bodyweight); const bodyweightValid = !isNaN(bwVal) && bwVal > 0; if (normativePlaceholderLocal) { normativePlaceholderLocal.style.display = bodyweightValid ? 'none' : 'block'; } normativeChartDivsLocal.forEach(divId => { const container = document.getElementById(divId)?.closest('.normative-graph-container'); if (container) { container.style.display = bodyweightValid ? 'block' : 'none'; } }); const positions = ['I', 'Y', 'T']; positions.forEach((pos, i) => { const asymmetryChartDivId = asymmetryChartDivsLocal[i]; const asymmetryPositionBoxDivId = asymmetryPositionBoxDivsLocal[i]; const asymmetryPositionBoxDiv = document.getElementById(asymmetryPositionBoxDivId); const normativeChartDivId = normativeChartDivsLocal[i]; if (!asymmetryPositionBoxDiv || !document.getElementById(asymmetryChartDivId) || !document.getElementById(normativeChartDivId)) return; const positionData = processInputAndCalculateLocal(pos); if (positionData) { try { const [fig, allGreen] = createAsymmetryChartLocal(positionData, injuredSide, pos); if (fig?.data && fig?.layout) { Plotly.react(asymmetryChartDivId, fig.data, fig.layout, plotlyConfig); if (allGreen) asymmetryPositionBoxDiv.classList.add('green-box'); else asymmetryPositionBoxDiv.classList.remove('green-box'); } else { throw new Error("Generated asymmetry figure invalid."); } } catch (error) { console.error(`Error creating asymmetry chart for ${pos}:`, error); createEmptyPlotLocal(asymmetryChartDivId, 'Error loading asymmetry data', 300, 20); asymmetryPositionBoxDiv.classList.remove('green-box'); } } else { createEmptyPlotLocal(asymmetryChartDivId, 'Enter Data', 300, 20); asymmetryPositionBoxDiv.classList.remove('green-box'); } if (bodyweightValid && positionData) { try { const config = createNormativeComparisonChartLocal(positionData, bodyweight, pos); if (config?.data && config?.layout) Plotly.react(normativeChartDivId, config.data, config.layout, plotlyConfig); else throw new Error("Generated normative figure invalid."); } catch (error) { console.error(`Error creating normative chart for ${pos}:`, error); createEmptyPlotLocal(normativeChartDivId, 'Error Loading Data', 250, 35); } } else if (!bodyweightValid) { createEmptyPlotLocal(normativeChartDivId, 'Enter Bodyweight', 250, 35); } else { createEmptyPlotLocal(normativeChartDivId, 'Enter Data', 250, 35); } }); setTimeout(() => window.dispatchEvent(new Event('resize')), 100); }
-        function togglePatientDataLocal() { if (patientDataContainer) { const isVisible = patientDataContainer.classList.toggle('visible'); if (registerPatientButton) { registerPatientButton.innerHTML = isVisible ? `<i class="fas fa-user-minus"></i> <span class="button-text">Hide Patient Data</span>` : `<i class="fas fa-user-plus"></i> <span class="button-text">Register Patient</span>`; } } }
-        function enterPreviewModeLocal() { document.body.classList.add('pdf-preview-active'); if(previewExitButtonInline) previewExitButtonInline.style.display = 'inline-block'; if(explanationBox) explanationBox.style.display = 'block'; window.dispatchEvent(new Event('resize')); console.log("Entered PDF preview mode"); }
-        function exitPreviewModeLocal() { document.body.classList.remove('pdf-preview-active'); if(previewExitButtonInline) previewExitButtonInline.style.display = 'none'; if(explanationBox) explanationBox.style.display = 'none'; window.dispatchEvent(new Event('resize')); console.log("Exited PDF preview mode"); }
-        function exportTableToCsvLocal() { const fpNr = fpNrInput ? fpNrInput.value.trim() : ''; const age = ageInput ? ageInput.value.trim() : ''; const gender = genderSelect ? genderSelect.value : ''; const sport = sportInput ? sportInput.value.trim() : ''; const bodyweight = bodyweightInput ? bodyweightInput.value.trim() : ''; const injuredSide = injuredSideRadio ? injuredSideRadio.value : ''; const date = new Date(); const year = date.getFullYear(); const month = (date.getMonth() + 1).toString().padStart(2, '0'); const day = date.getDate().toString().padStart(2, '0'); const dateString = `${year}-${month}-${day}`; const safeFpNr = fpNr.replace(/[^a-z0-9]/gi, '_') || 'Unknown'; const filename = `ASH_${safeFpNr}_${dateString}.csv`; const headers = [ "Patient ID", "Age", "Gender", "Sport", "Bodyweight (kg)", "Injured Side", "Position", "Metric", "Left Value", "Right Value" ]; let csv = [headers.join(',')]; const positions = ['I', 'Y', 'T']; const metricsForCsv = ['Max Force (N)', 'RFD 100ms (N/s)']; positions.forEach(pos => { const positionName = `ASH Test Position ${pos}`; const positionData = processInputAndCalculateLocal(pos); metricsForCsv.forEach(metricDisplay => { let leftVal = ''; let rightVal = ''; let metricIdentifier = metricDisplay; if (metricDisplay === 'Max Force (N)') { if (positionData) { leftVal = positionData.left.max_force; rightVal = positionData.right.max_force; } } else if (metricDisplay === 'RFD 100ms (N/s)') { if (positionData) { leftVal = positionData.left.rfd; rightVal = positionData.right.rfd; } metricIdentifier = 'RFD 100ms (N/s)'; } const rowData = [ `"${fpNr}"`, `"${age}"`, `"${gender}"`, `"${sport}"`, `"${bodyweight}"`, `"${injuredSide}"`, `"${positionName}"`, `"${metricIdentifier}"`, `"${leftVal}"`, `"${rightVal}"` ]; csv.push(rowData.join(',')); }); }); const csvString = "\uFEFF" + csv.join('\n'); const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); if (link.download !== undefined) { const url = URL.createObjectURL(blob); link.setAttribute('href', url); link.setAttribute('download', filename); link.style.visibility = 'hidden'; document.body.appendChild(link); link.click(); document.body.removeChild(link); console.log(`CSV export initiated: ${filename}`); } else { alert("CSV export is not directly supported in this browser. Please try a modern browser."); } }
-        function clearAllFieldsLocal() { console.log("Clearing all fields..."); if (fpNrInput) fpNrInput.value = ''; if (ageInput) ageInput.value = ''; if (genderSelect) genderSelect.value = ''; if (sportInput) sportInput.value = ''; if (injuredSideRadio) injuredSideRadio.value = 'Left'; if (bodyweightInput) bodyweightInput.value = ''; allNumberInputs.forEach(input => { input.value = ''; }); updateGraphsAndTableLocal(); saveInputsToLocalStorageLocal(); console.log("Fields cleared."); }
-        const localStorageKeyLocal = 'screeningAppData_v4';
-        function saveInputsToLocalStorageLocal() { const dataToSave = { injuredSide: injuredSideRadio.value, bodyweight: bodyweightInput.value, fpNr: fpNrInput.value, age: ageInput.value, gender: genderSelect.value, sport: sportInput.value, 'non-injured-max-force-i': inputFieldMap['I'].nonInjured[0].value, 'non-injured-rfd-i': inputFieldMap['I'].nonInjured[1].value, 'injured-max-force-i': inputFieldMap['I'].injured[0].value, 'injured-rfd-i': inputFieldMap['I'].injured[1].value, 'non-injured-max-force-y': inputFieldMap['Y'].nonInjured[0].value, 'non-injured-rfd-y': inputFieldMap['Y'].nonInjured[1].value, 'injured-max-force-y': inputFieldMap['Y'].injured[0].value, 'injured-rfd-y': inputFieldMap['Y'].injured[1].value, 'non-injured-max-force-t': inputFieldMap['T'].nonInjured[0].value, 'non-injured-rfd-t': inputFieldMap['T'].nonInjured[1].value, 'injured-max-force-t': inputFieldMap['T'].injured[0].value, 'injured-rfd-t': inputFieldMap['T'].injured[1].value, }; try { localStorage.setItem(localStorageKeyLocal, JSON.stringify(dataToSave)); } catch (error) { console.error('Error saving inputs:', error); } }
-        function loadInputsFromLocalStorageLocal() { try { const savedDataString = localStorage.getItem(localStorageKeyLocal); if (savedDataString) { const savedData = JSON.parse(savedDataString); console.log('Loading inputs from localStorage (v4)'); injuredSideRadio.value = savedData.injuredSide || 'Left'; bodyweightInput.value = savedData.bodyweight || ''; fpNrInput.value = savedData.fpNr || ''; ageInput.value = savedData.age || ''; genderSelect.value = savedData.gender || ''; sportInput.value = savedData.sport || ''; inputFieldMap['I'].nonInjured[0].value = savedData['non-injured-max-force-i'] || ''; inputFieldMap['I'].nonInjured[1].value = savedData['non-injured-rfd-i'] || ''; inputFieldMap['I'].injured[0].value = savedData['injured-max-force-i'] || ''; inputFieldMap['I'].injured[1].value = savedData['injured-rfd-i'] || ''; inputFieldMap['Y'].nonInjured[0].value = savedData['non-injured-max-force-y'] || ''; inputFieldMap['Y'].nonInjured[1].value = savedData['non-injured-rfd-y'] || ''; inputFieldMap['Y'].injured[0].value = savedData['injured-max-force-y'] || ''; inputFieldMap['Y'].injured[1].value = savedData['injured-rfd-y'] || ''; inputFieldMap['T'].nonInjured[0].value = savedData['non-injured-max-force-t'] || ''; inputFieldMap['T'].nonInjured[1].value = savedData['non-injured-rfd-t'] || ''; inputFieldMap['T'].injured[0].value = savedData['injured-max-force-t'] || ''; inputFieldMap['T'].injured[1].value = savedData['injured-rfd-t'] || ''; if (fpNrInput.value || ageInput.value || genderSelect.value || sportInput.value) { if (patientDataContainer && !patientDataContainer.classList.contains('visible')) { togglePatientDataLocal(); } } } } catch (error) { console.error('Error loading inputs:', error); } }
-
-        if (injuredSideRadio) injuredSideRadio.addEventListener('change', () => { updateGraphsAndTableLocal(); saveInputsToLocalStorageLocal(); });
-        if (bodyweightInput) bodyweightInput.addEventListener('input', () => { updateGraphsAndTableLocal(); saveInputsToLocalStorageLocal(); });
-        if (fpNrInput) fpNrInput.addEventListener('change', saveInputsToLocalStorageLocal);
-        if (ageInput) ageInput.addEventListener('change', saveInputsToLocalStorageLocal);
-        if (genderSelect) genderSelect.addEventListener('change', saveInputsToLocalStorageLocal);
-        if (sportInput) sportInput.addEventListener('change', saveInputsToLocalStorageLocal);
-        allNumberInputs.forEach(input => { input.addEventListener('input', updateGraphsAndTableLocal); input.addEventListener('change', saveInputsToLocalStorageLocal); });
-        if (pdfPreviewButton) pdfPreviewButton.addEventListener('click', enterPreviewModeLocal);
-        if (exportExcelButton) exportExcelButton.addEventListener('click', exportTableToCsvLocal);
-        if (registerPatientButton) registerPatientButton.addEventListener('click', togglePatientDataLocal);
-        if (previewExitButtonInline) previewExitButtonInline.addEventListener('click', exitPreviewModeLocal);
-        if (clearAllButton) clearAllButton.addEventListener('click', clearAllFieldsLocal);
-        document.addEventListener('DOMContentLoaded', () => { console.log("Screening page DOM loaded."); loadInputsFromLocalStorageLocal(); updateGraphsAndTableLocal(); });
-        window.addEventListener('load', () => { setTimeout(() => window.dispatchEvent(new Event('resize')), 200); });
-        window.addEventListener('resize', () => { asymmetryChartDivsLocal.concat(normativeChartDivsLocal).forEach(divId => { const gd = document.getElementById(divId); if (gd && gd.classList.contains('js-plotly-plot')) { try { Plotly.Plots.resize(gd); } catch (e) {} } }); });
-        return { createAsymmetryChart: createAsymmetryChartLocal, createNormativeComparisonChart: createNormativeComparisonChartLocal, updateGraphsAndTable: updateGraphsAndTableLocal, togglePatientData: togglePatientDataLocal, enterPreviewMode: enterPreviewModeLocal, exitPreviewMode: exitPreviewModeLocal, exportTableToCsv: exportTableToCsvLocal, clearAllFields: clearAllFieldsLocal, saveInputsToLocalStorage: saveInputsToLocalStorageLocal, loadInputsFromLocalStorage: loadInputsFromLocalStorageLocal, plotlyConfig, normativeThresholds, percentileZones, percentileMidpoint, normZoneColors, normativeLabels, hexToRgba: hexToRgbaLocal, createEmptyPlot: createEmptyPlotLocal, processInputAndCalculate: processInputAndCalculateLocal, mapNkgToPercentile: mapNkgToPercentileLocal };
-    })();
-
+    document.addEventListener('DOMContentLoaded', () => {
+        asymmetryChartDivs.forEach(divId => createEmptyPlot(divId, 'Enter Data', 300, 20));
+        normativeChartDivs.forEach(divId => createEmptyPlot(divId, 'Enter Bodyweight', 250, 35));
+        loadInputsFromLocalStorage();
+        updateGraphsAndTable();
+    });
+    window.addEventListener('load', () => { setTimeout(() => window.dispatchEvent(new Event('resize')), 200); });
+    window.addEventListener('resize', () => {
+        asymmetryChartDivs.concat(normativeChartDivs).forEach(divId => {
+            const gd = document.getElementById(divId);
+            if (gd && gd.classList.contains('js-plotly-plot')) { try { Plotly.Plots.resize(gd); } catch (e) {} }
+        });
+    });
 
 </script>
 
