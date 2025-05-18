@@ -3,177 +3,349 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Firebase Registration with Firestore</title>
+    <title>Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="assets/emails.js"></script>
     <style>
         body {
-            font-family: sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 50px;
-            background-color: #f4f4f4;
+            font-family: 'Avenir Next', 'Avenir', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-image: url('assets/background.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #333; /* Fallback */
         }
-        .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            width: 90%;
-            max-width: 400px;
+        .frosted-glass {
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            background-color: rgba(255, 255, 255, 0.05);
         }
-        h2 {
+        .dark .frosted-glass {
+            background-color: rgba(0, 0, 0, 0);
+        }
+        .custom-gradient-button {
+            background-image: linear-gradient(to right, rgb(112, 188, 252), #285484);
+            transition: background-image 0.2s ease-in-out;
+        }
+        .custom-gradient-button:hover {
+            background-image: linear-gradient(to right, #285484, #1e3a5c);
+        }
+        #request-access-section {
+            display: none;
+            margin-top: 0.25rem;
+        }
+        #error-message {
+            color: #f87171; /* text-red-400 */
+            font-size: 0.875rem; /* text-sm */
             text-align: center;
-            margin-bottom: 20px;
+            min-height: 1.25rem;
+            margin-top: 0.25rem;
+            margin-bottom: 0.25rem;
         }
-        .form-group {
-            margin-bottom: 15px;
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
         }
-        label {
-            display: block;
-            margin-bottom: 5px;
+        .animate-shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
         }
-        /* Styles from your previous request for input fields */
-        .custom-input {
-            background-color: #f0f0f0; /* Light gray */
-            border: none;             /* Removes the default border */
-            padding: 10px;
-            margin-bottom: 10px;
-            width: 100%;
-            box-sizing: border-box;
-            border-radius: 4px;
+        .social-icon {
+            color: #e5e7eb; /* text-gray-200 */
+            font-size: 1.75rem; /* text-2xl or similar */
+            transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
         }
-        .custom-input:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5); /* Blue glow on focus */
+        .social-icon:hover {
+            color: #fff; /* text-white */
+            transform: scale(1.1);
         }
-        button {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 15px;
+        .login-input {
+            background-color: rgba(255, 255, 255, 0.1);
             border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
+            color: #ffffff;
+            border-radius: 0; /* Square corners */
         }
-        button:hover {
-            background-color: #0056b3;
+        .login-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
         }
-        .message {
-            text-align: center;
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 4px;
-            word-break: break-word; /* To wrap long error messages */
+        .login-input:focus {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            outline: none;
+            box-shadow: none;
         }
-        .message.success {
-            background-color: #d4edda;
-            color: #155724;
+        .dark .login-input {
+            background-color: rgba(0, 0, 0, 0.2);
+            border: none;
+            color: #ffffff;
+            border-radius: 0;
         }
-        .message.error {
-            background-color: #f8d7da;
-            color: #721c24;
+        .dark .login-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        .dark .login-input:focus {
+            background-color: rgba(0, 0, 0, 0.3);
+            border: none;
+            box-shadow: none;
         }
     </style>
 </head>
-<body>
+<body class="h-screen flex items-center justify-center">
 
-    <div class="container">
-        <h2>Register New User</h2>
-        <form id="registrationForm">
-            <div class="form-group">
-                <label for="regEmail">Email:</label>
-                <input type="email" id="regEmail" class="custom-input" required>
+    <div class="w-full max-w-md p-8 shadow-lg frosted-glass text-white">
+        <h2 class="text-2xl text-center mb-4">Login</h2>
+        <form id="login-form">
+            <div class="mb-2">
+                <label for="email" class="block text-sm font-light text-gray-200 mb-0.5">Email</label>
+                <div>
+                    <input id="email" name="email" type="email" autocomplete="email" required
+                           placeholder="you@example.com"
+                           class="login-input block w-full px-3 py-2 shadow-sm placeholder-gray-400 sm:text-sm">
+                </div>
             </div>
-            <div class="form-group">
-                <label for="regPassword">Password (min. 6 characters):</label>
-                <input type="password" id="regPassword" class="custom-input" required>
+
+            <div class="mb-1">
+                <label for="password" class="block text-sm font-light text-gray-200 mb-0.5">Password</label>
+                <div>
+                    <input id="password" name="password" type="password" autocomplete="current-password" required
+                           placeholder="••••••••"
+                           class="login-input block w-full px-3 py-2 shadow-sm placeholder-gray-400 sm:text-sm">
+                </div>
             </div>
-            <div class="form-group">
-                <label for="regUsername">Username (Optional):</label>
-                <input type="text" id="regUsername" class="custom-input">
+
+            <div id="error-message"></div>
+
+            <div class="flex items-center justify-end mb-1 text-sm">
+                <a href="#" id="request-access-link" class="text-gray-300 hover:text-white">
+                    Request Access
+                </a>
             </div>
-            <button type="submit">Register</button>
+
+            <div id="request-access-section" class="text-sm text-center text-gray-200 mb-2">
+                Send email to:
+                <a href="mailto:manuel@alphatek.ai" class="text-gray-300 hover:text-white underline">
+                    manuel@alphatek.ai
+                </a>
+            </div>
+
+            <div class="mt-3">
+                <button type="submit"
+                        class="custom-gradient-button w-full flex justify-center py-2 px-4 text-sm text-white focus:outline-none">
+                    Login
+                </button>
+            </div>
+
+            <div class="pt-4 border-t border-white/20 mt-4">
+                <p class="text-center text-sm text-gray-300 mb-3">Visit us:</p>
+                <div class="flex justify-center space-x-6">
+                    <a href="https://www.instagram.com/alphatekofficial" target="_blank" rel="noopener noreferrer" title="Instagram">
+                        <i class="fab fa-instagram social-icon"></i>
+                    </a>
+                    <a href="https://www.alphatek.no" target="_blank" rel="noopener noreferrer" title="Website">
+                        <i class="fas fa-globe social-icon"></i>
+                    </a>
+                </div>
+            </div>
         </form>
-        <div id="messageArea" class="message" style="display: none;"></div>
     </div>
 
     <script type="module">
-        // Import the functions you need from the SDKs you need
+        // Importer Firebase funksjoner
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        // IMPORTANT: Import Auth and Firestore functions
-        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-        // You can keep getAnalytics if you are using it
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-        // Your web app's Firebase configuration
+        // Din web-apps Firebase-konfigurasjon (den du ga tidligere)
         const firebaseConfig = {
-          apiKey: "AIzaSyDhEihuoWm4c5MSOHrSqkkzca7tn86roq4",
-          authDomain: "pwr-analytics.firebaseapp.com",
-          projectId: "pwr-analytics",
-          storageBucket: "pwr-analytics.appspot.com", // Please VERIFY this value in your Firebase console.
-                                                     // It's often project-id.appspot.com
-          messagingSenderId: "9839468523", // This is a string, ensure it is if the original had quotes
-          appId: "1:9839468523:web:1d994de254b2a24d91c3ae",
-          measurementId: "G-N35HQ5CMD5"
+            apiKey: "AIzaSyDhEihuoWm4c5MSOHrSqkkzca7tn86roq4", // Erstatt med din faktiske API-nøkkel
+            authDomain: "pwr-analytics.firebaseapp.com",
+            projectId: "pwr-analytics",
+            storageBucket: "pwr-analytics.appspot.com", // Sjekk denne verdien
+            messagingSenderId: "9839468523",
+            appId: "1:9839468523:web:1d994de254b2a24d91c3ae",
+            measurementId: "G-N35HQ5CMD5"
         };
 
-        // Initialize Firebase
+        // Initialiser Firebase
         const app = initializeApp(firebaseConfig);
-
-        // Initialize Firebase services
         const auth = getAuth(app);
-        const db = getFirestore(app);
-        const analytics = getAnalytics(app); // Initialize Analytics if you're using it
 
-        const registrationForm = document.getElementById('registrationForm');
-        const messageArea = document.getElementById('messageArea');
+        // --- Constants (fra din kode, justert) ---
+        const nextPageUrl = "screening.html"; // URL for omdirigering ved suksess
+        const localStorageEmailKey = 'savedLoginEmail';
+        // const localStoragePasswordKey = 'savedLoginPassword'; // FJERNET - ikke lagre passord
+        const sessionAuthKey = 'isLoggedInPwrAnalytics'; // Gjort nøkkelen litt mer unik
 
-        registrationForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+        // --- DOM Elements (fra din kode) ---
+        const loginForm = document.getElementById('login-form');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const errorMessageDiv = document.getElementById('error-message');
+        const requestAccessLink = document.getElementById('request-access-link');
+        const requestAccessSection = document.getElementById('request-access-section');
+        const loginBox = loginForm.parentElement;
+        const bodyElement = document.body;
+        const originalBgImage = "assets/background.jpeg";
+        const fallbackBgImage = "url('https://placehold.co/1920x1080/333/ccc?text=Background+Error')";
 
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
-            const username = document.getElementById('regUsername').value;
 
-            messageArea.style.display = 'none';
-            messageArea.textContent = '';
+        // --- Functions (fra din kode, displayError beholdes, isEmailAllowed fjernes for innlogging) ---
+
+        /**
+         * isEmailAllowed - Denne funksjonen vil ikke lenger brukes for selve Firebase-innloggingen,
+         * men beholdes i tilfelle `assets/emails.js` brukes til andre formål.
+         * Firebase Auth vil validere brukerens e-post og passord.
+         */
+        function isEmailAllowed(emailToCheck) {
+            if (typeof allowedObfuscatedEmails === 'undefined' || !Array.isArray(allowedObfuscatedEmails)) {
+                console.warn("Warning: allowedObfuscatedEmails is not defined or not an array. This list is not used for Firebase login.");
+                return true; // Returnerer true for å ikke blokkere flyten unødvendig hvis listen mangler, da Firebase gjør sjekken
+            }
+            const normalizedEmail = emailToCheck.trim().toLowerCase();
+            return allowedObfuscatedEmails.includes(normalizedEmail);
+        }
+
+
+        function loadEmailFromStorage() {
+            const savedEmail = localStorage.getItem(localStorageEmailKey);
+            if (savedEmail) {
+                emailInput.value = savedEmail;
+            }
+        }
+
+        function saveEmailToStorage() {
+            const currentEmail = emailInput.value.trim();
+            if (currentEmail) {
+                localStorage.setItem(localStorageEmailKey, currentEmail);
+            } else {
+                localStorage.removeItem(localStorageEmailKey);
+            }
+        }
+
+        function displayError(message) {
+            errorMessageDiv.textContent = message;
+            if (loginBox) {
+                loginBox.classList.add('animate-shake');
+                setTimeout(() => loginBox.classList.remove('animate-shake'), 500);
+            } else {
+                console.error("Could not find login box element to apply shake animation.");
+            }
+        }
+
+        function checkBackgroundImage(imageUrl) {
+            const img = new Image();
+            img.src = imageUrl;
+            img.onerror = () => {
+                console.warn(`Original background image '${imageUrl}' failed to load. Applying fallback.`);
+                bodyElement.style.backgroundImage = fallbackBgImage;
+                bodyElement.style.backgroundColor = '#333';
+            };
+            img.onload = () => {
+                console.log(`Background image '${imageUrl}' loaded successfully.`);
+                bodyElement.style.backgroundColor = '';
+            };
+        }
+
+        // --- Event Listeners (fra din kode, modifisert for Firebase) ---
+
+        // Sjekk Firebase Auth status ved lasting av siden
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log('User is signed in (Firebase):', user.uid);
+                // Du kan vurdere å sette sessionAuthKey her også, eller omdirigere direkte
+                // hvis en innlogget bruker lander på innloggingssiden.
+                // Eksempel: if (window.location.pathname.endsWith('login.html')) { window.location.href = nextPageUrl; }
+                try {
+                    sessionStorage.setItem(sessionAuthKey, 'true');
+                } catch (e) {
+                    console.error("Could not set sessionStorage item on auth state change:", e);
+                }
+            } else {
+                console.log('User is signed out (Firebase).');
+                try {
+                    sessionStorage.removeItem(sessionAuthKey);
+                } catch (e) {
+                    console.error("Could not remove sessionStorage item on auth state change:", e);
+                }
+            }
+        });
+
+        loginForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const enteredEmail = emailInput.value.trim(); // Ikke .toLowerCase() her, Firebase er case-sensitiv for e-post ved opprettelse, men vanligvis case-insensitiv for innlogging. Best å sende som skrevet.
+            const enteredPassword = passwordInput.value;
+            errorMessageDiv.textContent = '';
+
+            if (!enteredEmail || !enteredPassword) {
+                displayError('Vennligst fyll inn både e-post og passord.');
+                return;
+            }
 
             try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                // Bruk Firebase Authentication for å logge inn
+                const userCredential = await signInWithEmailAndPassword(auth, enteredEmail, enteredPassword);
                 const user = userCredential.user;
-                console.log("User created in Auth:", user.uid, user.email);
-                messageArea.textContent = "User registered in Auth! Saving to database...";
-                messageArea.className = 'message success';
-                messageArea.style.display = 'block';
 
-                const userDocRef = doc(db, "users", user.uid);
-                const userData = {
-                    uid: user.uid,
-                    email: user.email,
-                    createdAt: serverTimestamp(),
-                };
-                if (username) {
-                    userData.username = username;
+                console.log("Firebase login successful:", user.uid);
+                saveEmailToStorage(); // Lagre e-post for bekvemmelighet
+                // Ikke lagre passord!
+
+                try {
+                    sessionStorage.setItem(sessionAuthKey, 'true');
+                } catch (e) {
+                    console.error("Could not set sessionStorage item after login:", e);
                 }
-                await setDoc(userDocRef, userData);
-
-                console.log("User data saved to Firestore:", user.uid);
-                messageArea.textContent = "User registered and data saved successfully!";
-                messageArea.className = 'message success';
-                registrationForm.reset();
-                // window.location.href = '/login.html'; // Or to a welcome/screening page
+                // Omdiriger til neste side
+                window.location.href = nextPageUrl;
 
             } catch (error) {
-                console.error("Error during registration:", error);
-                let errorMessage = `Error: ${error.message}`;
-                if (error.code) {
-                    errorMessage += ` (Code: ${error.code})`;
+                console.error("Firebase login error:", error.code, error.message);
+                let friendlyMessage = 'Innlogging feilet. Prøv igjen.';
+                switch (error.code) {
+                    case 'auth/invalid-email':
+                        friendlyMessage = 'Ugyldig e-postformat.';
+                        break;
+                    case 'auth/user-disabled':
+                        friendlyMessage = 'Brukerkontoen er deaktivert.';
+                        break;
+                    case 'auth/user-not-found':
+                    case 'auth/wrong-password':
+                    case 'auth/invalid-credential':
+                        friendlyMessage = 'Feil e-post eller passord.';
+                        break;
                 }
-                messageArea.textContent = errorMessage;
-                messageArea.className = 'message error';
-                messageArea.style.display = 'block';
+                displayError(friendlyMessage);
             }
+        });
+
+        requestAccessLink.addEventListener('click', function(event) {
+            event.preventDefault();
+            const isHidden = requestAccessSection.style.display === 'none' || requestAccessSection.style.display === '';
+            requestAccessSection.style.display = isHidden ? 'block' : 'none';
+        });
+
+        // Lagre e-post ved "blur"
+        emailInput.addEventListener('blur', saveEmailToStorage);
+        // Ikke lagre passord ved blur
+
+        // --- Initialization (fra din kode) ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadEmailFromStorage(); // Laster kun e-post, ikke passord
+            checkBackgroundImage(originalBgImage);
+
+            // Sjekk sessionStorage for redirect (valgfritt, onAuthStateChanged er bedre)
+            // try {
+            //     if (sessionStorage.getItem(sessionAuthKey) === 'true') {
+            //         // Kanskje brukeren allerede er logget inn via Firebase og bare refreshet siden?
+            //         // onAuthStateChanged vil håndtere dette mer robust.
+            //         // For å unngå "flash" av login-siden, kan du ha en loading state her
+            //         // eller stole på onAuthStateChanged for tidlig omdirigering.
+            //         // console.log("Session flag is true, consider redirecting if Firebase confirms auth.");
+            //     }
+            // } catch (e) {
+            //     console.error("Could not read sessionStorage item on DOMContentLoaded:", e);
+            // }
         });
     </script>
 
