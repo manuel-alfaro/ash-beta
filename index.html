@@ -1,106 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="no">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="assets/emails.js"></script>
     <style>
         body {
             font-family: 'Avenir Next', 'Avenir', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            /* Original background image path */
             background-image: url('assets/background.jpeg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            /* Fallback background color */
-            background-color: #333;
+            background-color: #333; /* Fallback */
         }
         .frosted-glass {
             -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
             background-color: rgba(255, 255, 255, 0.05);
         }
-        .dark .frosted-glass {
-            background-color: rgba(0, 0, 0, 0);
-        }
+        .dark .frosted-glass { background-color: rgba(0, 0, 0, 0); }
         .custom-gradient-button {
             background-image: linear-gradient(to right, rgb(112, 188, 252), #285484);
             transition: background-image 0.2s ease-in-out;
         }
-        .custom-gradient-button:hover {
-            background-image: linear-gradient(to right, #285484, #1e3a5c);
-        }
-        #request-access-section {
-            display: none;
-            /* Minimal spacing handled by form structure now */
-             margin-top: 0.25rem; /* Added tiny margin-top */
-        }
-        #error-message {
+        .custom-gradient-button:hover { background-image: linear-gradient(to right, #285484, #1e3a5c); }
+        #request-access-section { display: none; margin-top: 0.25rem; }
+        #error-message-div {
             color: #f87171; /* text-red-400 */
             font-size: 0.875rem; /* text-sm */
             text-align: center;
-            min-height: 1.25rem; /* approx text-sm height */
-            margin-top: 0.25rem; /* Added tiny margin-top */
-            margin-bottom: 0.25rem; /* Added tiny margin-bottom */
+            min-height: 1.25rem;
+            margin-top: 0.25rem;
+            margin-bottom: 0.25rem;
         }
-         @keyframes shake {
-             10%, 90% { transform: translate3d(-1px, 0, 0); }
-             20%, 80% { transform: translate3d(2px, 0, 0); }
-             30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-             40%, 60% { transform: translate3d(4px, 0, 0); }
-         }
-         .animate-shake {
-             animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
-         }
-         .social-icon {
-             color: #e5e7eb; /* text-gray-200 */
-             font-size: 1.75rem; /* text-2xl or similar */
-             transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
-         }
-         .social-icon:hover {
-             color: #fff; /* text-white */
-             transform: scale(1.1);
-         }
-         /* Input field styling */
-         .login-input {
-             background-color: rgba(255, 255, 255, 0.1);
-             border: none;
-             color: #ffffff;
-             border-radius: 0; /* Square corners */
-         }
-         .login-input::placeholder {
-             color: rgba(255, 255, 255, 0.6);
-         }
-         .login-input:focus {
-           background-color: rgba(255, 255, 255, 0.2);
-           border: none;
-           outline: none;
-           box-shadow: none;
-         }
-         /* Dark mode input styling */
-         .dark .login-input {
-             background-color: rgba(0, 0, 0, 0.2);
-             border: none;
-             color: #ffffff;
-             border-radius: 0; /* Square corners */
-         }
-         .dark .login-input::placeholder {
-             color: rgba(255, 255, 255, 0.5);
-         }
-          .dark .login-input:focus {
-            background-color: rgba(0, 0, 0, 0.3);
-            border: none;
-            box-shadow: none;
-          }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+        .animate-shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        .social-icon { color: #e5e7eb; font-size: 1.75rem; transition: color 0.2s ease-in-out, transform 0.2s ease-in-out; }
+        .social-icon:hover { color: #fff; transform: scale(1.1); }
+        .login-input { background-color: rgba(255, 255, 255, 0.1); border: none; color: #ffffff; border-radius: 0; }
+        .login-input::placeholder { color: rgba(255, 255, 255, 0.6); }
+        .login-input:focus { background-color: rgba(255, 255, 255, 0.2); border: none; outline: none; box-shadow: none; }
+        .dark .login-input { background-color: rgba(0, 0, 0, 0.2); border: none; color: #ffffff; border-radius: 0; }
+        .dark .login-input::placeholder { color: rgba(255, 255, 255, 0.5); }
+        .dark .login-input:focus { background-color: rgba(0, 0, 0, 0.3); border: none; box-shadow: none; }
+
+        #userInfo { display: none; text-align: center; margin-top: 20px; }
     </style>
-    </head>
+</head>
 <body class="h-screen flex items-center justify-center">
 
     <div class="w-full max-w-md p-8 shadow-lg frosted-glass text-white">
-        <h2 class="text-2xl text-center mb-4">Login</h2>
+        <h2 id="formTitle" class="text-2xl text-center mb-4">Login</h2>
+        
         <form id="login-form">
             <div class="mb-2">
                 <label for="email" class="block text-sm font-light text-gray-200 mb-0.5">Email</label>
@@ -114,147 +72,142 @@
             <div class="mb-1">
                 <label for="password" class="block text-sm font-light text-gray-200 mb-0.5">Password</label>
                 <div>
-                     <input id="password" name="password" type="password" autocomplete="current-password" required
-                            placeholder="••••••••"
-                            class="login-input block w-full px-3 py-2 shadow-sm placeholder-gray-400 sm:text-sm">
+                    <input id="password" name="password" type="password" autocomplete="current-password" required
+                           placeholder="••••••••"
+                           class="login-input block w-full px-3 py-2 shadow-sm placeholder-gray-400 sm:text-sm">
                 </div>
             </div>
 
-             <div id="error-message"></div>
+            <div id="error-message-div"></div>
 
             <div class="flex items-center justify-end mb-1 text-sm">
-                 <a href="#" id="request-access-link" class="text-gray-300 hover:text-white">
-                     Request Access
-                 </a>
-             </div>
+                <a href="#" id="request-access-link" class="text-gray-300 hover:text-white">
+                    Request Access
+                </a>
+            </div>
 
-             <div id="request-access-section" class="text-sm text-center text-gray-200 mb-2">
-                 Send email to:
-                 <a href="mailto:manuel@alphatek.ai" class="text-gray-300 hover:text-white underline">
-                     manuel@alphatek.ai
-                 </a>
-             </div>
+            <div id="request-access-section" class="text-sm text-center text-gray-200 mb-2">
+                Send email to:
+                <a href="mailto:manuel@alphatek.ai" class="text-gray-300 hover:text-white underline">
+                    manuel@alphatek.ai
+                </a>
+            </div>
 
-             <div class="mt-3">
-                 <button type="submit"
-                         class="custom-gradient-button w-full flex justify-center py-2 px-4 text-sm text-white focus:outline-none">
-                     Login
-                 </button>
-             </div>
+            <div class="mt-3">
+                <button type="submit"
+                        class="custom-gradient-button w-full flex justify-center py-2 px-4 text-sm text-white focus:outline-none">
+                    Login
+                </button>
+            </div>
 
-             <div class="pt-4 border-t border-white/20 mt-4">
-                 <p class="text-center text-sm text-gray-300 mb-3">Visit us:</p>
-                 <div class="flex justify-center space-x-6">
-                     <a href="https://www.instagram.com/alphatekofficial" target="_blank" rel="noopener noreferrer" title="Instagram">
-                         <i class="fab fa-instagram social-icon"></i>
-                     </a>
-                     <a href="https://www.alphatek.no" target="_blank" rel="noopener noreferrer" title="Website">
-                         <i class="fas fa-globe social-icon"></i>
-                     </a>
-                 </div>
-             </div>
-             </form>
+            <div class="pt-4 border-t border-white/20 mt-4">
+                <p class="text-center text-sm text-gray-300 mb-3">Visit us:</p>
+                <div class="flex justify-center space-x-6">
+                    <a href="https://www.instagram.com/alphatekofficial" target="_blank" rel="noopener noreferrer" title="Instagram">
+                        <i class="fab fa-instagram social-icon"></i>
+                    </a>
+                    <a href="https://www.alphatek.no" target="_blank" rel="noopener noreferrer" title="Website">
+                        <i class="fas fa-globe social-icon"></i>
+                    </a>
+                </div>
+            </div>
+        </form>
+
+        <div id="userInfo">
+            <p id="userEmailDisplay" class="mb-2 text-center"></p>
+            <button id="logoutButton" class="custom-gradient-button w-full flex justify-center py-2 px-4 text-sm text-white focus:outline-none">
+                Logg ut
+            </button>
+        </div>
     </div>
 
-    <script>
+    <script type="module">
+        // Firebase SDK imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"; // Sjekk for nyeste versjon
+        import {
+            getAuth,
+            signInWithEmailAndPassword,
+            onAuthStateChanged,
+            signOut,
+            setPersistence,
+            browserLocalPersistence // Forblir innlogget mellom økter
+            // browserSessionPersistence // Logger ut når nettleser lukkes
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"; // Sjekk for nyeste versjon
+        // import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js"; // Hvis du bruker analytics
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBr1q18dfJLry_y5UXUbV3cYWLNwszth_s", // DIN API NØKKEL
+            authDomain: "logging-pwr-analytics.firebaseapp.com",
+            projectId: "logging-pwr-analytics",
+            storageBucket: "logging-pwr-analytics.firebasestorage.app", // Vanligvis .appspot.com, sjekk i console
+            messagingSenderId: "541710665560",
+            appId: "1:541710665560:web:764fa136ef693be10ac72d",
+            measurementId: "G-0LCVK51202"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        // const analytics = getAnalytics(app); // Hvis du bruker analytics
+
         // --- Constants ---
-        // Bruker nå listen fra emails.js (allowedObfuscatedEmails)
-        // const allowedEmails = [...]; // Denne er ikke lenger nødvendig her
-        const correctPassword = "alphatek"; // Passordet er fortsatt hardkodet
-        const nextPageUrl = "screening.html"; // URL for omdirigering ved suksess
+        const nextPageUrl = "screening.html"; // Siden du omdirigerer til etter innlogging
         const localStorageEmailKey = 'savedLoginEmail';
-        const localStoragePasswordKey = 'savedLoginPassword'; // Vær forsiktig med å lagre passord, selv i localStorage.
-        const sessionAuthKey = 'isLoggedIn'; // Nøkkel for session storage flagg
-        const originalBgImage = "assets/background.jpeg"; // Lagrer original bildesti
-        const fallbackBgImage = "url('https://placehold.co/1920x1080/333/ccc?text=Background+Error')"; // Fallback placeholder
 
         // --- DOM Elements ---
         const loginForm = document.getElementById('login-form');
         const emailInput = document.getElementById('email');
         const passwordInput = document.getElementById('password');
-        const errorMessageDiv = document.getElementById('error-message');
+        const errorMessageDiv = document.getElementById('error-message-div');
         const requestAccessLink = document.getElementById('request-access-link');
         const requestAccessSection = document.getElementById('request-access-section');
-        const loginBox = loginForm.parentElement; // Henter hovedcontaineren for shake-animasjon
-        const bodyElement = document.body; // Henter body-elementet for bakgrunnssjekk
+        const loginBox = loginForm.parentElement; // For shake-animasjon
+        const bodyElement = document.body;
+        const originalBgImage = "assets/background.jpeg"; // Sti til bakgrunnsbilde
+        const fallbackBgImage = "url('https://placehold.co/1920x1080/333/ccc?text=Background+Error')";
 
-
-        // --- Functions ---
+        const userInfoDiv = document.getElementById('userInfo');
+        const userEmailDisplay = document.getElementById('userEmailDisplay');
+        const logoutButton = document.getElementById('logoutButton');
+        const formTitle = document.getElementById('formTitle');
 
         /**
-         * Checks if the provided email is in the allowed list from emails.js (case-insensitive).
-         * Sjekker om den oppgitte e-posten er i den tillatte listen fra emails.js (ikke case-sensitiv).
-         * Krever at emails.js er lastet og definerer allowedObfuscatedEmails.
-         * @param {string} emailToCheck - The email address to check.
-         * @returns {boolean} True if the email is allowed, false otherwise.
+         * Displays an error message and applies a shake animation to the login box.
          */
-        function isEmailAllowed(emailToCheck) {
-            // Sjekker om allowedObfuscatedEmails er definert og er en array
-            if (typeof allowedObfuscatedEmails === 'undefined' || !Array.isArray(allowedObfuscatedEmails)) {
-                 console.error("Error: allowedObfuscatedEmails is not defined or not an array. Ensure assets/emails.js is loaded correctly.");
-                 return false; // Returnerer false hvis listen ikke er tilgjengelig
+        function displayError(message) {
+            errorMessageDiv.textContent = message;
+            if (loginBox && !loginBox.classList.contains('animate-shake')) {
+                loginBox.classList.add('animate-shake');
+                setTimeout(() => loginBox.classList.remove('animate-shake'), 500);
             }
-            const normalizedEmail = emailToCheck.trim().toLowerCase();
-            return allowedObfuscatedEmails.includes(normalizedEmail);
         }
 
         /**
-         * Loads saved email and password from localStorage into the input fields.
-         * Laster lagret e-post og passord fra localStorage inn i input-feltene.
+         * Loads saved email from localStorage into the email input field.
          */
-        function loadCredentialsFromStorage() {
+        function loadEmailFromStorage() {
             const savedEmail = localStorage.getItem(localStorageEmailKey);
-            const savedPassword = localStorage.getItem(localStoragePasswordKey);
             if (savedEmail) {
                 emailInput.value = savedEmail;
             }
-            if (savedPassword) {
-                 passwordInput.value = savedPassword;
-            }
         }
 
         /**
-         * Saves the current email and password to localStorage.
-         * Lagrer gjeldende e-post og passord til localStorage.
+         * Saves the current email to localStorage.
          */
-        function saveCredentialsToStorage() {
+        function saveEmailToStorage() {
             const currentEmail = emailInput.value.trim();
-            const currentPassword = passwordInput.value;
-
             if (currentEmail) {
                 localStorage.setItem(localStorageEmailKey, currentEmail);
             } else {
                 localStorage.removeItem(localStorageEmailKey);
             }
-
-            if (currentPassword) {
-                 localStorage.setItem(localStoragePasswordKey, currentPassword);
-            } else {
-                 localStorage.removeItem(localStoragePasswordKey);
-            }
-        }
-
-        /**
-         * Displays an error message and applies a shake animation to the login box.
-         * Viser en feilmelding og legger til en riste-animasjon på login-boksen.
-         * @param {string} message - The error message to display.
-         */
-        function displayError(message) {
-             errorMessageDiv.textContent = message;
-             if (loginBox) {
-                 loginBox.classList.add('animate-shake');
-                 setTimeout(() => loginBox.classList.remove('animate-shake'), 500);
-             } else {
-                 console.error("Could not find login box element to apply shake animation.");
-             }
         }
 
         /**
          * Checks if the specified background image loads successfully.
          * Applies a fallback if it fails.
-         * Sjekker om den spesifiserte bakgrunnsbildet lastes inn riktig.
-         * Bruker en fallback hvis det feiler.
-         * @param {string} imageUrl - The URL of the image to check.
          */
         function checkBackgroundImage(imageUrl) {
             const img = new Image();
@@ -262,59 +215,123 @@
             img.onerror = () => {
                 console.warn(`Original background image '${imageUrl}' failed to load. Applying fallback.`);
                 bodyElement.style.backgroundImage = fallbackBgImage;
-                bodyElement.style.backgroundColor = '#333'; // Sikrer fallback-farge
+                bodyElement.style.backgroundColor = '#333';
             };
             img.onload = () => {
-                 console.log(`Background image '${imageUrl}' loaded successfully.`);
-                 bodyElement.style.backgroundColor = ''; // Fjerner eksplisitt fallback-farge
+                // console.log(`Background image '${imageUrl}' loaded successfully.`); // Valgfri logg
+                bodyElement.style.backgroundColor = ''; // Fjerner eksplisitt fallback-farge
             };
         }
 
+        // --- Firebase Auth Logic ---
 
-        // --- Event Listeners ---
+        // Handle login form submission
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+            errorMessageDiv.textContent = ''; // Clear previous errors
 
-        // Håndterer skjema-innsending
-        loginForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            const enteredEmail = emailInput.value.trim().toLowerCase();
-            const enteredPassword = passwordInput.value;
-            errorMessageDiv.textContent = '';
-            let loginSuccess = false;
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    console.log('User signed in:', user.email);
+                    saveEmailToStorage(); // Save email for next time
+                    // UI updates and redirection are handled by onAuthStateChanged
+                })
+                .catch((error) => {
+                    console.error("Login error:", error.code, error.message);
+                    let friendlyMessage = "Ugyldig e-post eller passord.";
+                    // Firebase v9+ uses 'auth/invalid-credential' for most common login failures
+                    if (error.code === 'auth/invalid-credential') {
+                        friendlyMessage = "Ugyldig e-post eller passord. Vennligst sjekk og prøv igjen.";
+                    } else if (error.code === 'auth/user-not-found') { // Eldre feilkode, kan forekomme
+                        friendlyMessage = "Ingen bruker funnet med denne e-posten.";
+                    } else if (error.code === 'auth/wrong-password') { // Eldre feilkode
+                        friendlyMessage = "Feil passord. Prøv igjen.";
+                    } else if (error.code === 'auth/invalid-email') {
+                        friendlyMessage = "Vennligst skriv inn en gyldig e-postadresse.";
+                    }
+                    displayError(friendlyMessage);
+                });
+        });
 
-            // Sjekker mot listen fra emails.js OG hardkodet passord
-            if (isEmailAllowed(enteredEmail) && enteredPassword === correctPassword) {
-                 loginSuccess = true;
-            }
+        // Handle logout
+        logoutButton.addEventListener('click', () => {
+            signOut(auth).then(() => {
+                console.log('User signed out');
+                // UI will be updated by onAuthStateChanged
+            }).catch((error) => {
+                console.error('Sign out error', error);
+                displayError("En feil oppstod under utlogging. Prøv igjen.");
+            });
+        });
 
-            if (loginSuccess) {
-                saveCredentialsToStorage();
-                try {
-                    sessionStorage.setItem(sessionAuthKey, 'true');
-                } catch (e) {
-                    console.error("Could not set sessionStorage item:", e);
+        // Listen for auth state changes (user logs in or out)
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in
+                console.log('Auth state changed: User is signed in -', user.email);
+                loginForm.style.display = 'none';
+                requestAccessLink.style.display = 'none';
+                requestAccessSection.style.display = 'none'; // Skjul også denne
+                userInfoDiv.style.display = 'block';
+                userEmailDisplay.textContent = `Innlogget som: ${user.email}`;
+                formTitle.textContent = 'Velkommen!';
+
+                // Omdiriger til neste side.
+                // Sjekk for å unngå redirect loop hvis brukeren allerede er på målsiden
+                // (selv om denne logikken primært er for innloggingssiden).
+                const currentPath = window.location.pathname.split("/").pop();
+                if (currentPath !== nextPageUrl && currentPath !== nextPageUrl.replace('./','')) {
+                    // window.location.href = nextPageUrl; // <-- FJERNKOMMENTER DENNE LINJEN FOR Å AKTIVERE Omdirigering
+                    console.log("Bruker er logget inn. Omdirigering til", nextPageUrl, "er klar (kommentert ut).");
                 }
-                 window.location.href = nextPageUrl;
+
             } else {
-                 displayError('Ugyldig e-post eller passord.'); // Oppdatert feilmelding
+                // User is signed out
+                console.log('Auth state changed: User is signed out');
+                loginForm.style.display = 'block';
+                requestAccessLink.style.display = 'block';
+                // requestAccessSection forblir skjult til lenken klikkes
+                userInfoDiv.style.display = 'none';
+                formTitle.textContent = 'Login'; // Tilbakestill tittel
+
+                // Valgfritt: Hvis brukeren er på en beskyttet side og logger ut, omdiriger til login.
+                // Denne logikken hører egentlig hjemme på de beskyttede sidene.
+                // const protectedPages = [nextPageUrl];
+                // if (protectedPages.includes(window.location.pathname.split("/").pop())) {
+                //     window.location.href = 'index.html'; // Eller din hoved-innloggingsside
+                // }
             }
         });
 
-        // Veksler synligheten av "Request Access" seksjonen
+        // --- Event Listeners for UI (ikke Firebase-relatert) ---
         requestAccessLink.addEventListener('click', function(event) {
             event.preventDefault();
             const isHidden = requestAccessSection.style.display === 'none' || requestAccessSection.style.display === '';
             requestAccessSection.style.display = isHidden ? 'block' : 'none';
         });
 
-        // Lagrer legitimasjon ved "blur" (når feltet mister fokus)
-        emailInput.addEventListener('blur', saveCredentialsToStorage);
-        passwordInput.addEventListener('blur', saveCredentialsToStorage);
+        // Lagrer kun e-post når brukeren navigerer vekk fra e-postfeltet
+        emailInput.addEventListener('blur', saveEmailToStorage);
 
         // --- Initialization ---
-        // Kjøres når DOM er fullastet
+        // Kjøres når HTML-strukturen er fullstendig lastet og parset
         document.addEventListener('DOMContentLoaded', () => {
-            loadCredentialsFromStorage();
-            checkBackgroundImage(originalBgImage);
+            loadEmailFromStorage(); // Last inn lagret e-post hvis den finnes
+            checkBackgroundImage(originalBgImage); // Sjekk om bakgrunnsbildet lastes
+
+            // Sett Firebase persistence (hvordan sesjonen skal håndteres)
+            setPersistence(auth, browserLocalPersistence)
+              .then(() => {
+                console.log("Firebase persistence satt til 'local' (forblir innlogget).");
+                // `onAuthStateChanged` vil allerede ha kjørt eller vil kjøre kort tid etter
+                // for å sjekke initiell innloggingsstatus.
+              })
+              .catch((error) => {
+                console.error("Feil ved setting av Firebase persistence: ", error.code, error.message);
+              });
         });
     </script>
 
