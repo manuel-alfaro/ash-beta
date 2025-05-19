@@ -232,7 +232,13 @@
                     <div class="control-item"><label class="control-label" for="bodyweight-input">Bodyweight (kg):</label><input id="bodyweight-input" type="number" placeholder="kg"></div>
                 </div>
                 <div class="explanation-box"><h4>About This Report</h4> <p>This report summarizes the results of the Functional Shoulder Screening using the ASH test (Positions I, Y, T).</p><ul> <li><strong>Asymmetry Graphs:</strong> Show the percentage difference between the injured and uninjured side for key metrics (Max Force, RFD, % Max Force at 100ms). Values closer to 100% indicate better symmetry. Annotations above the bars show the percentage difference relative to the uninjured side (100%). Numbers inside the bars show the absolute values for each side.</li> <li><strong>Normative Graphs:</strong> Visually represent the estimated percentile rank for Max Force / Bodyweight (N/kg) for each side, based on normative thresholds. Background colors indicate performance zones (Poor, Average, Good, Excellent). Vertical dashed lines show the estimated percentile for the Left (Orange) and Right (Blue) values.</li> </ul><p><i>To save as PDF: Click 'PDF Preview', then use your browser's Print function (Ctrl+P or Cmd+P) and select 'Save as PDF'. Click 'Exit Preview' to return.</i></p></div>
-                <div id="patient-data-container"><div id="patient-data-grid"><div class="patient-data-item"><label for="fp-nr-input">Patient ID:</label><input id="fp-nr-input" type="text" placeholder="Patient ID"></div><div class="patient-data-item"><label for="age-input">Age:</label><input id="age-input" type="number" placeholder="Years"></div><div class="patient-data-item"><label for="gender-select">Gender:</label><select id="gender-select"><option value="">Select...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option><option value="Prefer not to say">Prefer not to say</option></select></div><div class="patient-data-item"><label for="sport-input">Sport:</label><input id="sport-input" type="text" placeholder="Main Sport"></div></div></div>
+                <div id="patient-data-container"><div id="patient-data-grid">
+                    <div class="patient-data-item"><label for="fp-nr-input">Patient ID:</label><input id="fp-nr-input" type="text" placeholder="Patient ID"></div>
+                    <div class="patient-data-item"><label for="age-input">Age:</label><input id="age-input" type="number" placeholder="Years"></div>
+                    <div class="patient-data-item"><label for="gender-select">Gender:</label><select id="gender-select"><option value="">Select...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option><option value="Prefer not to say">Prefer not to say</option></select></div>
+                    <div class="patient-data-item"><label for="sport-input">Sport:</label><input id="sport-input" type="text" placeholder="Main Sport"></div>
+                    <div class="patient-data-item"><label for="injury-input">Injury (Optional):</label><input id="injury-input" type="text" placeholder="e.g., Rotator Cuff Tear"></div>
+                </div></div>
                 <h2 id="input-title">Input Overview</h2>
                 <div id="input-section-container"><div class="input-position-box"><h4>ASH Test Position I</h4><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"> <input id="non-injured-max-force-i" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- N</span> </div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"> <input id="non-injured-rfd-i" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- Ns<sup>-1</sup></span> </div> </div><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"> <input id="injured-max-force-i" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- N</span> </div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"> <input id="injured-rfd-i" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- Ns<sup>-1</sup></span> </div> </div></div><div class="input-position-box"><h4>ASH Test Position Y</h4><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"><input id="non-injured-max-force-y" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- N</span></div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="non-injured-rfd-y" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"><input id="injured-max-force-y" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- N</span></div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="injured-rfd-y" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div></div><div class="input-position-box"><h4>ASH Test Position T</h4><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"><input id="non-injured-max-force-t" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- N</span></div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="non-injured-rfd-t" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"><input id="injured-max-force-t" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- N</span></div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="injured-rfd-t" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div></div></div>
                 <div id="canvas-container"></div>
@@ -323,6 +329,40 @@
     const normativeChartDivs = ['normative-chart-I', 'normative-chart-Y', 'normative-chart-T'];
     const normativePlaceholder = document.getElementById('normative-placeholder');
 
+    const injuredSideRadio = document.getElementById('injured-side-radio');
+    const bodyweightInput = document.getElementById('bodyweight-input');
+    const registerPatientButton = document.getElementById('register-patient-button');
+    const saveDataButton = document.getElementById('save-data-button');
+    const loadTestsButton = document.getElementById('load-tests-button');
+    const pdfPreviewButton = document.getElementById('pdf-preview-button');
+    const exportExcelButton = document.getElementById('export-excel-button');
+    const viewAnalysisButtonLink = document.getElementById('analysis-link-button');
+    const clearAllButton = document.getElementById('clear-all-button');
+    const logoutButton = document.getElementById('logout-button');
+    const previewExitButtonInline = document.getElementById('preview-exit-button-inline');
+    const explanationBox = document.querySelector('.explanation-box');
+    const patientDataContainer = document.getElementById('patient-data-container');
+    const fpNrInput = document.getElementById('fp-nr-input');
+    const ageInput = document.getElementById('age-input');
+    const genderSelect = document.getElementById('gender-select');
+    const sportInput = document.getElementById('sport-input');
+    const injuryInput = document.getElementById('injury-input'); // New injury input
+    const inputFieldMap = {
+        'I': { nonInjured: [document.getElementById('non-injured-max-force-i'), document.getElementById('non-injured-rfd-i')], injured: [document.getElementById('injured-max-force-i'), document.getElementById('injured-rfd-i')] },
+        'Y': { nonInjured: [document.getElementById('non-injured-max-force-y'), document.getElementById('non-injured-rfd-y')], injured: [document.getElementById('injured-max-force-y'), document.getElementById('injured-rfd-y')] },
+        'T': { nonInjured: [document.getElementById('non-injured-max-force-t'), document.getElementById('non-injured-rfd-t')], injured: [document.getElementById('injured-max-force-t'), document.getElementById('injured-rfd-t')] }
+    };
+    const allNumberInputs = Array.from(document.querySelectorAll('#input-section-container input[type="number"]'));
+    const lastTestsModalBackdrop = document.getElementById('lastTestsModalBackdrop');
+    const lastTestsModal = document.getElementById('lastTestsModal');
+    const closeLastTestsModalButton = document.getElementById('closeLastTestsModalButton');
+    const cancelLoadTestButton = document.getElementById('cancelLoadTestButton');
+    const patientIdListUL = document.getElementById('patient-id-list');
+    const testDatesContainer = document.getElementById('test-dates-container');
+    const testDatesListUL = document.getElementById('test-dates-list');
+    const selectedPatientIdForTestsSpan = document.getElementById('selected-patient-id-for-tests');
+    const loadTestsLoadingMessage = document.getElementById('load-tests-loading-message');
+    const loadTestsErrorMessage = document.getElementById('load-tests-error-message');
 
     function showStatusMessage(message, type = 'info', duration = 3000) {
         if (!appStatusMessage) return;
@@ -346,40 +386,6 @@
         }
     });
 
-    const injuredSideRadio = document.getElementById('injured-side-radio');
-    const bodyweightInput = document.getElementById('bodyweight-input');
-    const registerPatientButton = document.getElementById('register-patient-button');
-    const saveDataButton = document.getElementById('save-data-button');
-    const loadTestsButton = document.getElementById('load-tests-button');
-    const pdfPreviewButton = document.getElementById('pdf-preview-button');
-    const exportExcelButton = document.getElementById('export-excel-button');
-    const viewAnalysisButtonLink = document.getElementById('analysis-link-button');
-    const clearAllButton = document.getElementById('clear-all-button');
-    const logoutButton = document.getElementById('logout-button');
-    const previewExitButtonInline = document.getElementById('preview-exit-button-inline');
-    const explanationBox = document.querySelector('.explanation-box');
-    const patientDataContainer = document.getElementById('patient-data-container');
-    const fpNrInput = document.getElementById('fp-nr-input');
-    const ageInput = document.getElementById('age-input');
-    const genderSelect = document.getElementById('gender-select');
-    const sportInput = document.getElementById('sport-input');
-    const inputFieldMap = {
-        'I': { nonInjured: [document.getElementById('non-injured-max-force-i'), document.getElementById('non-injured-rfd-i')], injured: [document.getElementById('injured-max-force-i'), document.getElementById('injured-rfd-i')] },
-        'Y': { nonInjured: [document.getElementById('non-injured-max-force-y'), document.getElementById('non-injured-rfd-y')], injured: [document.getElementById('injured-max-force-y'), document.getElementById('injured-rfd-y')] },
-        'T': { nonInjured: [document.getElementById('non-injured-max-force-t'), document.getElementById('non-injured-rfd-t')], injured: [document.getElementById('injured-max-force-t'), document.getElementById('injured-rfd-t')] }
-    };
-    const allNumberInputs = Array.from(document.querySelectorAll('#input-section-container input[type="number"]'));
-    const lastTestsModalBackdrop = document.getElementById('lastTestsModalBackdrop');
-    const lastTestsModal = document.getElementById('lastTestsModal');
-    const closeLastTestsModalButton = document.getElementById('closeLastTestsModalButton');
-    const cancelLoadTestButton = document.getElementById('cancelLoadTestButton');
-    const patientIdListUL = document.getElementById('patient-id-list');
-    const testDatesContainer = document.getElementById('test-dates-container');
-    const testDatesListUL = document.getElementById('test-dates-list');
-    const selectedPatientIdForTestsSpan = document.getElementById('selected-patient-id-for-tests');
-    const loadTestsLoadingMessage = document.getElementById('load-tests-loading-message');
-    const loadTestsErrorMessage = document.getElementById('load-tests-error-message');
-
     function hexToRgba(hex, alpha) { hex = hex.replace('#', ''); const r = parseInt(hex.substring(0, 2), 16); const g = parseInt(hex.substring(2, 4), 16); const b = parseInt(hex.substring(4, 6), 16); return `rgba(${r}, ${g}, ${b}, ${alpha})`; }
     
     function createEmptyPlot(targetDivId, title = 'Enter Data', height = 300, topMargin = 20) { const targetDiv = document.getElementById(targetDivId); if (!targetDiv) { return; } try { Plotly.react(targetDiv, [{ x: [], y: [], type: 'bar' }], { title: { text: title, font: { family: 'Avenir, sans-serif', size: 16, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim(), weight: 400 } }, height: height, margin: { l: 60, r: 40, b: 40, t: topMargin, pad: 4 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', xaxis: { visible: false }, yaxis: { showgrid: false, zeroline: true, gridcolor: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), showticklabels: false }, font: { family: 'Avenir, sans-serif', size: 12, weight: 400 } }, plotlyConfig); } catch (error) { console.error(`Error creating empty plot in ${targetDivId}:`, error); targetDiv.innerHTML = `<p style="color: red; text-align: center; padding: 20px;">Error displaying chart.</p>`; } }
@@ -400,14 +406,14 @@
     
     function exitPreviewMode() { document.body.classList.remove('pdf-preview-active'); if(previewExitButtonInline) previewExitButtonInline.style.display = 'none'; if(explanationBox) explanationBox.style.display = 'none'; window.dispatchEvent(new Event('resize')); console.log("Exited PDF preview mode"); }
     
-    function exportTableToCsv() { const fpNr = fpNrInput ? fpNrInput.value.trim() : ''; const age = ageInput ? ageInput.value.trim() : ''; const gender = genderSelect ? genderSelect.value : ''; const sport = sportInput ? sportInput.value.trim() : ''; const bodyweight = bodyweightInput ? bodyweightInput.value.trim() : ''; const injuredSide = injuredSideRadio ? injuredSideRadio.value : ''; const date = new Date(); const year = date.getFullYear(); const month = (date.getMonth() + 1).toString().padStart(2, '0'); const day = date.getDate().toString().padStart(2, '0'); const dateString = `${year}-${month}-${day}`; const safeFpNr = fpNr.replace(/[^a-z0-9]/gi, '_') || 'Unknown'; const filename = `ASH_${safeFpNr}_${dateString}.csv`; const headers = [ "Patient ID", "Age", "Gender", "Sport", "Bodyweight (kg)", "Injured Side", "Position", "Metric", "Left Value", "Right Value" ]; let csv = [headers.join(',')]; const positions = ['I', 'Y', 'T']; const metricsForCsv = ['Max Force (N)', 'RFD 100ms (N/s)']; positions.forEach(pos => { const positionName = `ASH Test Position ${pos}`; const positionData = processInputAndCalculate(pos); metricsForCsv.forEach(metricDisplay => { let leftVal = ''; let rightVal = ''; let metricIdentifier = metricDisplay; if (metricDisplay === 'Max Force (N)') { if (positionData) { leftVal = positionData.left.max_force; rightVal = positionData.right.max_force; } } else if (metricDisplay === 'RFD 100ms (N/s)') { if (positionData) { leftVal = positionData.left.rfd; rightVal = positionData.right.rfd; } metricIdentifier = 'RFD 100ms (N/s)'; } const rowData = [ `"${fpNr}"`, `"${age}"`, `"${gender}"`, `"${sport}"`, `"${bodyweight}"`, `"${injuredSide}"`, `"${positionName}"`, `"${metricIdentifier}"`, `"${leftVal}"`, `"${rightVal}"` ]; csv.push(rowData.join(',')); }); }); const csvString = "\uFEFF" + csv.join('\n'); const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); if (link.download !== undefined) { const url = URL.createObjectURL(blob); link.setAttribute('href', url); link.setAttribute('download', filename); link.style.visibility = 'hidden'; document.body.appendChild(link); link.click(); document.body.removeChild(link); console.log(`CSV export initiated: ${filename}`); } else { alert("CSV export is not directly supported in this browser. Please try a modern browser."); } }
+    function exportTableToCsv() { const fpNr = fpNrInput ? fpNrInput.value.trim() : ''; const age = ageInput ? ageInput.value.trim() : ''; const gender = genderSelect ? genderSelect.value : ''; const sport = sportInput ? sportInput.value.trim() : ''; const injury = injuryInput ? injuryInput.value.trim() : ''; const bodyweight = bodyweightInput ? bodyweightInput.value.trim() : ''; const injuredSide = injuredSideRadio ? injuredSideRadio.value : ''; const date = new Date(); const year = date.getFullYear(); const month = (date.getMonth() + 1).toString().padStart(2, '0'); const day = date.getDate().toString().padStart(2, '0'); const dateString = `${year}-${month}-${day}`; const safeFpNr = fpNr.replace(/[^a-z0-9]/gi, '_') || 'Unknown'; const filename = `ASH_${safeFpNr}_${dateString}.csv`; const headers = [ "Patient ID", "Age", "Gender", "Sport", "Injury", "Bodyweight (kg)", "Injured Side", "Position", "Metric", "Left Value", "Right Value" ]; let csv = [headers.join(',')]; const positions = ['I', 'Y', 'T']; const metricsForCsv = ['Max Force (N)', 'RFD 100ms (N/s)']; positions.forEach(pos => { const positionName = `ASH Test Position ${pos}`; const positionData = processInputAndCalculate(pos); metricsForCsv.forEach(metricDisplay => { let leftVal = ''; let rightVal = ''; let metricIdentifier = metricDisplay; if (metricDisplay === 'Max Force (N)') { if (positionData) { leftVal = positionData.left.max_force; rightVal = positionData.right.max_force; } } else if (metricDisplay === 'RFD 100ms (N/s)') { if (positionData) { leftVal = positionData.left.rfd; rightVal = positionData.right.rfd; } metricIdentifier = 'RFD 100ms (N/s)'; } const rowData = [ `"${fpNr}"`, `"${age}"`, `"${gender}"`, `"${sport}"`, `"${injury}"`, `"${bodyweight}"`, `"${injuredSide}"`, `"${positionName}"`, `"${metricIdentifier}"`, `"${leftVal}"`, `"${rightVal}"` ]; csv.push(rowData.join(',')); }); }); const csvString = "\uFEFF" + csv.join('\n'); const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); if (link.download !== undefined) { const url = URL.createObjectURL(blob); link.setAttribute('href', url); link.setAttribute('download', filename); link.style.visibility = 'hidden'; document.body.appendChild(link); link.click(); document.body.removeChild(link); console.log(`CSV export initiated: ${filename}`); } else { alert("CSV export is not directly supported in this browser. Please try a modern browser."); } }
     
-    function clearAllFields() { console.log("Clearing all fields..."); if (fpNrInput) fpNrInput.value = ''; if (ageInput) ageInput.value = ''; if (genderSelect) genderSelect.value = ''; if (sportInput) sportInput.value = ''; if (injuredSideRadio) injuredSideRadio.value = 'Left'; if (bodyweightInput) bodyweightInput.value = ''; allNumberInputs.forEach(input => { input.value = ''; }); updateGraphsAndTable(); saveInputsToLocalStorage(); console.log("Fields cleared."); }
+    function clearAllFields() { console.log("Clearing all fields..."); if (fpNrInput) fpNrInput.value = ''; if (ageInput) ageInput.value = ''; if (genderSelect) genderSelect.value = ''; if (sportInput) sportInput.value = ''; if (injuryInput) injuryInput.value = ''; if (injuredSideRadio) injuredSideRadio.value = 'Left'; if (bodyweightInput) bodyweightInput.value = ''; allNumberInputs.forEach(input => { input.value = ''; }); updateGraphsAndTable(); saveInputsToLocalStorage(); console.log("Fields cleared."); }
     
     const localStorageKey = 'screeningAppData_v4';
-    function saveInputsToLocalStorage() { const dataToSave = { injuredSide: injuredSideRadio.value, bodyweight: bodyweightInput.value, fpNr: fpNrInput.value, age: ageInput.value, gender: genderSelect.value, sport: sportInput.value, 'non-injured-max-force-i': inputFieldMap['I'].nonInjured[0].value, 'non-injured-rfd-i': inputFieldMap['I'].nonInjured[1].value, 'injured-max-force-i': inputFieldMap['I'].injured[0].value, 'injured-rfd-i': inputFieldMap['I'].injured[1].value, 'non-injured-max-force-y': inputFieldMap['Y'].nonInjured[0].value, 'non-injured-rfd-y': inputFieldMap['Y'].nonInjured[1].value, 'injured-max-force-y': inputFieldMap['Y'].injured[0].value, 'injured-rfd-y': inputFieldMap['Y'].injured[1].value, 'non-injured-max-force-t': inputFieldMap['T'].nonInjured[0].value, 'non-injured-rfd-t': inputFieldMap['T'].nonInjured[1].value, 'injured-max-force-t': inputFieldMap['T'].injured[0].value, 'injured-rfd-t': inputFieldMap['T'].injured[1].value, }; try { localStorage.setItem(localStorageKey, JSON.stringify(dataToSave)); } catch (error) { console.error('Error saving inputs:', error); } }
+    function saveInputsToLocalStorage() { const dataToSave = { injuredSide: injuredSideRadio.value, bodyweight: bodyweightInput.value, fpNr: fpNrInput.value, age: ageInput.value, gender: genderSelect.value, sport: sportInput.value, injury: injuryInput.value, 'non-injured-max-force-i': inputFieldMap['I'].nonInjured[0].value, 'non-injured-rfd-i': inputFieldMap['I'].nonInjured[1].value, 'injured-max-force-i': inputFieldMap['I'].injured[0].value, 'injured-rfd-i': inputFieldMap['I'].injured[1].value, 'non-injured-max-force-y': inputFieldMap['Y'].nonInjured[0].value, 'non-injured-rfd-y': inputFieldMap['Y'].nonInjured[1].value, 'injured-max-force-y': inputFieldMap['Y'].injured[0].value, 'injured-rfd-y': inputFieldMap['Y'].injured[1].value, 'non-injured-max-force-t': inputFieldMap['T'].nonInjured[0].value, 'non-injured-rfd-t': inputFieldMap['T'].nonInjured[1].value, 'injured-max-force-t': inputFieldMap['T'].injured[0].value, 'injured-rfd-t': inputFieldMap['T'].injured[1].value, }; try { localStorage.setItem(localStorageKey, JSON.stringify(dataToSave)); } catch (error) { console.error('Error saving inputs:', error); } }
     
-    function loadInputsFromLocalStorage() { try { const savedDataString = localStorage.getItem(localStorageKey); if (savedDataString) { const savedData = JSON.parse(savedDataString); console.log('Loading inputs from localStorage (v4)'); injuredSideRadio.value = savedData.injuredSide || 'Left'; bodyweightInput.value = savedData.bodyweight || ''; fpNrInput.value = savedData.fpNr || ''; ageInput.value = savedData.age || ''; genderSelect.value = savedData.gender || ''; sportInput.value = savedData.sport || ''; inputFieldMap['I'].nonInjured[0].value = savedData['non-injured-max-force-i'] || ''; inputFieldMap['I'].nonInjured[1].value = savedData['non-injured-rfd-i'] || ''; inputFieldMap['I'].injured[0].value = savedData['injured-max-force-i'] || ''; inputFieldMap['I'].injured[1].value = savedData['injured-rfd-i'] || ''; inputFieldMap['Y'].nonInjured[0].value = savedData['non-injured-max-force-y'] || ''; inputFieldMap['Y'].nonInjured[1].value = savedData['non-injured-rfd-y'] || ''; inputFieldMap['Y'].injured[0].value = savedData['injured-max-force-y'] || ''; inputFieldMap['Y'].injured[1].value = savedData['injured-rfd-y'] || ''; inputFieldMap['T'].nonInjured[0].value = savedData['non-injured-max-force-t'] || ''; inputFieldMap['T'].nonInjured[1].value = savedData['non-injured-rfd-t'] || ''; inputFieldMap['T'].injured[0].value = savedData['injured-max-force-t'] || ''; inputFieldMap['T'].injured[1].value = savedData['injured-rfd-t'] || ''; if (fpNrInput.value || ageInput.value || genderSelect.value || sportInput.value) { if (patientDataContainer && !patientDataContainer.classList.contains('visible')) { togglePatientData(); } } } } catch (error) { console.error('Error loading inputs:', error); } }
+    function loadInputsFromLocalStorage() { try { const savedDataString = localStorage.getItem(localStorageKey); if (savedDataString) { const savedData = JSON.parse(savedDataString); console.log('Loading inputs from localStorage (v4)'); injuredSideRadio.value = savedData.injuredSide || 'Left'; bodyweightInput.value = savedData.bodyweight || ''; fpNrInput.value = savedData.fpNr || ''; ageInput.value = savedData.age || ''; genderSelect.value = savedData.gender || ''; sportInput.value = savedData.sport || ''; injuryInput.value = savedData.injury || ''; inputFieldMap['I'].nonInjured[0].value = savedData['non-injured-max-force-i'] || ''; inputFieldMap['I'].nonInjured[1].value = savedData['non-injured-rfd-i'] || ''; inputFieldMap['I'].injured[0].value = savedData['injured-max-force-i'] || ''; inputFieldMap['I'].injured[1].value = savedData['injured-rfd-i'] || ''; inputFieldMap['Y'].nonInjured[0].value = savedData['non-injured-max-force-y'] || ''; inputFieldMap['Y'].nonInjured[1].value = savedData['non-injured-rfd-y'] || ''; inputFieldMap['Y'].injured[0].value = savedData['injured-max-force-y'] || ''; inputFieldMap['Y'].injured[1].value = savedData['injured-rfd-y'] || ''; inputFieldMap['T'].nonInjured[0].value = savedData['non-injured-max-force-t'] || ''; inputFieldMap['T'].nonInjured[1].value = savedData['non-injured-rfd-t'] || ''; inputFieldMap['T'].injured[0].value = savedData['injured-max-force-t'] || ''; inputFieldMap['T'].injured[1].value = savedData['injured-rfd-t'] || ''; if (fpNrInput.value || ageInput.value || genderSelect.value || sportInput.value || injuryInput.value) { if (patientDataContainer && !patientDataContainer.classList.contains('visible')) { togglePatientData(); } } } } catch (error) { console.error('Error loading inputs:', error); } }
 
     if (injuredSideRadio) injuredSideRadio.addEventListener('change', () => { updateGraphsAndTable(); saveInputsToLocalStorage(); });
     if (bodyweightInput) bodyweightInput.addEventListener('input', () => { updateGraphsAndTable(); saveInputsToLocalStorage(); });
@@ -415,6 +421,7 @@
     if (ageInput) ageInput.addEventListener('change', saveInputsToLocalStorage);
     if (genderSelect) genderSelect.addEventListener('change', saveInputsToLocalStorage);
     if (sportInput) sportInput.addEventListener('change', saveInputsToLocalStorage);
+    if (injuryInput) injuryInput.addEventListener('change', saveInputsToLocalStorage);
     allNumberInputs.forEach(input => { input.addEventListener('input', updateGraphsAndTable); input.addEventListener('change', saveInputsToLocalStorage); });
     if (pdfPreviewButton) pdfPreviewButton.addEventListener('click', enterPreviewMode);
     if (exportExcelButton) exportExcelButton.addEventListener('click', exportTableToCsv);
@@ -435,7 +442,7 @@
         });
     }
     
-    function openLastTestsModal() { if(lastTestsModalBackdrop) lastTestsModalBackdrop.style.display = 'block'; if(lastTestsModal) lastTestsModal.style.display = 'flex'; document.body.style.overflow = 'hidden'; loadPatientIdsForModal(); }
+    function openLastTestsModal() { console.log('openLastTestsModal function called'); if(lastTestsModalBackdrop) lastTestsModalBackdrop.style.display = 'block'; if(lastTestsModal) lastTestsModal.style.display = 'flex'; document.body.style.overflow = 'hidden'; loadPatientIdsForModal(); }
     function closeLastTestsModal() { if(lastTestsModalBackdrop) lastTestsModalBackdrop.style.display = 'none'; if(lastTestsModal) lastTestsModal.style.display = 'none'; document.body.style.overflow = 'auto'; if(patientIdListUL) patientIdListUL.innerHTML = ''; if(testDatesListUL) testDatesListUL.innerHTML = ''; if(testDatesContainer) testDatesContainer.style.display = 'none'; if(loadTestsLoadingMessage) loadTestsLoadingMessage.style.display = 'none'; if(loadTestsErrorMessage) loadTestsErrorMessage.style.display = 'none'; }
     if(loadTestsButton) loadTestsButton.addEventListener('click', openLastTestsModal);
     if(closeLastTestsModalButton) closeLastTestsModalButton.addEventListener('click', closeLastTestsModal);
@@ -454,7 +461,7 @@
             loadTestsLoadingMessage.style.display = 'none';
             if (Object.keys(patientScreenings).length === 0) { patientIdListUL.innerHTML = '<li>No saved tests found for your account.</li>'; return; }
             for (const patientId in patientScreenings) { const li = document.createElement('li'); li.textContent = patientId; li.dataset.patientId = patientId; li.addEventListener('click', () => loadTestDatesForPatient(patientId, patientScreenings[patientId])); patientIdListUL.appendChild(li); }
-        } catch (error) { console.error("Error loading patient IDs: ", error); loadTestsLoadingMessage.style.display = 'none'; loadTestsErrorMessage.textContent = "Failed to load patient list. Please try again."; loadTestsErrorMessage.style.display = 'block'; }
+        } catch (error) { console.error("Error loading patient IDs: ", error); loadTestsLoadingMessage.style.display = 'none'; loadTestsErrorMessage.textContent = "Failed to load patient list. Please try again. (Check Firestore rules & indexes)"; loadTestsErrorMessage.style.display = 'block'; }
     }
 
     function loadTestDatesForPatient(patientId, screenings) {
@@ -474,9 +481,9 @@
             const docSnap = await getDoc(docRef);
             if (docSnap.exists()) {
                 const data = docSnap.data();
-                if(fpNrInput) fpNrInput.value = data.patientId || ''; if(ageInput) ageInput.value = data.age || ''; if(genderSelect) genderSelect.value = data.gender || ''; if(sportInput) sportInput.value = data.sport || ''; if(bodyweightInput) bodyweightInput.value = data.bodyweight || ''; if(injuredSideRadio) injuredSideRadio.value = data.injuredSide || 'Left';
+                if(fpNrInput) fpNrInput.value = data.patientId || ''; if(ageInput) ageInput.value = data.age || ''; if(genderSelect) genderSelect.value = data.gender || ''; if(sportInput) sportInput.value = data.sport || ''; if(injuryInput) injuryInput.value = data.injury || ''; if(bodyweightInput) bodyweightInput.value = data.bodyweight || ''; if(injuredSideRadio) injuredSideRadio.value = data.injuredSide || 'Left';
                 ['I', 'Y', 'T'].forEach(pos => { if (data.ashTest && data.ashTest[pos]) { if(inputFieldMap[pos].nonInjured[0]) inputFieldMap[pos].nonInjured[0].value = data.ashTest[pos].nonInjuredMaxForce || ''; if(inputFieldMap[pos].nonInjured[1]) inputFieldMap[pos].nonInjured[1].value = data.ashTest[pos].nonInjuredRfd || ''; if(inputFieldMap[pos].injured[0]) inputFieldMap[pos].injured[0].value = data.ashTest[pos].injuredMaxForce || ''; if(inputFieldMap[pos].injured[1]) inputFieldMap[pos].injured[1].value = data.ashTest[pos].injuredRfd || ''; } });
-                if (patientDataContainer && !patientDataContainer.classList.contains('visible')) { if (data.patientId || data.age || data.gender || data.sport) { togglePatientData(); } }
+                if (patientDataContainer && !patientDataContainer.classList.contains('visible')) { if (data.patientId || data.age || data.gender || data.sport || data.injury) { togglePatientData(); } }
                 updateGraphsAndTable(); saveInputsToLocalStorage(); closeLastTestsModal(); showStatusMessage('Test data loaded successfully!', 'success');
             } else { console.log("No such screening document!"); loadTestsErrorMessage.textContent = "Could not find the selected test data."; loadTestsErrorMessage.style.display = 'block'; }
         } catch (error) { console.error("Error loading screening data: ", error); loadTestsErrorMessage.textContent = "Error loading test data. Please try again."; loadTestsErrorMessage.style.display = 'block'; } finally { loadTestsLoadingMessage.style.display = 'none'; }
@@ -491,7 +498,7 @@
                 await deleteDoc(doc(db, "screenings", screeningId));
                 console.log("Screening deleted successfully:", screeningId); showStatusMessage('Test deleted successfully!', 'success');
                 const currentlySelectedPatientId = selectedPatientIdForTestsSpan.textContent;
-                if(currentlySelectedPatientId === patientId) { const patientListItem = Array.from(patientIdListUL.children).find(li => li.dataset.patientId === patientId); if(patientListItem) patientListItem.click(); else { loadPatientIdsForModal(); } } else { loadPatientIdsForModal(); }
+                if(currentlySelectedPatientId === patientId) { const patientListItem = Array.from(patientIdListUL.children).find(li => li.dataset.patientId === patientId); if(patientListItem) { patientListItem.click(); } else { loadPatientIdsForModal(); } } else { loadPatientIdsForModal(); }
             } catch (error) { console.error("Error deleting screening: ", error); loadTestsErrorMessage.textContent = "Failed to delete test. Please try again."; loadTestsErrorMessage.style.display = 'block'; showStatusMessage('Failed to delete test.', 'error'); } finally { loadTestsLoadingMessage.style.display = 'none'; }
         }
     }
@@ -499,10 +506,10 @@
     async function saveDataToFirestore() {
         if (!auth.currentUser) { showStatusMessage("You must be logged in to save data.", "error"); return; }
         if (!fpNrInput || !fpNrInput.value.trim()) { showStatusMessage("Patient ID is required to save data.", "error"); fpNrInput.focus(); return; }
-        const screeningData = { patientId: fpNrInput.value.trim(), clinicianId: auth.currentUser.uid, testTimestamp: serverTimestamp(), age: ageInput.value ? parseInt(ageInput.value) : null, gender: genderSelect.value || null, sport: sportInput.value.trim() || null, bodyweight: bodyweightInput.value ? parseFloat(bodyweightInput.value) : null, injuredSide: injuredSideRadio.value, ashTest: {} };
+        const screeningData = { patientId: fpNrInput.value.trim(), clinicianId: auth.currentUser.uid, testTimestamp: serverTimestamp(), age: ageInput.value ? parseInt(ageInput.value) : null, gender: genderSelect.value || null, sport: sportInput.value.trim() || null, injury: injuryInput.value.trim() || null, bodyweight: bodyweightInput.value ? parseFloat(bodyweightInput.value) : null, injuredSide: injuredSideRadio.value, ashTest: {} };
         let dataEnteredForAsh = false;
         ['I', 'Y', 'T'].forEach(pos => { const positionData = processInputAndCalculate(pos); if (positionData) { screeningData.ashTest[pos] = { nonInjuredMaxForce: positionData.left.max_force, nonInjuredRfd: positionData.left.rfd, injuredMaxForce: positionData.right.max_force, injuredRfd: positionData.right.rfd }; if (injuredSideRadio.value === 'Left') { screeningData.ashTest[pos] = { nonInjuredMaxForce: positionData.right.max_force, nonInjuredRfd: positionData.right.rfd, injuredMaxForce: positionData.left.max_force, injuredRfd: positionData.left.rfd }; } dataEnteredForAsh = true; } else { screeningData.ashTest[pos] = { nonInjuredMaxForce: null, nonInjuredRfd: null, injuredMaxForce: null, injuredRfd: null }; } });
-        if (!dataEnteredForAsh && (!screeningData.age && !screeningData.gender && !screeningData.sport && !screeningData.bodyweight)) { showStatusMessage("No data entered to save.", "warning"); return; }
+        if (!dataEnteredForAsh && (!screeningData.age && !screeningData.gender && !screeningData.sport && !screeningData.injury && !screeningData.bodyweight)) { showStatusMessage("No data entered to save.", "warning"); return; }
         try { const docRef = await addDoc(collection(db, "screenings"), screeningData); console.log("Screening data saved with ID: ", docRef.id); showStatusMessage("Data saved successfully!", "success"); } catch (error) { console.error("Error saving screening data: ", error); showStatusMessage("Error saving data. Please try again.", "error"); }
     }
     
@@ -519,6 +526,7 @@
     if (ageInput) ageInput.addEventListener('change', saveInputsToLocalStorage);
     if (genderSelect) genderSelect.addEventListener('change', saveInputsToLocalStorage);
     if (sportInput) sportInput.addEventListener('change', saveInputsToLocalStorage);
+    if (injuryInput) injuryInput.addEventListener('change', saveInputsToLocalStorage);
     allNumberInputs.forEach(input => { input.addEventListener('input', updateGraphsAndTable); input.addEventListener('change', saveInputsToLocalStorage); });
     if (pdfPreviewButton) pdfPreviewButton.addEventListener('click', enterPreviewMode);
     if (exportExcelButton) exportExcelButton.addEventListener('click', exportTableToCsv);
