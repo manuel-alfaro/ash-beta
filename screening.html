@@ -109,11 +109,24 @@
         .sidebar-logo-placeholder { height: 50px; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
         .sidebar-logo-placeholder i { color: var(--app-primary-color); }
         .sidebar-buttons { display: flex; flex-direction: column; gap: 12px; }
-        .sidebar-social-links { margin-top: auto; padding-top: 20px; margin-bottom: 25px; text-align: center; }
+        .sidebar-user-info {
+            margin-top: auto;
+            padding-top: 15px;
+            font-size: 0.8rem;
+            color: var(--dark-gray);
+            text-align: center;
+            overflow-wrap: break-word;
+        }
+        .sidebar-social-links {
+            padding-top: 10px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
         .sidebar-social-links a { color: var(--app-secondary-color); margin: 0 28px; font-size: 1.8rem; text-decoration: none; transition: color 0.2s ease; }
         .sidebar-social-links a:hover { color: var(--app-primary-color); }
         .app-main-content { flex-grow: 1; margin-left: calc(var(--sidebar-width) + var(--main-content-margin)); padding: 30px 40px 30px 40px; background-color: var(--white); overflow-y: auto; height: 100vh; box-sizing: border-box; }
         .app-sidebar button, .app-sidebar a button { font-family: 'Avenir', sans-serif; font-size: 0.9rem; font-weight: var(--normal-font-weight); padding: 10px 15px; color: var(--app-primary-color); background-color: transparent; background-image: none; border: none; border-radius: 0; cursor: pointer; transition: all 0.3s ease; box-shadow: none; letter-spacing: 0.5px; width: 100%; text-align: left; display: flex; align-items: center; gap: 10px; }
+        .app-sidebar button#logout-button { margin-top: 5px; /* Reduced margin from auto */}
         .app-sidebar button i { width: 20px; text-align: center; color: var(--app-primary-color); transition: color 0.3s ease; }
         .app-sidebar button:hover, .app-sidebar a button:hover { background-image: linear-gradient(to right, var(--app-button-light-gradient-start), var(--app-button-light-gradient-end)); color: var(--app-text-on-primary); transform: translateY(-1px); }
         .app-sidebar button:active, .app-sidebar a button:active { transform: translateY(0px); }
@@ -152,18 +165,18 @@
         #selected-patient-tests-list button.delete-test-btn { background-color: transparent; border:none; color: var(--danger-color-dark); cursor:pointer; padding: 0.25rem; margin-left:10px;}
         #selected-patient-tests-list button.delete-test-btn:hover { color: #a80000; }
         #save-data-button-container { margin-top: 20px; margin-bottom: 20px; text-align: center; }
-        #save-data-button-container button {
+        #save-data-button-main {
             background-image: linear-gradient(to right, var(--app-button-gradient-start), var(--app-button-gradient-end));
             color: var(--app-button-text-color);
             padding: 10px 25px;
             font-size: 1rem;
             border: none;
-            border-radius: 0px; /* Matcher --border-radius */
+            border-radius: 0px;
             cursor: pointer;
             transition: background-image 0.3s ease;
             box-shadow: var(--subtle-shadow);
         }
-        #save-data-button-container button:hover {
+        #save-data-button-main:hover {
             background-image: linear-gradient(to right, var(--app-button-hover-gradient-start), var(--app-button-hover-gradient-end));
         }
         #input-section-container { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px; }
@@ -216,8 +229,11 @@
             <button id="pdf-preview-button"><i class="fas fa-file-pdf"></i><span class="button-text">PDF Preview</span></button>
             <button id="export-excel-button"><i class="fas fa-file-excel"></i><span class="button-text">Export Data</span></button>
             <button id="clear-all-button"><i class="fas fa-eraser"></i><span class="button-text">Clear All</span></button>
-            <button id="logout-button" style="margin-top: auto;"><i class="fas fa-sign-out-alt"></i><span class="button-text">Logout</span></button>
         </div>
+        <div id="loggedInUserContainer" class="sidebar-user-info">
+             <span id="loggedInUserEmail" style="font-weight: var(--semibold-font-weight);"></span>
+        </div>
+        <button id="logout-button" style="margin-top: 5px;"><i class="fas fa-sign-out-alt"></i><span class="button-text">Logout</span></button>
         <div class="sidebar-social-links">
             <a href="https://www.instagram.com/alphatekofficial" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
             <a href="https://www.alphatek.no" target="_blank" title="Website"><i class="fas fa-globe"></i></a>
@@ -240,9 +256,9 @@
                         <label for="fp-nr-input">Patient ID:</label>
                         <input id="fp-nr-input" type="text" placeholder="Enter or select Patient ID" list="existing-patient-ids">
                         <datalist id="existing-patient-ids"></datalist>
-                        <div id="selected-patient-tests-container" style="display:none; margin-top: 0.5rem; padding: 0.5rem; background-color: var(--medium-gray); border-radius: 0px;">
-                            <h5 style="margin-bottom: 0.5rem; font-size: 0.9em; color: var(--app-primary-color);">Tests for <span id="current-patient-for-tests"></span>:</h5>
-                            <ul id="selected-patient-tests-list" style="list-style: none; padding: 0; max-height: 100px; overflow-y: auto;"></ul>
+                        <div id="selected-patient-tests-container">
+                            <h5 id="selected-patient-tests-title">Tests for <span id="current-patient-for-tests"></span>:</h5>
+                            <ul id="selected-patient-tests-list"></ul>
                         </div>
                     </div>
                     <div class="patient-data-item"><label for="age-input">Age:</label><input id="age-input" type="number" placeholder="Years"></div>
@@ -290,6 +306,7 @@
     const appLayout = document.querySelector('.app-layout');
     const appLoadingMessage = document.getElementById('appLoadingMessage');
     const appStatusMessage = document.getElementById('appStatusMessage');
+    const loggedInUserEmailSpan = document.getElementById('loggedInUserEmail');
 
     const plotlyConfig = {
         displaylogo: false,
@@ -351,7 +368,6 @@
     const selectedPatientTestsListUL = document.getElementById('selected-patient-tests-list');
     const currentPatientForTestsSpan = document.getElementById('current-patient-for-tests');
 
-
     function showStatusMessage(message, type = 'info', duration = 3000) {
         if (!appStatusMessage) return;
         appStatusMessage.textContent = message;
@@ -365,6 +381,9 @@
     onAuthStateChanged(auth, (user) => {
         if (user) {
             console.log("Screening page (Firebase Auth): User is authenticated.", user.uid);
+            if(loggedInUserEmailSpan && user.email) {
+                loggedInUserEmailSpan.textContent = user.email;
+            }
             if (appLoadingMessage) appLoadingMessage.style.display = 'none';
             if (appLayout) appLayout.style.display = 'flex';
         } else {
@@ -396,7 +415,7 @@
     
     function exportTableToCsv() { const fpNr = fpNrInput ? fpNrInput.value.trim() : ''; const age = ageInput ? ageInput.value.trim() : ''; const gender = genderSelect ? genderSelect.value : ''; const sport = sportInput ? sportInput.value.trim() : ''; const injury = injuryInput ? injuryInput.value.trim() : ''; const bodyweight = bodyweightInput ? bodyweightInput.value.trim() : ''; const injuredSide = injuredSideRadio ? injuredSideRadio.value : ''; const date = new Date(); const year = date.getFullYear(); const month = (date.getMonth() + 1).toString().padStart(2, '0'); const day = date.getDate().toString().padStart(2, '0'); const dateString = `${year}-${month}-${day}`; const safeFpNr = fpNr.replace(/[^a-z0-9]/gi, '_') || 'Unknown'; const filename = `ASH_${safeFpNr}_${dateString}.csv`; const headers = [ "Patient ID", "Age", "Gender", "Sport", "Injury", "Bodyweight (kg)", "Injured Side", "Position", "Metric", "Left Value", "Right Value" ]; let csv = [headers.join(',')]; const positions = ['I', 'Y', 'T']; const metricsForCsv = ['Max Force (N)', 'RFD 100ms (N/s)']; positions.forEach(pos => { const positionName = `ASH Test Position ${pos}`; const positionData = processInputAndCalculate(pos); metricsForCsv.forEach(metricDisplay => { let leftVal = ''; let rightVal = ''; let metricIdentifier = metricDisplay; if (metricDisplay === 'Max Force (N)') { if (positionData) { leftVal = positionData.left.max_force; rightVal = positionData.right.max_force; } } else if (metricDisplay === 'RFD 100ms (N/s)') { if (positionData) { leftVal = positionData.left.rfd; rightVal = positionData.right.rfd; } metricIdentifier = 'RFD 100ms (N/s)'; } const rowData = [ `"${fpNr}"`, `"${age}"`, `"${gender}"`, `"${sport}"`, `"${injury}"`, `"${bodyweight}"`, `"${injuredSide}"`, `"${positionName}"`, `"${metricIdentifier}"`, `"${leftVal}"`, `"${rightVal}"` ]; csv.push(rowData.join(',')); }); }); const csvString = "\uFEFF" + csv.join('\n'); const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); if (link.download !== undefined) { const url = URL.createObjectURL(blob); link.setAttribute('href', url); link.setAttribute('download', filename); link.style.visibility = 'hidden'; document.body.appendChild(link); link.click(); document.body.removeChild(link); console.log(`CSV export initiated: ${filename}`); } else { alert("CSV export is not directly supported in this browser. Please try a modern browser."); } }
     
-    function clearAllFields() { console.log("Clearing all fields..."); if (fpNrInput) fpNrInput.value = ''; if (ageInput) ageInput.value = ''; if (genderSelect) genderSelect.value = ''; if (sportInput) sportInput.value = ''; if (injuryInput) injuryInput.value = ''; if (injuredSideRadio) injuredSideRadio.value = 'Left'; if (bodyweightInput) bodyweightInput.value = ''; allNumberInputs.forEach(input => { input.value = ''; }); updateGraphsAndTable(); saveInputsToLocalStorage(); console.log("Fields cleared."); }
+    function clearAllFields() { console.log("Clearing all fields..."); if (fpNrInput) fpNrInput.value = ''; if (ageInput) ageInput.value = ''; if (genderSelect) genderSelect.value = ''; if (sportInput) sportInput.value = ''; if (injuryInput) injuryInput.value = ''; if (injuredSideRadio) injuredSideRadio.value = 'Left'; if (bodyweightInput) bodyweightInput.value = ''; allNumberInputs.forEach(input => { input.value = ''; }); if(selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'none'; if(selectedPatientTestsListUL) selectedPatientTestsListUL.innerHTML = ''; updateGraphsAndTable(); saveInputsToLocalStorage(); console.log("Fields cleared."); }
     
     const localStorageKey = 'screeningAppData_v4';
     function saveInputsToLocalStorage() { const dataToSave = { injuredSide: injuredSideRadio.value, bodyweight: bodyweightInput.value, fpNr: fpNrInput.value, age: ageInput.value, gender: genderSelect.value, sport: sportInput.value, injury: injuryInput.value, 'non-injured-max-force-i': inputFieldMap['I'].nonInjured[0].value, 'non-injured-rfd-i': inputFieldMap['I'].nonInjured[1].value, 'injured-max-force-i': inputFieldMap['I'].injured[0].value, 'injured-rfd-i': inputFieldMap['I'].injured[1].value, 'non-injured-max-force-y': inputFieldMap['Y'].nonInjured[0].value, 'non-injured-rfd-y': inputFieldMap['Y'].nonInjured[1].value, 'injured-max-force-y': inputFieldMap['Y'].injured[0].value, 'injured-rfd-y': inputFieldMap['Y'].injured[1].value, 'non-injured-max-force-t': inputFieldMap['T'].nonInjured[0].value, 'non-injured-rfd-t': inputFieldMap['T'].nonInjured[1].value, 'injured-max-force-t': inputFieldMap['T'].injured[0].value, 'injured-rfd-t': inputFieldMap['T'].injured[1].value, }; try { localStorage.setItem(localStorageKey, JSON.stringify(dataToSave)); } catch (error) { console.error('Error saving inputs:', error); } }
@@ -405,6 +424,7 @@
 
     async function populatePatientIdDatalist() {
         if (!auth.currentUser || !existingPatientIdsDatalist) return;
+        console.log("Populating patient ID datalist...");
         try {
             const q = query(collection(db, "screenings"), where("clinicianId", "==", auth.currentUser.uid), orderBy("patientId"));
             const querySnapshot = await getDocs(q);
@@ -413,18 +433,28 @@
                 patientIds.add(doc.data().patientId);
             });
             existingPatientIdsDatalist.innerHTML = '';
+            if (patientIds.size === 0) {
+                console.log("No unique patient IDs found for this clinician.");
+            }
             patientIds.forEach(id => {
                 const option = document.createElement('option');
                 option.value = id;
                 existingPatientIdsDatalist.appendChild(option);
             });
+            console.log("Patient ID datalist populated with:", Array.from(patientIds));
         } catch (error) {
             console.error("Error populating patient ID datalist: ", error);
+            if (error.code === 'failed-precondition' || (error.message && error.message.includes('index'))) {
+                showStatusMessage("Error: Firestore index required for loading patient list. Please create it in the Firebase console.", "error", 10000);
+            } else {
+                showStatusMessage("Error loading patient list.", "error");
+            }
         }
     }
 
     async function displayTestsForPatient(patientId) {
         if (!auth.currentUser || !selectedPatientTestsListUL || !selectedPatientTestsContainer || !currentPatientForTestsSpan) return;
+        console.log(`Displaying tests for patient ID: ${patientId}`);
         
         currentPatientForTestsSpan.textContent = patientId;
         selectedPatientTestsListUL.innerHTML = '<li>Loading tests...</li>';
@@ -473,7 +503,10 @@
 
         } catch (error) {
             console.error(`Error loading tests for patient ${patientId}: `, error);
-            selectedPatientTestsListUL.innerHTML = '<li>Error loading tests.</li>';
+            selectedPatientTestsListUL.innerHTML = '<li>Error loading tests. Check console for details.</li>';
+             if (error.code === 'failed-precondition' || (error.message && error.message.includes('index'))) {
+                showStatusMessage("Error: Firestore index required for loading tests. Please create it in the Firebase console.", "error", 10000);
+            }
         }
     }
     
@@ -493,7 +526,6 @@
             }
         });
     }
-
 
     async function loadScreeningData(screeningId) {
         if (!screeningId) return;
