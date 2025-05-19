@@ -38,10 +38,10 @@
             --injured-input-border: #fca5a5;
             --white: #ffffff;
             --border-radius: 4px; 
-            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Beholdes for input-position-box */
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); 
             --sidebar-border-color: var(--medium-gray);
             --header-border-color: var(--medium-gray);
-            --subtle-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Brukes mindre */
+            --subtle-shadow: 0 1px 3px rgba(0,0,0,0.07); /* Litt dusere skygge */
             --left-line-color: #ff7f0e;
             --right-line-color: #1f77b4;
             --norm-poor-bg: rgba(252, 165, 165, 0.5);
@@ -100,7 +100,6 @@
             left: 50%;
             transform: translateX(-50%);
             width: auto;
-            /* box-shadow: var(--box-shadow); Fjernet generell skygge */
             display: none;
             font-size: 0.9rem;
         }
@@ -112,8 +111,8 @@
             background-color: var(--light-gray); 
             color: var(--text-color); 
             padding: 20px 15px; 
-            /* box-shadow: 2px 0 5px rgba(0,0,0,0.05); Fjernet skygge */
-            border-right: 1px solid var(--sidebar-border-color); /* Legg til en border istedenfor skygge */
+            /* box-shadow: none; */ /* Skygge fjernet */
+            /* border-right: 1px solid var(--sidebar-border-color); */ /* Kantlinje fjernet */
             display: flex; 
             flex-direction: column; 
             position: fixed; 
@@ -175,20 +174,19 @@
         .app-main-content { flex-grow: 1; margin-left: calc(var(--sidebar-width) + var(--main-content-margin)); padding: 30px 40px 30px 40px; background-color: var(--white); overflow-y: auto; height: 100vh; box-sizing: border-box; }
         .app-sidebar button, .app-sidebar a button { font-family: 'Avenir', sans-serif; font-size: 0.9rem; font-weight: var(--normal-font-weight); padding: 10px 15px; color: var(--app-primary-color); background-color: transparent; background-image: none; border: none; border-radius: var(--border-radius); cursor: pointer; transition: all 0.3s ease; box-shadow: none; letter-spacing: 0.5px; width: 100%; text-align: left; display: flex; align-items: center; gap: 10px; }
         
-        /* Logg ut knapp - uten bakgrunn, med kant */
         .app-sidebar button#logout-button { 
             margin-top: 10px; 
-            background-image: none; /* Fjern gradient */
+            background-image: none; 
             background-color: transparent;
-            color: var(--app-primary-color); /* Tekstfarge primær */
-            border: 1px solid var(--app-primary-color); /* Kant med primærfarge */
+            color: var(--app-primary-color); 
+            border: 1px solid var(--app-primary-color); 
         }
         .app-sidebar button#logout-button:hover {
-            background-color: var(--app-primary-color); /* Bakgrunn på hover */
-            color: var(--app-text-on-primary); /* Tekstfarge på hover */
+            background-color: var(--app-primary-color); 
+            color: var(--app-text-on-primary); 
         }
-        .app-sidebar button#logout-button i { color: var(--app-primary-color); } /* Ikonfarge primær */
-        .app-sidebar button#logout-button:hover i { color: var(--app-text-on-primary); } /* Ikonfarge på hover */
+        .app-sidebar button#logout-button i { color: var(--app-primary-color); } 
+        .app-sidebar button#logout-button:hover i { color: var(--app-text-on-primary); } 
 
 
         .app-sidebar button i { width: 20px; text-align: center; color: var(--app-primary-color); transition: color 0.3s ease; }
@@ -197,7 +195,7 @@
             background-image: linear-gradient(to right, var(--app-button-light-gradient-start), var(--app-button-light-gradient-end)); 
             color: var(--app-text-on-primary); 
             transform: translateY(-1px); 
-            border-color: transparent; /* Fjern border på hover for andre knapper */
+            border-color: transparent; 
         }
         .app-sidebar button:active, .app-sidebar a button:active { transform: translateY(0px); }
         .app-sidebar button:not(#logout-button):hover i, 
@@ -215,8 +213,8 @@
         h3.normative-title { text-align: center;}
         #report-content { background-color: var(--white); padding: 15px 0; }
         #top-controls { display: flex; justify-content: flex-start; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; background-color: transparent; border: none; border-radius: 0; padding: 0; box-shadow: none; }
-        #top-controls .control-item { border: none; border-radius: var(--border-radius); background-color: var(--light-gray); padding: 15px 20px; display: flex; align-items: center; gap: 8px; /* box-shadow: var(--subtle-shadow); Fjernet skygge */ transition: none; }
-        #top-controls .control-item:focus-within { /* box-shadow: var(--subtle-shadow); Fjernet skygge */ border-color: transparent; }
+        #top-controls .control-item { border: none; border-radius: var(--border-radius); background-color: var(--light-gray); padding: 15px 20px; display: flex; align-items: center; gap: 8px; box-shadow: none; transition: none; }
+        #top-controls .control-item:focus-within { border-color: transparent; }
         #top-controls .control-label { font-family: 'Avenir', sans-serif; font-size: 0.9rem; color: var(--dark-gray); font-weight: var(--normal-font-weight); }
         #top-controls #injured-side-radio, #top-controls #bodyweight-input { font-family: 'Avenir', sans-serif; font-size: 0.9rem; padding: 5px 8px; border: 1px solid var(--medium-gray); border-radius: var(--border-radius); background-color: var(--white); color: var(--text-color); transition: background-color 0.3s ease; font-weight: var(--normal-font-weight); width: 80px; }
         #top-controls #injured-side-radio:focus, #top-controls #bodyweight-input:focus { border-color: var(--app-primary-color); outline: 2px solid var(--app-secondary-color); background-color: var(--white); }
@@ -229,29 +227,34 @@
             padding: 20px; 
             border-radius: var(--border-radius); 
             margin-bottom: 25px; 
-            /* box-shadow: var(--subtle-shadow); Fjernet skygge */
-            border: 1px solid var(--medium-gray); /* Legg til border hvis skygge fjernes */
+            border: none; /* Fjernet kantlinje */
+            box-shadow: none; /* Fjernet skygge */
         }
         #patient-data-grid { display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; }
         .patient-data-item { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 150px; }
         .patient-data-item label { font-family: 'Avenir', sans-serif; font-size: 0.9rem; color: var(--dark-gray); font-weight: var(--normal-font-weight); }
-        #patient-data-container input[type="text"], #patient-data-container input[type="number"], #patient-data-container select { font-family: 'Avenir', sans-serif; font-size: 0.9rem; padding: 6px 10px; border: 1px solid var(--medium-gray); border-radius: var(--border-radius); background-color: var(--white); color: var(--text-color); transition: border-color 0.2s ease; width: 100%; box-sizing: border-box; font-weight: var(--normal-font-weight); }
+        #patient-data-container input[type="text"], #patient-data-container input[type="number"], #patient-data-container select { font-family: 'Avenir', sans-serif; font-size: 0.9rem; padding: 6px 10px; border: none; /* Fjernet kantlinje fra felter */ border-radius: var(--border-radius); background-color: var(--white); color: var(--text-color); transition: border-color 0.2s ease; width: 100%; box-sizing: border-box; font-weight: var(--normal-font-weight); }
         #patient-data-container input[type="text"]:focus, #patient-data-container input[type="number"]:focus, #patient-data-container select:focus { border-color: var(--app-primary-color); outline: 2px solid var(--app-secondary-color); background-color: var(--white); }
         #patient-data-container select { appearance: none; -webkit-appearance: none; -moz-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23212529'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1.5em 1.5em; padding-right: 2.5rem; }
         #fp-nr-input {
             padding: 8px 12px; 
             font-size: 1rem;
+            border: 1px solid var(--medium-gray); /* Legg tilbake en subtil border for input-feltet */
         }
+        #fp-nr-input:focus {
+            border-color: var(--app-primary-color);
+        }
+
 
         /* === CSS for visning av lagrede tester === */
         #selected-patient-tests-container { 
-            background-color: var(--light-gray); /* Endret til light-gray */
+            background-color: var(--light-gray); 
             padding: 20px;
             margin-top: 30px;
             margin-bottom: 30px;
-            /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); Fjernet skygge */
+            box-shadow: none; 
             border-radius: var(--border-radius); 
-            border: 1px solid var(--medium-gray); /* Legg til border hvis skygge fjernes */
+            border: 1px solid var(--medium-gray); 
         }
 
         #selected-patient-tests-container h3 { 
@@ -259,7 +262,7 @@
             margin-bottom: 18px;
             font-size: 1.2rem; 
             color: var(--app-primary-color);
-            border-bottom: 1px solid var(--medium-gray); /* Tilpasset border */
+            border-bottom: 1px solid var(--medium-gray); 
             padding-bottom: 12px;
             font-weight: var(--normal-font-weight); 
         }
@@ -270,7 +273,7 @@
             margin: 0;
             display: flex; 
             flex-wrap: wrap; 
-            gap: 10px; 
+            gap: 12px; /* Økt gap for bedre separasjon */
         }
 
         #selected-patient-tests-list li {
@@ -278,32 +281,31 @@
             flex-direction: column; 
             justify-content: space-between;
             align-items: center; 
-            padding: 10px 12px;
-            border: 1px solid var(--medium-gray); 
-            background-color: var(--white); 
+            padding: 12px 15px; /* Økt padding */
+            border: 1px solid var(--app-secondary-color); /* Blå kantlinje */
+            background-color: rgba(112, 188, 252, 0.08); /* Veldig lys blå bakgrunn */
             border-radius: var(--border-radius);
-            min-width: 150px; 
+            min-width: 160px; /* Litt bredere */
             box-sizing: border-box;
             text-align: center;
-            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            cursor: pointer; /* Hele kortet er klikkbart for å laste */
         }
         
         #selected-patient-tests-list li:hover { 
-            background-color: #eef2f7; 
-            /* box-shadow: 0 2px 5px rgba(0,0,0,0.1); Fjernet hover skygge også */
+            background-color: rgba(112, 188, 252, 0.15); 
+            transform: translateY(-2px); /* Liten løfteeffekt */
         }
 
         #selected-patient-tests-list li span { 
             color: var(--app-primary-color); 
             font-size: 0.9rem;
             font-weight: var(--semibold-font-weight);
-            cursor: pointer; 
-            margin-bottom: 8px; 
-            transition: color 0.2s ease;
+            margin-bottom: 10px; /* Mer plass til knappen */
         }
-        #selected-patient-tests-list li span:hover {
-            color: var(--app-tertiary-color); 
-        }
+        /* fjerner hover for span siden hele li nå er hoverable */
+        /* #selected-patient-tests-list li span:hover { color: var(--app-tertiary-color); } */
+
 
         #selected-patient-tests-list button.delete-test-btn {
             background-color: transparent;
@@ -311,41 +313,41 @@
             color: var(--danger-color-dark);
             border-radius: var(--border-radius);
             cursor: pointer;
-            padding: 4px 8px;
-            font-size: 0.8rem; 
+            padding: 5px 8px; /* Litt mer padding */
+            font-size: 0.85rem; 
             transition: all 0.2s ease;
             width: auto; 
+            display: flex; /* For å sentrere ikon */
+            align-items: center;
+            justify-content: center;
         }
-
         #selected-patient-tests-list button.delete-test-btn:hover {
             background-color: var(--danger-color-dark);
             color: white;
-            transform: scale(1.05); 
         }
         #selected-patient-tests-list button.delete-test-btn i {
-            margin-right: 5px;
+            /* margin-right: 5px; Fjernet, da teksten er borte */
         }
         /* === Slutt på CSS for testliste-container === */
 
         #save-data-button-container { margin-top: 20px; margin-bottom: 20px; text-align: center; }
-        /* Lagre data knapp - uten bakgrunn, med kant */
         #save-data-button-main {
-            background-image: none; /* Fjern gradient */
+            background-image: none; 
             background-color: transparent;
-            color: var(--app-primary-color); /* Tekstfarge primær */
-            border: 1px solid var(--app-primary-color); /* Kant med primærfarge */
+            color: var(--app-primary-color); 
+            border: 1px solid var(--app-primary-color); 
             padding: 10px 25px;
             font-size: 1rem;
             border-radius: var(--border-radius); 
             cursor: pointer;
-            transition: all 0.3s ease; /* Transition for all properties */
-            /* box-shadow: var(--subtle-shadow); Fjernet skygge */
+            transition: all 0.3s ease; 
+            box-shadow: none; 
         }
         #save-data-button-main:hover {
-            background-color: var(--app-primary-color); /* Bakgrunn på hover */
-            color: var(--app-text-on-primary); /* Tekstfarge på hover */
+            background-color: var(--app-primary-color); 
+            color: var(--app-text-on-primary); 
         }
-        #save-data-button-main i { /* Sørg for at ikonet også endrer farge */
+        #save-data-button-main i { 
              color: var(--app-primary-color);
         }
         #save-data-button-main:hover i {
@@ -354,7 +356,7 @@
 
 
         #input-section-container { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px; }
-        .input-position-box { flex: 1; min-width: 300px; padding: 15px; background: linear-gradient(to top right, rgb(222, 226, 230), rgb(112, 188, 252)); box-shadow: var(--box-shadow); /* Beholdt skygge her */ border-radius: var(--border-radius); margin-bottom: 20px; position: relative; overflow: hidden; }
+        .input-position-box { flex: 1; min-width: 300px; padding: 15px; background: linear-gradient(to top right, rgb(222, 226, 230), rgb(112, 188, 252)); box-shadow: var(--box-shadow); border-radius: var(--border-radius); margin-bottom: 20px; position: relative; overflow: hidden; }
         .input-position-box h4 { font-family: 'Avenir', sans-serif; font-weight: var(--normal-font-weight); font-size: 1.2rem; color: var(--app-primary-color); margin-top: 0; margin-bottom: 20px; text-align: left; border-bottom: none; padding-bottom: 0; position: relative; z-index: 1; }
         .input-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 15px; gap: 5px; position: relative; z-index: 1; }
         .input-row label { font-family: 'Avenir', sans-serif; font-size: 0.9rem; color: var(--text-color); width: 160px; flex-shrink: 0; text-align: left; font-weight: var(--normal-font-weight); padding-bottom: 8px; }
@@ -369,21 +371,26 @@
         .position-row:last-child { border-bottom: none; margin-bottom: 0; }
         .asymmetry-graph-container { flex: 6; min-width: 320px; }
         .normative-graph-container { flex: 4; min-width: 260px; }
+        
+        /* Grafbokser - gjenopprettet skygge, fjernet unødvendig border */
         .position-box, .normative-box { 
-            border: 1px solid var(--medium-gray); /* Legg til border hvis skygge fjernes */
+            border: none; /* Fjernet ekstra border */
             padding: 10px 20px 15px 20px; 
             border-radius: var(--border-radius); 
             background-color: var(--light-gray); 
-            /* box-shadow: var(--subtle-shadow); Fjernet skygge */
+            box-shadow: var(--subtle-shadow); /* Gjenopprettet skygge */
             margin-bottom: 0; 
-            transition: opacity 0.3s ease; /* Fjernet box-shadow transition */
+            transition: box-shadow 0.3s ease, opacity 0.3s ease; /* Beholdt shadow transition */
             display: flex; 
             flex-direction: column; 
             height: var(--graph-box-height); 
             position: relative; 
             overflow: hidden; 
         }
-        .position-box.green-box { /* box-shadow: 0 0 15px 5px var(--success-shadow-color); Fjernet skygge */ border-color: var(--success-border-color); /* Forsterk med border */ }
+        .position-box.green-box { 
+            box-shadow: 0 0 15px 5px var(--success-shadow-color); /* Beholdt spesiell skygge for green-box */
+            border-color: var(--success-border-color); 
+        }
         .position-box::after { content: ''; position: absolute; top: -100px; right: -100px; width: 500px; height: 500px; background-image: radial-gradient(circle at top right, var(--success-gradient-start-color) 0%, rgba(from var(--light-gray) r g b / 0) 65% ); opacity: 0; pointer-events: none; z-index: 0; border-radius: 50%; transition: opacity 0.3s ease; }
         .position-box.green-box::after { opacity: 0.85; }
         .js-plotly-plot { flex-grow: 1; position: relative; z-index: 1; }
@@ -406,8 +413,8 @@
         body.pdf-preview-active #save-data-button-container,
         body.pdf-preview-active #bottom-area,
         body.pdf-preview-active .sidebar-social-links,
-        body.pdf-preview-active #loggedInUserContainer, /* Skjul hele brukerinfoboksen i sidemeny */
-        body.pdf-preview-active .sidebar-buttons /* Skjul alle knapper i sidemenyen */
+        body.pdf-preview-active #loggedInUserContainer, 
+        body.pdf-preview-active .sidebar-buttons
         {
             display: none !important;
         }
@@ -426,7 +433,7 @@
 
 
         @media (max-width: 992px) { :root { --sidebar-width: 70px; } .app-main-content { margin-left: calc(var(--sidebar-width) + var(--main-content-margin)); padding: 25px 30px; } .app-sidebar { padding: 20px 10px; top: 0; height: 100vh; } .app-sidebar .sidebar-logo-placeholder { height: 40px; margin-bottom: 40px; font-size: 1.3rem; } .app-sidebar .button-text { display: none; } .app-sidebar button, .app-sidebar a button { justify-content: center; padding: 10px 0; gap: 0; font-size: 0.85rem; } .app-sidebar button i { width: auto; margin: 0; } .sidebar-social-links { display: none; } .position-row { flex-direction: column; align-items: stretch; } .asymmetry-graph-container, .normative-graph-container { flex: none; width: 100%; min-width: unset; } .position-box, .normative-box { height: auto; min-height: unset; } #patient-data-grid { /*grid-template-columns: 1fr;*/ } #input-section-container { flex-direction: column; } .input-position-box { min-width: unset; } body.pdf-preview-active .app-main-content { padding: 15px 30px; } body.pdf-preview-active .position-row { align-items: stretch; } body.pdf-preview-active .position-box, body.pdf-preview-active .normative-box { height: auto; min-height: unset; } }
-        @media (max-width: 768px) { .app-layout { flex-direction: column; min-height: 100vh; } .app-sidebar { width: 100%; height: auto; position: relative; top: 0; flex-direction: row; flex-wrap: wrap; justify-content: center; padding: 10px; /* box-shadow: 0 2px 5px rgba(0,0,0,0.1); Fjernet */ border-bottom: 1px solid var(--sidebar-border-color); border-right: none; z-index: 5; overflow-y: visible; } .sidebar-logo-placeholder { display: none; } .sidebar-buttons { flex-direction: row; flex-wrap: wrap; justify-content: center; width: 100%; flex-grow: 0; } .app-sidebar button, .app-sidebar a button { width: auto; flex-grow: 1; max-width: 180px; justify-content: center; font-size: 0.85rem; font-weight: var(--normal-font-weight); padding: 8px 10px; margin: 5px; gap: 8px; } .app-sidebar .button-text { display: inline-block; } .app-sidebar button i { width: auto; margin-right: 5px; } .sidebar-social-links { display: block; width: 100%; margin-top: 10px; padding-top: 0; border-top: none; text-align: center; } .sidebar-social-links a { margin: 0 10px; font-size: 1.1rem; } .app-main-content { margin-left: 0; padding: 20px 15px; height: auto; } h1 { font-size: 1.6rem; font-weight: var(--normal-font-weight);} h2 { font-size: 1.3rem; font-weight: var(--normal-font-weight);} h3.position-title, h3.normative-title { font-size: 1.0rem; font-weight: var(--normal-font-weight);} #top-controls { flex-direction: column; align-items: stretch; gap: 10px; margin-bottom: 15px; padding-bottom: 10px;} .control-item { justify-content: space-between; } .input-row { flex-direction: column; align-items: flex-start; gap: 5px; } .input-row label { flex-basis: auto; width: 100%; text-align: left; margin-bottom: 3px;} .input-row .input-wrapper { flex-basis: auto; width: 100%; justify-content: flex-start; } .input-row input { width: auto; font-size: 1.2rem; font-weight: var(--normal-font-weight); } .input-row input::placeholder { font-size: 0.8rem; font-weight: var(--normal-font-weight);} .unit-text { margin-left: 8px; } .position-box, .normative-box { padding: 10px; margin-bottom: 0;} #preview-exit-button-inline { top: 10px; right: 10px; font-size: 0.8rem; padding: 6px 10px; } body.pdf-preview-active .app-main-content { padding: 10px 15px; } }
+        @media (max-width: 768px) { .app-layout { flex-direction: column; min-height: 100vh; } .app-sidebar { width: 100%; height: auto; position: relative; top: 0; flex-direction: row; flex-wrap: wrap; justify-content: center; padding: 10px; /* box-shadow: 0 2px 5px rgba(0,0,0,0.1); */ border-bottom: 1px solid var(--sidebar-border-color); border-right: none; z-index: 5; overflow-y: visible; } .sidebar-logo-placeholder { display: none; } .sidebar-buttons { flex-direction: row; flex-wrap: wrap; justify-content: center; width: 100%; flex-grow: 0; } .app-sidebar button, .app-sidebar a button { width: auto; flex-grow: 1; max-width: 180px; justify-content: center; font-size: 0.85rem; font-weight: var(--normal-font-weight); padding: 8px 10px; margin: 5px; gap: 8px; } .app-sidebar .button-text { display: inline-block; } .app-sidebar button i { width: auto; margin-right: 5px; } .sidebar-social-links { display: block; width: 100%; margin-top: 10px; padding-top: 0; border-top: none; text-align: center; } .sidebar-social-links a { margin: 0 10px; font-size: 1.1rem; } .app-main-content { margin-left: 0; padding: 20px 15px; height: auto; } h1 { font-size: 1.6rem; font-weight: var(--normal-font-weight);} h2 { font-size: 1.3rem; font-weight: var(--normal-font-weight);} h3.position-title, h3.normative-title { font-size: 1.0rem; font-weight: var(--normal-font-weight);} #top-controls { flex-direction: column; align-items: stretch; gap: 10px; margin-bottom: 15px; padding-bottom: 10px;} .control-item { justify-content: space-between; } .input-row { flex-direction: column; align-items: flex-start; gap: 5px; } .input-row label { flex-basis: auto; width: 100%; text-align: left; margin-bottom: 3px;} .input-row .input-wrapper { flex-basis: auto; width: 100%; justify-content: flex-start; } .input-row input { width: auto; font-size: 1.2rem; font-weight: var(--normal-font-weight); } .input-row input::placeholder { font-size: 0.8rem; font-weight: var(--normal-font-weight);} .unit-text { margin-left: 8px; } .position-box, .normative-box { padding: 10px; margin-bottom: 0;} #preview-exit-button-inline { top: 10px; right: 10px; font-size: 0.8rem; padding: 6px 10px; } body.pdf-preview-active .app-main-content { padding: 10px 15px; } }
         @media (max-width: 480px) { h1 { font-size: 1.4rem; font-weight: var(--normal-font-weight);} h2 { font-size: 1.1rem; font-weight: var(--normal-font-weight);} .app-sidebar button, .app-sidebar a button { font-size: 0.8rem; padding: 6px 8px; max-width: 150px; font-weight: var(--normal-font-weight);} }
         
         @media print { 
@@ -480,7 +487,8 @@
 
     <div class="app-layout">
         <aside class="app-sidebar">
-            <div class="sidebar-logo-placeholder"><i class="fas fa-bars"></i></div> <div class="sidebar-buttons">
+            <div class="sidebar-logo-placeholder"><i class="fas fa-bars"></i></div> 
+            <div class="sidebar-buttons">
                 <a href="assets/analysis.html" id="analysis-link-button"><button type="button" id="view-analysis-button"><i class="fas fa-history"></i> <span class="button-text">Patient History</span></button></a>
                 <button id="pdf-preview-button"><i class="fas fa-file-pdf"></i><span class="button-text">PDF Preview</span></button>
                 <button id="export-excel-button"><i class="fas fa-file-excel"></i><span class="button-text">Export Data</span></button>
@@ -655,7 +663,7 @@
         function mapNkgToPercentile(nkgValue, positionLabel) { const thresholds = normativeThresholds[positionLabel]; if (!thresholds || typeof nkgValue !== 'number' || !isFinite(nkgValue)) return 0; const pMap = [ { v: 0.5, p: 0 }, { v: thresholds.poor_max, p: percentileZones.poor }, { v: thresholds.average_mid, p: percentileMidpoint }, { v: thresholds.good_min, p: percentileZones.average }, { v: thresholds.excellent_min, p: percentileZones.good }, { v: thresholds.excellent_min * 1.25, p: percentileZones.excellent } ]; const minVal = pMap[0].v; const maxVal = pMap[pMap.length - 1].v; const clampedValue = Math.max(minVal, Math.min(nkgValue, maxVal)); let lowerPoint = pMap[0]; let upperPoint = pMap[pMap.length - 1]; for (let i = 0; i < pMap.length - 1; i++) { if (clampedValue === pMap[i].v) { lowerPoint = upperPoint = pMap[i]; break; } if (clampedValue > pMap[i].v && clampedValue <= pMap[i + 1].v) { lowerPoint = pMap[i]; upperPoint = pMap[i + 1]; break; } } if (clampedValue === upperPoint.v) { lowerPoint = upperPoint; } let percentile = lowerPoint.p; const valueRange = upperPoint.v - lowerPoint.v; const percentileRange = upperPoint.p - lowerPoint.p; if (valueRange > 0) { percentile += ((clampedValue - lowerPoint.v) / valueRange) * percentileRange; } return Math.max(0, Math.min(percentile, 100)); }
         function createNormativeComparisonChart(positionData, bodyweight, positionLabel) { const bwVal = parseFloat(bodyweight); if (isNaN(bwVal) || bwVal <= 0 || !positionData) return {}; const leftNkg = positionData.left.max_force / bwVal; const rightNkg = positionData.right.max_force / bwVal; const thresholds = normativeThresholds[positionLabel]; if (!thresholds) return {}; const leftPercentile = mapNkgToPercentile(leftNkg, positionLabel); const rightPercentile = mapNkgToPercentile(rightNkg, positionLabel); const baseCurveX = []; const baseCurveY = []; const mean = 55; const stdDev = 22; const amplitude = 0.9; for (let i = 0; i <= 100; i += 0.5) { baseCurveX.push(i); const y = amplitude * Math.exp(-Math.pow(i - mean, 2) / (2 * Math.pow(stdDev, 2))); baseCurveY.push(y); } const zoneBoundaries = [0, percentileZones.poor, percentileZones.average, percentileZones.good, percentileZones.excellent]; const traces = []; const zoneColorsList = [normZoneColors.poor, normZoneColors.average, normZoneColors.good, normZoneColors.excellent]; for (let i = 0; i < zoneBoundaries.length - 1; i++) { const x0 = zoneBoundaries[i]; const x1 = zoneBoundaries[i+1]; const zoneFillColor = zoneColorsList[i]; const segmentX = [x0]; const segmentY = [0]; for(let j=0; j < baseCurveX.length; j++) { if (baseCurveX[j] >= x0 && baseCurveX[j] <= x1) { segmentX.push(baseCurveX[j]); segmentY.push(baseCurveY[j]); } } segmentX.push(x1); segmentY.push(0); traces.push({ x: segmentX, y: segmentY, type: 'scatter', mode: 'lines', line: { width: 0 }, fill: 'tozeroy', fillcolor: zoneFillColor, hoverinfo: 'none', name: Object.keys(normativeLabels)[i], showlegend: false }); } traces.push({ x: baseCurveX, y: baseCurveY, type: 'scatter', mode: 'lines', line: { color: '#ffffff', width: 1.5, shape: 'spline' }, hoverinfo: 'none', name: 'Distribution (Visual)', showlegend: false }); const layout = { height: 250, margin: { t: 35, b: 95, l: 30, r: 30 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', xaxis: { title: '', range: [0, 100], showgrid: false, zeroline: false, showticklabels: false }, yaxis: { range: [0, 1.1], showgrid: false, zeroline: false, showticklabels: false, title: '' }, shapes: [], annotations: [], font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() }, showlegend: false }; const thresholdAnnotations = [ { p: percentileZones.poor, val: thresholds.poor_max }, { p: percentileZones.average, val: thresholds.good_min }, { p: percentileZones.good, val: thresholds.excellent_min } ]; thresholdAnnotations.forEach(t => { layout.annotations.push({ xref: 'x', yref: 'paper', x: t.p, y: -0.08, text: `<span class="norm-value">${t.val.toFixed(2)}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', font: { family: 'Avenir, sans-serif', size: 10, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim() } }); }); layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: percentileMidpoint, x1: percentileMidpoint, y0: 0, y1: 1, line: { color: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), width: 1.5, dash: 'dot' }, layer: 'below' }); const avgValueForPos = thresholds.average_mid.toFixed(2); layout.annotations.push({ xref: 'x', yref: 'paper', x: percentileMidpoint, y: -0.08, text: `<span class="value-display">${avgValueForPos}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', font: { family: 'Avenir, sans-serif', size: 10, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), weight: 400 } }); const labelYPosition = 1.10; layout.annotations.push({ xref: 'x', yref: 'paper', x: 15, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.poor}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 50, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.average}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() }, align: 'center' }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 80, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.good}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 95, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.excellent}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); const leftColor = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim(); const rightColor = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim(); const lineY0 = 0.05; const lineY1 = 0.95; layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: leftPercentile, x1: leftPercentile, y0: lineY0, y1: lineY1, line: { color: leftColor, width: 2, dash: 'dash' } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: leftPercentile, y: 0.90, text: 'L', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: leftColor, font: {color: leftColor, size: 14, family: 'Avenir, sans-serif', weight: 400} }); layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: rightPercentile, x1: rightPercentile, y0: lineY0, y1: lineY1, line: { color: rightColor, width: 2, dash: 'dash' } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: rightPercentile, y: 0.90, text: 'R', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: rightColor, font: {color: rightColor, size: 14, family: 'Avenir, sans-serif', weight: 400} }); const combinedNkgText = `<span class='nkg-combined-text'>Left: <span class='left-label'>${leftNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>) &nbsp;&nbsp;|&nbsp;&nbsp; Right: <span class='right-label'>${rightNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>)</span>`; layout.annotations.push({ xref: 'paper', yref: 'paper', x: 0.5, y: -0.30, text: combinedNkgText, showarrow: false, xanchor: 'center', yanchor: 'top', align: 'center', font: { size: 15, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), family: 'Avenir, sans-serif', weight: 400 } }); return { data: traces, layout }; }
         function updateGraphsAndTable() { const injuredSide = injuredSideRadio.value; const bodyweight = bodyweightInput.value; const bwVal = parseFloat(bodyweight); const bodyweightValid = !isNaN(bwVal) && bwVal > 0; if (normativePlaceholder) { normativePlaceholder.style.display = bodyweightValid ? 'none' : 'block'; } normativeChartDivs.forEach(divId => { const container = document.getElementById(divId)?.closest('.normative-graph-container'); if (container) { container.style.display = bodyweightValid ? 'block' : 'none'; } }); const positions = ['I', 'Y', 'T']; positions.forEach((pos, i) => { const asymmetryChartDivId = asymmetryChartDivs[i]; const asymmetryPositionBoxDivId = asymmetryPositionBoxDivs[i]; const asymmetryPositionBoxDiv = document.getElementById(asymmetryPositionBoxDivId); const normativeChartDivId = normativeChartDivs[i]; if (!asymmetryPositionBoxDiv || !document.getElementById(asymmetryChartDivId) || !document.getElementById(normativeChartDivId)) return; const positionData = processInputAndCalculate(pos); if (positionData) { try { const [fig, allGreen] = createAsymmetryChart(positionData, injuredSide, pos); if (fig?.data && fig?.layout) { Plotly.react(asymmetryChartDivId, fig.data, fig.layout, plotlyConfig); if (allGreen) asymmetryPositionBoxDiv.classList.add('green-box'); else asymmetryPositionBoxDiv.classList.remove('green-box'); } else { throw new Error("Generated asymmetry figure invalid."); } } catch (error) { console.error(`Error creating asymmetry chart for ${pos}:`, error); createEmptyPlot(asymmetryChartDivId, 'Error loading asymmetry data', 300, 20); asymmetryPositionBoxDiv.classList.remove('green-box'); } } else { createEmptyPlot(asymmetryChartDivId, 'Enter Data', 300, 20); asymmetryPositionBoxDiv.classList.remove('green-box'); } if (bodyweightValid && positionData) { try { const config = createNormativeComparisonChart(positionData, bodyweight, pos); if (config?.data && config?.layout) Plotly.react(normativeChartDivId, config.data, config.layout, plotlyConfig); else throw new Error("Generated normative figure invalid."); } catch (error) { console.error(`Error creating normative chart for ${pos}:`, error); createEmptyPlot(normativeChartDivId, 'Error Loading Data', 250, 35); } } else if (!bodyweightValid) { createEmptyPlot(normativeChartDivId, 'Enter Bodyweight', 250, 35); } else { createEmptyPlot(normativeChartDivId, 'Enter Data', 250, 35); } }); setTimeout(() => window.dispatchEvent(new Event('resize')), 100); }
-        // function togglePatientData() { /* Fjernet, pasientdata er alltid synlig */ }
+        // function togglePatientData() { /* Fjernet */ }
         function enterPreviewMode() { document.body.classList.add('pdf-preview-active'); if(previewExitButtonInline) previewExitButtonInline.style.display = 'inline-block'; if(explanationBox) explanationBox.style.display = 'block'; window.dispatchEvent(new Event('resize')); console.log("Entered PDF preview mode"); }
         function exitPreviewMode() { document.body.classList.remove('pdf-preview-active'); if(previewExitButtonInline) previewExitButtonInline.style.display = 'none'; if(explanationBox) explanationBox.style.display = 'none'; window.dispatchEvent(new Event('resize')); console.log("Exited PDF preview mode"); }
         function exportTableToCsv() { const fpNr = fpNrInput ? fpNrInput.value.trim() : ''; const age = ageInput ? ageInput.value.trim() : ''; const gender = genderSelect ? genderSelect.value : ''; const sport = sportInput ? sportInput.value.trim() : ''; const injury = injuryInput ? injuryInput.value.trim() : ''; const bodyweight = bodyweightInput ? bodyweightInput.value.trim() : ''; const injuredSide = injuredSideRadio ? injuredSideRadio.value : ''; const date = new Date(); const year = date.getFullYear(); const month = (date.getMonth() + 1).toString().padStart(2, '0'); const day = date.getDate().toString().padStart(2, '0'); const dateString = `${year}-${month}-${day}`; const safeFpNr = fpNr.replace(/[^a-z0-9]/gi, '_') || 'Unknown'; const filename = `ASH_${safeFpNr}_${dateString}.csv`; const headers = [ "Patient ID", "Age", "Gender", "Sport", "Injury", "Bodyweight (kg)", "Injured Side", "Position", "Metric", "Left Value", "Right Value" ]; let csv = [headers.join(',')]; const positions = ['I', 'Y', 'T']; const metricsForCsv = ['Max Force (N)', 'RFD 100ms (N/s)']; positions.forEach(pos => { const positionName = `ASH Test Position ${pos}`; const positionData = processInputAndCalculate(pos); metricsForCsv.forEach(metricDisplay => { let leftVal = ''; let rightVal = ''; let metricIdentifier = metricDisplay; if (metricDisplay === 'Max Force (N)') { if (positionData) { leftVal = positionData.left.max_force; rightVal = positionData.right.max_force; } } else if (metricDisplay === 'RFD 100ms (N/s)') { if (positionData) { leftVal = positionData.left.rfd; rightVal = positionData.right.rfd; } metricIdentifier = 'RFD 100ms (N/s)'; } const rowData = [ `"${fpNr}"`, `"${age}"`, `"${gender}"`, `"${sport}"`, `"${injury}"`, `"${bodyweight}"`, `"${injuredSide}"`, `"${positionName}"`, `"${metricIdentifier}"`, `"${leftVal}"`, `"${rightVal}"` ]; csv.push(rowData.join(',')); }); }); const csvString = "\uFEFF" + csv.join('\n'); const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); if (link.download !== undefined) { const url = URL.createObjectURL(blob); link.setAttribute('href', url); link.setAttribute('download', filename); link.style.visibility = 'hidden'; document.body.appendChild(link); link.click(); document.body.removeChild(link); console.log(`CSV export initiated: ${filename}`); } else { alert("CSV export is not directly supported in this browser. Please try a modern browser."); } }
@@ -769,6 +777,10 @@
                     const screening = docSnap.data();
                     const screeningId = docSnap.id;
                     const li = document.createElement('li');
+                    li.addEventListener('click', () => { // Gjør hele li klikkbar for å laste
+                        loadScreeningData(screeningId);
+                    });
+
                     const dateSpan = document.createElement('span');
                     const screeningTimestamp = screening.testTimestamp; 
                     if (screeningTimestamp && typeof screeningTimestamp.toDate === 'function') {
@@ -778,13 +790,10 @@
                         dateSpan.textContent = "Invalid date";
                         console.warn("Invalid or missing testTimestamp for screening:", screeningId, screening);
                     }
-                    dateSpan.title = "Load this test";
-                    dateSpan.addEventListener('click', () => {
-                        loadScreeningData(screeningId);
-                    });
+                    dateSpan.title = "Load this test"; 
                     
                     const deleteButton = document.createElement('button');
-                    deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i> Delete'; 
+                    deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>'; // Kun ikon
                     deleteButton.title = "Delete this test";
                     deleteButton.classList.add('delete-test-btn');
                     deleteButton.addEventListener('click', (e) => {
