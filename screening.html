@@ -638,7 +638,6 @@
         body.pdf-preview-active #patient-choice-section, 
         body.pdf-preview-active #existing-patient-search-container, 
         body.pdf-preview-active #patient-data-secondary-controls, 
-        /* #patient-data-container er skjult uansett, men la den stå for sikkerhets skyld */
         body.pdf-preview-active #patient-data-container, 
         body.pdf-preview-active #selected-patient-tests-container, 
         body.pdf-preview-active #input-section-container,
@@ -858,7 +857,7 @@
         import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, doc, getDoc, deleteDoc, serverTimestamp, updateDoc, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         // --- Global Variables ---
-        let currentPatientDataForApp = {}; // Holder på aktiv pasientdata for appen
+        let currentPatientDataForApp = {}; 
 
         // --- UI Element References ---
         const appLayout = document.querySelector('.app-layout');
@@ -983,7 +982,7 @@
             showInitialScreenState(); 
         }
         
-        const localStorageKey = 'screeningAppData_v6_subcollection_standalone'; 
+        const localStorageKey = 'screeningAppData_v6_subcollection'; 
         function saveInputsToLocalStorage() { 
             const dataToSave = { 
                 injuredSide: currentPatientDataForApp.injuredSide || '', 
@@ -1006,6 +1005,7 @@
             currentPatientDataForApp.sport = savedData.sport || '';
             currentPatientDataForApp.injury = savedData.injury || '';
             
+            // Oppdater skjulte felter for konsistens
             if(injuredSideRadio) injuredSideRadio.value = currentPatientDataForApp.injuredSide;
             if(bodyweightInput) bodyweightInput.value = currentPatientDataForApp.bodyweight;
             if(fpNrInput) fpNrInput.value = currentPatientDataForApp.patientId; 
@@ -1018,6 +1018,7 @@
             
             if (currentPatientDataForApp.patientId) { 
                 displayPatientInfoInTable(currentPatientDataForApp);
+                // Vurder å kalle displayTestsForPatient her hvis en pasient var aktiv ved forrige økt
             }
 
             } } catch (error) { console.error('Error loading inputs:', error); } }
@@ -1080,11 +1081,14 @@
                     </div>
                 `;
             } else if (type === 'existing-edit' && patientIdToEdit) {
-                const screenings = mockPatientScreenings[patientIdToEdit];
-                tempModalData = screenings && screenings.length > 0 
-                    ? { ...screenings.sort((a,b) => b.testTimestamp - a.testTimestamp)[0] } 
-                    : { patientId: patientIdToEdit, age: '', gender: '', sport: '', injury: '', injuredSide: 'Left', bodyweight: '' };
+                // Hent data for patientIdToEdit fra Firestore
+                // For nå bruker vi en placeholder, dette må implementeres med async/await
+                tempModalData = { patientId: patientIdToEdit, age: '', gender: '', sport: '', injury: '', injuredSide: 'Left', bodyweight: '' }; // Placeholder
                 
+                // I en ekte app:
+                // const latestScreening = await fetchLatestPatientDetailsFromFirestore(patientIdToEdit);
+                // tempModalData = latestScreening || { patientId: patientIdToEdit, age: '', gender: '', sport: '', injury: '', injuredSide: 'Left', bodyweight: '' };
+
                 modalHTML = `
                     <h3>Edit Patient: ${patientIdToEdit}</h3>
                     <div class="modal-form-grid">
@@ -1122,15 +1126,16 @@
                 patientModalContent.querySelector('#modal-confirm-new').addEventListener('click', handleNewPatientConfirm);
                 patientModalContent.querySelector('#modal-cancel-new').addEventListener('click', closePatientModal);
             } else if (type === 'existing-search') {
-                populateModalPatientIdButtons();
+                populateModalPatientIdButtons(); // Bruker nå Firestore
                 const modalSearchInput = patientModalContent.querySelector('#modal-search-fp-nr');
                 if (modalSearchInput) {
-                    modalSearchInput.addEventListener('input', (e) => {
+                    modalSearchInput.addEventListener('input', async (e) => { // Gjort async
                         const searchVal = e.target.value.trim();
                         const options = Array.from(patientModalContent.querySelector('#modal-existing-patient-ids').options);
                         const matchedOption = options.find(opt => opt.value === searchVal);
                         if (matchedOption) {
-                            openPatientModal('existing-edit', searchVal);
+                            // Data lastes nå inn i 'existing-edit' modalen
+                            await openPatientModal('existing-edit', searchVal); 
                         }
                     });
                 }
@@ -1144,37 +1149,50 @@
         function closePatientModal() {
             patientModalOverlay.style.display = 'none';
             patientModalContent.innerHTML = ''; 
-            // Fjern active-choice klassen fra valgboksene når modalen lukkes
             if(newPatientChoiceButton) newPatientChoiceButton.classList.remove('active-choice');
             if(existingPatientChoiceButton) existingPatientChoiceButton.classList.remove('active-choice');
         }
         
-        function populateModalPatientIdButtons() {
+        async function populateModalPatientIdButtons() { // Gjort async
             const container = document.getElementById('modal-patient-id-button-container');
             const datalist = document.getElementById('modal-existing-patient-ids');
-            if (!container || !datalist) return;
+            if (!container || !datalist || !auth.currentUser) return;
 
             container.innerHTML = ''; 
             datalist.innerHTML = ''; 
 
-            const patientIds = new Set(Object.keys(mockPatientScreenings));
-            if (patientIds.size === 0) {
-                container.textContent = 'No existing patients found.';
-                return;
-            }
-            patientIds.forEach(id => {
-                const option = document.createElement('option');
-                option.value = id;
-                datalist.appendChild(option);
-
-                const button = document.createElement('button');
-                button.textContent = id;
-                button.classList.add('modal-patient-id-button');
-                button.addEventListener('click', () => {
-                    openPatientModal('existing-edit', id);
+            try {
+                const screeningsCollectionRef = collection(db, "users", auth.currentUser.uid, "screenings");
+                const q = query(screeningsCollectionRef, orderBy("patientId")); // Du trenger kanskje en indeks her
+                const querySnapshot = await getDocs(q);
+                const patientIds = new Set();
+                querySnapshot.forEach((doc) => {
+                    if (doc.data().patientId) {
+                        patientIds.add(doc.data().patientId);
+                    }
                 });
-                container.appendChild(button);
-            });
+
+                if (patientIds.size === 0) {
+                    container.textContent = 'No existing patients found.';
+                    return;
+                }
+                patientIds.forEach(id => {
+                    const option = document.createElement('option');
+                    option.value = id;
+                    datalist.appendChild(option);
+
+                    const button = document.createElement('button');
+                    button.textContent = id;
+                    button.classList.add('modal-patient-id-button');
+                    button.addEventListener('click', async () => { // Gjort async
+                        await openPatientModal('existing-edit', id);
+                    });
+                    container.appendChild(button);
+                });
+            } catch (error) {
+                console.error("Error populating modal patient ID buttons:", error);
+                container.textContent = 'Error loading patient IDs.';
+            }
         }
 
 
@@ -1194,7 +1212,6 @@
                 bodyweight: patientModalContent.querySelector('#modal-bodyweight').value
             };
             
-            // Oppdater de (nå skjulte) inputfeltene for LocalStorage og annen logikk
             fpNrInput.value = currentPatientDataForApp.patientId;
             ageInput.value = currentPatientDataForApp.age;
             genderSelect.value = currentPatientDataForApp.gender;
@@ -1215,7 +1232,7 @@
             if(selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'none'; 
         }
 
-        function handleExistingPatientDone(originalPatientId) {
+        async function handleExistingPatientDone(originalPatientId) { // Gjort async
             currentPatientDataForApp = {
                 patientId: originalPatientId, 
                 age: patientModalContent.querySelector('#modal-age').value,
@@ -1234,17 +1251,9 @@
             injuredSideRadio.value = currentPatientDataForApp.injuredSide;
             bodyweightInput.value = currentPatientDataForApp.bodyweight;
 
-            if (mockPatientScreenings[originalPatientId] && mockPatientScreenings[originalPatientId].length > 0) {
-                 mockPatientScreenings[originalPatientId].forEach(test => { 
-                    test.age = currentPatientDataForApp.age;
-                    test.gender = currentPatientDataForApp.gender;
-                    test.sport = currentPatientDataForApp.sport;
-                    test.injury = currentPatientDataForApp.injury;
-                    test.bodyweight = currentPatientDataForApp.bodyweight;
-                    test.injuredSide = currentPatientDataForApp.injuredSide;
-                });
-            }
-
+            // Her kan du legge til logikk for å oppdatere pasientens generelle info i Firestore hvis ønskelig
+            // f.eks. i et eget pasientprofil-dokument, eller oppdatere alle tidligere tester (mindre vanlig)
+            // For nå, oppdaterer vi bare den lokale `currentPatientDataForApp` som brukes for nye tester.
 
             displayPatientInfoInTable(currentPatientDataForApp);
             if(existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
@@ -1255,7 +1264,7 @@
             showStatusMessage(`Details for patient ${originalPatientId} updated. Ready for new screening or load existing.`, "success");
             resetScreeningInputFields();
             updateGraphsAndTable();
-            displayTestsForPatient(originalPatientId); 
+            await displayTestsForPatient(originalPatientId); 
         }
         
         function displayPatientInfoInTable(data) {
@@ -1271,184 +1280,278 @@
         }
 
 
-        // --- App Start (uten Firebase Auth) ---
-        function initializeAppUI() {
-            console.log("Initializing App UI (Standalone Mode)");
-            if (appLayout) appLayout.style.display = 'flex';
-            showInitialScreenState();
-            populatePatientIdDatalist(); 
-        }
+        // --- App Start ---
+        onAuthStateChanged(auth, async (user) => { 
+            if (user) {
+                console.log("Screening page (Firebase Auth): User is authenticated.", user.uid);
+                
+                if (loggedInUserNameSpan && loggedInUserEmailDisplaySpan) {
+                    loggedInUserEmailDisplaySpan.textContent = user.email || 'No email';
+                    try {
+                        const userDocRef = doc(db, "users", user.uid);
+                        const userDocSnap = await getDoc(userDocRef);
+                        if (userDocSnap.exists()) {
+                            const userData = userDocSnap.data();
+                            const firstName = userData.firstName || '';
+                            const lastName = userData.lastName || '';
+                            loggedInUserNameSpan.textContent = `${firstName} ${lastName}`.trim() || 'User';
+                        } else {
+                            loggedInUserNameSpan.textContent = 'User Name Not Found';
+                            console.warn("User document not found in Firestore for UID:", user.uid);
+                        }
+                    } catch (error) {
+                        console.error("Error fetching user name from Firestore:", error);
+                        loggedInUserNameSpan.textContent = 'Error loading name';
+                    }
+                }
 
-
-        // --- Data Functions (Mocked) ---
-        function populatePatientIdDatalist() {
-            console.log("Populating patient ID datalist from mock data...");
-            const patientIds = new Set(Object.keys(mockPatientScreenings));
-            
-            existingPatientIdsDatalist.innerHTML = ''; 
-            const modalDatalist = document.getElementById('modal-existing-patient-ids');
-            if(modalDatalist) modalDatalist.innerHTML = ''; 
-
-            if (patientIds.size === 0) {
-                console.log("No mock patient IDs found.");
+                if (appLoadingMessage) appLoadingMessage.style.display = 'none';
+                if (appLayout) appLayout.style.display = 'flex';
+                
+                showInitialScreenState(); 
+                await populatePatientIdDatalist(); 
+            } else {
+                console.log("Screening page (Firebase Auth): User is NOT authenticated. Redirecting to login.");
+                if (appLoadingMessage) appLoadingMessage.textContent = 'Redirecting to login... Please wait.';
+                window.location.replace(loginPageUrl);
             }
-            patientIds.forEach(id => {
-                const option = document.createElement('option');
-                option.value = id;
-                existingPatientIdsDatalist.appendChild(option.cloneNode(true)); 
-                if(modalDatalist) modalDatalist.appendChild(option);
-            });
-            console.log("Patient ID datalist populated with (mock):", Array.from(patientIds));
+        });
+
+
+        // --- Firestore Data Functions ---
+        async function populatePatientIdDatalist() {
+            if (!auth.currentUser || !existingPatientIdsDatalist) return;
+            console.log("Populating patient ID datalist from Firestore...");
+            try {
+                const screeningsCollectionRef = collection(db, "users", auth.currentUser.uid, "screenings");
+                const q = query(screeningsCollectionRef, orderBy("patientId"));
+                const querySnapshot = await getDocs(q);
+                const patientIds = new Set();
+                querySnapshot.forEach((doc) => {
+                    if (doc.data().patientId) {
+                        patientIds.add(doc.data().patientId);
+                    }
+                });
+                existingPatientIdsDatalist.innerHTML = ''; 
+                const modalDatalist = document.getElementById('modal-existing-patient-ids');
+                if(modalDatalist) modalDatalist.innerHTML = ''; 
+
+                if (patientIds.size === 0) {
+                    console.log("No unique patient IDs found for this clinician.");
+                }
+                patientIds.forEach(id => {
+                    const option = document.createElement('option');
+                    option.value = id;
+                    existingPatientIdsDatalist.appendChild(option.cloneNode(true)); 
+                    if(modalDatalist) modalDatalist.appendChild(option);
+                });
+                console.log("Patient ID datalist populated with:", Array.from(patientIds));
+            } catch (error) {
+                console.error("Error populating patient ID datalist: ", error);
+                if (error.code === 'failed-precondition' || (error.message && error.message.includes('index'))) {
+                    showStatusMessage(`Error: Firestore index for users/${auth.currentUser.uid}/screenings (orderBy patientId) might be needed. Check console.`, "error", 10000);
+                } else if (error.code === 'permission-denied') {
+                     showStatusMessage(`Error: Missing permissions to read patient list. Check Firestore rules for path /users/${auth.currentUser.uid}/screenings.`, "error", 10000);
+                } else {
+                    showStatusMessage("Error loading patient list.", "error");
+                }
+            }
         }
 
-        function displayTestsForPatient(patientId) {
-            console.log(`displayTestsForPatient CALLED with patientId: '${patientId}' (mock)`);
-            if (!selectedPatientTestsListUL || !selectedPatientTestsContainer || !currentPatientForTestsSpan) return;
+        async function displayTestsForPatient(patientId) {
+            console.log(`displayTestsForPatient CALLED with patientId: '${patientId}'`);
+            if (!auth.currentUser || !selectedPatientTestsListUL || !selectedPatientTestsContainer || !currentPatientForTestsSpan) return;
             
             currentPatientForTestsSpan.textContent = patientId;
             selectedPatientTestsListUL.innerHTML = '<li>Loading tests...</li>';
             selectedPatientTestsContainer.style.display = 'block';
 
-            const patientTests = mockPatientScreenings[patientId] || [];
-            console.log(`Mock query for patient ${patientId} found ${patientTests.length} tests.`); 
+            try {
+                const screeningsCollectionRef = collection(db, "users", auth.currentUser.uid, "screenings");
+                const q = query(
+                    screeningsCollectionRef, 
+                    where("patientId", "==", patientId),
+                    orderBy("testTimestamp", "desc")
+                );
 
-            selectedPatientTestsListUL.innerHTML = '';  
-            if (patientTests.length === 0) {
-                selectedPatientTestsListUL.innerHTML = '<li>No tests found for this patient.</li>';
-                return;
-            }
-            patientTests.sort((a,b) => b.testTimestamp - a.testTimestamp);
+                const querySnapshot = await getDocs(q);
+                console.log(`Query for patient ${patientId} found ${querySnapshot.size} tests.`); 
 
-            patientTests.forEach((screening) => {
-                const screeningId = screening.screeningId; 
-                const li = document.createElement('li');
-                li.addEventListener('click', () => { 
-                    loadScreeningData(patientId, screeningId); 
-                });
-
-                const dateSpan = document.createElement('span');
-                const screeningTimestamp = screening.testTimestamp; 
-                if (screeningTimestamp && screeningTimestamp instanceof Date) {
-                    dateSpan.textContent = screeningTimestamp.toLocaleString('nb-NO', { dateStyle: 'medium', timeStyle: 'short' });
-                } else {
-                    dateSpan.textContent = "Invalid date";
+                selectedPatientTestsListUL.innerHTML = '';  
+                if (querySnapshot.empty) {
+                    selectedPatientTestsListUL.innerHTML = '<li>No tests found for this patient.</li>';
+                    console.log(`No tests actually found in Firestore for patient ${patientId}`);
+                    return;
                 }
-                dateSpan.title = "Load this test"; 
-                
-                const deleteButton = document.createElement('button');
-                deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>'; 
-                deleteButton.title = "Delete this test";
-                deleteButton.classList.add('delete-test-btn');
-                deleteButton.addEventListener('click', (e) => {
-                    e.stopPropagation(); 
-                    const dateForConfirm = screeningTimestamp instanceof Date ? screeningTimestamp : new Date();
-                    confirmAndDeleteScreening(patientId, screeningId, dateForConfirm);
+                querySnapshot.forEach((docSnap) => {
+                    const screening = docSnap.data();
+                    const screeningId = docSnap.id; 
+                    const li = document.createElement('li');
+                    li.addEventListener('click', () => { 
+                        loadScreeningData(screeningId); 
+                    });
+
+                    const dateSpan = document.createElement('span');
+                    const screeningTimestamp = screening.testTimestamp; 
+                    if (screeningTimestamp && typeof screeningTimestamp.toDate === 'function') {
+                        const date = screeningTimestamp.toDate();
+                        dateSpan.textContent = date.toLocaleString('nb-NO', { dateStyle: 'medium', timeStyle: 'short' });
+                    } else {
+                        dateSpan.textContent = "Invalid date";
+                    }
+                    dateSpan.title = "Load this test"; 
+                    
+                    const deleteButton = document.createElement('button');
+                    deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>'; 
+                    deleteButton.title = "Delete this test";
+                    deleteButton.classList.add('delete-test-btn');
+                    deleteButton.addEventListener('click', (e) => {
+                        e.stopPropagation(); 
+                        const dateForConfirm = screeningTimestamp && typeof screeningTimestamp.toDate === 'function' ? screeningTimestamp.toDate() : new Date();
+                        confirmAndDeleteScreening(screeningId, patientId, dateForConfirm);
+                    });
+
+                    li.appendChild(dateSpan);
+                    li.appendChild(deleteButton);
+                    selectedPatientTestsListUL.appendChild(li);
                 });
 
-                li.appendChild(dateSpan);
-                li.appendChild(deleteButton);
-                selectedPatientTestsListUL.appendChild(li);
-            });
+            } catch (error) {
+                console.error(`Error loading tests for patient ${patientId}: `, error);
+                selectedPatientTestsListUL.innerHTML = '<li>Error loading tests. Check console for details.</li>';
+                if (error.code === 'failed-precondition' || (error.message && error.message.includes('index'))) {
+                    showStatusMessage(`Error: Firestore index for users/${auth.currentUser.uid}/screenings (patientId ASC, testTimestamp DESC) is needed. Check console.`, "error", 10000);
+                } else if (error.code === 'permission-denied') {
+                     showStatusMessage(`Error: Missing permissions to read tests for patient ${patientId}. Check Firestore rules.`, "error", 10000);
+                }
+            }
         }
         
         if (fpNrInputSearch) { 
             fpNrInputSearch.addEventListener('focus', populatePatientIdDatalist); 
-            fpNrInputSearch.addEventListener('input', (e) => {
+            fpNrInputSearch.addEventListener('input', async (e) => { // Gjort async
                 const enteredPatientId = e.target.value.trim();
                 if (enteredPatientId) {
                     const options = Array.from(existingPatientIdsDatalist.options).map(opt => opt.value);
                     if (options.includes(enteredPatientId)) {
-                        openPatientModal('existing-edit', enteredPatientId); 
+                        await openPatientModal('existing-edit', enteredPatientId); 
                     }
                 }
             });
         }
 
-        function loadScreeningData(patientId, screeningId) { 
-            console.log(`Loading screening data for patient ${patientId}, test ${screeningId} (mock)`);
-            const patientTests = mockPatientScreenings[patientId];
-            if (!patientTests) {
-                showStatusMessage("Patient not found in mock data.", "error");
+        async function fetchLatestPatientDetailsFromFirestore(patientIdToFetch) {
+            if (!auth.currentUser) return null;
+            const screeningsRef = collection(db, "users", auth.currentUser.uid, "screenings");
+            const q = query(screeningsRef, 
+                            where("patientId", "==", patientIdToFetch), 
+                            orderBy("testTimestamp", "desc"), 
+                            limit(1));
+            try {
+                const querySnapshot = await getDocs(q);
+                if (!querySnapshot.empty) {
+                    return querySnapshot.docs[0].data();
+                }
+                return null; // Ingen tidligere tester funnet
+            } catch (error) {
+                console.error("Error fetching latest patient details from Firestore:", error);
+                return null;
+            }
+        }
+
+
+        async function loadScreeningData(screeningId) { 
+            if (!screeningId || !auth.currentUser) {
+                console.error("Screening ID or user missing for loadScreeningData");
                 return;
             }
-            const data = patientTests.find(test => test.screeningId === screeningId);
+            showStatusMessage("Loading test data...", "info", 1500);
+            try {
+                const docRef = doc(db, "users", auth.currentUser.uid, "screenings", screeningId);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    currentPatientDataForApp = { ...data }; 
 
-            if (data) {
-                currentPatientDataForApp = { ...data }; 
-
-                fpNrInput.value = data.patientId || '';  
-                ageInput.value = data.age || '';  
-                genderSelect.value = data.gender || '';  
-                sportInput.value = data.sport || '';  
-                injuryInput.value = data.injury || '';  
-                bodyweightInput.value = data.bodyweight || '';  
-                injuredSideRadio.value = data.injuredSide || 'Left';
-                
-                ['I', 'Y', 'T'].forEach(pos => {  
-                    if (data.ashTest && data.ashTest[pos]) {  
-                        if(inputFieldMap[pos].nonInjured[0]) inputFieldMap[pos].nonInjured[0].value = data.ashTest[pos].nonInjuredMaxForce || '';  
-                        if(inputFieldMap[pos].nonInjured[1]) inputFieldMap[pos].nonInjured[1].value = data.ashTest[pos].nonInjuredRfd || '';  
-                        if(inputFieldMap[pos].injured[0]) inputFieldMap[pos].injured[0].value = data.ashTest[pos].injuredMaxForce || '';  
-                        if(inputFieldMap[pos].injured[1]) inputFieldMap[pos].injured[1].value = data.ashTest[pos].injuredRfd || '';  
-                    } else {
-                        if(inputFieldMap[pos].nonInjured[0]) inputFieldMap[pos].nonInjured[0].value = '';
-                        if(inputFieldMap[pos].nonInjured[1]) inputFieldMap[pos].nonInjured[1].value = '';
-                        if(inputFieldMap[pos].injured[0]) inputFieldMap[pos].injured[0].value = '';
-                        if(inputFieldMap[pos].injured[1]) inputFieldMap[pos].injured[1].value = '';
-                    }
-                });
-                updateGraphsAndTable();  
-                saveInputsToLocalStorage();  
-                showStatusMessage('Test data loaded successfully! (Mock)', 'success');
-                displayPatientInfoInTable(data); 
-            } else {  
-                showStatusMessage("Could not find the selected test data. (Mock)", "error");
+                    fpNrInput.value = data.patientId || '';  
+                    ageInput.value = data.age || '';  
+                    genderSelect.value = data.gender || '';  
+                    sportInput.value = data.sport || '';  
+                    injuryInput.value = data.injury || '';  
+                    bodyweightInput.value = data.bodyweight || '';  
+                    injuredSideRadio.value = data.injuredSide || 'Left';
+                    
+                    ['I', 'Y', 'T'].forEach(pos => {  
+                        if (data.ashTest && data.ashTest[pos]) {  
+                            if(inputFieldMap[pos].nonInjured[0]) inputFieldMap[pos].nonInjured[0].value = data.ashTest[pos].nonInjuredMaxForce || '';  
+                            if(inputFieldMap[pos].nonInjured[1]) inputFieldMap[pos].nonInjured[1].value = data.ashTest[pos].nonInjuredRfd || '';  
+                            if(inputFieldMap[pos].injured[0]) inputFieldMap[pos].injured[0].value = data.ashTest[pos].injuredMaxForce || '';  
+                            if(inputFieldMap[pos].injured[1]) inputFieldMap[pos].injured[1].value = data.ashTest[pos].injuredRfd || '';  
+                        } else {
+                            if(inputFieldMap[pos].nonInjured[0]) inputFieldMap[pos].nonInjured[0].value = '';
+                            if(inputFieldMap[pos].nonInjured[1]) inputFieldMap[pos].nonInjured[1].value = '';
+                            if(inputFieldMap[pos].injured[0]) inputFieldMap[pos].injured[0].value = '';
+                            if(inputFieldMap[pos].injured[1]) inputFieldMap[pos].injured[1].value = '';
+                        }
+                    });
+                    updateGraphsAndTable();  
+                    saveInputsToLocalStorage();  
+                    showStatusMessage('Test data loaded successfully!', 'success');
+                    displayPatientInfoInTable(data); 
+                } else {  
+                    console.log("No such screening document in subcollection!");  
+                    showStatusMessage("Could not find the selected test data.", "error");
+                }
+            } catch (error) {  
+                console.error("Error loading screening data: ", error);  
+                showStatusMessage("Error loading test data. Please try again.", "error");
             }
         }
         
-        function confirmAndDeleteScreening(patientId, screeningId, dateObject) {
+        async function confirmAndDeleteScreening(screeningId, patientId, dateObject) {
+            if (!auth.currentUser) {
+                 console.error("User not authenticated for deleting screening.");
+                return;
+            }
             const formattedDate = dateObject instanceof Date && !isNaN(dateObject) 
                 ? dateObject.toLocaleString('nb-NO', { dateStyle: 'medium', timeStyle: 'short' }) 
                 : "unknown date";
 
-            if (confirm(`Are you sure you want to delete the test for patient "${patientId}" from ${formattedDate}? This action cannot be undone. (Mock)`)) {
+            if (confirm(`Are you sure you want to delete the test for patient "${patientId}" from ${formattedDate}? This action cannot be undone.`)) {
                 if (!screeningId) return;
-                showStatusMessage("Deleting test... (Mock)", "info", 1500);
-                
-                if (mockPatientScreenings[patientId]) {
-                    mockPatientScreenings[patientId] = mockPatientScreenings[patientId].filter(test => test.screeningId !== screeningId);
-                    if (mockPatientScreenings[patientId].length === 0) {
-                        delete mockPatientScreenings[patientId]; 
-                        if (patientInfoDisplayTable) patientInfoDisplayTable.style.display = 'none'; 
-                        if (fpNrInput.value === patientId) resetPatientDataFields(); 
+                showStatusMessage("Deleting test...", "info", 1500);
+                try {
+                    await deleteDoc(doc(db, "users", auth.currentUser.uid, "screenings", screeningId));
+                    console.log("Screening deleted successfully from subcollection:", screeningId);
+                    showStatusMessage('Test deleted successfully!', 'success');
+                    
+                    const activePatientIdInForm = currentPatientDataForApp.patientId || fpNrInput.value.trim(); 
+                    if (activePatientIdInForm === patientId) { 
+                        await displayTestsForPatient(patientId); 
+                    } else { 
+                        if (selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'none';
                     }
+                    await populatePatientIdDatalist(); 
+                } catch (error) {
+                    console.error("Error during delete operation: ", error);
+                    showStatusMessage('Failed to delete test.', 'error');
                 }
-                
-                console.log("Mock screening deleted:", screeningId);
-                showStatusMessage('Test deleted successfully! (Mock)', 'success');
-                
-                const activePatientIdInForm = currentPatientDataForApp.patientId || fpNrInput.value.trim(); 
-                if (activePatientIdInForm === patientId) { 
-                    displayTestsForPatient(patientId); 
-                } else { 
-                    if (selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'none';
-                }
-                populatePatientIdDatalist(); 
             }
         }
 
-        function saveDataToFirestore() { 
+        async function saveDataToFirestore() { 
+            if (!auth.currentUser) { showStatusMessage("You must be logged in to save data.", "error"); return; }
+            
             const currentPatientIdFromForm = currentPatientDataForApp.patientId || fpNrInput.value.trim(); 
             if (!currentPatientIdFromForm) { 
-                showStatusMessage("Patient ID is required to save data.", "error"); 
+                showStatusMessage("Patient ID is required. Please select or create a patient first.", "error"); 
+                openPatientModal('new'); // Foreslå å lage ny pasient
                 return; 
             }
             
-            const newScreeningId = `test${(mockPatientScreenings[currentPatientIdFromForm]?.length || 0) + 1}_${currentPatientIdFromForm}`;
             const screeningData = {
-                screeningId: newScreeningId,
                 patientId: currentPatientIdFromForm, 
-                testTimestamp: new Date(), 
+                testTimestamp: serverTimestamp(),
                 age: currentPatientDataForApp.age, 
                 gender: currentPatientDataForApp.gender,
                 sport: currentPatientDataForApp.sport,
@@ -1486,17 +1589,20 @@
                 showStatusMessage("No ASH test data entered to save.", "warning"); return; 
             }
             
-            if (!mockPatientScreenings[currentPatientIdFromForm]) {
-                mockPatientScreenings[currentPatientIdFromForm] = [];
+            try {
+                const screeningCollectionRef = collection(db, "users", auth.currentUser.uid, "screenings");
+                const docRef = await addDoc(screeningCollectionRef, screeningData);
+                
+                console.log("Screening data saved to Firestore with ID: ", docRef.id);
+                showStatusMessage("Data saved successfully!", "success");
+                
+                await populatePatientIdDatalist(); 
+                await displayTestsForPatient(currentPatientIdFromForm); 
+                displayPatientInfoInTable(screeningData); 
+            } catch (error) { 
+                console.error("Error saving screening data: ", error); 
+                showStatusMessage("Error saving data. Please try again.", "error"); 
             }
-            mockPatientScreenings[currentPatientIdFromForm].push(screeningData);
-            
-            console.log("Mock screening data saved:", screeningData);
-            showStatusMessage("Data saved successfully! (Mock)", "success");
-            
-            populatePatientIdDatalist(); 
-            displayTestsForPatient(currentPatientIdFromForm); 
-            displayPatientInfoInTable(screeningData); 
         }
         
         // --- Initialisering og Event Listeners ---
@@ -1504,7 +1610,7 @@
             asymmetryChartDivs.forEach(divId => createEmptyPlot(divId, 'Enter Data', 300, 20));
             normativeChartDivs.forEach(divId => createEmptyPlot(divId, 'Enter Bodyweight', 250, 35));
             loadInputsFromLocalStorage();
-            initializeAppUI(); 
+            // initializeAppUI(); // Kalles nå fra onAuthStateChanged
         });
 
         if (newPatientChoiceButton) {
@@ -1536,11 +1642,14 @@
         
         if(logoutButton) {
             logoutButton.addEventListener('click', () => {
-                console.log("Logout button clicked (UI Only).");
-                localStorage.removeItem(localStorageKey); 
-                showStatusMessage("Logged out (Demo mode)", "info");
-                showInitialScreenState();
-
+                signOut(auth).then(() => {
+                    console.log("User signed out successfully.");
+                    localStorage.removeItem(localStorageKey); 
+                    window.location.href = loginPageUrl;
+                }).catch((error) => {
+                    console.error("Sign out error", error);
+                    showStatusMessage("Error signing out. Please try again.", "error");
+                });
             });
         }
         window.addEventListener('load', () => { setTimeout(() => window.dispatchEvent(new Event('resize')), 200); });
