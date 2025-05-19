@@ -117,7 +117,7 @@
             height: 100vh; 
             overflow-y: auto; 
             z-index: 100; 
-            border-right: none; /* Fjernet kantlinje */
+            border-right: none; 
         }
         .sidebar-logo-placeholder { 
             height: 50px; 
@@ -189,14 +189,14 @@
         .app-sidebar button i { width: 20px; text-align: center; color: var(--app-primary-color); transition: color 0.3s ease; }
         .app-sidebar button:not(#logout-button):hover, 
         .app-sidebar a button:hover { 
-            background-color: var(--app-primary-color); /* Blå bakgrunn på hover */
-            color: var(--app-text-on-primary); /* Hvit tekst på hover */
+            background-color: var(--app-primary-color); 
+            color: var(--app-text-on-primary); 
             transform: translateY(-1px); 
             border-color: transparent; 
         }
         .app-sidebar button:not(#logout-button):hover i, 
         .app-sidebar a button:hover i { 
-            color: var(--app-text-on-primary); /* Hvit ikonfarge på hover */
+            color: var(--app-text-on-primary); 
         }
         .app-sidebar button:active, .app-sidebar a button:active { transform: translateY(0px); }
         .app-sidebar a { text-decoration: none; display: block; }
@@ -213,34 +213,60 @@
             justify-content: center;
             align-items: center;
             gap: 30px;
-            padding: 40px 0;
-            margin-bottom: 30px;
+            padding: 20px 0; /* Redusert padding */
+            margin-bottom: 20px; /* Redusert margin */
             border-bottom: 1px solid var(--medium-gray);
         }
         .choice-box {
             background-color: var(--white);
             border: 1px solid var(--medium-gray);
             border-radius: var(--border-radius);
-            padding: 25px 30px;
+            padding: 20px 25px; /* Justert padding */
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            min-width: 200px;
+            transition: all 0.2s ease;
+            min-width: 180px; /* Justert bredde */
             box-shadow: var(--subtle-shadow);
         }
         .choice-box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            background-color: rgba(40, 84, 132, 0.1); /* Dus mørk blå */
+            /* transform: translateY(-3px); */ /* Mindre løft */
+            /* box-shadow: 0 4px 10px rgba(0,0,0,0.08); */
             border-color: var(--app-primary-color);
         }
+        .choice-box.active-choice { /* Ny klasse for aktivt valg */
+             background-color: var(--app-primary-color);
+             color: white;
+             border-color: var(--app-primary-color);
+        }
+        .choice-box.active-choice i,
+        .choice-box.active-choice span {
+            color: white;
+        }
+
+        #patient-choice-section.choice-made .choice-box { /* Stil for når et valg er gjort */
+            padding: 10px 15px; 
+            min-width: 130px;   
+            box-shadow: none;
+            border-width: 1px;
+        }
+        #patient-choice-section.choice-made .choice-box i {
+            font-size: 1.5rem; 
+            margin-bottom: 5px;
+        }
+        #patient-choice-section.choice-made .choice-box span {
+            font-size: 0.9rem; 
+        }
+
+
         .choice-box i {
-            font-size: 2.5rem;
+            font-size: 2.2rem; /* Justert ikonstørrelse */
             color: var(--app-primary-color);
-            margin-bottom: 15px;
+            margin-bottom: 10px; /* Justert margin */
             display: block;
         }
         .choice-box span {
-            font-size: 1.1rem;
+            font-size: 1rem; /* Justert tekststørrelse */
             color: var(--text-color);
             font-weight: var(--semibold-font-weight);
         }
@@ -368,7 +394,7 @@
         
         #selected-patient-tests-list li:hover { 
             background-color: var(--app-primary-color); 
-            color: white; /* Endre tekstfarge for span inni på hover */
+            color: white; 
             transform: translateY(-2px); 
         }
         #selected-patient-tests-list li:hover span {
@@ -378,7 +404,7 @@
             border-color: white;
             color: white;
         }
-         #selected-patient-tests-list li:hover button.delete-test-btn:hover {
+         #selected-patient-tests-list li:hover button.delete-test-btn:hover { /* Hover for delete button *inside* hovered li */
             background-color: rgba(255,255,255,0.2);
             color: white;
         }
@@ -708,6 +734,7 @@
         const existingPatientSearchContainer = document.getElementById('existing-patient-search-container');
         const fpNrInputSearch = document.getElementById('fp-nr-input-search'); 
         const mainScreeningContent = document.getElementById('main-screening-content');
+        const patientDetailsTitle = document.getElementById('patient-details-title');
 
 
         const plotlyConfig = {
@@ -821,7 +848,7 @@
             updateGraphsAndTable(); 
             saveInputsToLocalStorage(); 
             console.log("Fields cleared."); 
-            showChoiceScreen(); // Gå tilbake til valgskjermen etter sletting
+            showChoiceScreen(); 
         }
         
         const localStorageKey = 'screeningAppData_v6_subcollection'; 
@@ -832,34 +859,54 @@
         // --- UI Flow Control ---
         function showChoiceScreen() {
             patientChoiceSection.style.display = 'flex';
+            patientChoiceSection.classList.remove('choice-made');
+            newPatientChoiceButton.classList.remove('active-choice');
+            existingPatientChoiceButton.classList.remove('active-choice');
+
             existingPatientSearchContainer.style.display = 'none';
-            mainScreeningContent.style.display = 'none';
+            mainScreeningContent.style.display = 'none'; // Skjul hovedinnholdet
             if (selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'none';
+            
+            // Sørg for at overskrifter og kontroller som tilhører hovedinnholdet også skjules
+            if(patientDetailsTitle) patientDetailsTitle.style.display = 'none';
+            if(topControls) topControls.style.display = 'none';
+            if(patientDataContainer) patientDataContainer.style.display = 'none';
+            if(inputSectionContainer) inputSectionContainer.style.display = 'none';
+            if(resultsTitle) resultsTitle.style.display = 'none';
+            if(positionRows) positionRows.forEach(row => row.style.display = 'none');
+            if(saveDataButtonContainer) saveDataButtonContainer.style.display = 'none';
         }
 
         function showNewPatientScreen() {
-            patientChoiceSection.style.display = 'none';
+            patientChoiceSection.classList.add('choice-made');
+            newPatientChoiceButton.classList.add('active-choice');
+            existingPatientChoiceButton.classList.remove('active-choice');
+
             existingPatientSearchContainer.style.display = 'none';
-            mainScreeningContent.style.display = 'block'; // Endret til block for vertikal layout
+            mainScreeningContent.style.display = 'block'; 
             
-            topControls.style.display = 'flex';
-            patientDataContainer.style.display = 'block';
-            inputSectionContainer.style.display = 'flex';
-            resultsTitle.style.display = 'block';
-            positionRows.forEach(row => row.style.display = 'flex');
-            saveDataButtonContainer.style.display = 'block';
+            if(patientDetailsTitle) patientDetailsTitle.style.display = 'block';
+            if(topControls) topControls.style.display = 'flex';
+            if(patientDataContainer) patientDataContainer.style.display = 'block';
+            if(inputSectionContainer) inputSectionContainer.style.display = 'flex';
+            if(resultsTitle) resultsTitle.style.display = 'block';
+            if(positionRows) positionRows.forEach(row => row.style.display = 'flex');
+            if(saveDataButtonContainer) saveDataButtonContainer.style.display = 'block';
             if (selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'none'; 
 
-            clearAllFields(); 
+            clearAllFieldsExceptChoice(); // Tømmer ikke valg, men resten
             fpNrInput.value = `NEW-${Date.now().toString().slice(-6)}`; 
             fpNrInput.disabled = true; 
             console.log("Switched to New Patient screen");
         }
 
         function showExistingPatientSearch() {
-            patientChoiceSection.style.display = 'none';
+            patientChoiceSection.classList.add('choice-made');
+            existingPatientChoiceButton.classList.add('active-choice');
+            newPatientChoiceButton.classList.remove('active-choice');
+
             existingPatientSearchContainer.style.display = 'block';
-            mainScreeningContent.style.display = 'none'; 
+            mainScreeningContent.style.display = 'none'; // Skjul hovedinnholdet mens vi søker
             if (selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'none';
             fpNrInputSearch.value = ''; 
             fpNrInputSearch.focus();
@@ -867,23 +914,35 @@
         }
         
         function showExistingPatientScreen(patientId) {
+            // Valg er allerede gjort, så .choice-made er satt
             existingPatientSearchContainer.style.display = 'none'; 
-            mainScreeningContent.style.display = 'block'; // Endret til block
+            mainScreeningContent.style.display = 'block'; 
 
-            topControls.style.display = 'flex';
-            patientDataContainer.style.display = 'block';
-            inputSectionContainer.style.display = 'flex';
-            resultsTitle.style.display = 'block';
-            positionRows.forEach(row => row.style.display = 'flex');
-            saveDataButtonContainer.style.display = 'block';
+            if(patientDetailsTitle) patientDetailsTitle.style.display = 'block';
+            if(topControls) topControls.style.display = 'flex';
+            if(patientDataContainer) patientDataContainer.style.display = 'block';
+            if(inputSectionContainer) inputSectionContainer.style.display = 'flex';
+            if(resultsTitle) resultsTitle.style.display = 'block';
+            if(positionRows) positionRows.forEach(row => row.style.display = 'flex');
+            if(saveDataButtonContainer) saveDataButtonContainer.style.display = 'block';
             
             fpNrInput.value = patientId; 
             fpNrInput.disabled = false; 
             
+            resetPatientDataFields(); // Tøm pasientdatafeltene før lasting av test
             resetScreeningInputFields(); 
             updateGraphsAndTable(); 
             displayTestsForPatient(patientId); 
             console.log("Switched to Existing Patient screen for:", patientId);
+        }
+
+        function clearAllFieldsExceptChoice() {
+            resetPatientDataFields();
+            resetScreeningInputFields();
+            if(selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'none';
+            if(selectedPatientTestsListUL) selectedPatientTestsListUL.innerHTML = '';
+            updateGraphsAndTable();
+            saveInputsToLocalStorage(); // Lagre tomme verdier
         }
 
 
@@ -1196,7 +1255,6 @@
             asymmetryChartDivs.forEach(divId => createEmptyPlot(divId, 'Enter Data', 300, 20));
             normativeChartDivs.forEach(divId => createEmptyPlot(divId, 'Enter Bodyweight', 250, 35));
             loadInputsFromLocalStorage();
-            // updateGraphsAndTable(); // Kalles nå når relevant skjerm vises
         });
 
         if (newPatientChoiceButton) {
