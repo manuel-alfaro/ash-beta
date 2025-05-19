@@ -213,28 +213,26 @@
             justify-content: center;
             align-items: center;
             gap: 30px;
-            padding: 20px 0; /* Redusert padding */
-            margin-bottom: 20px; /* Redusert margin */
+            padding: 20px 0; 
+            margin-bottom: 20px; 
             border-bottom: 1px solid var(--medium-gray);
         }
         .choice-box {
             background-color: var(--white);
             border: 1px solid var(--medium-gray);
             border-radius: var(--border-radius);
-            padding: 20px 25px; /* Justert padding */
+            padding: 20px 25px; 
             text-align: center;
             cursor: pointer;
             transition: all 0.2s ease;
-            min-width: 180px; /* Justert bredde */
+            min-width: 180px; 
             box-shadow: var(--subtle-shadow);
         }
         .choice-box:hover {
-            background-color: rgba(40, 84, 132, 0.1); /* Dus mørk blå */
-            /* transform: translateY(-3px); */ /* Mindre løft */
-            /* box-shadow: 0 4px 10px rgba(0,0,0,0.08); */
+            background-color: rgba(40, 84, 132, 0.1); /* Dus mørk blå med alpha */
             border-color: var(--app-primary-color);
         }
-        .choice-box.active-choice { /* Ny klasse for aktivt valg */
+        .choice-box.active-choice { 
              background-color: var(--app-primary-color);
              color: white;
              border-color: var(--app-primary-color);
@@ -243,30 +241,16 @@
         .choice-box.active-choice span {
             color: white;
         }
-
-        #patient-choice-section.choice-made .choice-box { /* Stil for når et valg er gjort */
-            padding: 10px 15px; 
-            min-width: 130px;   
-            box-shadow: none;
-            border-width: 1px;
-        }
-        #patient-choice-section.choice-made .choice-box i {
-            font-size: 1.5rem; 
-            margin-bottom: 5px;
-        }
-        #patient-choice-section.choice-made .choice-box span {
-            font-size: 0.9rem; 
-        }
-
+        /* Fjerner .choice-made klassen da boksene ikke skal endre størrelse */
 
         .choice-box i {
-            font-size: 2.2rem; /* Justert ikonstørrelse */
+            font-size: 2.2rem; 
             color: var(--app-primary-color);
-            margin-bottom: 10px; /* Justert margin */
+            margin-bottom: 10px; 
             display: block;
         }
         .choice-box span {
-            font-size: 1rem; /* Justert tekststørrelse */
+            font-size: 1rem; 
             color: var(--text-color);
             font-weight: var(--semibold-font-weight);
         }
@@ -301,7 +285,7 @@
         }
 
 
-        #top-controls { display: none; justify-content: flex-start; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; background-color: transparent; border: none; border-radius: 0; padding: 0; box-shadow: none; }
+        #top-controls { display: flex; justify-content: flex-start; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; background-color: transparent; border: none; border-radius: 0; padding: 0; box-shadow: none; }
         #top-controls .control-item { border: none; border-radius: var(--border-radius); background-color: var(--light-gray); padding: 15px 20px; display: flex; align-items: center; gap: 8px; box-shadow: none; transition: none; }
         #top-controls .control-item:focus-within { border-color: transparent; }
         #top-controls .control-label { font-family: 'Avenir', sans-serif; font-size: 0.9rem; color: var(--dark-gray); font-weight: var(--normal-font-weight); }
@@ -404,7 +388,7 @@
             border-color: white;
             color: white;
         }
-         #selected-patient-tests-list li:hover button.delete-test-btn:hover { /* Hover for delete button *inside* hovered li */
+         #selected-patient-tests-list li:hover button.delete-test-btn:hover { 
             background-color: rgba(255,255,255,0.2);
             color: white;
         }
@@ -464,7 +448,7 @@
         }
 
 
-        #input-section-container { display: none; flex-wrap: wrap; gap: 20px; margin-bottom: 20px; } 
+        #input-section-container { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px; } 
         .input-position-box { flex: 1; min-width: 300px; padding: 15px; background: linear-gradient(to top right, rgb(222, 226, 230), rgb(112, 188, 252)); box-shadow: var(--box-shadow); border-radius: var(--border-radius); margin-bottom: 20px; position: relative; overflow: hidden; }
         .input-position-box h4 { font-family: 'Avenir', sans-serif; font-weight: var(--normal-font-weight); font-size: 1.2rem; color: var(--app-primary-color); margin-top: 0; margin-bottom: 20px; text-align: left; border-bottom: none; padding-bottom: 0; position: relative; z-index: 1; }
         .input-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 15px; gap: 5px; position: relative; z-index: 1; }
@@ -476,7 +460,7 @@
         .input-position-box .unit-text { font-size: 0.9rem; color: var(--text-color); margin-left: 5px; white-space: nowrap; }
         .unit-text sup { font-size: 0.7em; vertical-align: super; }
         #canvas-container { display: none; }
-        .position-row { display: none; flex-wrap: wrap; gap: 30px; margin-bottom: 35px; padding-bottom: 30px; align-items: stretch; }
+        .position-row { display: flex; flex-wrap: wrap; gap: 30px; margin-bottom: 35px; padding-bottom: 30px; align-items: stretch; }
         .position-row:last-child { border-bottom: none; margin-bottom: 0; }
         .asymmetry-graph-container { flex: 6; min-width: 320px; }
         .normative-graph-container { flex: 4; min-width: 260px; }
@@ -525,7 +509,8 @@
         body.pdf-preview-active .sidebar-social-links,
         body.pdf-preview-active #loggedInUserContainer, 
         body.pdf-preview-active .sidebar-buttons,
-        body.pdf-preview-active #results-title 
+        body.pdf-preview-active #results-title,
+        body.pdf-preview-active #patient-details-title /* Skjul også denne i PDF */
         {
             display: none !important;
         }
@@ -575,7 +560,8 @@
             .sidebar-social-links,
             #loggedInUserContainer,
             .sidebar-buttons,
-            #results-title
+            #results-title,
+            #patient-details-title
              { 
                 display: none !important; 
             } 
@@ -638,6 +624,7 @@
             <div class="content-container">
                 <div id="report-content">
                     <h1>Functional Shoulder Screening</h1>
+                    <h2 id="patient-details-title">Patient Details</h2> 
 
                     <div id="patient-choice-section">
                         <div class="choice-box" id="new-patient-choice">
@@ -655,8 +642,7 @@
                         <input id="fp-nr-input-search" type="text" placeholder="Enter or select Patient ID" list="existing-patient-ids">
                         </div>
                     
-                    <div id="main-screening-content" style="display: none;">
-                        <h2 id="patient-details-title">Patient Details</h2>
+                    <div id="main-screening-content"> 
                         <div id="top-controls">
                             <div class="control-item"><label class="control-label" for="injured-side-radio">Injured Side:</label><select id="injured-side-radio"><option value="Left">Left</option><option value="Right">Right</option></select></div>
                             <div class="control-item"><label class="control-label" for="bodyweight-input">Bodyweight (kg):</label><input id="bodyweight-input" type="number" placeholder="kg"></div>
@@ -704,7 +690,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, doc, getDoc, deleteDoc, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, doc, getDoc, deleteDoc, serverTimestamp, updateDoc, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"; // La til limit
 
         // --- Firebase Config & Init ---
         const firebaseConfig = {
@@ -857,92 +843,105 @@
             } } catch (error) { console.error('Error loading inputs:', error); } }
 
         // --- UI Flow Control ---
-        function showChoiceScreen() {
-            patientChoiceSection.style.display = 'flex';
-            patientChoiceSection.classList.remove('choice-made');
-            newPatientChoiceButton.classList.remove('active-choice');
-            existingPatientChoiceButton.classList.remove('active-choice');
-
-            existingPatientSearchContainer.style.display = 'none';
-            mainScreeningContent.style.display = 'none'; // Skjul hovedinnholdet
-            if (selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'none';
-            
-            // Sørg for at overskrifter og kontroller som tilhører hovedinnholdet også skjules
-            if(patientDetailsTitle) patientDetailsTitle.style.display = 'none';
-            if(topControls) topControls.style.display = 'none';
-            if(patientDataContainer) patientDataContainer.style.display = 'none';
-            if(inputSectionContainer) inputSectionContainer.style.display = 'none';
-            if(resultsTitle) resultsTitle.style.display = 'none';
-            if(positionRows) positionRows.forEach(row => row.style.display = 'none');
-            if(saveDataButtonContainer) saveDataButtonContainer.style.display = 'none';
-        }
-
-        function showNewPatientScreen() {
-            patientChoiceSection.classList.add('choice-made');
-            newPatientChoiceButton.classList.add('active-choice');
-            existingPatientChoiceButton.classList.remove('active-choice');
-
-            existingPatientSearchContainer.style.display = 'none';
-            mainScreeningContent.style.display = 'block'; 
-            
+        function showInitialScreenState() {
             if(patientDetailsTitle) patientDetailsTitle.style.display = 'block';
+            if(patientChoiceSection) patientChoiceSection.style.display = 'flex';
+            if(patientChoiceSection) patientChoiceSection.classList.remove('choice-made');
+            if(newPatientChoiceButton) newPatientChoiceButton.classList.remove('active-choice');
+            if(existingPatientChoiceButton) existingPatientChoiceButton.classList.remove('active-choice');
+
+            if(existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
+            if(patientDataContainer) patientDataContainer.style.display = 'none';
+            if(selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'none';
+
+            // Resten av innholdet skal være synlig som standard
             if(topControls) topControls.style.display = 'flex';
-            if(patientDataContainer) patientDataContainer.style.display = 'block';
             if(inputSectionContainer) inputSectionContainer.style.display = 'flex';
             if(resultsTitle) resultsTitle.style.display = 'block';
             if(positionRows) positionRows.forEach(row => row.style.display = 'flex');
             if(saveDataButtonContainer) saveDataButtonContainer.style.display = 'block';
-            if (selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'none'; 
+            updateGraphsAndTable(); // Vis tomme grafer
+        }
+        
+        function showNewPatientScreen() {
+            if(patientChoiceSection) patientChoiceSection.classList.add('choice-made'); // Beholder valgknappene, men kan styles mindre
+            if(newPatientChoiceButton) newPatientChoiceButton.classList.add('active-choice');
+            if(existingPatientChoiceButton) existingPatientChoiceButton.classList.remove('active-choice');
 
-            clearAllFieldsExceptChoice(); // Tømmer ikke valg, men resten
-            fpNrInput.value = `NEW-${Date.now().toString().slice(-6)}`; 
-            fpNrInput.disabled = true; 
+            if(existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
+            if(patientDataContainer) patientDataContainer.style.display = 'block'; // Vis pasientdatafeltene
+            if(selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'none'; 
+
+            resetPatientDataFields(); // Tømmer ID, alder etc.
+            resetScreeningInputFields(); // Tømmer injured side, bodyweight og ASH inputs
+            updateGraphsAndTable(); // Oppdater grafer til tom tilstand
+
+            if(fpNrInput) {
+                fpNrInput.value = ''; // La brukeren skrive inn ID
+                fpNrInput.disabled = false; 
+                fpNrInput.focus();
+            }
             console.log("Switched to New Patient screen");
         }
 
         function showExistingPatientSearch() {
-            patientChoiceSection.classList.add('choice-made');
-            existingPatientChoiceButton.classList.add('active-choice');
-            newPatientChoiceButton.classList.remove('active-choice');
+            if(patientChoiceSection) patientChoiceSection.classList.add('choice-made');
+            if(existingPatientChoiceButton) existingPatientChoiceButton.classList.add('active-choice');
+            if(newPatientChoiceButton) newPatientChoiceButton.classList.remove('active-choice');
 
-            existingPatientSearchContainer.style.display = 'block';
-            mainScreeningContent.style.display = 'none'; // Skjul hovedinnholdet mens vi søker
+            if(existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'block';
+            if(patientDataContainer) patientDataContainer.style.display = 'none'; 
             if (selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'none';
-            fpNrInputSearch.value = ''; 
-            fpNrInputSearch.focus();
+            if(fpNrInputSearch) {
+                fpNrInputSearch.value = ''; 
+                fpNrInputSearch.focus();
+            }
             console.log("Switched to Existing Patient search screen");
         }
         
-        function showExistingPatientScreen(patientId) {
-            // Valg er allerede gjort, så .choice-made er satt
-            existingPatientSearchContainer.style.display = 'none'; 
-            mainScreeningContent.style.display = 'block'; 
-
-            if(patientDetailsTitle) patientDetailsTitle.style.display = 'block';
-            if(topControls) topControls.style.display = 'flex';
+        async function showExistingPatientScreen(patientId) {
+            if(existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none'; 
             if(patientDataContainer) patientDataContainer.style.display = 'block';
-            if(inputSectionContainer) inputSectionContainer.style.display = 'flex';
-            if(resultsTitle) resultsTitle.style.display = 'block';
-            if(positionRows) positionRows.forEach(row => row.style.display = 'flex');
-            if(saveDataButtonContainer) saveDataButtonContainer.style.display = 'block';
             
-            fpNrInput.value = patientId; 
-            fpNrInput.disabled = false; 
+            if(fpNrInput) {
+                fpNrInput.value = patientId; 
+                fpNrInput.disabled = false; // Eller true hvis du ikke vil at den skal endres etter valg
+            }
             
-            resetPatientDataFields(); // Tøm pasientdatafeltene før lasting av test
+            await fetchLatestPatientDetails(patientId); // Hent alder, kjønn etc.
             resetScreeningInputFields(); 
             updateGraphsAndTable(); 
             displayTestsForPatient(patientId); 
             console.log("Switched to Existing Patient screen for:", patientId);
         }
 
-        function clearAllFieldsExceptChoice() {
-            resetPatientDataFields();
-            resetScreeningInputFields();
-            if(selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'none';
-            if(selectedPatientTestsListUL) selectedPatientTestsListUL.innerHTML = '';
-            updateGraphsAndTable();
-            saveInputsToLocalStorage(); // Lagre tomme verdier
+        async function fetchLatestPatientDetails(patientIdToFetch) {
+            if (!auth.currentUser) return null;
+            const screeningsRef = collection(db, "users", auth.currentUser.uid, "screenings");
+            const q = query(screeningsRef, 
+                            where("patientId", "==", patientIdToFetch), 
+                            orderBy("testTimestamp", "desc"), 
+                            limit(1));
+            try {
+                const querySnapshot = await getDocs(q);
+                if (!querySnapshot.empty) {
+                    const latestScreeningData = querySnapshot.docs[0].data();
+                    if(ageInput) ageInput.value = latestScreeningData.age || '';
+                    if(genderSelect) genderSelect.value = latestScreeningData.gender || '';
+                    if(sportInput) sportInput.value = latestScreeningData.sport || '';
+                    if(injuryInput) injuryInput.value = latestScreeningData.injury || '';
+                    // Injured side og bodyweight settes fra testdata, ikke her
+                    console.log("Fetched details from latest screening for patient:", patientIdToFetch);
+                } else {
+                    console.log("No previous screenings found to populate details for patient:", patientIdToFetch);
+                    resetPatientDataFields(); // Tømmer alder, kjønn etc.
+                    if(fpNrInput) fpNrInput.value = patientIdToFetch; // Beholder IDen
+                }
+            } catch (error) {
+                console.error("Error fetching latest patient details:", error);
+                resetPatientDataFields();
+                if(fpNrInput) fpNrInput.value = patientIdToFetch;
+            }
         }
 
 
@@ -974,7 +973,7 @@
                 if (appLoadingMessage) appLoadingMessage.style.display = 'none';
                 if (appLayout) appLayout.style.display = 'flex';
                 
-                showChoiceScreen(); 
+                showInitialScreenState(); // Vis den initielle layouten
                 populatePatientIdDatalist(); 
             } else {
                 console.log("Screening page (Firebase Auth): User is NOT authenticated. Redirecting to login.");
@@ -1118,6 +1117,7 @@
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
                     const data = docSnap.data();
+                    // Fyll ut hovedskjemaets pasient-ID og andre detaljer
                     if(fpNrInput) fpNrInput.value = data.patientId || '';  
                     if(ageInput) ageInput.value = data.age || '';  
                     if(genderSelect) genderSelect.value = data.gender || '';  
@@ -1125,6 +1125,7 @@
                     if(injuryInput) injuryInput.value = data.injury || '';  
                     if(bodyweightInput) bodyweightInput.value = data.bodyweight || '';  
                     if(injuredSideRadio) injuredSideRadio.value = data.injuredSide || 'Left';
+                    
                     ['I', 'Y', 'T'].forEach(pos => {  
                         if (data.ashTest && data.ashTest[pos]) {  
                             if(inputFieldMap[pos].nonInjured[0]) inputFieldMap[pos].nonInjured[0].value = data.ashTest[pos].nonInjuredMaxForce || '';  
