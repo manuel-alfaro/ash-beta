@@ -434,13 +434,109 @@
             });
         });
     }
+    
+    function openLastTestsModal() { if(lastTestsModalBackdrop) lastTestsModalBackdrop.style.display = 'block'; if(lastTestsModal) lastTestsModal.style.display = 'flex'; document.body.style.overflow = 'hidden'; loadPatientIdsForModal(); }
+    function closeLastTestsModal() { if(lastTestsModalBackdrop) lastTestsModalBackdrop.style.display = 'none'; if(lastTestsModal) lastTestsModal.style.display = 'none'; document.body.style.overflow = 'auto'; if(patientIdListUL) patientIdListUL.innerHTML = ''; if(testDatesListUL) testDatesListUL.innerHTML = ''; if(testDatesContainer) testDatesContainer.style.display = 'none'; if(loadTestsLoadingMessage) loadTestsLoadingMessage.style.display = 'none'; if(loadTestsErrorMessage) loadTestsErrorMessage.style.display = 'none'; }
+    if(loadTestsButton) loadTestsButton.addEventListener('click', openLastTestsModal);
+    if(closeLastTestsModalButton) closeLastTestsModalButton.addEventListener('click', closeLastTestsModal);
+    if(cancelLoadTestButton) cancelLoadTestButton.addEventListener('click', closeLastTestsModal);
+    if(lastTestsModalBackdrop) lastTestsModalBackdrop.addEventListener('click', closeLastTestsModal);
 
+    async function loadPatientIdsForModal() {
+        if (!auth.currentUser || !patientIdListUL || !loadTestsLoadingMessage || !loadTestsErrorMessage) return;
+        patientIdListUL.innerHTML = ''; testDatesContainer.style.display = 'none'; testDatesListUL.innerHTML = '';
+        loadTestsLoadingMessage.style.display = 'block'; loadTestsErrorMessage.style.display = 'none';
+        try {
+            const q = query( collection(db, "screenings"), where("clinicianId", "==", auth.currentUser.uid), orderBy("patientId"), orderBy("testTimestamp", "desc") );
+            const querySnapshot = await getDocs(q);
+            const patientScreenings = {};
+            querySnapshot.forEach((doc) => { const data = doc.data(); if (!patientScreenings[data.patientId]) { patientScreenings[data.patientId] = []; } patientScreenings[data.patientId].push({ screeningId: doc.id, timestamp: data.testTimestamp }); });
+            loadTestsLoadingMessage.style.display = 'none';
+            if (Object.keys(patientScreenings).length === 0) { patientIdListUL.innerHTML = '<li>No saved tests found for your account.</li>'; return; }
+            for (const patientId in patientScreenings) { const li = document.createElement('li'); li.textContent = patientId; li.dataset.patientId = patientId; li.addEventListener('click', () => loadTestDatesForPatient(patientId, patientScreenings[patientId])); patientIdListUL.appendChild(li); }
+        } catch (error) { console.error("Error loading patient IDs: ", error); loadTestsLoadingMessage.style.display = 'none'; loadTestsErrorMessage.textContent = "Failed to load patient list. Please try again."; loadTestsErrorMessage.style.display = 'block'; }
+    }
+
+    function loadTestDatesForPatient(patientId, screenings) {
+        if (!testDatesContainer || !testDatesListUL || !selectedPatientIdForTestsSpan) return;
+        selectedPatientIdForTestsSpan.textContent = patientId; testDatesListUL.innerHTML = '';
+        if (!screenings || screenings.length === 0) { const li = document.createElement('li'); li.textContent = "No tests found for this patient."; testDatesListUL.appendChild(li); testDatesContainer.style.display = 'block'; return; }
+        screenings.sort((a, b) => b.timestamp.seconds - a.timestamp.seconds);
+        screenings.forEach(screening => { const li = document.createElement('li'); const dateSpan = document.createElement('span'); const date = screening.timestamp.toDate(); dateSpan.textContent = date.toLocaleString('nb-NO', { dateStyle: 'medium', timeStyle: 'short' }); dateSpan.title = "Load this test"; dateSpan.addEventListener('click', () => loadScreeningData(screening.screeningId)); const deleteButton = document.createElement('button'); deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>'; deleteButton.title = "Delete this test"; deleteButton.classList.add('delete-test-btn'); deleteButton.addEventListener('click', (e) => { e.stopPropagation(); confirmAndDeleteScreening(screening.screeningId, patientId, date); }); li.appendChild(dateSpan); li.appendChild(deleteButton); testDatesListUL.appendChild(li); });
+        testDatesContainer.style.display = 'block';
+    }
+
+    async function loadScreeningData(screeningId) {
+        if (!screeningId || !loadTestsLoadingMessage || !loadTestsErrorMessage) return;
+        loadTestsLoadingMessage.style.display = 'block'; loadTestsErrorMessage.style.display = 'none';
+        try {
+            const docRef = doc(db, "screenings", screeningId);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                if(fpNrInput) fpNrInput.value = data.patientId || ''; if(ageInput) ageInput.value = data.age || ''; if(genderSelect) genderSelect.value = data.gender || ''; if(sportInput) sportInput.value = data.sport || ''; if(bodyweightInput) bodyweightInput.value = data.bodyweight || ''; if(injuredSideRadio) injuredSideRadio.value = data.injuredSide || 'Left';
+                ['I', 'Y', 'T'].forEach(pos => { if (data.ashTest && data.ashTest[pos]) { if(inputFieldMap[pos].nonInjured[0]) inputFieldMap[pos].nonInjured[0].value = data.ashTest[pos].nonInjuredMaxForce || ''; if(inputFieldMap[pos].nonInjured[1]) inputFieldMap[pos].nonInjured[1].value = data.ashTest[pos].nonInjuredRfd || ''; if(inputFieldMap[pos].injured[0]) inputFieldMap[pos].injured[0].value = data.ashTest[pos].injuredMaxForce || ''; if(inputFieldMap[pos].injured[1]) inputFieldMap[pos].injured[1].value = data.ashTest[pos].injuredRfd || ''; } });
+                if (patientDataContainer && !patientDataContainer.classList.contains('visible')) { if (data.patientId || data.age || data.gender || data.sport) { togglePatientData(); } }
+                updateGraphsAndTable(); saveInputsToLocalStorage(); closeLastTestsModal(); showStatusMessage('Test data loaded successfully!', 'success');
+            } else { console.log("No such screening document!"); loadTestsErrorMessage.textContent = "Could not find the selected test data."; loadTestsErrorMessage.style.display = 'block'; }
+        } catch (error) { console.error("Error loading screening data: ", error); loadTestsErrorMessage.textContent = "Error loading test data. Please try again."; loadTestsErrorMessage.style.display = 'block'; } finally { loadTestsLoadingMessage.style.display = 'none'; }
+    }
+    
+    async function confirmAndDeleteScreening(screeningId, patientId, date) {
+        const formattedDate = date.toLocaleString('nb-NO', { dateStyle: 'medium', timeStyle: 'short' });
+        if (confirm(`Are you sure you want to delete the test for patient "${patientId}" from ${formattedDate}? This action cannot be undone.`)) {
+            if (!screeningId || !loadTestsLoadingMessage || !loadTestsErrorMessage) return;
+            loadTestsLoadingMessage.style.display = 'block'; loadTestsErrorMessage.style.display = 'none';
+            try {
+                await deleteDoc(doc(db, "screenings", screeningId));
+                console.log("Screening deleted successfully:", screeningId); showStatusMessage('Test deleted successfully!', 'success');
+                const currentlySelectedPatientId = selectedPatientIdForTestsSpan.textContent;
+                if(currentlySelectedPatientId === patientId) { const patientListItem = Array.from(patientIdListUL.children).find(li => li.dataset.patientId === patientId); if(patientListItem) patientListItem.click(); else { loadPatientIdsForModal(); } } else { loadPatientIdsForModal(); }
+            } catch (error) { console.error("Error deleting screening: ", error); loadTestsErrorMessage.textContent = "Failed to delete test. Please try again."; loadTestsErrorMessage.style.display = 'block'; showStatusMessage('Failed to delete test.', 'error'); } finally { loadTestsLoadingMessage.style.display = 'none'; }
+        }
+    }
+
+    async function saveDataToFirestore() {
+        if (!auth.currentUser) { showStatusMessage("You must be logged in to save data.", "error"); return; }
+        if (!fpNrInput || !fpNrInput.value.trim()) { showStatusMessage("Patient ID is required to save data.", "error"); fpNrInput.focus(); return; }
+        const screeningData = { patientId: fpNrInput.value.trim(), clinicianId: auth.currentUser.uid, testTimestamp: serverTimestamp(), age: ageInput.value ? parseInt(ageInput.value) : null, gender: genderSelect.value || null, sport: sportInput.value.trim() || null, bodyweight: bodyweightInput.value ? parseFloat(bodyweightInput.value) : null, injuredSide: injuredSideRadio.value, ashTest: {} };
+        let dataEnteredForAsh = false;
+        ['I', 'Y', 'T'].forEach(pos => { const positionData = processInputAndCalculate(pos); if (positionData) { screeningData.ashTest[pos] = { nonInjuredMaxForce: positionData.left.max_force, nonInjuredRfd: positionData.left.rfd, injuredMaxForce: positionData.right.max_force, injuredRfd: positionData.right.rfd }; if (injuredSideRadio.value === 'Left') { screeningData.ashTest[pos] = { nonInjuredMaxForce: positionData.right.max_force, nonInjuredRfd: positionData.right.rfd, injuredMaxForce: positionData.left.max_force, injuredRfd: positionData.left.rfd }; } dataEnteredForAsh = true; } else { screeningData.ashTest[pos] = { nonInjuredMaxForce: null, nonInjuredRfd: null, injuredMaxForce: null, injuredRfd: null }; } });
+        if (!dataEnteredForAsh && (!screeningData.age && !screeningData.gender && !screeningData.sport && !screeningData.bodyweight)) { showStatusMessage("No data entered to save.", "warning"); return; }
+        try { const docRef = await addDoc(collection(db, "screenings"), screeningData); console.log("Screening data saved with ID: ", docRef.id); showStatusMessage("Data saved successfully!", "success"); } catch (error) { console.error("Error saving screening data: ", error); showStatusMessage("Error saving data. Please try again.", "error"); }
+    }
+    
     document.addEventListener('DOMContentLoaded', () => {
         asymmetryChartDivs.forEach(divId => createEmptyPlot(divId, 'Enter Data', 300, 20));
         normativeChartDivs.forEach(divId => createEmptyPlot(divId, 'Enter Bodyweight', 250, 35));
         loadInputsFromLocalStorage();
         updateGraphsAndTable();
     });
+
+    if (injuredSideRadio) injuredSideRadio.addEventListener('change', () => { updateGraphsAndTable(); saveInputsToLocalStorage(); });
+    if (bodyweightInput) bodyweightInput.addEventListener('input', () => { updateGraphsAndTable(); saveInputsToLocalStorage(); });
+    if (fpNrInput) fpNrInput.addEventListener('change', saveInputsToLocalStorage);
+    if (ageInput) ageInput.addEventListener('change', saveInputsToLocalStorage);
+    if (genderSelect) genderSelect.addEventListener('change', saveInputsToLocalStorage);
+    if (sportInput) sportInput.addEventListener('change', saveInputsToLocalStorage);
+    allNumberInputs.forEach(input => { input.addEventListener('input', updateGraphsAndTable); input.addEventListener('change', saveInputsToLocalStorage); });
+    if (pdfPreviewButton) pdfPreviewButton.addEventListener('click', enterPreviewMode);
+    if (exportExcelButton) exportExcelButton.addEventListener('click', exportTableToCsv);
+    if (registerPatientButton) registerPatientButton.addEventListener('click', togglePatientData);
+    if (previewExitButtonInline) previewExitButtonInline.addEventListener('click', exitPreviewMode);
+    if (clearAllButton) clearAllButton.addEventListener('click', clearAllFields);
+    if(saveDataButton) saveDataButton.addEventListener('click', saveDataToFirestore);
+    if(logoutButton) {
+        logoutButton.addEventListener('click', () => {
+            signOut(auth).then(() => {
+                console.log("User signed out successfully.");
+                window.location.href = loginPageUrl;
+            }).catch((error) => {
+                console.error("Sign out error", error);
+                showStatusMessage("Error signing out. Please try again.", "error");
+            });
+        });
+    }
     window.addEventListener('load', () => { setTimeout(() => window.dispatchEvent(new Event('resize')), 200); });
     window.addEventListener('resize', () => {
         asymmetryChartDivs.concat(normativeChartDivs).forEach(divId => {
@@ -450,6 +546,5 @@
     });
 
 </script>
-
 </body>
 </html>
