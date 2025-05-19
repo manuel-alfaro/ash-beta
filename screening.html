@@ -346,7 +346,7 @@
     const ageInput = document.getElementById('age-input');
     const genderSelect = document.getElementById('gender-select');
     const sportInput = document.getElementById('sport-input');
-    const injuryInput = document.getElementById('injury-input'); // New injury input
+    const injuryInput = document.getElementById('injury-input');
     const inputFieldMap = {
         'I': { nonInjured: [document.getElementById('non-injured-max-force-i'), document.getElementById('non-injured-rfd-i')], injured: [document.getElementById('injured-max-force-i'), document.getElementById('injured-rfd-i')] },
         'Y': { nonInjured: [document.getElementById('non-injured-max-force-y'), document.getElementById('non-injured-rfd-y')], injured: [document.getElementById('injured-max-force-y'), document.getElementById('injured-rfd-y')] },
@@ -415,40 +415,9 @@
     
     function loadInputsFromLocalStorage() { try { const savedDataString = localStorage.getItem(localStorageKey); if (savedDataString) { const savedData = JSON.parse(savedDataString); console.log('Loading inputs from localStorage (v4)'); injuredSideRadio.value = savedData.injuredSide || 'Left'; bodyweightInput.value = savedData.bodyweight || ''; fpNrInput.value = savedData.fpNr || ''; ageInput.value = savedData.age || ''; genderSelect.value = savedData.gender || ''; sportInput.value = savedData.sport || ''; injuryInput.value = savedData.injury || ''; inputFieldMap['I'].nonInjured[0].value = savedData['non-injured-max-force-i'] || ''; inputFieldMap['I'].nonInjured[1].value = savedData['non-injured-rfd-i'] || ''; inputFieldMap['I'].injured[0].value = savedData['injured-max-force-i'] || ''; inputFieldMap['I'].injured[1].value = savedData['injured-rfd-i'] || ''; inputFieldMap['Y'].nonInjured[0].value = savedData['non-injured-max-force-y'] || ''; inputFieldMap['Y'].nonInjured[1].value = savedData['non-injured-rfd-y'] || ''; inputFieldMap['Y'].injured[0].value = savedData['injured-max-force-y'] || ''; inputFieldMap['Y'].injured[1].value = savedData['injured-rfd-y'] || ''; inputFieldMap['T'].nonInjured[0].value = savedData['non-injured-max-force-t'] || ''; inputFieldMap['T'].nonInjured[1].value = savedData['non-injured-rfd-t'] || ''; inputFieldMap['T'].injured[0].value = savedData['injured-max-force-t'] || ''; inputFieldMap['T'].injured[1].value = savedData['injured-rfd-t'] || ''; if (fpNrInput.value || ageInput.value || genderSelect.value || sportInput.value || injuryInput.value) { if (patientDataContainer && !patientDataContainer.classList.contains('visible')) { togglePatientData(); } } } } catch (error) { console.error('Error loading inputs:', error); } }
 
-    if (injuredSideRadio) injuredSideRadio.addEventListener('change', () => { updateGraphsAndTable(); saveInputsToLocalStorage(); });
-    if (bodyweightInput) bodyweightInput.addEventListener('input', () => { updateGraphsAndTable(); saveInputsToLocalStorage(); });
-    if (fpNrInput) fpNrInput.addEventListener('change', saveInputsToLocalStorage);
-    if (ageInput) ageInput.addEventListener('change', saveInputsToLocalStorage);
-    if (genderSelect) genderSelect.addEventListener('change', saveInputsToLocalStorage);
-    if (sportInput) sportInput.addEventListener('change', saveInputsToLocalStorage);
-    if (injuryInput) injuryInput.addEventListener('change', saveInputsToLocalStorage);
-    allNumberInputs.forEach(input => { input.addEventListener('input', updateGraphsAndTable); input.addEventListener('change', saveInputsToLocalStorage); });
-    if (pdfPreviewButton) pdfPreviewButton.addEventListener('click', enterPreviewMode);
-    if (exportExcelButton) exportExcelButton.addEventListener('click', exportTableToCsv);
-    if (registerPatientButton) registerPatientButton.addEventListener('click', togglePatientData);
-    if (previewExitButtonInline) previewExitButtonInline.addEventListener('click', exitPreviewMode);
-    if (clearAllButton) clearAllButton.addEventListener('click', clearAllFields);
-    
-    if(saveDataButton) saveDataButton.addEventListener('click', saveDataToFirestore);
-    if(logoutButton) {
-        logoutButton.addEventListener('click', () => {
-            signOut(auth).then(() => {
-                console.log("User signed out successfully.");
-                window.location.href = loginPageUrl;
-            }).catch((error) => {
-                console.error("Sign out error", error);
-                showStatusMessage("Error signing out. Please try again.", "error");
-            });
-        });
-    }
-    
     function openLastTestsModal() { console.log('openLastTestsModal function called'); if(lastTestsModalBackdrop) lastTestsModalBackdrop.style.display = 'block'; if(lastTestsModal) lastTestsModal.style.display = 'flex'; document.body.style.overflow = 'hidden'; loadPatientIdsForModal(); }
     function closeLastTestsModal() { if(lastTestsModalBackdrop) lastTestsModalBackdrop.style.display = 'none'; if(lastTestsModal) lastTestsModal.style.display = 'none'; document.body.style.overflow = 'auto'; if(patientIdListUL) patientIdListUL.innerHTML = ''; if(testDatesListUL) testDatesListUL.innerHTML = ''; if(testDatesContainer) testDatesContainer.style.display = 'none'; if(loadTestsLoadingMessage) loadTestsLoadingMessage.style.display = 'none'; if(loadTestsErrorMessage) loadTestsErrorMessage.style.display = 'none'; }
-    if(loadTestsButton) loadTestsButton.addEventListener('click', openLastTestsModal);
-    if(closeLastTestsModalButton) closeLastTestsModalButton.addEventListener('click', closeLastTestsModal);
-    if(cancelLoadTestButton) cancelLoadTestButton.addEventListener('click', closeLastTestsModal);
-    if(lastTestsModalBackdrop) lastTestsModalBackdrop.addEventListener('click', closeLastTestsModal);
-
+    
     async function loadPatientIdsForModal() {
         if (!auth.currentUser || !patientIdListUL || !loadTestsLoadingMessage || !loadTestsErrorMessage) return;
         patientIdListUL.innerHTML = ''; testDatesContainer.style.display = 'none'; testDatesListUL.innerHTML = '';
@@ -492,14 +461,24 @@
     async function confirmAndDeleteScreening(screeningId, patientId, date) {
         const formattedDate = date.toLocaleString('nb-NO', { dateStyle: 'medium', timeStyle: 'short' });
         if (confirm(`Are you sure you want to delete the test for patient "${patientId}" from ${formattedDate}? This action cannot be undone.`)) {
-            if (!screeningId || !loadTestsLoadingMessage || !loadTestsErrorMessage) return;
-            loadTestsLoadingMessage.style.display = 'block'; loadTestsErrorMessage.style.display = 'none';
+            if (!screeningId) return;
+            if(loadTestsLoadingMessage) loadTestsLoadingMessage.style.display = 'block';
+            if(loadTestsErrorMessage) loadTestsErrorMessage.style.display = 'none';
             try {
                 await deleteDoc(doc(db, "screenings", screeningId));
-                console.log("Screening deleted successfully:", screeningId); showStatusMessage('Test deleted successfully!', 'success');
-                const currentlySelectedPatientId = selectedPatientIdForTestsSpan.textContent;
-                if(currentlySelectedPatientId === patientId) { const patientListItem = Array.from(patientIdListUL.children).find(li => li.dataset.patientId === patientId); if(patientListItem) { patientListItem.click(); } else { loadPatientIdsForModal(); } } else { loadPatientIdsForModal(); }
-            } catch (error) { console.error("Error deleting screening: ", error); loadTestsErrorMessage.textContent = "Failed to delete test. Please try again."; loadTestsErrorMessage.style.display = 'block'; showStatusMessage('Failed to delete test.', 'error'); } finally { loadTestsLoadingMessage.style.display = 'none'; }
+                console.log("Screening deleted successfully:", screeningId);
+                showStatusMessage('Test deleted successfully!', 'success');
+                loadPatientIdsForModal();
+            } catch (error) {
+                console.error("Error during delete operation or subsequent UI refresh: ", error);
+                if(loadTestsErrorMessage) {
+                    loadTestsErrorMessage.textContent = "Failed to delete test or refresh list. Please try again.";
+                    loadTestsErrorMessage.style.display = 'block';
+                }
+                showStatusMessage('Failed to delete test.', 'error');
+            } finally {
+                if(loadTestsLoadingMessage) loadTestsLoadingMessage.style.display = 'none';
+            }
         }
     }
 
