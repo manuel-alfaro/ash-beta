@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="no">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -547,41 +547,7 @@
         }
     </style>
 
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
-    <script>
-        // IMPORTANT: Replace with your actual Firebase project configuration!
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY", // Replace with your API Key
-            authDomain: "YOUR_AUTH_DOMAIN", // Replace with your Auth Domain
-            projectId: "YOUR_PROJECT_ID", // Replace with your Project ID
-            storageBucket: "YOUR_STORAGE_BUCKET", // Replace with your Storage Bucket
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID", // Replace with your Messaging Sender ID
-            appId: "YOUR_APP_ID", // Replace with your App ID
-            // measurementId: "YOUR_MEASUREMENT_ID" // Optional, for Google Analytics
-        };
-
-        // Initialize Firebase
-        // This check prevents re-initializing the app if this script is somehow loaded multiple times.
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        } else {
-            firebase.app(); // If already initialized, use the existing instance
-        }
-        
-        // Define the 'auth' variable using the Firebase Authentication service
-        const auth = firebase.auth();
-        
-        // If you use Firestore:
-        // const db = firebase.firestore(); 
-        // Make sure to uncomment and use 'db' where you interact with Firestore.
-
-        // CRITICAL: The 'auth' variable is now defined. 
-        // All your application scripts that need to use 'auth' must be included *after* this script block.
-    </script>
-
-</head>
+    </head>
 <body>
 
     <div class="loading-message">Loading application...</div>
@@ -592,9 +558,9 @@
                 <i class="fas fa-cogs"></i> </div>
             <nav class="sidebar-buttons">
                 <button id="dashboard-button"><i class="fas fa-tachometer-alt"></i> Dashboard</button>
-                <button id="new-screening-button"><i class="fas fa-plus-circle"></i> Ny Screening</button>
-                <button id="patients-button"><i class="fas fa-users"></i> Pasienter</button>
-                <button id="settings-button"><i class="fas fa-cog"></i> Innstillinger</button>
+                <button id="new-screening-button"><i class="fas fa-plus-circle"></i> New Screening</button>
+                <button id="patients-button"><i class="fas fa-users"></i> Patients</button>
+                <button id="settings-button"><i class="fas fa-cog"></i> Settings</button>
             </nav>
             <div class="sidebar-user-info">
                 <div class="user-details">
@@ -602,7 +568,7 @@
                     <span id="loggedInUserName">User Name</span>
                     <span id="loggedInUserEmailDisplay">user@example.com</span>
                 </div>
-                <button id="logout-button"><i class="fas fa-sign-out-alt"></i> Logg ut</button>
+                <button id="logout-button"><i class="fas fa-sign-out-alt"></i> Log Out</button>
             </div>
              <div class="sidebar-social-links">
                 <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
@@ -618,17 +584,17 @@
                 <section id="patient-choice-section">
                     <div class="choice-box" id="new-patient-choice">
                         <i class="fas fa-user-plus"></i>
-                        <span>Ny Pasient</span>
+                        <span>New Patient</span>
                     </div>
                     <div class="choice-box" id="existing-patient-choice">
                         <i class="fas fa-user-check"></i>
-                        <span>Eksisterende Pasient</span>
+                        <span>Existing Patient</span>
                     </div>
                 </section>
 
                 <div id="existing-patient-search-container">
-                    <label for="patient-search-input">Søk etter pasient (ID, Navn)</label>
-                    <input type="text" id="patient-search-input" placeholder="Skriv her...">
+                    <label for="patient-search-input">Search Patient (ID, Name)</label>
+                    <input type="text" id="patient-search-input" placeholder="Type here...">
                 </div>
 
                 <div id="report-content">
@@ -639,8 +605,7 @@
 
     <div class="modal-overlay" id="patient-modal-overlay">
         <div class="modal-content">
-            <h3 id="modal-title">Add New Patient</h3>
-            <div id="modal-form-content">
+            <h3 id="modal-title">Add New Patient</h3> <div id="modal-form-content">
                 </div>
              <div id="modal-patient-list-container" style="display:none;">
                 <h4>Select Patient:</h4>
@@ -656,8 +621,31 @@
     
     <div class="status-message" id="status-message-container"></div>
 
+    <script type="module">
+        // Firebase SDKs (Modular v10)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        // Import Firestore if you need it in this file, e.g., for saving patient data directly
+        // import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    <script>
+        // IMPORTANT: This configuration MUST MATCH the one in your login/signup page.
+        // This is taken from the login page code you provided.
+        const firebaseConfig = {
+            apiKey: "AIzaSyDhEihuoWm4c5MSOHrSqkkzca7tn86roq4", // WARNING: It's generally not recommended to hardcode API keys directly in client-side code for production. Consider environment variables or a backend proxy.
+            authDomain: "pwr-analytics.firebaseapp.com",
+            projectId: "pwr-analytics",
+            storageBucket: "pwr-analytics.appspot.com",
+            messagingSenderId: "9839468523",
+            appId: "1:9839468523:web:1d994de254b2a24d91c3ae",
+            measurementId: "G-N35HQ5CMD5"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        // const db = getFirestore(app); // Uncomment if you need Firestore operations in this file
+
+        // --- Start of application logic once DOM is loaded ---
         document.addEventListener('DOMContentLoaded', () => {
             // DOM Elements
             const loadingMessage = document.querySelector('.loading-message');
@@ -683,34 +671,39 @@
             const statusMessageContainer = document.getElementById('status-message-container');
 
             // --- Authentication State Listener ---
-            auth.onAuthStateChanged(user => {
+            onAuthStateChanged(auth, user => {
                 if (user) {
                     // User is signed in.
-                    console.log("User signed in:", user.uid);
+                    console.log("SCREENING PAGE: User signed in:", user.uid, user.email);
                     if (loggedInUserName) loggedInUserName.textContent = user.displayName || "User";
                     if (loggedInUserEmailDisplay) loggedInUserEmailDisplay.textContent = user.email || "No email";
                     
                     if (loadingMessage) loadingMessage.style.display = 'none';
                     if (appLayout) appLayout.style.display = 'flex'; // Show the main application
                     
-                    // Initialize app features that depend on the user being logged in
-                    // e.g., fetch user-specific data
                     showStatusMessage("Successfully logged in!", "success");
 
                 } else {
                     // User is signed out.
-                    console.log("User signed out.");
-                    if (loggedInUserName) loggedInUserName.textContent = "User Name";
-                    if (loggedInUserEmailDisplay) loggedInUserEmailDisplay.textContent = "user@example.com";
+                    console.log("SCREENING PAGE: User signed out.");
+                    if (loggedInUserName) loggedInUserName.textContent = "User Name"; // Reset placeholder
+                    if (loggedInUserEmailDisplay) loggedInUserEmailDisplay.textContent = "user@example.com"; // Reset placeholder
 
                     if (loadingMessage) {
-                        loadingMessage.textContent = 'Please log in to use the application.';
-                        loadingMessage.style.display = 'flex';
+                        // Instead of just showing a message, redirect to the login page if not already on it.
+                        // Assuming your login page is index.html or login.html at the root.
+                        // Check if current page is already the login page to prevent redirect loop.
+                        if (!window.location.pathname.endsWith('index.html') && !window.location.pathname.endsWith('login.html')) {
+                             // Adjust 'login.html' to the actual name of your login page if different
+                            loadingMessage.innerHTML = 'User not logged in. Redirecting to login page... <br>If you are not redirected, <a href="login.html" class="text-blue-500 hover:underline">click here to log in</a>.';
+                            loadingMessage.style.display = 'flex';
+                            // window.location.href = "login.html"; // Or your main login page
+                        } else {
+                             loadingMessage.textContent = 'Please log in to use the application.';
+                             loadingMessage.style.display = 'flex';
+                        }
                     }
                     if (appLayout) appLayout.style.display = 'none'; // Hide the main application
-                    
-                    // Optionally, redirect to a login page or show a login form
-                    // For now, we just show the loading message area with a login prompt.
                 }
             });
 
@@ -719,12 +712,14 @@
             // Logout Button
             if (logoutButton) {
                 logoutButton.addEventListener('click', () => {
-                    auth.signOut().then(() => {
-                        console.log('User signed out successfully');
-                        showStatusMessage("Logged out successfully.", "success");
-                        // The onAuthStateChanged listener will handle UI updates
+                    signOut(auth).then(() => {
+                        console.log('User signed out successfully from screening page');
+                        showStatusMessage("Logged out successfully. Redirecting...", "success");
+                        // The onAuthStateChanged listener will handle UI updates and redirection logic
+                        // You might want to explicitly redirect to login page here too:
+                        // window.location.href = "login.html"; // Or your main login page
                     }).catch((error) => {
-                        console.error('Sign out error', error);
+                        console.error('Sign out error on screening page', error);
                         showStatusMessage(`Error logging out: ${error.message}`, "error");
                     });
                 });
@@ -736,7 +731,7 @@
                     newPatientChoice.classList.add('active-choice');
                     if (existingPatientChoice) existingPatientChoice.classList.remove('active-choice');
                     if (existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
-                    openPatientModal('new'); // Open modal for new patient
+                    openPatientModal('new'); 
                 });
             }
 
@@ -745,8 +740,6 @@
                     existingPatientChoice.classList.add('active-choice');
                     if (newPatientChoice) newPatientChoice.classList.remove('active-choice');
                     if (existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'block';
-                    // Potentially open modal for selecting existing patient or just show search
-                    // openPatientModal('existing'); 
                     console.log("Existing patient choice selected. Search shown.");
                 });
             }
@@ -755,9 +748,6 @@
             if (newScreeningButton) {
                 newScreeningButton.addEventListener('click', () => {
                     console.log('New Screening button clicked');
-                    // Typically, this would also open a modal or navigate to a new screening page
-                    // For now, let's assume it might open the patient modal if no patient is selected,
-                    // or directly to screening form if a patient context exists.
                     openPatientModal('new_screening'); 
                 });
             }
@@ -771,7 +761,6 @@
                 settingsButton.addEventListener('click', () => console.log('Settings button clicked'));
             }
 
-
             // Modal Interactions
             if (modalCancelButton) {
                 modalCancelButton.addEventListener('click', closePatientModal);
@@ -779,14 +768,11 @@
 
             if (modalConfirmButton) {
                 modalConfirmButton.addEventListener('click', () => {
-                    // Handle form submission from modal
-                    // This is where you would get data from modalFormContent's inputs
-                    // and save it (e.g., to Firestore)
                     console.log('Modal confirm button clicked. Implement save logic.');
                     // Example:
-                    // const patientName = document.getElementById('patientNameInput').value;
-                    // if (patientName) {
-                    //    savePatientData({ name: patientName, ... });
+                    // const patientNameInput = document.getElementById('patient-name');
+                    // if (patientNameInput && patientNameInput.value) {
+                    //    // savePatientData({ name: patientNameInput.value, ... }); // Implement this
                     //    showStatusMessage("Patient data saved!", "success");
                     //    closePatientModal();
                     // } else {
@@ -797,7 +783,6 @@
                 });
             }
             
-            // Close modal if clicking outside the content (on the overlay)
             if (patientModalOverlay) {
                 patientModalOverlay.addEventListener('click', (event) => {
                     if (event.target === patientModalOverlay) {
@@ -808,14 +793,11 @@
 
             // --- Functions ---
 
-            /**
-             * Opens the patient modal with a specific mode.
-             * @param {string} mode - 'new' for new patient, 'existing' for selecting, 'new_screening'
-             */
             function openPatientModal(mode = 'new') {
                 if (!patientModalOverlay) return;
 
                 let title = "Add New Patient";
+                // Basic form structure, enhance as needed
                 let formHtml = `
                     <div class="modal-form-grid">
                         <div class="modal-form-item">
@@ -843,13 +825,13 @@
 
                 if (mode === 'new_screening') {
                     title = "Start New Screening";
-                    // Form might be different or might first ask to select/create patient
-                    // For simplicity, using the same form for now.
+                    // You might want a different form or flow for new screening
                 } else if (mode === 'existing') {
                     title = "Select Existing Patient";
                     formHtml = `<p>Patient selection UI would go here.</p> 
                                 <input type="text" placeholder="Search existing patients..." style="width: 100%; padding: 8px; margin-bottom: 10px; color: black;">
-                                <div class="modal-patient-id-buttons"> <button class="modal-patient-id-button">Patient A (ID: 123)</button>
+                                <div class="modal-patient-id-buttons"> 
+                                    <button class="modal-patient-id-button">Patient A (ID: 123)</button>
                                     <button class="modal-patient-id-button">Patient B (ID: 456)</button>
                                 </div>`;
                 }
@@ -859,26 +841,17 @@
                 patientModalOverlay.style.display = 'flex';
             }
 
-            /**
-             * Closes the patient modal.
-             */
             function closePatientModal() {
                 if (patientModalOverlay) {
                     patientModalOverlay.style.display = 'none';
                 }
-                if (modalFormContent) modalFormContent.innerHTML = ''; // Clear form
+                if (modalFormContent) modalFormContent.innerHTML = ''; 
             }
 
-            /**
-             * Displays a status message to the user.
-             * @param {string} message - The message to display.
-             * @param {'success'|'error'} type - The type of message.
-             * @param {number} duration - How long to display the message in ms.
-             */
             function showStatusMessage(message, type = 'success', duration = 3000) {
                 if (!statusMessageContainer) return;
                 statusMessageContainer.textContent = message;
-                statusMessageContainer.className = `status-message ${type}`; // Reset classes and add new type
+                statusMessageContainer.className = `status-message ${type}`;
                 statusMessageContainer.style.display = 'block';
 
                 setTimeout(() => {
@@ -886,12 +859,8 @@
                 }, duration);
             }
 
-            // --- Initial Application Setup (if any, post-DOM load but pre-auth check) ---
-            console.log("Application DOM fully loaded and parsed. Waiting for Firebase auth state.");
-            // If there's anything to set up regardless of login state, do it here.
-            // For example, setting default states for some UI elements if not handled by CSS.
-
-        }); // End of DOMContentLoaded
+            console.log("SCREENING PAGE: DOM fully loaded. Firebase modular SDK initialized. Waiting for auth state.");
+        });
     </script>
 
 </body>
