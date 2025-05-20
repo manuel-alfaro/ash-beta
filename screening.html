@@ -215,7 +215,13 @@
         .content-container { max-width: 1100px; margin: 0 auto; }
         h1, h2, h3 { font-family: 'Avenir', sans-serif; margin-bottom: 0.75em; font-weight: var(--normal-font-weight); }
         h1 { text-align: left; font-size: 2.0rem; margin-top: 0; margin-bottom: 1em; color: var(--app-primary-color); font-weight: var(--normal-font-weight); }
-        h2 { font-size: 1.5rem; padding-bottom: 0.4em; margin-top: 1.8em; color: var(--app-secondary-color); font-weight: var(--normal-font-weight); }
+        h2.section-title-main { /* For main section titles like "Patient Selection" */
+            font-size: 1.5rem;
+            padding-bottom: 0.4em;
+            margin-top: 1.8em;
+            color: var(--app-secondary-color);
+            font-weight: var(--normal-font-weight);
+        }
         h3.position-title, h3.normative-title { font-size: 1.15rem; color: var(--app-primary-color); margin-bottom: 0.3em; font-weight: var(--normal-font-weight); }
         h3.normative-title { text-align: center;}
         #report-content { background-color: var(--white); padding: 15px 0; }
@@ -233,7 +239,7 @@
             gap: 30px;
         }
         .choice-box {
-            background-color: transparent; /* Made transparent */
+            background-color: transparent;
             border: 1px solid var(--medium-gray);
             border-radius: var(--border-radius);
             padding: 20px 25px;
@@ -244,7 +250,7 @@
             box-shadow: none;
         }
         .choice-box:hover {
-            background-color: rgba(40, 84, 132, 0.8); /* Dark blueish on hover */
+            background-color: rgba(40, 84, 132, 0.8);
             border-color: transparent;
         }
         .choice-box:hover i,
@@ -450,22 +456,40 @@
             flex-wrap: wrap;
             gap: 20px;
             margin-bottom: 25px;
-            align-items: flex-start; /* Align items to the start for consistent title alignment */
+            align-items: flex-start;
         }
 
-        .patient-card-area { /* Wrapper for patient card and its external title */
-            flex: 1 1 220px; /* Adjusted flex for patient card area */
-            min-width: 200px; /* Adjusted min-width */
+        .overview-column {
             display: flex;
             flex-direction: column;
+            gap: 10px; /* Space between title and its box */
         }
 
-        .details-title { /* Title above patient card */
-            font-size: 1.3rem;
+        .patient-details-column {
+            flex: 1 1 260px; /* Adjusted flex for patient card area */
+            min-width: 240px; /* Adjusted min-width */
+        }
+
+        .test-log-column {
+            flex: 2 1 400px; /* Test log area */
+            min-width: 280px;
+        }
+
+        .section-title { /* Common styling for Details and Test Logg titles */
+            font-size: 1.5rem; /* Match h2 */
+            font-weight: var(--normal-font-weight);
+            margin-bottom: 0.5em;
+            padding-bottom: 0;
+            margin-top: 0;
+        }
+
+        .details-title-external {
             color: var(--app-secondary-color); /* Light blue */
-            margin-bottom: 10px; /* Space between title and card */
-            padding-bottom: 5px;
-            margin-top: 0; /* Start at the top of its flex container */
+        }
+
+        .test-log-title-external {
+            color: var(--app-primary-color); /* Dark blue */
+            border-bottom: none; /* Ensure no border */
         }
 
         .patient-card {
@@ -474,10 +498,10 @@
             padding: 20px;
             border: none;
             box-shadow: none;
-            min-height: 320px; /* Keep min-height for content */
+            min-height: 320px;
             display: flex;
             flex-direction: column;
-            width: 100%; /* Ensure card takes full width of its wrapper */
+            width: 100%;
         }
         .patient-card-header {
             display: flex;
@@ -533,8 +557,6 @@
         }
 
         #selected-patient-tests-container {
-            flex: 2 1 400px; /* Adjusted flex properties */
-            min-width: 280px;
             background-color: var(--box-background-color);
             padding: 20px;
             border-radius: var(--border-radius);
@@ -543,16 +565,7 @@
             min-height: 320px;
             display: flex;
             flex-direction: column;
-        }
-
-        #selected-patient-tests-container .test-log-title {
-            font-size: 1.3rem;
-            color: var(--app-primary-color); /* Dark blue for Test Logg */
-            margin-bottom: 18px;
-            padding-bottom: 5px; /* Consistent with details-title */
-            border-bottom: none; /* Ensure no border */
-            margin-top: 0; /* Start at the top of its flex container */
-            font-weight: var(--normal-font-weight);
+            width: 100%; /* Ensure it takes full width of its column */
         }
 
         #selected-patient-tests-list {
@@ -810,6 +823,10 @@
             #patient-overview-section {
                 flex-direction: column;
             }
+            .overview-column { /* Make columns full width when stacked */
+                 width: 100%;
+                 flex-basis: auto !important;
+            }
             .patient-card-area, #selected-patient-tests-container { /* Apply to wrapper */
                 width: 100%;
                 flex-basis: 100%; /* Ensure they take full width when stacked */
@@ -921,7 +938,7 @@
             <div class="content-container">
                 <div id="report-content">
                     <h1>Functional Shoulder Screening</h1>
-                    <h2 id="patient-details-title">Patient Selection</h2>
+                    <h2 class="section-title-main" id="patient-details-title">Patient Selection</h2>
 
                     <div id="patient-choice-container">
                         <div id="patient-choice-section">
@@ -965,8 +982,8 @@
                         </div>
 
                         <div id="patient-overview-section">
-                            <div class="patient-card-area">
-                                <h3 class="details-title">Details</h3>
+                            <div class="overview-column patient-details-column">
+                                <h2 class="section-title details-title-external">Details</h2>
                                 <div id="patient-identity-card" class="patient-card" style="display: none;">
                                     <div class="patient-card-header">
                                         <i class="fas fa-address-card patient-card-icon"></i>
@@ -985,14 +1002,15 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div id="selected-patient-tests-container" style="display: none;">
-                                <h3 class="test-log-title">Test Logg</h3>
-                                <ul id="selected-patient-tests-list">
+                            <div class="overview-column test-log-column">
+                                <h2 class="section-title test-log-title-external">Test Logg</h2>
+                                <div id="selected-patient-tests-container" style="display: none;">
+                                    <ul id="selected-patient-tests-list">
                                     </ul>
+                                </div>
                             </div>
                         </div>
-                        <h2 id="input-title">Input Overview</h2>
+                        <h2 class="section-title-main" id="input-title">Input Overview</h2>
                         <div id="input-section-container">
                             <div class="input-position-box"><h4>ASH Test Position I</h4><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"> <input id="non-injured-max-force-i" type="number" class="number-input" placeholder="Uninjured"> <span class="unit-text">- N</span> </div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"> <input id="non-injured-rfd-i" type="number" class="number-input" placeholder="Uninjured"> <span class="unit-text">- Ns<sup>-1</sup></span> </div> </div><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"> <input id="injured-max-force-i" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- N</span> </div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"> <input id="injured-rfd-i" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- Ns<sup>-1</sup></span> </div> </div></div>
                             <div class="input-position-box"><h4>ASH Test Position Y</h4><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"><input id="non-injured-max-force-y" type="number" class="number-input" placeholder="Uninjured"> <span class="unit-text">- N</span></div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="non-injured-rfd-y" type="number" class="number-input" placeholder="Uninjured"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"><input id="injured-max-force-y" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- N</span></div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="injured-rfd-y" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div></div>
@@ -1002,7 +1020,7 @@
                             <button id="save-data-button-main"><i class="fas fa-save"></i> Save Screening Data</button>
                         </div>
 
-                        <h2 id="results-title">Results</h2>
+                        <h2 class="section-title-main" id="results-title">Results</h2>
                         <div class="position-row"> <div class="asymmetry-graph-container"> <div id="position-box-I" class="position-box"> <h3 class="position-title">Position I - Asymmetry</h3> <div id="bar-chart-I" class="js-plotly-plot"></div> </div> </div> <div class="normative-graph-container"> <div id="normative-chart-container-I" class="normative-box"> <h3 class="normative-title">Position I - Normative Comparison</h3> <div id="normative-chart-I" class="js-plotly-plot"></div> </div> </div> </div>
                         <div class="position-row"> <div class="asymmetry-graph-container"> <div id="position-box-Y" class="position-box"> <h3 class="position-title">Position Y - Asymmetry</h3> <div id="bar-chart-Y" class="js-plotly-plot"></div> </div> </div> <div class="normative-graph-container"> <div id="normative-chart-container-Y" class="normative-box"> <h3 class="normative-title">Position Y - Normative Comparison</h3> <div id="normative-chart-Y" class="js-plotly-plot"></div> </div> </div> </div>
                         <div class="position-row"> <div class="asymmetry-graph-container"> <div id="position-box-T" class="position-box"> <h3 class="position-title">Position T - Asymmetry</h3> <div id="bar-chart-T" class="js-plotly-plot"></div> </div> </div> <div class="normative-graph-container"> <div id="normative-chart-container-T" class="normative-box"> <h3 class="normative-title">Position T - Normative Comparison</h3> <div id="normative-chart-T" class="js-plotly-plot"></div> </div> </div> </div>
@@ -1619,9 +1637,9 @@
                 if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
 
                 updateGraphsAndTable();
-                // Update the span in H3 for saved tests title
-                const currentPatientSpanInH3 = selectedPatientTestsContainer?.querySelector('h3 #current-patient-for-tests');
-                if (currentPatientSpanInH3) currentPatientSpanInH3.textContent = originalPatientId;
+                // Update the span in H3 for saved tests title - This span was removed, so this line is no longer needed
+                // const currentPatientSpanInH3 = selectedPatientTestsContainer?.querySelector('h3 #current-patient-for-tests');
+                // if (currentPatientSpanInH3) currentPatientSpanInH3.textContent = originalPatientId;
 
                 saveInputsToLocalStorage(); // Save current state
             } catch (error) {
@@ -1658,7 +1676,7 @@
             if (bodyweightCard) bodyweightCard.textContent = data.bodyweight ? `${data.bodyweight} kg` : 'N/A';
 
             card.style.display = 'block'; // Show patient card
-            testsContainer.style.display = 'block'; // Show tests container
+            testsContainer.style.display = 'flex'; // Show tests container (as flex column)
             overview.style.display = 'flex'; // Show the whole overview section
         }
 
@@ -1688,26 +1706,24 @@
         async function displayTestsForPatientFromFirestore(patientId) {
             const localTestsContainer = document.getElementById('selected-patient-tests-container');
             const localTestsListUL = document.getElementById('selected-patient-tests-list');
-            const h3TitleElement = localTestsContainer ? localTestsContainer.querySelector('h3') : null;
-            // const localCurrentPatientSpan = h3TitleElement ? h3TitleElement.querySelector('#current-patient-for-tests') : null; // Span removed from title
+            // const h3TitleElement = localTestsContainer ? localTestsContainer.querySelector('h3.test-log-title-external') : null; // Title is now external
             const localPatientOverviewSection = document.getElementById('patient-overview-section');
 
             if (!currentUserId || !patientId) {
                 if (localTestsListUL) localTestsListUL.innerHTML = '<li>Select a patient to see tests.</li>';
-                if (localTestsContainer) localTestsContainer.style.display = 'block';
+                if (localTestsContainer) localTestsContainer.style.display = 'flex';
                 if (localPatientOverviewSection && document.getElementById('patient-identity-card')?.style.display === 'block') {
                     localPatientOverviewSection.style.display = 'flex';
                 }
                 return;
             }
 
-            if (!localTestsListUL || !localTestsContainer /*|| !localCurrentPatientSpan - removed */) {
+            if (!localTestsListUL || !localTestsContainer ) {
                 return;
             }
 
-            // if (localCurrentPatientSpan) localCurrentPatientSpan.textContent = patientId; // Span removed
             localTestsListUL.innerHTML = '<li>Loading tests...</li>';
-            localTestsContainer.style.display = 'block';
+            localTestsContainer.style.display = 'flex'; // Ensure the box is flex
             if (localPatientOverviewSection) localPatientOverviewSection.style.display = 'flex';
 
             const screeningsPath = `users/${currentUserId}/patients/${patientId}/screenings`;
