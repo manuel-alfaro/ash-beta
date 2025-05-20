@@ -182,14 +182,14 @@
         .app-main-content {
             flex-grow: 1;
             margin-left: calc(var(--sidebar-width) + var(--main-content-margin));
-            padding: 30px 40px; /* Default padding */
+            padding: 30px 40px;
             background-color: var(--white);
             overflow-y: auto;
             height: 100vh;
             box-sizing: border-box;
         }
         .content-container {
-            max-width: 900px; /* MODIFIED: Reduced max-width for larger side margins */
+            max-width: 1100px; /* MODIFIED: Reverted to 1100px for wider main view */
             margin: 0 auto;
         }
         h1, h2, h3 { font-family: 'Avenir', sans-serif; margin-bottom: 0.75em; font-weight: var(--normal-font-weight); }
@@ -556,18 +556,16 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 8px 10px;
+            padding: 10px 12px; /* MODIFIED: Reverted padding for a bit more space */
             border: 1px solid rgba(40, 84, 132, 0.3);
             background-color: rgba(112, 188, 252, 0.05);
             border-radius: var(--border-radius);
-            width: auto;
-            flex-grow: 0;
-            flex-shrink: 0;
+            min-width: 150px; /* MODIFIED: Re-added min-width for consistency */
             box-sizing: border-box;
             text-align: center;
             transition: background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
             cursor: pointer;
-            max-width: max-content;
+            /* Removed max-width: max-content; and width: auto; to allow min-width to take effect */
         }
 
         #selected-patient-tests-list li:hover {
@@ -588,7 +586,7 @@
             color: var(--app-primary-color);
             font-size: 0.85rem;
             font-weight: var(--semibold-font-weight);
-            margin-bottom: 5px;
+            margin-bottom: 8px; /* MODIFIED: Reverted margin */
         }
 
         #selected-patient-tests-list button.delete-test-btn {
@@ -597,14 +595,14 @@
             color: var(--danger-color-dark);
             border-radius: var(--border-radius);
             cursor: pointer;
-            padding: 3px 6px;
-            font-size: 0.75rem;
+            padding: 4px 7px; /* MODIFIED: Reverted padding */
+            font-size: 0.8rem; /* MODIFIED: Reverted font size */
             transition: all 0.2s ease;
             width: auto;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-top: 4px;
+            margin-top: 0; /* MODIFIED: Removed added margin-top */
         }
         #selected-patient-tests-list button.delete-test-btn:hover {
             background-color: var(--danger-color-dark);
@@ -695,31 +693,29 @@
         body.pdf-preview-active #existing-patient-search-container,
         body.pdf-preview-active #patient-data-secondary-controls,
         body.pdf-preview-active #patient-data-container,
-        body.pdf-preview-active #patient-overview-section, /* Hide patient details card & test log for PDF */
-        body.pdf-preview-active #patient-card-and-log-title, /* Hide "Details" title for PDF */
+        body.pdf-preview-active #patient-overview-section,
+        body.pdf-preview-active #patient-card-and-log-title,
         body.pdf-preview-active #input-section-container,
         body.pdf-preview-active #save-data-button-container,
         body.pdf-preview-active #bottom-area,
         body.pdf-preview-active .sidebar-social-links,
         body.pdf-preview-active #loggedInUserContainer,
         body.pdf-preview-active .sidebar-buttons,
-        body.pdf-preview-active #results-title, /* This is "Results", keep for context of graphs */
-        body.pdf-preview-active #patient-details-title, /* This is "Patient Selection", should be hidden */
-        body.pdf-preview-active #input-title /* This is "Input Overview", should be hidden */
+        body.pdf-preview-active #patient-details-title,
+        body.pdf-preview-active #input-title
         {
             display: none !important;
         }
 
-        /* Ensure specific elements ARE visible in PDF */
-        body.pdf-preview-active h1, /* Main App Title */
+        body.pdf-preview-active h1,
         body.pdf-preview-active .explanation-box,
-        body.pdf-preview-active .position-row, /* Contains graphs */
-        body.pdf-preview-active #results-title /* "Results" title above graphs */
+        body.pdf-preview-active #results-title,
+        body.pdf-preview-active .position-row
         {
-            display: block !important; /* or flex if appropriate for the element */
+            display: block !important;
         }
          body.pdf-preview-active #results-title {
-            margin-top: 10mm !important; /* Add space above results title in PDF */
+            margin-top: 10mm !important;
             text-align: center !important;
          }
 
@@ -731,28 +727,28 @@
             overflow: visible !important;
         }
         body.pdf-preview-active .content-container {
-            max-width: 100% !important; /* PDF content should use full width within margins */
+            max-width: 100% !important;
         }
 
         body.pdf-preview-active .explanation-box {
             margin: 0 0 10mm 0 !important;
         }
         body.pdf-preview-active .position-row {
-            display: flex !important; /* Keep graphs side-by-side if space allows, will wrap due to flex-wrap */
-            flex-direction: row !important; /* Explicitly row for PDF */
-            flex-wrap: wrap !important; /* Allow wrapping for smaller PDF viewports / print scaling */
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: wrap !important;
             page-break-inside: avoid !important;
         }
          body.pdf-preview-active .asymmetry-graph-container,
          body.pdf-preview-active .normative-graph-container {
-            width: 100% !important; /* Make each graph take full width when stacked in PDF due to wrapping */
+            width: 100% !important;
             flex-basis: 100% !important;
             margin-bottom: 5mm;
          }
         body.pdf-preview-active .position-box,
         body.pdf-preview-active .normative-box {
-            height: auto !important; /* Allow height to adjust in PDF */
-            min-height: var(--graph-box-height); /* Keep a min height for consistency if possible */
+            height: auto !important;
+            min-height: var(--graph-box-height);
         }
 
         body.pdf-preview-active h1 {
