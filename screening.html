@@ -19,7 +19,7 @@
             --app-button-gradient-start: var(--app-primary-color);
             --app-button-gradient-end: var(--app-tertiary-color);
             --app-button-hover-gradient-start: #1e3a5c;
-            --app-button-hover-gradient-end: #121630; /* Darker for modal confirm hover */
+            --app-button-hover-gradient-end: #121630;
             --app-button-light-gradient-start: rgba(112, 188, 252, 0.8);
             --app-button-light-gradient-end: rgba(40, 84, 132, 0.9);
             --light-gray: #f8f9fa;
@@ -68,13 +68,13 @@
             font-synthesis: none;
         }
         .app-layout {
-            display: none; /* Hidden until auth is checked */
+            display: none;
             flex-direction: row;
             width: 100%;
             min-height: 100vh;
             margin-top: 0;
         }
-        .loading-message { /* Visible at start */
+        .loading-message {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -145,7 +145,7 @@
             gap: 8px;
             margin-bottom: 15px;
         }
-        .user-details i.fa-user-astronaut { /* Changed icon */
+        .user-details i.fa-circle-nodes { /* Changed icon */
             font-size: 2.5rem;
             color: var(--app-primary-color);
         }
@@ -230,7 +230,7 @@
             box-shadow: none;
         }
         .choice-box:hover {
-            background-color: rgba(40, 84, 132, 0.8); /* Primary blue with alpha */
+            background-color: rgba(40, 84, 132, 0.8);
             border-color: transparent;
         }
         .choice-box:hover i,
@@ -448,60 +448,60 @@
             color: var(--app-primary-color);
             margin-bottom: 10px;
             padding-bottom: 5px;
-            /* border-bottom: 1px solid var(--medium-gray); Removed border */
         }
 
         .patient-card {
-            flex: 0 1 340px; /* Slightly wider for better icon spacing */
+            flex: 0 1 340px;
             background-color: var(--light-gray);
             border-radius: var(--border-radius);
             padding: 20px;
             border: none;
             box-shadow: none;
-            min-height: 320px; /* Adjusted min-height */
+            min-height: 320px;
             display: flex;
             flex-direction: column;
         }
         .patient-card-header {
-            display: flex; /* Use flex for icon and ID alignment */
-            align-items: center; /* Vertically align items */
+            display: flex;
+            align-items: center;
             margin-bottom: 15px;
             padding-bottom: 15px;
+            justify-content: flex-start; /* Align items to start */
         }
         .patient-card-icon {
-            font-size: 3.5rem; /* Slightly larger icon */
+            font-size: 3.5rem;
             color: var(--app-primary-color);
-            margin-right: 20px; /* Space between icon and text */
+            margin-right: 25px; /* Increased margin */
         }
-        .patient-card-id-container { /* New container for ID label and value */
+        .patient-card-id-container {
             display: flex;
             flex-direction: column;
-            align-items: flex-start; /* Align text to the left */
+            align-items: flex-start;
         }
         .patient-card-id-label {
             display: block;
-            font-size: 0.9rem; /* Adjusted size */
+            font-size: 0.9rem;
             color: var(--dark-gray);
             margin-bottom: 2px;
         }
         .patient-card-id {
             display: block;
-            font-size: 1.8rem; /* Larger Patient ID */
+            font-size: 1.8rem;
             font-weight: var(--bold-font-weight);
             color: var(--app-primary-color);
         }
         .patient-card-body .info-item {
             display: flex;
             align-items: center;
-            padding: 10px 0; /* Increased padding for more space */
-            font-size: 0.95rem; /* Slightly larger text */
+            padding: 10px 0;
+            font-size: 0.95rem;
         }
         .patient-card-body .info-item .info-icon {
             color: var(--app-secondary-color);
-            margin-right: 12px; /* Space after icon */
+            margin-right: 12px;
             width: 22px;
             text-align: center;
-            font-size: 1.1em; /* Slightly larger icons */
+            font-size: 1.2em; /* Slightly larger icons */
         }
         .patient-card-body .info-item .label {
             color: var(--dark-gray);
@@ -515,13 +515,13 @@
         }
 
         #selected-patient-tests-container {
-            flex: 1 1 calc(100% - 360px - 20px); /* Take remaining space, considering card width and gap */
+            flex: 1 1 calc(100% - 360px - 20px);
             background-color: var(--light-gray);
             padding: 20px;
             border-radius: var(--border-radius);
             border: none;
             box-shadow: none;
-            min-height: 320px; /* Match patient card min-height */
+            min-height: 320px;
             display: flex;
             flex-direction: column;
         }
@@ -542,7 +542,7 @@
             margin: 0;
             display: flex;
             flex-wrap: wrap;
-            gap: 10px; /* Slightly reduced gap */
+            gap: 10px;
             overflow-y: auto;
             flex-grow: 1;
         }
@@ -552,11 +552,11 @@
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 12px; /* Slightly reduced padding */
+            padding: 10px 12px;
             border: 1px solid rgba(40, 84, 132, 0.3); /* Lighter border with alpha */
-            background-color: rgba(112, 188, 252, 0.05); /* Slightly lighter background */
+            background-color: rgba(112, 188, 252, 0.05);
             border-radius: var(--border-radius);
-            min-width: 150px; /* Adjusted min-width */
+            min-width: 150px;
             box-sizing: border-box;
             text-align: center;
             transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
@@ -573,7 +573,7 @@
 
         #selected-patient-tests-list li span {
             color: var(--app-primary-color);
-            font-size: 0.85rem; /* Slightly smaller date text */
+            font-size: 0.85rem;
             font-weight: var(--semibold-font-weight);
             margin-bottom: 8px;
         }
@@ -584,7 +584,7 @@
             color: var(--danger-color-dark);
             border-radius: var(--border-radius);
             cursor: pointer;
-            padding: 4px 7px; /* Slightly smaller delete button */
+            padding: 4px 7px;
             font-size: 0.8rem;
             transition: all 0.2s ease;
             width: auto;
@@ -683,7 +683,7 @@
         body.pdf-preview-active #existing-patient-search-container,
         body.pdf-preview-active #patient-data-secondary-controls,
         body.pdf-preview-active #patient-data-container,
-        body.pdf-preview-active #patient-overview-section, /* Hide overview in PDF */
+        body.pdf-preview-active #patient-overview-section,
         body.pdf-preview-active #input-section-container,
         body.pdf-preview-active #save-data-button-container,
         body.pdf-preview-active #bottom-area,
@@ -732,7 +732,7 @@
             .position-box, .normative-box { height: auto; min-height: unset; }
             #input-section-container { flex-direction: column; }
             .input-position-box { min-width: unset; }
-            #patient-overview-section { flex-direction: column; } /* Stack on smaller screens */
+            #patient-overview-section { flex-direction: column; }
             .patient-card, #selected-patient-tests-container { width: 100%; min-width: unset; flex-basis: auto !important; }
 
 
@@ -773,7 +773,7 @@
             #existing-patient-search-container,
             #patient-data-secondary-controls,
             #patient-data-container,
-            #patient-overview-section, /* Hide overview in PDF */
+            #patient-overview-section,
             #input-section-container,
             #save-data-button-container,
             #canvas-container,
@@ -836,7 +836,7 @@
             </div>
             <div id="loggedInUserContainer" class="sidebar-user-info">
                 <div class="user-details">
-                    <i class="fas fa-user-astronaut"></i> {/* Changed icon */}
+                    <i class="fas fa-circle-nodes"></i>
                     <span id="loggedInUserName">Loading...</span>
                     <span id="loggedInUserEmailDisplay"></span>
                 </div>
@@ -857,7 +857,7 @@
 
                     <div id="patient-choice-section">
                         <div class="choice-box" id="new-patient-choice">
-                            <i class="fas fa-plus"></i> {/* Changed icon */}
+                            <i class="fas fa-plus"></i>
                             <span>New Patient</span>
                         </div>
                         <div class="choice-box" id="existing-patient-choice">
@@ -941,14 +941,12 @@
     </div>
 
     <script type="module">
-        // --- Firebase SDK Imports and Initialization ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import {
             getFirestore, doc, setDoc, getDoc, collection, addDoc, query, where, getDocs, deleteDoc, updateDoc, orderBy, serverTimestamp, Timestamp
         } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDhEihuoWm4c5MSOHrSqkkzca7tn86roq4",
             authDomain: "pwr-analytics.firebaseapp.com",
@@ -965,7 +963,6 @@
         let currentUser = null;
         let currentUserId = null;
 
-        // --- Global Variables ---
         let currentPatientDataForApp = {
             patientId: null,
             age: '',
@@ -977,7 +974,6 @@
             screeningId: null
         };
 
-        // --- UI Element References ---
         const appLayout = document.querySelector('.app-layout');
         const appLoadingMessage = document.getElementById('appLoadingMessage');
         const appStatusMessage = document.getElementById('appStatusMessage');
@@ -1050,7 +1046,6 @@
         const selectedPatientTestsListUL = document.getElementById('selected-patient-tests-list');
         const currentPatientForTestsSpan = document.getElementById('current-patient-for-tests');
 
-        // --- Authentication Check and UI Initialization ---
         onAuthStateChanged(auth, async (user) => {
             if (appLoadingMessage) appLoadingMessage.style.display = 'flex';
             if (appLayout) appLayout.style.display = 'none';
@@ -1110,8 +1105,6 @@
             updateGraphsAndTable();
         }
 
-
-        // --- Utility Functions ---
         function showStatusMessage(message, type = 'info', duration = 3000) {
             if (!appStatusMessage) return;
             appStatusMessage.textContent = message;
@@ -1218,7 +1211,6 @@
             }
         }
 
-        // --- UI Flow Control ---
         function showInitialScreenState() {
             if(patientDetailsTitle) patientDetailsTitle.style.display = 'block';
             if(patientChoiceSection) patientChoiceSection.style.display = 'flex';
@@ -1533,15 +1525,12 @@
             if (displayInjuryCard) displayInjuryCard.textContent = data.injury || 'N/A';
             if (displayInjuredSideCard) displayInjuredSideCard.textContent = data.injuredSide || 'N/A';
             if (displayBodyweightCard) displayBodyweightCard.textContent = data.bodyweight ? `${data.bodyweight} kg` : 'N/A';
-            patientIdentityCard.style.display = 'block'; // Show the card
-            if (patientOverviewSection) patientOverviewSection.style.display = 'flex'; // Show the whole section
+            patientIdentityCard.style.display = 'block';
+            if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
         }
 
-
-        // --- Data Functions (Firestore) ---
         async function populatePatientIdDatalistFromFirestore() {
             if (!currentUserId) return;
-            console.log("Populating patient ID datalist from Firestore for user:", currentUserId);
             const patientsCollectionRef = collection(db, "users", currentUserId, "patients");
             if(existingPatientIdsDatalist) existingPatientIdsDatalist.innerHTML = '';
 
@@ -1550,13 +1539,11 @@
                 const patientIds = new Set();
                 querySnapshot.forEach((docSnap) => patientIds.add(docSnap.id));
 
-                if (patientIds.size === 0) console.log("No Firestore patient IDs found for this user.");
                 patientIds.forEach(id => {
                     const option = document.createElement('option');
                     option.value = id;
                     if(existingPatientIdsDatalist) existingPatientIdsDatalist.appendChild(option.cloneNode(true));
                 });
-                console.log("Patient ID datalist populated from Firestore:", Array.from(patientIds));
             } catch (error) {
                 console.error("Error fetching patient IDs from Firestore: ", error);
                 showStatusMessage("Error loading patient list.", "error");
@@ -1565,13 +1552,12 @@
 
         async function displayTestsForPatientFromFirestore(patientId) {
             if (!currentUserId || !patientId) return;
-            console.log(`Displaying tests for patientId: '${patientId}' from Firestore for user ${currentUserId}`);
             if (!selectedPatientTestsListUL || !selectedPatientTestsContainer || !currentPatientForTestsSpan) return;
 
             currentPatientForTestsSpan.textContent = patientId;
             selectedPatientTestsListUL.innerHTML = '<li>Loading tests...</li>';
-            selectedPatientTestsContainer.style.display = 'block'; // Ensure this is visible
-            if (patientOverviewSection) patientOverviewSection.style.display = 'flex'; // Ensure parent is visible
+            selectedPatientTestsContainer.style.display = 'block';
+            if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
 
 
             const screeningsRef = collection(db, "users", currentUserId, "patients", patientId, "screenings");
@@ -1621,7 +1607,6 @@
 
         async function loadScreeningDataFromFirestore(patientId, screeningDocId) {
             if (!currentUserId) return;
-            console.log(`Loading screening data for patient ${patientId}, test ${screeningDocId} from Firestore`);
             try {
                 const screeningDocRef = doc(db, "users", currentUserId, "patients", patientId, "screenings", screeningDocId);
                 const docSnap = await getDoc(screeningDocRef);
@@ -1746,7 +1731,6 @@
             }
         }
 
-        // --- Event Listeners ---
         if (newPatientChoiceButton) {
             newPatientChoiceButton.addEventListener('click', () => {
                 openPatientModal('new');
