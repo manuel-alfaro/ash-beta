@@ -438,30 +438,30 @@
         /* Patient Overview Section */
         #patient-overview-section {
             display: none; /* Initially hidden */
-            flex-direction: row; /* Default to row for larger screens */
-            flex-wrap: wrap; /* Allow wrapping */
+            flex-direction: row;
+            flex-wrap: wrap;
             gap: 20px;
             margin-bottom: 25px;
-            align-items: stretch; /* Make cards same height if possible */
+            align-items: stretch;
         }
 
-        .patient-profile-title { /* Common title for patient cards */
+        .patient-profile-title {
             width: 100%;
             font-size: 1.3rem;
             color: var(--app-primary-color);
             margin-bottom: 10px;
             padding-bottom: 5px;
-            /* border-bottom: 1px solid var(--medium-gray); */ /* Optional: if you want a line under title */
         }
 
         .patient-card {
-            flex: 0 0 340px; /* Fixed base width for patient card */
+            flex: 1 1 340px; /* Grow 1, Shrink 1, Base 340px */
+            min-width: 300px; /* Don't shrink too much */
             background-color: var(--light-gray);
             border-radius: var(--border-radius);
             padding: 20px;
-            border: none; /* Removed border */
-            box-shadow: none; /* Removed shadow for flatter design */
-            min-height: 320px; /* Ensure a minimum height */
+            border: none;
+            box-shadow: none;
+            min-height: 320px;
             display: flex;
             flex-direction: column;
         }
@@ -470,18 +470,17 @@
             align-items: center;
             margin-bottom: 15px;
             padding-bottom: 15px;
-            /* border-bottom: 1px solid var(--medium-gray); */ /* Optional: separator line */
-            justify-content: flex-start; /* Align items to the start */
+            justify-content: flex-start;
         }
         .patient-card-icon {
-            font-size: 4rem; /* Larger icon */
+            font-size: 4rem;
             color: var(--app-primary-color);
-            margin-right: 30px; /* More space next to icon */
+            margin-right: 30px;
         }
         .patient-card-id-container {
             display: flex;
             flex-direction: column;
-            align-items: flex-start; /* Align text to the left */
+            align-items: flex-start;
         }
         .patient-card-id-label {
             display: block;
@@ -491,27 +490,27 @@
         }
         .patient-card-id {
             display: block;
-            font-size: 1.8rem; /* Larger Patient ID */
+            font-size: 1.8rem;
             font-weight: var(--bold-font-weight);
             color: var(--app-primary-color);
         }
         .patient-card-body .info-item {
             display: flex;
             align-items: center;
-            padding: 10px 0; /* Increased padding for spacing */
+            padding: 10px 0;
             font-size: 0.95rem;
         }
         .patient-card-body .info-item .info-icon {
             color: var(--app-secondary-color);
             margin-right: 12px;
-            width: 22px; /* Ensure icons align */
+            width: 22px;
             text-align: center;
             font-size: 1.2em;
         }
         .patient-card-body .info-item .label {
             color: var(--dark-gray);
             font-weight: var(--normal-font-weight);
-            margin-right: auto; /* Pushes value to the right */
+            margin-right: auto;
         }
         .patient-card-body .info-item .value {
             color: var(--text-color);
@@ -521,7 +520,8 @@
 
         /* Saved Tests Container */
         #selected-patient-tests-container {
-            flex: 1 1 auto; /* Allow this to grow and shrink */
+            flex: 1 1 400px; /* Grow 1, Shrink 1, Base 400px */
+            min-width: 300px; /* Don't shrink too much */
             background-color: var(--light-gray);
             padding: 20px;
             border-radius: var(--border-radius);
@@ -547,61 +547,61 @@
             padding: 0;
             margin: 0;
             display: flex;
-            flex-wrap: wrap; /* Allow items to wrap */
-            gap: 10px; /* Space between test items */
-            overflow-y: auto; /* Scroll if too many tests */
-            flex-grow: 1; /* Allow list to take available space */
+            flex-wrap: wrap;
+            gap: 10px;
+            overflow-y: auto;
+            flex-grow: 1;
         }
 
         #selected-patient-tests-list li {
             display: flex;
-            flex-direction: column; /* Stack date and button */
-            justify-content: space-between; /* Space out content */
-            align-items: center; /* Center items horizontally */
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
             padding: 10px 12px;
-            border: 1px solid rgba(40, 84, 132, 0.3); /* Softer border */
-            background-color: rgba(112, 188, 252, 0.05); /* Very light blue bg */
+            border: 1px solid rgba(40, 84, 132, 0.3);
+            background-color: rgba(112, 188, 252, 0.05);
             border-radius: var(--border-radius);
-            min-width: 150px; /* Minimum width for each test item */
+            min-width: 150px;
             box-sizing: border-box;
             text-align: center;
-            transition: background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; /* Removed transform */
+            transition: background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
             cursor: pointer;
         }
 
         #selected-patient-tests-list li:hover {
-            background-color: rgba(112, 188, 252, 0.3); /* Adjusted hover color */
+            background-color: rgba(112, 188, 252, 0.3);
             border-color: rgba(40, 84, 132, 0.6);
             box-shadow: var(--subtle-shadow);
         }
 
         #selected-patient-tests-list li.active-test-item {
-            background-color: rgba(40, 84, 132, 0.4); /* Primary color with alpha for active */
+            background-color: rgba(40, 84, 132, 0.4);
             border-color: var(--app-primary-color);
             box-shadow: inset 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.05);
         }
         #selected-patient-tests-list li.active-test-item:hover {
-            background-color: rgba(40, 84, 132, 0.45); /* Slightly darker hover for active item */
+            background-color: rgba(40, 84, 132, 0.45);
         }
 
 
-        #selected-patient-tests-list li span { /* Test date/identifier */
+        #selected-patient-tests-list li span {
             color: var(--app-primary-color);
             font-size: 0.85rem;
             font-weight: var(--semibold-font-weight);
-            margin-bottom: 8px; /* Space between date and button */
+            margin-bottom: 8px;
         }
 
         #selected-patient-tests-list button.delete-test-btn {
             background-color: transparent;
-            border: 1px solid transparent; /* Make border transparent initially */
+            border: 1px solid transparent;
             color: var(--danger-color-dark);
             border-radius: var(--border-radius);
             cursor: pointer;
-            padding: 4px 7px; /* Smaller padding */
+            padding: 4px 7px;
             font-size: 0.8rem;
             transition: all 0.2s ease;
-            width: auto; /* Fit content */
+            width: auto;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -609,10 +609,9 @@
         #selected-patient-tests-list button.delete-test-btn:hover {
             background-color: var(--danger-color-dark);
             color: white;
-            border-color: var(--danger-color-dark); /* Show border on hover */
+            border-color: var(--danger-color-dark);
         }
 
-        /* Hidden by default, used for old patient data input structure */
         #patient-data-container { display:none !important; }
 
 
@@ -634,7 +633,6 @@
             color: var(--app-text-on-primary);
         }
         #save-data-button-main i {
-            /* Icon color already handled by button color transition */
             color: var(--app-primary-color);
         }
         #save-data-button-main:hover i {
@@ -758,14 +756,17 @@
             .app-sidebar button, .app-sidebar a button { justify-content: center; padding: 10px 0; gap: 0; font-size: 0.85rem; }
             .app-sidebar button i { width: auto; margin: 0; }
             .sidebar-social-links { display: none; } /* Hide social links in collapsed sidebar */
+
+            /* Layout adjustments for patient overview section */
+            /* #patient-overview-section { flex-direction: column; } REMOVED to allow side-by-side for longer */
+            /* .patient-card, #selected-patient-tests-container { width: 100%; min-width: unset; flex-basis: auto !important; } REMOVED */
+
+
             .position-row { flex-direction: column; align-items: stretch; }
             .asymmetry-graph-container, .normative-graph-container { flex: none; width: 100%; min-width: unset; }
             .position-box, .normative-box { height: auto; min-height: unset; } /* Allow height to adjust */
             #input-section-container { flex-direction: column; }
             .input-position-box { min-width: unset; }
-            /* Patient overview responsive */
-            #patient-overview-section { flex-direction: column; }
-            .patient-card, #selected-patient-tests-container { width: 100%; min-width: unset; flex-basis: auto !important; }
 
 
             /* PDF Preview on medium devices */
@@ -789,6 +790,17 @@
             h3.position-title, h3.normative-title { font-size: 1.0rem; font-weight: var(--normal-font-weight);}
             #patient-choice-section { flex-direction: column; gap: 15px; padding: 20px 0;}
             .choice-box { min-width: 250px; }
+
+            /* Patient overview responsive for small screens - stack them */
+            #patient-overview-section {
+                flex-direction: column;
+            }
+            .patient-card, #selected-patient-tests-container {
+                width: 100%;
+                flex-basis: 100%; /* Ensure they take full width when stacked */
+                min-width: unset;
+            }
+
             /* Input row adjustments for small screens */
             .input-row { flex-direction: column; align-items: flex-start; gap: 5px; } .input-row label { flex-basis: auto; width: 100%; text-align: left; margin-bottom: 3px;} .input-row .input-wrapper { flex-basis: auto; width: 100%; justify-content: flex-start; } .input-row input { width: auto; font-size: 1.2rem; font-weight: var(--normal-font-weight); } .input-row input::placeholder { font-size: 0.8rem; font-weight: var(--normal-font-weight);} .unit-text { margin-left: 8px; } .position-box, .normative-box { padding: 10px; margin-bottom: 0;}
             #preview-exit-button-inline { top: 10px; right: 10px; font-size: 0.8rem; padding: 6px 10px; }
