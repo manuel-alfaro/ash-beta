@@ -145,7 +145,7 @@
             gap: 8px;
             margin-bottom: 15px;
         }
-        .user-details i.fa-circle-nodes {
+        .user-details i.fa-atom { /* Changed icon */
             font-size: 2.5rem;
             color: var(--app-primary-color);
         }
@@ -445,10 +445,11 @@
             color: var(--app-primary-color);
             margin-bottom: 10px;
             padding-bottom: 5px;
+            /* border-bottom: 1px solid var(--medium-gray); Removed */
         }
 
         .patient-card {
-            flex: 0 1 340px;
+            flex: 0 0 340px;
             background-color: var(--light-gray);
             border-radius: var(--border-radius);
             padding: 20px;
@@ -512,7 +513,7 @@
         }
 
         #selected-patient-tests-container {
-            flex: 1 1 calc(100% - 360px - 20px);
+            flex: 1 1 auto; /* Allow to grow and shrink */
             background-color: var(--light-gray);
             padding: 20px;
             border-radius: var(--border-radius);
@@ -830,7 +831,7 @@
             </div>
             <div id="loggedInUserContainer" class="sidebar-user-info">
                 <div class="user-details">
-                    <i class="fas fa-circle-nodes"></i>
+                    <i class="fas fa-atom"></i>
                     <span id="loggedInUserName">Loading...</span>
                     <span id="loggedInUserEmailDisplay"></span>
                 </div>
@@ -1507,7 +1508,7 @@
             if (displayInjuredSideCard) displayInjuredSideCard.textContent = data.injuredSide || 'N/A';
             if (displayBodyweightCard) displayBodyweightCard.textContent = data.bodyweight ? `${data.bodyweight} kg` : 'N/A';
             patientIdentityCard.style.display = 'block';
-            if (selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'block'; // Ensure test container is also shown
+            if (selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'block';
             if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
         }
 
@@ -1532,7 +1533,13 @@
         }
 
         async function displayTestsForPatientFromFirestore(patientId) {
-            if (!currentUserId || !patientId) return;
+            if (!currentUserId || !patientId) {
+                console.warn("displayTestsForPatientFromFirestore: Missing userId or patientId");
+                if (selectedPatientTestsListUL) selectedPatientTestsListUL.innerHTML = '<li>Select a patient to see tests.</li>';
+                if (selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'block'; // Show it, even if empty
+                return;
+            }
+            console.log(`Displaying tests for patientId: '${patientId}' from Firestore for user ${currentUserId}`);
             if (!selectedPatientTestsListUL || !selectedPatientTestsContainer || !currentPatientForTestsSpan) return;
 
             currentPatientForTestsSpan.textContent = patientId;
@@ -1546,6 +1553,7 @@
 
             try {
                 const querySnapshot = await getDocs(q);
+                console.log('Screenings querySnapshot size:', querySnapshot.size);
                 selectedPatientTestsListUL.innerHTML = '';
                 if (querySnapshot.empty) {
                     selectedPatientTestsListUL.innerHTML = '<li>No tests found for this patient.</li>';
@@ -1553,6 +1561,7 @@
                 }
                 querySnapshot.forEach((docSnap) => {
                     const screening = docSnap.data();
+                    console.log('Processing screening doc:', docSnap.id, screening);
                     const screeningDocId = docSnap.id;
                     const li = document.createElement('li');
                     li.addEventListener('click', () => loadScreeningDataFromFirestore(patientId, screeningDocId));
@@ -1579,6 +1588,7 @@
                     selectedPatientTestsListUL.appendChild(li);
                 });
             } catch (error) {
+                console.error(`Error fetching tests for patient ${patientId}: `, error);
                 selectedPatientTestsListUL.innerHTML = '<li>Error loading tests.</li>';
                 showStatusMessage("Error loading patient tests.", "error");
             }
