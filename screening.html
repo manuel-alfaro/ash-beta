@@ -475,19 +475,8 @@
             min-width: 300px;
         }
 
-        .section-title-external { /* Common styling for Details and Test Logg titles */
-            font-size: 1.5rem; /* Match h2.section-title-main */
-            font-weight: var(--normal-font-weight);
-            margin-bottom: 0.5em; /* Space below external title */
-            padding-bottom: 0;
-            margin-top: 0; /* Align with top of flex container */
-        }
-
-        .details-title-external {
-            color: var(--app-secondary-color); /* Light blue */
-        }
-
-        /* Test Logg title is now internal to its container */
+        /* External titles are no longer used for patient details, relying on internal titles */
+        /* .section-title-external removed or not used for patient details */
 
         .patient-card {
             background-color: var(--box-background-color);
@@ -597,13 +586,16 @@
         #selected-patient-tests-list li {
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: center; /* MODIFIED: Was space-between */
             align-items: center;
             padding: 10px 12px;
             border: 1px solid rgba(40, 84, 132, 0.3);
             background-color: rgba(112, 188, 252, 0.05);
             border-radius: var(--border-radius);
-            min-width: 150px; /* Reset to original for compact buttons */
+            /* min-width: 150px; */ /* REMOVED */
+            width: auto; /* ADDED for clarity */
+            flex-grow: 0; /* ADDED to prevent stretching */
+            flex-shrink: 0; /* ADDED to prevent shrinking beyond content */
             box-sizing: border-box;
             text-align: center;
             transition: background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
@@ -979,27 +971,26 @@
 
                         <div id="patient-data-container" style="display:none;">
                             <div id="patient-id-and-secondary-controls">
-                                   <div class="patient-id-standalone-item">
-                                       <label for="fp-nr-input">Patient ID (Internal):</label>
-                                       <input id="fp-nr-input" type="text">
-                                       <datalist id="existing-patient-ids"></datalist>
-                                   </div>
-                                   <div id="patient-data-secondary-controls">
-                                       <div class="control-item"><label class="control-label" for="injured-side-radio">Injured Side:</label><select id="injured-side-radio"><option value="Left">Left</option><option value="Right">Right</option></select></div>
-                                       <div class="control-item"><label class="control-label" for="bodyweight-input">Bodyweight (kg):</label><input id="bodyweight-input" type="number"></div>
-                                   </div>
-                               </div>
-                               <div id="patient-data-grid">
-                                   <div class="patient-data-item"><label for="age-input">Age:</label><input id="age-input" type="number"></div>
-                                   <div class="patient-data-item"><label for="gender-select">Gender:</label><select id="gender-select"><option value="">Select...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option><option value="Prefer not to say">Prefer not to say</option></select></div>
-                                   <div class="patient-data-item"><label for="sport-input">Sport:</label><input id="sport-input" type="text"></div>
-                                   <div class="patient-data-item"><label for="injury-input">Injury (Optional):</label><input id="injury-input" type="text"></div>
-                               </div>
+                                    <div class="patient-id-standalone-item">
+                                        <label for="fp-nr-input">Patient ID (Internal):</label>
+                                        <input id="fp-nr-input" type="text">
+                                        <datalist id="existing-patient-ids"></datalist>
+                                    </div>
+                                    <div id="patient-data-secondary-controls">
+                                        <div class="control-item"><label class="control-label" for="injured-side-radio">Injured Side:</label><select id="injured-side-radio"><option value="Left">Left</option><option value="Right">Right</option></select></div>
+                                        <div class="control-item"><label class="control-label" for="bodyweight-input">Bodyweight (kg):</label><input id="bodyweight-input" type="number"></div>
+                                    </div>
+                                </div>
+                                <div id="patient-data-grid">
+                                    <div class="patient-data-item"><label for="age-input">Age:</label><input id="age-input" type="number"></div>
+                                    <div class="patient-data-item"><label for="gender-select">Gender:</label><select id="gender-select"><option value="">Select...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option><option value="Prefer not to say">Prefer not to say</option></select></div>
+                                    <div class="patient-data-item"><label for="sport-input">Sport:</label><input id="sport-input" type="text"></div>
+                                    <div class="patient-data-item"><label for="injury-input">Injury (Optional):</label><input id="injury-input" type="text"></div>
+                                </div>
                         </div>
 
                         <div id="patient-overview-section">
                             <div class="overview-column patient-details-column">
-                                <h2 class="section-title-external details-title-external">Details</h2>
                                 <div id="patient-identity-card" class="patient-card" style="display: none;">
                                     <h3 class="patient-profile-title-internal">Patient Profile</h3>
                                     <div class="patient-card-header">
@@ -1555,7 +1546,7 @@
                 injuredSide: currentPatientDataForApp.injuredSide || 'Left',
                 bodyweight: parseFloat(currentPatientDataForApp.bodyweight) || null,
                 firstRegisteredAt: serverTimestamp(), // Timestamp of creation
-                lastUpdatedAt: serverTimestamp()      // Timestamp of last update
+                lastUpdatedAt: serverTimestamp()       // Timestamp of last update
             };
 
             try {
@@ -1692,7 +1683,7 @@
             if (injuredSideCard) injuredSideCard.textContent = data.injuredSide || 'N/A';
             if (bodyweightCard) bodyweightCard.textContent = data.bodyweight ? `${data.bodyweight} kg` : 'N/A';
 
-            card.style.display = 'block'; // Show patient card
+            card.style.display = 'flex'; // MODIFIED: was 'block', changed to 'flex' to match its own display type
             testsContainer.style.display = 'flex'; // Show tests container (as flex column)
             overview.style.display = 'flex'; // Show the whole overview section
         }
@@ -1729,7 +1720,7 @@
             if (!currentUserId || !patientId) {
                 if (localTestsListUL) localTestsListUL.innerHTML = '<li>Select a patient to see tests.</li>';
                 if (localTestsContainer) localTestsContainer.style.display = 'flex';
-                if (localPatientOverviewSection && document.getElementById('patient-identity-card')?.style.display === 'block') {
+                if (localPatientOverviewSection && document.getElementById('patient-identity-card')?.style.display === 'flex') { // MODIFIED: was 'block'
                     localPatientOverviewSection.style.display = 'flex';
                 }
                 return;
