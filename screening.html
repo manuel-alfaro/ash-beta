@@ -466,9 +466,9 @@
             justify-content: flex-start;
         }
         .patient-card-icon {
-            font-size: 4rem; /* Increased icon size */
+            font-size: 4rem;
             color: var(--app-primary-color);
-            margin-right: 30px; /* Increased margin */
+            margin-right: 30px;
         }
         .patient-card-id-container {
             display: flex;
@@ -498,7 +498,7 @@
             margin-right: 12px;
             width: 22px;
             text-align: center;
-            font-size: 1.2em; /* Increased icon size */
+            font-size: 1.2em;
         }
         .patient-card-body .info-item .label {
             color: var(--dark-gray);
@@ -1087,7 +1087,6 @@
             if (currentPatientDataForApp.patientId) {
                 displayPatientInfoInCard(currentPatientDataForApp);
                 await displayTestsForPatientFromFirestore(currentPatientDataForApp.patientId);
-                if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
             } else {
                 showInitialScreenState();
             }
@@ -1532,19 +1531,20 @@
         }
 
         async function displayTestsForPatientFromFirestore(patientId) {
-            console.log('[displayTestsForPatientFromFirestore] Called with patientId:', patientId, 'and currentUserId:', currentUserId);
+            console.log('[DEBUG] displayTestsForPatientFromFirestore - START. Patient ID:', patientId, 'User ID:', currentUserId);
+
             if (!currentUserId || !patientId) {
-                console.warn("[displayTestsForPatientFromFirestore] Missing userId or patientId. Aborting.");
+                console.warn("[DEBUG] displayTestsForPatientFromFirestore - ABORT: Missing userId or patientId.");
                 if (selectedPatientTestsListUL) selectedPatientTestsListUL.innerHTML = '<li>Select a patient to see tests.</li>';
                 if (selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'block';
-                if (patientOverviewSection && patientIdentityCard.style.display === 'block') { // Only show overview if patient card is visible
+                if (patientOverviewSection && patientIdentityCard.style.display === 'block') {
                     patientOverviewSection.style.display = 'flex';
                 }
                 return;
             }
 
             if (!selectedPatientTestsListUL || !selectedPatientTestsContainer || !currentPatientForTestsSpan) {
-                console.error("[displayTestsForPatientFromFirestore] UI elements for displaying tests are missing. Aborting.");
+                console.error("[DEBUG] displayTestsForPatientFromFirestore - ABORT: UI elements for displaying tests are missing.");
                 return;
             }
 
@@ -1552,25 +1552,28 @@
             selectedPatientTestsListUL.innerHTML = '<li>Loading tests...</li>';
             selectedPatientTestsContainer.style.display = 'block';
             if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
-            console.log('[displayTestsForPatientFromFirestore] UI elements updated to loading state.');
+            console.log('[DEBUG] displayTestsForPatientFromFirestore - UI set to loading state.');
 
-            const screeningsRef = collection(db, "users", currentUserId, "patients", patientId, "screenings");
+            const screeningsPath = `users/${currentUserId}/patients/${patientId}/screenings`;
+            console.log('[DEBUG] displayTestsForPatientFromFirestore - Querying Firestore path:', screeningsPath);
+            const screeningsRef = collection(db, screeningsPath);
             const q = query(screeningsRef, orderBy("testTimestamp", "desc"));
-            console.log('[displayTestsForPatientFromFirestore] Querying Firestore path:', `users/${currentUserId}/patients/${patientId}/screenings`);
 
             try {
                 const querySnapshot = await getDocs(q);
-                console.log('[displayTestsForPatientFromFirestore] Firestore query executed. Snapshot size:', querySnapshot.size);
+                console.log('[DEBUG] displayTestsForPatientFromFirestore - Firestore query executed. Snapshot empty:', querySnapshot.empty, 'Size:', querySnapshot.size);
+
                 selectedPatientTestsListUL.innerHTML = '';
                 if (querySnapshot.empty) {
-                    console.log('[displayTestsForPatientFromFirestore] No screening documents found for this patient.');
+                    console.log('[DEBUG] displayTestsForPatientFromFirestore - No screening documents found for this patient.');
                     selectedPatientTestsListUL.innerHTML = '<li>No tests found for this patient.</li>';
                     return;
                 }
+
                 querySnapshot.forEach((docSnap) => {
                     const screening = docSnap.data();
                     const screeningDocId = docSnap.id;
-                    console.log('[displayTestsForPatientFromFirestore] Processing screening doc ID:', screeningDocId, 'Data:', screening);
+                    console.log('[DEBUG] displayTestsForPatientFromFirestore - Processing screening doc ID:', screeningDocId, 'Data:', screening);
 
                     const li = document.createElement('li');
                     li.addEventListener('click', () => loadScreeningDataFromFirestore(patientId, screeningDocId));
@@ -1580,7 +1583,7 @@
                     if (screeningTimestampDate instanceof Date && !isNaN(screeningTimestampDate)) {
                         dateSpan.textContent = screeningTimestampDate.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
                     } else {
-                        console.warn('[displayTestsForPatientFromFirestore] Invalid or missing testTimestamp for screening:', screeningDocId, screening.testTimestamp);
+                        console.warn('[DEBUG] displayTestsForPatientFromFirestore - Invalid or missing testTimestamp for screening:', screeningDocId, 'Actual value:', screening.testTimestamp);
                         dateSpan.textContent = "Invalid date";
                     }
                     dateSpan.title = "Load this test";
@@ -1596,10 +1599,10 @@
                     li.appendChild(dateSpan);
                     li.appendChild(deleteButton);
                     selectedPatientTestsListUL.appendChild(li);
-                    console.log('[displayTestsForPatientFromFirestore] Appended <li> for screening:', screeningDocId);
+                    console.log('[DEBUG] displayTestsForPatientFromFirestore - Appended <li> for screening:', screeningDocId);
                 });
             } catch (error) {
-                console.error(`[displayTestsForPatientFromFirestore] Error fetching tests for patient ${patientId}: `, error);
+                console.error(`[DEBUG] displayTestsForPatientFromFirestore - Error fetching tests for patient ${patientId}: `, error);
                 selectedPatientTestsListUL.innerHTML = '<li>Error loading tests. Check console for details.</li>';
                 showStatusMessage("Error loading patient tests. See console for details.", "error");
             }
@@ -1810,12 +1813,10 @@
 
         if(logoutButton) {
             logoutButton.addEventListener('click', async () => {
-                console.log("Logout button clicked.");
                 try {
                     await signOut(auth);
                     localStorage.removeItem(localStorageKey);
                 } catch (error) {
-                    console.error("Sign out error", error);
                     showStatusMessage("Error logging out. Please try again.", "error");
                 }
             });
