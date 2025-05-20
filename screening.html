@@ -1425,7 +1425,7 @@
 
                 resetScreeningInputFields();
                 updateGraphsAndTable();
-                await displayTestsForPatientFromFirestore(newPatientId); // Display tests for the new patient
+                await displayTestsForPatientFromFirestore(newPatientId);
                 saveInputsToLocalStorage();
             } catch (error) {
                 showStatusMessage("Error saving patient data.", "error");
@@ -1497,7 +1497,6 @@
             const testsContainer = document.getElementById('selected-patient-tests-container');
 
             if (!card || !overview || !testsContainer) {
-                console.error("[DEBUG] displayPatientInfoInCard - ABORT: Core UI elements for patient card/overview are missing.");
                 return;
             }
 
@@ -1547,16 +1546,17 @@
         async function displayTestsForPatientFromFirestore(patientId) {
             const localTestsContainer = document.getElementById('selected-patient-tests-container');
             const localTestsListUL = document.getElementById('selected-patient-tests-list');
-            const localCurrentPatientSpan = localTestsContainer ? localTestsContainer.querySelector('#current-patient-for-tests') : null;
+            const h3TitleElement = localTestsContainer ? localTestsContainer.querySelector('h3') : null;
+            const localCurrentPatientSpan = h3TitleElement ? h3TitleElement.querySelector('#current-patient-for-tests') : null;
             const localPatientOverviewSection = document.getElementById('patient-overview-section');
 
             console.log('[DEBUG] displayTestsForPatientFromFirestore - START. Patient ID:', patientId, 'User ID:', currentUserId);
-            console.log('[DEBUG] UI Elements: Container:', !!localTestsContainer, 'List UL:', !!localTestsListUL, 'Span:', !!localCurrentPatientSpan, 'Overview:', !!localPatientOverviewSection);
+            console.log('[DEBUG] UI Elements: Container:', !!localTestsContainer, 'List UL:', !!localTestsListUL, 'H3 Title:', !!h3TitleElement, 'Span:', !!localCurrentPatientSpan, 'Overview:', !!localPatientOverviewSection);
 
             if (!currentUserId || !patientId) {
                 console.warn("[DEBUG] displayTestsForPatientFromFirestore - ABORT: Missing userId or patientId.");
                 if (localTestsListUL) localTestsListUL.innerHTML = '<li>Select a patient to see tests.</li>';
-                if (localTestsContainer) localTestsContainer.style.display = 'block';
+                if (localTestsContainer) localTestsContainer.style.display = 'block'; // Show container even if aborting
                 if (localPatientOverviewSection && document.getElementById('patient-identity-card')?.style.display === 'block') {
                      localPatientOverviewSection.style.display = 'flex';
                 }
@@ -1566,16 +1566,17 @@
             if (!localTestsListUL || !localTestsContainer || !localCurrentPatientSpan) {
                 console.error("[DEBUG] displayTestsForPatientFromFirestore - ABORT: Critical UI elements for tests are missing.");
                 if (!localTestsContainer) console.error("[DEBUG] #selected-patient-tests-container NOT FOUND.");
-                if (localTestsContainer && !localCurrentPatientSpan) console.error("[DEBUG] #current-patient-for-tests (span) NOT FOUND within container.");
-                if (localTestsContainer && !localTestsListUL) console.error("[DEBUG] #selected-patient-tests-list (ul) NOT FOUND within container.");
+                if (!h3TitleElement) console.error("[DEBUG] H3 element within #selected-patient-tests-container NOT FOUND.");
+                if (h3TitleElement && !localCurrentPatientSpan) console.error("[DEBUG] #current-patient-for-tests (span) NOT FOUND within H3.");
+                if (!localTestsListUL) console.error("[DEBUG] #selected-patient-tests-list (ul) NOT FOUND.");
                 return;
             }
 
             localCurrentPatientSpan.textContent = patientId;
             localTestsListUL.innerHTML = '<li>Loading tests...</li>';
-            localTestsContainer.style.display = 'block';
-            if (localPatientOverviewSection) localPatientOverviewSection.style.display = 'flex';
-            console.log('[DEBUG] displayTestsForPatientFromFirestore - UI set to loading state.');
+            localTestsContainer.style.display = 'block'; // Ensure it's visible
+            if (localPatientOverviewSection) localPatientOverviewSection.style.display = 'flex'; // Ensure parent is visible
+            console.log('[DEBUG] displayTestsForPatientFromFirestore - UI set to loading state. Patient ID set in span.');
 
             const screeningsPath = `users/${currentUserId}/patients/${patientId}/screenings`;
             console.log('[DEBUG] displayTestsForPatientFromFirestore - Querying Firestore path:', screeningsPath);
