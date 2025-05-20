@@ -48,7 +48,7 @@
             --graph-box-height: 340px;
             --sidebar-width: 180px;
             --normal-font-weight: 400;
-            --semibold-font-weight: 400; /* Changed from 600 to 400 based on previous request, can be 600 if needed */
+            --semibold-font-weight: 400;
             --bold-font-weight: 700;
             --main-content-margin: 20px;
         }
@@ -145,7 +145,7 @@
             gap: 8px;
             margin-bottom: 15px;
         }
-        .user-details i.fa-user-circle {
+        .user-details i.fa-user-astronaut { /* Changed icon */
             font-size: 2.5rem;
             color: var(--app-primary-color);
         }
@@ -432,109 +432,104 @@
         }
         /* --- End Modal Styles --- */
 
-        /* --- Patient Overview Section (NEW) --- */
+        /* --- Patient Overview Section --- */
         #patient-overview-section {
-            display: none; /* Hidden initially, shown when a patient is active */
+            display: none;
             flex-direction: row;
             flex-wrap: wrap;
             gap: 20px;
             margin-bottom: 25px;
-            align-items: stretch; /* Make child elements same height */
+            align-items: stretch;
         }
 
-        .patient-profile-title { /* Title for the patient card section */
+        .patient-profile-title {
             width: 100%;
             font-size: 1.3rem;
             color: var(--app-primary-color);
             margin-bottom: 10px;
             padding-bottom: 5px;
-            border-bottom: 1px solid var(--medium-gray);
+            /* border-bottom: 1px solid var(--medium-gray); Removed border */
         }
 
-
-        /* --- Patient Identity Card (NEW STYLES) --- */
         .patient-card {
-            flex: 0 1 320px; /* Grow 0, Shrink 1, Basis 320px - slightly narrower */
-            background-color: var(--light-gray); /* Changed background */
+            flex: 0 1 340px; /* Slightly wider for better icon spacing */
+            background-color: var(--light-gray);
             border-radius: var(--border-radius);
             padding: 20px;
-            border: none; /* Removed border */
-            box-shadow: none; /* Removed box-shadow */
-            min-height: 300px; /* Ensure a minimum height */
+            border: none;
+            box-shadow: none;
+            min-height: 320px; /* Adjusted min-height */
             display: flex;
             flex-direction: column;
         }
         .patient-card-header {
-            text-align: center;
+            display: flex; /* Use flex for icon and ID alignment */
+            align-items: center; /* Vertically align items */
             margin-bottom: 15px;
             padding-bottom: 15px;
         }
         .patient-card-icon {
-            font-size: 3rem;
+            font-size: 3.5rem; /* Slightly larger icon */
             color: var(--app-primary-color);
-            margin-bottom: 8px;
+            margin-right: 20px; /* Space between icon and text */
         }
-        .patient-card-id-label { /* New style for "Patient ID:" text */
+        .patient-card-id-container { /* New container for ID label and value */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Align text to the left */
+        }
+        .patient-card-id-label {
             display: block;
-            font-size: 0.8rem;
+            font-size: 0.9rem; /* Adjusted size */
             color: var(--dark-gray);
             margin-bottom: 2px;
         }
         .patient-card-id {
             display: block;
-            font-size: 1.2rem;
+            font-size: 1.8rem; /* Larger Patient ID */
             font-weight: var(--bold-font-weight);
             color: var(--app-primary-color);
-            margin-bottom: 10px;
         }
         .patient-card-body .info-item {
             display: flex;
-            align-items: center; /* Align icon and text */
-            padding: 8px 0; /* Increased padding */
-            font-size: 0.9rem;
-            /* border-bottom: 1px dotted var(--light-gray); Removed dotted line */
-        }
-        .patient-card-body .info-item:last-child {
-            border-bottom: none;
+            align-items: center;
+            padding: 10px 0; /* Increased padding for more space */
+            font-size: 0.95rem; /* Slightly larger text */
         }
         .patient-card-body .info-item .info-icon {
             color: var(--app-secondary-color);
-            margin-right: 10px;
-            width: 20px; /* Fixed width for alignment */
+            margin-right: 12px; /* Space after icon */
+            width: 22px;
             text-align: center;
+            font-size: 1.1em; /* Slightly larger icons */
         }
         .patient-card-body .info-item .label {
             color: var(--dark-gray);
             font-weight: var(--normal-font-weight);
-            margin-right: auto; /* Push value to the right */
+            margin-right: auto;
         }
         .patient-card-body .info-item .value {
             color: var(--text-color);
-            font-weight: var(--bold-font-weight); /* Values in bold */
+            font-weight: var(--bold-font-weight);
             text-align: right;
         }
-        /* --- End Patient Identity Card Styles --- */
-
-
-        /* Skjult container for intern datahåndtering, ikke for visning */
-        #patient-data-container { display:none !important; }
 
         #selected-patient-tests-container {
-            flex: 1 1 60%; /* Grow 1, Shrink 1, Basis 60% - takes more available space */
-            background-color: var(--light-gray); /* Changed background */
+            flex: 1 1 calc(100% - 360px - 20px); /* Take remaining space, considering card width and gap */
+            background-color: var(--light-gray);
             padding: 20px;
             border-radius: var(--border-radius);
-            border: none; /* Removed border */
-            box-shadow: none; /* Removed box-shadow */
-            min-height: 300px; /* Ensure a minimum height, same as patient-card */
-            display: flex; /* Added for internal alignment */
-            flex-direction: column; /* Added for internal alignment */
+            border: none;
+            box-shadow: none;
+            min-height: 320px; /* Match patient card min-height */
+            display: flex;
+            flex-direction: column;
         }
 
         #selected-patient-tests-container h3 {
             margin-top: 0;
             margin-bottom: 18px;
-            font-size: 1.3rem; /* Match patient profile title */
+            font-size: 1.3rem;
             color: var(--app-primary-color);
             padding-bottom: 10px;
             border-bottom: 1px solid var(--medium-gray);
@@ -547,9 +542,9 @@
             margin: 0;
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
-            overflow-y: auto; /* Allow scrolling if many tests */
-            flex-grow: 1; /* Allow list to take available space */
+            gap: 10px; /* Slightly reduced gap */
+            overflow-y: auto;
+            flex-grow: 1;
         }
 
         #selected-patient-tests-list li {
@@ -557,11 +552,11 @@
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 15px;
-            border: 1px solid var(--app-primary-color);
-            background-color: rgba(112, 188, 252, 0.08);
+            padding: 10px 12px; /* Slightly reduced padding */
+            border: 1px solid rgba(40, 84, 132, 0.3); /* Lighter border with alpha */
+            background-color: rgba(112, 188, 252, 0.05); /* Slightly lighter background */
             border-radius: var(--border-radius);
-            min-width: 160px;
+            min-width: 150px; /* Adjusted min-width */
             box-sizing: border-box;
             text-align: center;
             transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
@@ -569,17 +564,18 @@
         }
 
         #selected-patient-tests-list li:hover {
-            background-color: rgba(112, 188, 252, 0.15);
+            background-color: rgba(112, 188, 252, 0.12);
             transform: translateY(-2px);
+            border-color: rgba(40, 84, 132, 0.5);
             box-shadow: var(--subtle-shadow);
         }
 
 
         #selected-patient-tests-list li span {
             color: var(--app-primary-color);
-            font-size: 0.9rem;
+            font-size: 0.85rem; /* Slightly smaller date text */
             font-weight: var(--semibold-font-weight);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         #selected-patient-tests-list button.delete-test-btn {
@@ -588,8 +584,8 @@
             color: var(--danger-color-dark);
             border-radius: var(--border-radius);
             cursor: pointer;
-            padding: 5px 8px;
-            font-size: 0.85rem;
+            padding: 4px 7px; /* Slightly smaller delete button */
+            font-size: 0.8rem;
             transition: all 0.2s ease;
             width: auto;
             display: flex;
@@ -601,6 +597,11 @@
             color: white;
             border-color: var(--danger-color-dark);
         }
+        /* End Patient Overview Section Styles */
+
+
+        /* Skjult container for intern datahåndtering, ikke for visning */
+        #patient-data-container { display:none !important; }
 
 
         #save-data-button-container { margin-top: 20px; margin-bottom: 20px; text-align: center; }
@@ -835,7 +836,7 @@
             </div>
             <div id="loggedInUserContainer" class="sidebar-user-info">
                 <div class="user-details">
-                    <i class="fas fa-user-circle"></i>
+                    <i class="fas fa-user-astronaut"></i> {/* Changed icon */}
                     <span id="loggedInUserName">Loading...</span>
                     <span id="loggedInUserEmailDisplay"></span>
                 </div>
@@ -856,7 +857,7 @@
 
                     <div id="patient-choice-section">
                         <div class="choice-box" id="new-patient-choice">
-                            <i class="fas fa-user-plus"></i>
+                            <i class="fas fa-plus"></i> {/* Changed icon */}
                             <span>New Patient</span>
                         </div>
                         <div class="choice-box" id="existing-patient-choice">
@@ -898,8 +899,10 @@
                                 <h3 class="patient-profile-title">Patient Profile</h3>
                                 <div class="patient-card-header">
                                     <i class="fas fa-address-card patient-card-icon"></i>
-                                    <span class="patient-card-id-label">Patient ID:</span>
-                                    <span class="patient-card-id" id="display-patient-id-card"></span>
+                                    <div class="patient-card-id-container">
+                                        <span class="patient-card-id-label">Patient ID:</span>
+                                        <span class="patient-card-id" id="display-patient-id-card"></span>
+                                    </div>
                                 </div>
                                 <div class="patient-card-body">
                                     <div class="info-item"><i class="fas fa-birthday-cake info-icon"></i><span class="label">Age:</span><span class="value" id="display-age-card"></span></div>
@@ -1217,7 +1220,7 @@
 
         // --- UI Flow Control ---
         function showInitialScreenState() {
-            if(patientDetailsTitle) patientDetailsTitle.style.display = 'block'; // Show "Patient Selection" title
+            if(patientDetailsTitle) patientDetailsTitle.style.display = 'block';
             if(patientChoiceSection) patientChoiceSection.style.display = 'flex';
             if(newPatientChoiceButton) newPatientChoiceButton.classList.remove('active-choice');
             if(existingPatientChoiceButton) existingPatientChoiceButton.classList.remove('active-choice');
@@ -1530,8 +1533,8 @@
             if (displayInjuryCard) displayInjuryCard.textContent = data.injury || 'N/A';
             if (displayInjuredSideCard) displayInjuredSideCard.textContent = data.injuredSide || 'N/A';
             if (displayBodyweightCard) displayBodyweightCard.textContent = data.bodyweight ? `${data.bodyweight} kg` : 'N/A';
-            patientIdentityCard.style.display = 'block';
-            if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
+            patientIdentityCard.style.display = 'block'; // Show the card
+            if (patientOverviewSection) patientOverviewSection.style.display = 'flex'; // Show the whole section
         }
 
 
@@ -1567,8 +1570,8 @@
 
             currentPatientForTestsSpan.textContent = patientId;
             selectedPatientTestsListUL.innerHTML = '<li>Loading tests...</li>';
-            selectedPatientTestsContainer.style.display = 'block';
-            if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
+            selectedPatientTestsContainer.style.display = 'block'; // Ensure this is visible
+            if (patientOverviewSection) patientOverviewSection.style.display = 'flex'; // Ensure parent is visible
 
 
             const screeningsRef = collection(db, "users", currentUserId, "patients", patientId, "screenings");
