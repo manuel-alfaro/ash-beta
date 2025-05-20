@@ -1,1573 +1,411 @@
 <!DOCTYPE html>
-<html lang="no">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Functional Shoulder Screening</title>
-    <script src="https://cdn.plot.ly/plotly-2.27.1.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Avenir:wght@400&family=Futura:wght@400&display=swap">
+    <title>Login / Sign Up</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" xintegrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="assets/emails.js"></script>
     <style>
-        :root {
-            --app-primary-color: #285484;
-            --app-secondary-color: rgb(112, 188, 252);
-            --app-tertiary-color: #121630;
-            --app-text-on-primary: #ffffff;
-            --app-text-on-secondary: var(--app-primary-color);
-            --app-button-text-color: var(--app-text-on-primary);
-            --app-button-icon-color: var(--app-secondary-color);
-            --app-button-gradient-start: var(--app-primary-color);
-            --app-button-gradient-end: var(--app-tertiary-color);
-            --app-button-hover-gradient-start: #1e3a5c; 
-            --app-button-hover-gradient-end: #121630; /* Mørkere for modal confirm hover */
-            --app-button-light-gradient-start: rgba(112, 188, 252, 0.8); 
-            --app-button-light-gradient-end: rgba(40, 84, 132, 0.9);   
-            --light-gray: #f8f9fa;
-            --medium-gray: #dee2e6;
-            --dark-gray: #495057;
-            --text-color: #212529;
-            --success-color: #16a34a;
-            --success-border-color: #15803d;
-            --success-shadow-color: rgba(22, 163, 74, 0.45);
-            --success-gradient-start-color: rgba(22, 163, 74, 1);
-            --warning-color: #facc15;
-            --danger-color-dark: #dc2626;
-            --white: #ffffff;
-            --border-radius: 4px; 
-            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); 
-            --sidebar-border-color: var(--medium-gray);
-            --header-border-color: var(--medium-gray);
-            --subtle-shadow: 0 1px 3px rgba(0,0,0,0.07); 
-            --left-line-color: #ff7f0e;
-            --right-line-color: #1f77b4;
-            --norm-poor-bg: rgba(252, 165, 165, 0.5);
-            --norm-average-bg: rgba(252, 211, 77, 0.5);
-            --norm-good-bg: rgba(167, 243, 208, 0.5);
-            --norm-excellent-bg: rgba(52, 211, 153, 0.5);
-            --base-font-size: 16px;
-            --graph-box-height: 340px;
-            --sidebar-width: 180px;
-            --normal-font-weight: 400;
-            --semibold-font-weight: 400; 
-            --bold-font-weight: 700;    
-            --main-content-margin: 20px;
-        }
         body {
-            font-family: 'Avenir', sans-serif;
-            background-color: var(--light-gray);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            box-sizing: border-box;
-            line-height: 1.6;
-            font-size: var(--base-font-size);
-            font-weight: var(--normal-font-weight);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            font-synthesis: none;
+            font-family: 'Avenir Next', 'Avenir', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-image: url('assets/background.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #333;
+            overflow: hidden;
         }
-        .app-layout {
-            display: none; /* Starter skjult til auth er sjekket */
-            flex-direction: row;
-            width: 100%;
-            min-height: 100vh;
-            margin-top: 0;
-        }
-        .loading-message { /* Synlig ved start */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-size: 1.2em;
-            color: var(--app-primary-color);
-            text-align: center;
-            position: fixed;
-            top: 0; left: 0; width: 100%;
-            background-color: var(--light-gray);
-            z-index: 2000;
-        } 
-        .status-message {
-            height: auto;
-            padding: 10px 15px;
-            border-radius: var(--border-radius);
-            min-width: 200px;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: auto;
-            display: none;
-            font-size: 0.9rem;
-            position: fixed; 
-            z-index: 2000; 
-        }
-        .status-message.success { background-color: var(--norm-good-bg); color: var(--text-color); }
-        .status-message.error { background-color: var(--norm-poor-bg); color: var(--text-color); }
-        
-        .app-sidebar { 
-            width: var(--sidebar-width); 
-            background-color: var(--light-gray); 
-            color: var(--text-color); 
-            padding: 20px 15px; 
-            display: flex; 
-            flex-direction: column; 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            height: 100vh; 
-            overflow-y: auto; 
-            z-index: 100; 
-            border-right: none; 
-        }
-        .sidebar-logo-placeholder { 
-            height: 50px; 
-            margin-bottom: 30px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 1.8rem; 
-            color: var(--app-primary-color); 
-        }
-        .sidebar-buttons { display: flex; flex-direction: column; gap: 12px; }
-        
-        .sidebar-user-info {
-            margin-top: auto; 
-            padding: 15px 10px;
-            text-align: center;
-            border-top: 1px solid var(--medium-gray);
-        }
-        .user-details {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-        .user-details i.fa-user-circle {
-            font-size: 2.5rem; 
-            color: var(--app-primary-color);
-        }
-        #loggedInUserName {
-            font-weight: var(--semibold-font-weight);
-            font-size: 0.95rem;
-            color: var(--app-primary-color);
-            overflow-wrap: break-word;
-            word-break: break-all;
-        }
-        #loggedInUserEmailDisplay {
-            font-size: 0.75rem;
-            color: var(--dark-gray);
-            overflow-wrap: break-word;
-            word-break: break-all;
-        }
-
-        .sidebar-social-links {
-            padding-top: 10px;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-        .sidebar-social-links a { color: var(--app-secondary-color); margin: 0 20px; font-size: 1.5rem; text-decoration: none; transition: color 0.2s ease; }
-        .sidebar-social-links a:hover { color: var(--app-primary-color); }
-        .app-main-content { flex-grow: 1; margin-left: calc(var(--sidebar-width) + var(--main-content-margin)); padding: 30px 40px 30px 40px; background-color: var(--white); overflow-y: auto; height: 100vh; box-sizing: border-box; }
-        .app-sidebar button, .app-sidebar a button { font-family: 'Avenir', sans-serif; font-size: 0.9rem; font-weight: var(--normal-font-weight); padding: 10px 15px; color: var(--app-primary-color); background-color: transparent; background-image: none; border: none; border-radius: var(--border-radius); cursor: pointer; transition: all 0.3s ease; box-shadow: none; letter-spacing: 0.5px; width: 100%; text-align: left; display: flex; align-items: center; gap: 10px; }
-        
-        .app-sidebar button#logout-button { 
-            margin-top: 10px; 
-            background-image: none; 
-            background-color: transparent;
-            color: var(--app-primary-color); 
-            border: 1px solid var(--app-primary-color); 
-        }
-        .app-sidebar button#logout-button:hover {
-            background-color: var(--app-primary-color); 
-            color: var(--app-text-on-primary); 
-        }
-        .app-sidebar button#logout-button i { color: var(--app-primary-color); } 
-        .app-sidebar button#logout-button:hover i { color: var(--app-text-on-primary); } 
-
-
-        .app-sidebar button i { width: 20px; text-align: center; color: var(--app-primary-color); transition: color 0.3s ease; }
-        .app-sidebar button:not(#logout-button):hover, 
-        .app-sidebar a button:hover { 
-            background-image: linear-gradient(to right, var(--app-button-light-gradient-start), var(--app-button-light-gradient-end)); 
-            color: var(--app-text-on-primary); 
-            transform: translateY(-1px); 
-            border-color: transparent; 
-        }
-        .app-sidebar button:not(#logout-button):hover i, 
-        .app-sidebar a button:hover i { 
-            color: var(--app-text-on-primary); 
-        }
-        .app-sidebar button:active, .app-sidebar a button:active { transform: translateY(0px); }
-        .app-sidebar a { text-decoration: none; display: block; }
-        .content-container { max-width: 1100px; margin: 0 auto; }
-        h1, h2, h3 { font-family: 'Avenir', sans-serif; margin-bottom: 0.75em; font-weight: var(--normal-font-weight); }
-        h1 { text-align: left; font-size: 2.0rem; margin-top: 0; margin-bottom: 1em; color: var(--app-primary-color); font-weight: var(--normal-font-weight); }
-        h2 { font-size: 1.5rem; padding-bottom: 0.4em; margin-top: 1.8em; color: var(--app-secondary-color); font-weight: var(--normal-font-weight); }
-        h3.position-title, h3.normative-title { font-size: 1.15rem; color: var(--app-primary-color); margin-bottom: 0.3em; font-weight: var(--normal-font-weight); }
-        h3.normative-title { text-align: center;}
-        #report-content { background-color: var(--white); padding: 15px 0; }
-        
-        #patient-choice-section {
-            display: flex; 
-            justify-content: center;
-            align-items: center;
-            gap: 30px;
-            padding: 20px 0; 
-            margin-bottom: 20px; 
-            /* border-bottom: none; */
-        }
-        .choice-box {
-            background-color: var(--white);
-            border: 1px solid var(--medium-gray);
-            border-radius: var(--border-radius);
-            padding: 20px 25px; 
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            min-width: 180px; 
-            box-shadow: none; /* Fjernet skygge */
-        }
-        .choice-box:hover {
-            background-color: rgba(40, 84, 132, 0.8); /* Primary blue with alpha */
-            border-color: transparent; /* Kan fjerne border på hover for renere look */
-        }
-        .choice-box:hover i,
-        .choice-box:hover span {
-            color: white; 
-        }
-        .choice-box.active-choice { 
-             background-color: var(--app-primary-color);
-             color: white;
-             border-color: var(--app-primary-color);
-             box-shadow: var(--subtle-shadow); /* Kan legge til en liten skygge på aktivt valg */
-        }
-        .choice-box.active-choice i,
-        .choice-box.active-choice span {
-            color: white;
-        }
-
-        .choice-box i {
-            font-size: 2.2rem; 
-            color: var(--app-primary-color);
-            margin-bottom: 10px; 
-            display: block;
-            transition: color 0.2s ease; 
-        }
-        .choice-box span {
-            font-size: 1rem; 
-            color: var(--text-color);
-            font-weight: var(--semibold-font-weight);
-            transition: color 0.2s ease; 
-        }
-
-        #existing-patient-search-container {
-            display: none; 
-            margin-bottom: 25px;
-            padding: 20px;
-            background-color: var(--light-gray);
-            border-radius: var(--border-radius);
-        }
-        #existing-patient-search-container label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: var(--semibold-font-weight);
-            color: var(--app-primary-color);
-        }
-        #existing-patient-search-container input[type="text"] {
-             font-family: 'Avenir', sans-serif; 
-             font-size: 1rem; 
-             padding: 8px 12px; 
-             border: 1px solid var(--medium-gray); 
-             border-radius: var(--border-radius); 
-             background-color: var(--white); 
-             color: var(--text-color); 
-             width: 100%;
-             box-sizing: border-box;
-        }
-         #existing-patient-search-container input[type="text"]:focus {
-            border-color: var(--app-primary-color); 
-            outline: 2px solid var(--app-secondary-color);
-        }
-
-        /* --- Modal Styles (Frosted Glass) --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.4); 
-            -webkit-backdrop-filter: blur(8px); 
+        .frosted-glass-container {
+            -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
-            display: none; 
-            justify-content: center;
-            align-items: center;
-            z-index: 1000; 
+            background-color: rgba(255, 255, 255, 0.05);
         }
-        .modal-content {
-            background-color: rgba(255, 255, 255, 0.1); 
-            -webkit-backdrop-filter: blur(10px); 
-            backdrop-filter: blur(10px);
-            padding: 30px 40px;
-            border-radius: 0.75rem; 
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); 
-            width: auto;
-            max-width: 650px; 
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            border: none; /* Fjernet kant */
-            color: var(--white); 
+        .dark .frosted-glass-container {
+            background-color: rgba(0, 0, 0, 0);
         }
-        .modal-content h3 {
-            margin-top: 0;
-            margin-bottom: 25px;
-            color: var(--white); 
-            text-align: center;
-            font-size: 1.6rem; 
-            font-weight: 300; 
-        }
-        .modal-form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-        .modal-form-item {
-            display: flex;
-            flex-direction: column;
-        }
-        .modal-form-item label {
-            margin-bottom: 6px;
-            font-size: 0.85rem; 
-            color: rgba(255,255,255,0.8); 
-            font-weight: 300;
-        }
-        .modal-form-item input,
-        .modal-form-item select {
-            padding: 10px 12px;
-            border: none; 
-            border-radius: var(--border-radius);
-            font-size: 0.95rem;
-            width: 100%;
-            box-sizing: border-box;
-            background-color: rgba(255,255,255,0.1); 
-            color: var(--white);
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); 
-        }
-        .modal-form-item select option { 
-            color: var(--text-color); 
-            background-color: var(--white); 
-        }
-        .modal-form-item select {
-             color: var(--white); 
-        }
-        .modal-form-item select option[value=""] { 
-            color: rgba(255,255,255,0.6);
-        }
-        .modal-form-item input:focus,
-        .modal-form-item select:focus {
-            border-color: var(--app-secondary-color);
-            background-color: rgba(255,255,255,0.15);
-            outline: none;
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1), 0 0 0 2px rgba(112, 188, 252, 0.4); 
-        }
-        .modal-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 15px;
-            margin-top: 30px;
-        }
-        .modal-actions button {
-            padding: 10px 20px;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            font-weight: var(--semibold-font-weight);
-            transition: background-image 0.2s ease-in-out, background-color 0.2s ease, color 0.2s ease;
+        .custom-gradient-button {
+            background-image: linear-gradient(to right, rgb(112, 188, 252), #285484);
+            transition: background-image 0.2s ease-in-out;
             border: none;
         }
-        .modal-confirm-button { 
-            background-image: linear-gradient(to right, var(--app-button-light-gradient-start), var(--app-button-light-gradient-end));
-            color: var(--app-text-on-primary);
-        }
-        .modal-confirm-button:hover {
-            background-image: linear-gradient(to right, var(--app-button-hover-gradient-start), var(--app-button-hover-gradient-end)); 
-        }
-        .modal-cancel-button {
-            background-color: transparent;
-            color: var(--white);
-            border: 1px solid rgba(255,255,255,0.5);
-        }
-        .modal-cancel-button:hover {
-            background-color: rgba(255,255,255,0.1);
-            border-color: var(--white);
-        }
-        .modal-patient-id-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 15px;
-            margin-bottom: 20px;
-            max-height: 200px;
-            overflow-y: auto;
-            padding: 5px;
-            border: none; 
-            border-radius: var(--border-radius);
-        }
-        .modal-patient-id-button {
-            background-color: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2); 
-            color: var(--white);
-            padding: 8px 12px;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .modal-patient-id-button:hover {
-            background-color: var(--app-secondary-color);
-            color: var(--app-primary-color);
-            border-color: var(--app-secondary-color);
-        }
-        /* --- Slutt på Modal Styles --- */
-
-        /* --- Patient Info Display Table --- */
-        #patient-info-display-table {
-            display: none; 
-            margin-top: 20px;
-            margin-bottom: 30px;
-            background-color: var(--light-gray);
-            padding: 20px;
-            border-radius: var(--border-radius);
-            border: none; 
-            box-shadow: none; 
-        }
-        #patient-info-display-table h3 {
-            margin-top: 0;
-            margin-bottom: 15px;
-            color: var(--app-primary-color);
-            font-size: 1.2rem;
-        }
-        .info-table {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
-            gap: 10px 20px; 
-        }
-        .info-table-item {
-            display: flex;
-            flex-direction: column; 
-        }
-        .info-table-item .label {
-            font-size: 0.8rem; 
-            color: var(--dark-gray);
-            margin-bottom: 2px; 
-        }
-        .info-table-item .value {
-            font-size: 0.9rem; 
-            color: var(--text-color);
-            font-weight: var(--semibold-font-weight);
-        }
-        /* --- Slutt på Patient Info Display Table --- */
-
-
-        /* Skjult container for intern datahåndtering, ikke for visning */
-        #patient-data-container { display:none !important; }
-        /* #patient-id-and-secondary-controls og #patient-data-grid er inni #patient-data-container, så de arver display:none */
-        
-
-        #selected-patient-tests-container { 
-            background-color: var(--light-gray); 
-            padding: 20px;
-            margin-top: 30px;
-            margin-bottom: 30px;
-            box-shadow: none; 
-            border-radius: var(--border-radius); 
-            border: none; 
+        .custom-gradient-button:hover {
+            background-image: linear-gradient(to right, #285484, #1e3a5c);
         }
 
-        #selected-patient-tests-container h3 { 
-            margin-top: 0;
-            margin-bottom: 18px;
-            font-size: 1.2rem; 
-            color: var(--app-primary-color);
-            border-bottom: none; 
-            padding-bottom: 12px;
-            font-weight: var(--normal-font-weight); 
-        }
-
-        #selected-patient-tests-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex; 
-            flex-wrap: wrap; 
-            gap: 12px; 
-        }
-
-        #selected-patient-tests-list li {
-            display: flex;
-            flex-direction: column; 
-            justify-content: space-between;
-            align-items: center; 
-            padding: 12px 15px; 
-            border: 1px solid var(--app-primary-color); 
-            background-color: rgba(112, 188, 252, 0.08); 
-            border-radius: var(--border-radius);
-            min-width: 160px; 
-            box-sizing: border-box;
-            text-align: center;
-            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease; /* Fjernet color transition for li */
-            cursor: pointer; 
-        }
-        
-        #selected-patient-tests-list li:hover { 
-            background-color: rgba(112, 188, 252, 0.15); 
-            transform: translateY(-2px); 
-            box-shadow: var(--subtle-shadow);
-        }
-        /* Fjerner hover-effekt for span inni li, da li har sin egen */
-        /* #selected-patient-tests-list li:hover span { color: white; } */
-
-
-        #selected-patient-tests-list li span { 
-            color: var(--app-primary-color); 
-            font-size: 0.9rem;
-            font-weight: var(--semibold-font-weight);
-            margin-bottom: 10px; 
-        }
-
-        #selected-patient-tests-list button.delete-test-btn {
-            background-color: transparent;
-            border: 1px solid transparent; /* Start uten synlig border */
-            color: var(--danger-color-dark);
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            padding: 5px 8px; 
-            font-size: 0.85rem; 
-            transition: all 0.2s ease;
-            width: auto; 
-            display: flex; 
-            align-items: center;
-            justify-content: center;
-        }
-        #selected-patient-tests-list button.delete-test-btn:hover {
-            background-color: var(--danger-color-dark);
-            color: white;
-            border-color: var(--danger-color-dark);
-        }
-        #selected-patient-tests-list button.delete-test-btn i {
-            /* margin-right: 0; */
-        }
-
-        #save-data-button-container { margin-top: 20px; margin-bottom: 20px; text-align: center; }
-        #save-data-button-main {
-            background-image: none; 
-            background-color: transparent;
-            color: var(--app-primary-color); 
-            border: 1px solid var(--app-primary-color); 
-            padding: 10px 25px;
-            font-size: 1rem;
-            border-radius: var(--border-radius); 
-            cursor: pointer;
-            transition: all 0.3s ease; 
-            box-shadow: none; 
-        }
-        #save-data-button-main:hover {
-            background-color: var(--app-primary-color); 
-            color: var(--app-text-on-primary); 
-        }
-        #save-data-button-main i { 
-             color: var(--app-primary-color);
-        }
-        #save-data-button-main:hover i {
-            color: var(--app-text-on-primary);
+        /* Fjernet .custom-outline-gradient-button CSS-klassen helt, bruker inline SVG og Tailwind */
+        #open-signup-modal-button:hover span { /* For å endre tekstfarge på hover for SVG-knappen */
+             color: rgb(112, 188, 252);
         }
 
 
-        #input-section-container { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px; } 
-        .input-position-box { flex: 1; min-width: 300px; padding: 15px; background: linear-gradient(to top right, rgb(222, 226, 230), rgb(112, 188, 252)); box-shadow: var(--box-shadow); border-radius: var(--border-radius); margin-bottom: 20px; position: relative; overflow: hidden; }
-        .input-position-box h4 { font-family: 'Avenir', sans-serif; font-weight: var(--normal-font-weight); font-size: 1.2rem; color: var(--app-primary-color); margin-top: 0; margin-bottom: 20px; text-align: left; border-bottom: none; padding-bottom: 0; position: relative; z-index: 1; }
-        .input-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 15px; gap: 5px; position: relative; z-index: 1; }
-        .input-row label { font-family: 'Avenir', sans-serif; font-size: 0.9rem; color: var(--text-color); width: 160px; flex-shrink: 0; text-align: left; font-weight: var(--normal-font-weight); padding-bottom: 8px; }
-        .input-wrapper { display: flex; align-items: baseline; flex: 1; justify-content: flex-start; }
-        .input-position-box .input-row input { font-family: 'Avenir', sans-serif; font-size: 1.5rem; font-weight: var(--normal-font-weight); width: 100px; height: auto; border: none; border-bottom: 1px solid rgba(255, 255, 255, 0.5); border-radius: 0px; padding: 6px 0px 4px 0px; text-align: center; box-sizing: border-box; transition: background-color 0.2s ease, border-color 0.2s ease; background-color: transparent; color: var(--text-color); position: relative; z-index: 1; }
-        .input-position-box .input-row input::placeholder { font-size: 0.8rem; color: #ffffff; font-weight: var(--normal-font-weight); opacity: 0.8; }
-        .input-position-box .input-row input:focus { outline: none; border-bottom-color: rgba(255, 255, 255, 0.9); background-color: rgba(255, 255, 255, 0.1); }
-        .input-position-box .unit-text { font-size: 0.9rem; color: var(--text-color); margin-left: 5px; white-space: nowrap; }
-        .unit-text sup { font-size: 0.7em; vertical-align: super; }
-        #canvas-container { display: none; }
-        .position-row { display: flex; flex-wrap: wrap; gap: 30px; margin-bottom: 35px; padding-bottom: 30px; align-items: stretch; }
-        .position-row:last-child { border-bottom: none; margin-bottom: 0; }
-        .asymmetry-graph-container { flex: 6; min-width: 320px; }
-        .normative-graph-container { flex: 4; min-width: 260px; }
-        
-        .position-box, .normative-box { 
-            border: none; 
-            padding: 10px 20px 15px 20px; 
-            border-radius: var(--border-radius); 
-            background-color: var(--light-gray); 
-            box-shadow: var(--subtle-shadow); 
-            margin-bottom: 0; 
-            transition: box-shadow 0.3s ease, opacity 0.3s ease; 
-            display: flex; 
-            flex-direction: column; 
-            height: var(--graph-box-height); 
-            position: relative; 
-            overflow: hidden; 
+        #request-access-section { display: none; margin-top: 0.25rem; }
+        #error-message, #registration-error-message {
+            color: #f87171; font-size: 0.875rem; text-align: center;
+            min-height: 1.25rem; margin-top: 0.25rem; margin-bottom: 0.25rem;
         }
-        .position-box.green-box { 
-            box-shadow: 0 0 15px 5px var(--success-shadow-color); 
-            border-color: var(--success-border-color); 
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); }
         }
-        .position-box::after { content: ''; position: absolute; top: -100px; right: -100px; width: 500px; height: 500px; background-image: radial-gradient(circle at top right, var(--success-gradient-start-color) 0%, rgba(from var(--light-gray) r g b / 0) 65% ); opacity: 0; pointer-events: none; z-index: 0; border-radius: 50%; transition: opacity 0.3s ease; }
-        .position-box.green-box::after { opacity: 0.85; }
-        .js-plotly-plot { flex-grow: 1; position: relative; z-index: 1; }
-        #normative-placeholder { text-align: center; color: var(--dark-gray); font-style: italic; padding: 20px; background-color: var(--light-gray); border-radius: var(--border-radius); margin-top: 1em;}
-        #bottom-area { margin-top: 30px; padding-top: 15px; border-top: 1px solid var(--medium-gray); min-height: 30px; }
-        #preview-exit-button-inline { display: none; position: fixed; top: 15px; right: 15px; background-color: var(--danger-color-dark); color: white; padding: 8px 15px; font-size: 0.9rem; font-weight: var(--normal-font-weight); border: none; border-radius: var(--border-radius); cursor: pointer; z-index: 1001; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: all 0.3s ease; font-family: inherit; }
-        #preview-exit-button-inline:hover { background-color: #b91c1c; box-shadow: 0 4px 10px rgba(185, 28, 28, 0.3); transform: translateY(-1px); }
-        #preview-exit-button-inline:active { transform: translateY(0px); box-shadow: 0 2px 5px rgba(185, 28, 28, 0.2); }
-        #preview-exit-button-inline i { margin-right: 6px; }
-        .explanation-box { display: none; background-color: var(--light-gray); border: 1px solid var(--medium-gray); border-left: 5px solid var(--app-primary-color); padding: 15px; margin: 1em 0 2em 0; border-radius: var(--border-radius); font-size: 0.9em; color: var(--dark-gray); }
-        .explanation-box h4 { margin-top: 0; color: var(--app-primary-color); font-family: inherit; font-weight: var(--normal-font-weight); }
-        .explanation-box p { margin-bottom: 0.5em; }
-        .explanation-box ul { margin-top: 0.5em; padding-left: 20px; }
-        
-        body.pdf-preview-active .app-sidebar,
-        body.pdf-preview-active #patient-choice-section, 
-        body.pdf-preview-active #existing-patient-search-container, 
-        body.pdf-preview-active #patient-data-secondary-controls, 
-        /* #patient-data-container er skjult uansett, men la den stå for sikkerhets skyld */
-        body.pdf-preview-active #patient-data-container, 
-        body.pdf-preview-active #selected-patient-tests-container, 
-        body.pdf-preview-active #input-section-container,
-        body.pdf-preview-active #save-data-button-container,
-        body.pdf-preview-active #bottom-area,
-        body.pdf-preview-active .sidebar-social-links,
-        body.pdf-preview-active #loggedInUserContainer, 
-        body.pdf-preview-active .sidebar-buttons,
-        body.pdf-preview-active #results-title,
-        body.pdf-preview-active #patient-details-title,
-        body.pdf-preview-active #input-title,
-        body.pdf-preview-active #patient-info-display-table
-        {
-            display: none !important;
+        .animate-shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        .social-icon {
+            color: #e5e7eb; font-size: 1.75rem;
+            transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
         }
-        body.pdf-preview-active .app-main-content {
-            margin-left: 0 !important;
-            padding: 10mm !important; 
-            height: auto !important;
-            overflow: visible !important;
+        .social-icon:hover { color: #fff; transform: scale(1.1); }
+        .login-input, .registration-input {
+            background-color: rgba(255, 255, 255, 0.1); border: none; color: #ffffff;
+            border-radius: 0; padding: 0.5rem 0.75rem; width: 100%;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
-        body.pdf-preview-active .content-container {
-            max-width: 100% !important; 
+        .login-input::placeholder, .registration-input::placeholder { color: rgba(255, 255, 255, 0.6); }
+        .login-input:focus, .registration-input:focus {
+            background-color: rgba(255, 255, 255, 0.2); border: none; outline: none; box-shadow: none;
         }
-         body.pdf-preview-active .explanation-box {
-            display: block !important; 
-            margin: 0 0 10mm 0 !important; 
+        .dark .login-input, .dark .registration-input { background-color: rgba(0, 0, 0, 0.2); color: #ffffff; }
+        .dark .login-input::placeholder, .dark .registration-input::placeholder { color: rgba(255, 255, 255, 0.5); }
+        .dark .login-input:focus, .dark .registration-input:focus { background-color: rgba(0, 0, 0, 0.3); }
+        .modal-backdrop {
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+            background-color: rgba(0, 0, 0, 0.3); z-index: 40;
         }
-        body.pdf-preview-active .position-row { 
-            display: flex !important; 
+        .modal {
+            display: none; position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); width: 90%; max-width: 500px;
+            background-color: rgba(255, 255, 255, 0.05);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            padding: 1.5rem; border-radius: 0.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); z-index: 50;
+            color: #e5e7eb; max-height: 90vh; overflow-y: auto;
         }
-        body.pdf-preview-active h1 { 
-            text-align: center !important;
-            margin-bottom: 10mm !important;
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 300;
         }
-
-
-        @media (max-width: 992px) { :root { --sidebar-width: 70px; } .app-main-content { margin-left: calc(var(--sidebar-width) + var(--main-content-margin)); padding: 25px 30px; } .app-sidebar { padding: 20px 10px; top: 0; height: 100vh; } .app-sidebar .sidebar-logo-placeholder { height: 40px; margin-bottom: 40px; font-size: 1.3rem; } .app-sidebar .button-text { display: none; } .app-sidebar button, .app-sidebar a button { justify-content: center; padding: 10px 0; gap: 0; font-size: 0.85rem; } .app-sidebar button i { width: auto; margin: 0; } .sidebar-social-links { display: none; } .position-row { flex-direction: column; align-items: stretch; } .asymmetry-graph-container, .normative-graph-container { flex: none; width: 100%; min-width: unset; } .position-box, .normative-box { height: auto; min-height: unset; } #patient-data-grid { /*grid-template-columns: 1fr;*/ } #input-section-container { flex-direction: column; } .input-position-box { min-width: unset; } body.pdf-preview-active .app-main-content { padding: 15px 30px; } body.pdf-preview-active .position-row { align-items: stretch; } body.pdf-preview-active .position-box, body.pdf-preview-active .normative-box { height: auto; min-height: unset; } }
-        @media (max-width: 768px) { .app-layout { flex-direction: column; min-height: 100vh; } .app-sidebar { width: 100%; height: auto; position: relative; top: 0; flex-direction: row; flex-wrap: wrap; justify-content: center; padding: 10px; border-bottom: 1px solid var(--sidebar-border-color); border-right: none; z-index: 5; overflow-y: visible; } .sidebar-logo-placeholder { display: none; } .sidebar-buttons { flex-direction: row; flex-wrap: wrap; justify-content: center; width: 100%; flex-grow: 0; } .app-sidebar button, .app-sidebar a button { width: auto; flex-grow: 1; max-width: 180px; justify-content: center; font-size: 0.85rem; font-weight: var(--normal-font-weight); padding: 8px 10px; margin: 5px; gap: 8px; } .app-sidebar .button-text { display: inline-block; } .app-sidebar button i { width: auto; margin-right: 5px; } .sidebar-social-links { display: block; width: 100%; margin-top: 10px; padding-top: 0; border-top: none; text-align: center; } .sidebar-social-links a { margin: 0 10px; font-size: 1.1rem; } .app-main-content { margin-left: 0; padding: 20px 15px; height: auto; } h1 { font-size: 1.6rem; font-weight: var(--normal-font-weight);} h2 { font-size: 1.3rem; font-weight: var(--normal-font-weight);} h3.position-title, h3.normative-title { font-size: 1.0rem; font-weight: var(--normal-font-weight);} 
-            #patient-choice-section { flex-direction: column; gap: 15px; padding: 20px 0;} 
-            .choice-box { min-width: 250px; }
-            #patient-data-secondary-controls { flex-direction: column; align-items: stretch; gap: 10px; } 
-            .input-row { flex-direction: column; align-items: flex-start; gap: 5px; } .input-row label { flex-basis: auto; width: 100%; text-align: left; margin-bottom: 3px;} .input-row .input-wrapper { flex-basis: auto; width: 100%; justify-content: flex-start; } .input-row input { width: auto; font-size: 1.2rem; font-weight: var(--normal-font-weight); } .input-row input::placeholder { font-size: 0.8rem; font-weight: var(--normal-font-weight);} .unit-text { margin-left: 8px; } .position-box, .normative-box { padding: 10px; margin-bottom: 0;} #preview-exit-button-inline { top: 10px; right: 10px; font-size: 0.8rem; padding: 6px 10px; } body.pdf-preview-active .app-main-content { padding: 10px 15px; } }
-        @media (max-width: 480px) { h1 { font-size: 1.4rem; font-weight: var(--normal-font-weight);} h2 { font-size: 1.1rem; font-weight: var(--normal-font-weight);} .app-sidebar button, .app-sidebar a button { font-size: 0.8rem; padding: 6px 8px; max-width: 150px; font-weight: var(--normal-font-weight);} }
-        
-        @media print { 
-            body { background-color: white !important; color: black !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; font-size: 9pt !important; padding: 0 !important; display: block !important; font-weight: normal !important;} 
-            .app-sidebar, 
-            #patient-choice-section,
-            #existing-patient-search-container,
-            #patient-data-secondary-controls, 
-            #patient-data-container, 
-            #selected-patient-tests-container,
-            #input-section-container, 
-            #save-data-button-container,
-            #canvas-container, 
-            #bottom-area, 
-            .print-instruction, 
-            #preview-exit-button-inline,
-            .sidebar-social-links,
-            #loggedInUserContainer,
-            .sidebar-buttons,
-            #results-title,
-            #patient-details-title,
-            #input-title,
-            #patient-info-display-table
-             { 
-                display: none !important; 
-            } 
-            .app-layout { display: block !important; } 
-            .app-main-content { margin: 0 !important; padding: 5mm !important; width: 100% !important; max-width: 100% !important; box-shadow: none !important; border: none !important; height: auto !important; overflow: visible !important; } 
-            .content-container { margin: 0 !important; padding: 0 !important; max-width: 100% !important; } 
-            .explanation-box { display: block !important; margin: 0 0 5mm 0 !important; border-left-color: black !important; padding: 10px !important; font-size: 8pt !important; } 
-            h1 { font-size: 16pt !important; margin-bottom: 5mm !important; text-align: center !important; display: block !important; color: black !important; font-weight: normal !important; } 
-            h2 { display: block !important; font-size: 12pt !important; margin-top: 8mm; margin-bottom: 4mm; border: none !important; color: black !important; font-weight: normal !important; } 
-            h3 { font-size: 10pt !important; margin-bottom: 3mm !important; color: black !important; font-weight: normal !important; } 
-            #report-content { padding: 0 !important; } 
-            .position-row { display: block !important; width: 100% !important; page-break-inside: avoid !important; border: none !important; margin-bottom: 5mm !important; padding: 0 !important;} 
-            .asymmetry-graph-container, .normative-graph-container { width: 100% !important; display: block !important; margin-bottom: 5mm; page-break-inside: avoid !important; padding: 0 !important; } 
-            .position-box, .normative-box { box-shadow: none !important; border: 1px solid #ccc !important; margin-bottom: 3mm; height: auto !important; min-height: unset !important; padding: 5px !important; page-break-inside: avoid !important; background-color: var(--white) !important; } 
-            .position-box.green-box { box-shadow: none !important; border: 1px solid #ccc !important; } 
-            .position-box::after { display: none !important; } 
-            .js-plotly-plot { width: 100% !important; height: auto !important; } 
-            .plotly .scatterlayer .trace.fill { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; } 
-            .plotly .annotation text, .plotly .annotation .norm-label, .plotly .annotation .left-label, .plotly .annotation .right-label, .plotly .annotation .value-display, .plotly .annotation .nkg-combined-text span, .plotly .annotation .asymmetry-percent { fill: black !important; color: black !important; font-weight: normal !important; } 
-            .plotly .annotation .norm-value { font-weight: normal !important; } 
-            .plotly .gtitle { fill: black !important; font-weight: normal !important; } 
-            .plotly .axistitle { fill: black !important; font-size: 9pt !important; font-weight: normal !important; } 
-            .plotly .tick text { fill: black !important; font-size: 8pt !important; font-weight: normal !important; } 
-            .plotly .legend { display: none !important; } 
-            .plotly .modebar { display: none !important; } 
-            #bar-chart-I, #bar-chart-Y, #bar-chart-T { height: 180px !important; } 
-            #normative-chart-I, #normative-chart-Y, #normative-chart-T { height: 180px !important; } 
+        .close-button {
+            background: none; border: none; font-size: 1.8rem; line-height: 1;
+            color: #9ca3af; cursor: pointer; padding: 0.5rem;
         }
+        .close-button:hover { color: #fff; }
+        .registration-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .registration-grid .full-width { grid-column: span 2; }
     </style>
 </head>
-<body>
-    <div id="appLoadingMessage" class="loading-message" style="display:none;"></div>
-    <div id="appStatusMessage" class="status-message"></div>
+<body class="h-screen flex items-center justify-center">
 
-    <div id="patient-modal-overlay" class="modal-overlay">
-        <div class="modal-content" id="patient-modal-content">
+    <div class="w-full max-w-md p-8 shadow-lg frosted-glass-container text-white">
+        <h2 class="text-2xl text-center mb-4">Login</h2>
+        <form id="login-form">
+            <div class="mb-2">
+                <label for="email" class="block text-sm font-light text-gray-200 mb-0.5">Email</label>
+                <div>
+                    <input id="email" name="email" type="email" autocomplete="email" required
+                           placeholder="you@example.com"
+                           class="login-input block w-full">
+                </div>
             </div>
+            <div class="mb-1">
+                <label for="password" class="block text-sm font-light text-gray-200 mb-0.5">Password</label>
+                <div>
+                    <input id="password" name="password" type="password" autocomplete="current-password" required
+                           placeholder="••••••••"
+                           class="login-input block w-full">
+                </div>
+            </div>
+            <div id="error-message"></div>
+            <div class="flex items-center justify-end mb-1 text-sm">
+                <a href="#" id="request-access-link" class="text-gray-300 hover:text-white">Request Access</a>
+            </div>
+            <div id="request-access-section" class="text-sm text-center text-gray-200 mb-2">
+                Send email to:
+                <a href="mailto:manuel@alphatek.ai" class="text-gray-300 hover:text-white underline">manuel@alphatek.ai</a>
+            </div>
+            <div class="mt-3 flex space-x-2">
+                <button type="submit"
+                        class="custom-gradient-button flex-1 justify-center py-2 px-4 text-sm text-white focus:outline-none rounded-md">
+                    Login
+                </button>
+                <button type="button" id="open-signup-modal-button"
+                        class="relative flex-1 py-2 px-4 text-sm text-white focus:outline-none rounded-md bg-transparent">
+                    <svg class="absolute top-0 left-0 w-full h-full" style="z-index: 0; border-radius: inherit;">
+                        <defs>
+                            <linearGradient id="buttonBorderGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:rgb(112, 188, 252);stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#285484;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <rect x="1" y="1" width="calc(100% - 2px)" height="calc(100% - 2px)"
+                              rx="calc(0.375rem - 1px)" ry="calc(0.375rem - 1px)"
+                              fill="transparent" stroke="url(#buttonBorderGradient)" stroke-width="2"/>
+                    </svg>
+                    <span class="relative z-10">Sign Up</span>
+                </button>
+            </div>
+            <div class="pt-4 border-t border-white/20 mt-4">
+                <p class="text-center text-sm text-gray-300 mb-3">Visit us:</p>
+                <div class="flex justify-center space-x-6">
+                    <a href="https://www.instagram.com/alphatekofficial" target="_blank" rel="noopener noreferrer" title="Instagram"><i class="fab fa-instagram social-icon"></i></a>
+                    <a href="https://www.alphatek.no" target="_blank" rel="noopener noreferrer" title="Website"><i class="fas fa-globe social-icon"></i></a>
+                </div>
+            </div>
+        </form>
     </div>
 
-    <div class="app-layout">
-        <aside class="app-sidebar">
-            <div class="sidebar-logo-placeholder"><i class="fas fa-bars"></i></div> 
-            <div class="sidebar-buttons">
-                <a href="assets/analysis.html" id="analysis-link-button"><button type="button" id="view-analysis-button"><i class="fas fa-history"></i> <span class="button-text">Patient History</span></button></a>
-                <button id="pdf-preview-button"><i class="fas fa-file-pdf"></i><span class="button-text">PDF Preview</span></button>
-                <button id="export-excel-button"><i class="fas fa-file-excel"></i><span class="button-text">Export Data</span></button>
-                <button id="clear-all-button"><i class="fas fa-eraser"></i><span class="button-text">Clear All</span></button>
-            </div>
-            <div id="loggedInUserContainer" class="sidebar-user-info">
-                <div class="user-details">
-                    <i class="fas fa-user-circle"></i>
-                    <span id="loggedInUserName">Demo User</span>
-                    <span id="loggedInUserEmailDisplay">demo@example.com</span>
+    <div id="modalBackdrop" class="modal-backdrop"></div>
+
+    <div id="registrationModal" class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">Create Account</h3>
+            <button id="closeModalButton" class="close-button" aria-label="Close modal">&times;</button>
+        </div>
+        <form id="registration-form">
+            <div class="registration-grid">
+                <div>
+                    <label for="reg-firstname" class="block text-sm font-light text-gray-200 mb-0.5">First Name</label>
+                    <input type="text" id="reg-firstname" required class="registration-input" placeholder="">
                 </div>
-                <button id="logout-button"><i class="fas fa-sign-out-alt"></i><span class="button-text">Logout (UI Only)</span></button>
+                <div>
+                    <label for="reg-lastname" class="block text-sm font-light text-gray-200 mb-0.5">Last Name</label>
+                    <input type="text" id="reg-lastname" required class="registration-input" placeholder="">
+                </div>
+                <div class="full-width">
+                    <label for="reg-email" class="block text-sm font-light text-gray-200 mb-0.5">Email</label>
+                    <input type="email" id="reg-email" required autocomplete="email" class="registration-input" placeholder="">
+                </div>
+                <div class="full-width">
+                    <label for="reg-password" class="block text-sm font-light text-gray-200 mb-0.5">Password</label>
+                    <input type="password" id="reg-password" required class="registration-input" placeholder="">
+                </div>
+                <div class="full-width">
+                    <label for="reg-confirm-password" class="block text-sm font-light text-gray-200 mb-0.5">Confirm Password</label>
+                    <input type="password" id="reg-confirm-password" required class="registration-input" placeholder="">
+                </div>
+                <div class="full-width">
+                    <label for="reg-organization" class="block text-sm font-light text-gray-200 mb-0.5">Organization (Optional)</label>
+                    <input type="text" id="reg-organization" class="registration-input" placeholder="">
+                </div>
+                <div>
+                    <label for="reg-profession" class="block text-sm font-light text-gray-200 mb-0.5">Profession (Optional)</label>
+                    <input type="text" id="reg-profession" class="registration-input" placeholder="">
+                </div>
+                <div>
+                    <label for="reg-country" class="block text-sm font-light text-gray-200 mb-0.5">Country (Optional)</label>
+                    <input type="text" id="reg-country" list="countries" class="registration-input" placeholder="">
+                    <datalist id="countries">
+                        <option value="Norway"><option value="Sweden"><option value="Denmark">
+                        <option value="United States"><option value="United Kingdom">
+                    </datalist>
+                </div>
             </div>
-            <div class="sidebar-social-links">
-                <a href="https://www.instagram.com/alphatekofficial" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="https://www.alphatek.no" target="_blank" title="Website"><i class="fas fa-globe"></i></a>
-                <a href="#" title="Info/Help"><i class="fas fa-circle-info"></i></a>
+            <div id="registration-error-message" class="mt-2"></div>
+            <div class="mt-6">
+                <button type="submit" class="custom-gradient-button w-full flex justify-center py-2 px-4 text-sm text-white focus:outline-none rounded-md">
+                    Register
+                </button>
             </div>
-        </aside>
-        <main class="app-main-content">
-            <button id="preview-exit-button-inline"><i class="fas fa-times-circle"></i> Exit Preview</button>
-            <div class="content-container">
-                <div id="report-content">
-                    <h1>Functional Shoulder Screening</h1>
-                    <h2 id="patient-details-title">Patient Details</h2> 
-
-                    <div id="patient-choice-section">
-                        <div class="choice-box" id="new-patient-choice">
-                            <i class="fas fa-user-plus"></i>
-                            <span>New Patient</span>
-                        </div>
-                        <div class="choice-box" id="existing-patient-choice">
-                            <i class="fas fa-search"></i>
-                            <span>Existing Patient</span>
-                        </div>
-                    </div>
-
-                    <div id="existing-patient-search-container" style="display: none;">
-                        <label for="fp-nr-input-search">Search Patient ID:</label>
-                        <input id="fp-nr-input-search" type="text" list="existing-patient-ids">
-                        </div>
-                    
-                    <div id="main-screening-content"> 
-                        <div class="explanation-box"><h4>About This Report</h4> <p>This report summarizes the results of the Functional Shoulder Screening using the ASH test (Positions I, Y, T).</p><ul> <li><strong>Asymmetry Graphs:</strong> Show the percentage difference between the injured and uninjured side for key metrics (Max Force, RFD, % Max Force at 100ms). Values closer to 100% indicate better symmetry. Annotations above the bars show the percentage difference relative to the uninjured side (100%). Numbers inside the bars show the absolute values for each side.</li> <li><strong>Normative Graphs:</strong> Visually represent the estimated percentile rank for Max Force / Bodyweight (N/kg) for each side, based on normative thresholds. Background colors indicate performance zones (Poor, Average, Good, Excellent). Vertical dashed lines show the estimated percentile for the Left (Orange) and Right (Blue) values.</li> </ul><p><i>To save as PDF: Click 'PDF Preview', then use your browser's Print function (Ctrl+P or Cmd+P) and select 'Save as PDF'. Click 'Exit Preview' to return.</i></p></div>
-                        
-                        <div id="patient-data-container" style="display:none;"> 
-                             <div id="patient-id-and-secondary-controls">
-                                <div class="patient-id-standalone-item">
-                                    <label for="fp-nr-input">Patient ID (Internal):</label> 
-                                    <input id="fp-nr-input" type="text">
-                                    <datalist id="existing-patient-ids"></datalist> 
-                                </div>
-                                <div id="patient-data-secondary-controls">
-                                    <div class="control-item"><label class="control-label" for="injured-side-radio">Injured Side:</label><select id="injured-side-radio"><option value="Left">Left</option><option value="Right">Right</option></select></div>
-                                    <div class="control-item"><label class="control-label" for="bodyweight-input">Bodyweight (kg):</label><input id="bodyweight-input" type="number"></div>
-                                </div>
-                            </div>
-                            <div id="patient-data-grid">
-                                <div class="patient-data-item"><label for="age-input">Age:</label><input id="age-input" type="number"></div>
-                                <div class="patient-data-item"><label for="gender-select">Gender:</label><select id="gender-select"><option value="">Select...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option><option value="Prefer not to say">Prefer not to say</option></select></div>
-                                <div class="patient-data-item"><label for="sport-input">Sport:</label><input id="sport-input" type="text"></div>
-                                <div class="patient-data-item"><label for="injury-input">Injury (Optional):</label><input id="injury-input" type="text"></div>
-                            </div>
-                        </div> 
-
-                        <div id="patient-info-display-table" style="display: none;">
-                            <h3>Patient Information</h3>
-                            <div class="info-table">
-                                <div class="info-table-item"><span class="label">Patient ID:</span><span class="value" id="display-patient-id"></span></div>
-                                <div class="info-table-item"><span class="label">Age:</span><span class="value" id="display-age"></span></div>
-                                <div class="info-table-item"><span class="label">Gender:</span><span class="value" id="display-gender"></span></div>
-                                <div class="info-table-item"><span class="label">Sport:</span><span class="value" id="display-sport"></span></div>
-                                <div class="info-table-item"><span class="label">Injury:</span><span class="value" id="display-injury"></span></div>
-                                <div class="info-table-item"><span class="label">Injured Side:</span><span class="value" id="display-injured-side"></span></div>
-                                <div class="info-table-item"><span class="label">Bodyweight:</span><span class="value" id="display-bodyweight"></span></div>
-                            </div>
-                        </div>
-        
-                        <div id="selected-patient-tests-container" style="display: none;"> 
-                            <h3 id="selected-patient-tests-title-new">Saved Tests for Patient: <span id="current-patient-for-tests"></span></h3>
-                            <ul id="selected-patient-tests-list"></ul>
-                        </div>
-        
-                        <h2 id="input-title">Input Overview</h2>
-                        <div id="input-section-container">
-                            <div class="input-position-box"><h4>ASH Test Position I</h4><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"> <input id="non-injured-max-force-i" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- N</span> </div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"> <input id="non-injured-rfd-i" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- Ns<sup>-1</sup></span> </div> </div><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"> <input id="injured-max-force-i" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- N</span> </div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"> <input id="injured-rfd-i" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- Ns<sup>-1</sup></span> </div> </div></div>
-                            <div class="input-position-box"><h4>ASH Test Position Y</h4><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"><input id="non-injured-max-force-y" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- N</span></div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="non-injured-rfd-y" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"><input id="injured-max-force-y" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- N</span></div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="injured-rfd-y" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div></div>
-                            <div class="input-position-box"><h4>ASH Test Position T</h4><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"><input id="non-injured-max-force-t" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- N</span></div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="non-injured-rfd-t" type="number" class="number-input" placeholder="Non-Injured"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"><input id="injured-max-force-t" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- N</span></div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="injured-rfd-t" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div></div>
-                        </div>
-                        <div id="save-data-button-container">
-                            <button id="save-data-button-main"><i class="fas fa-save"></i> Save Screening Data</button>
-                        </div>
-                        
-                        <h2 id="results-title">Results</h2>
-                        <div class="position-row"> <div class="asymmetry-graph-container"> <div id="position-box-I" class="position-box"> <h3 class="position-title">Position I - Asymmetry</h3> <div id="bar-chart-I" class="js-plotly-plot"></div> </div> </div> <div class="normative-graph-container"> <div id="normative-chart-container-I" class="normative-box"> <h3 class="normative-title">Position I - Normative Comparison</h3> <div id="normative-chart-I" class="js-plotly-plot"></div> </div> </div> </div>
-                        <div class="position-row"> <div class="asymmetry-graph-container"> <div id="position-box-Y" class="position-box"> <h3 class="position-title">Position Y - Asymmetry</h3> <div id="bar-chart-Y" class="js-plotly-plot"></div> </div> </div> <div class="normative-graph-container"> <div id="normative-chart-container-Y" class="normative-box"> <h3 class="normative-title">Position Y - Normative Comparison</h3> <div id="normative-chart-Y" class="js-plotly-plot"></div> </div> </div> </div>
-                        <div class="position-row"> <div class="asymmetry-graph-container"> <div id="position-box-T" class="position-box"> <h3 class="position-title">Position T - Asymmetry</h3> <div id="bar-chart-T" class="js-plotly-plot"></div> </div> </div> <div class="normative-graph-container"> <div id="normative-chart-container-T" class="normative-box"> <h3 class="normative-title">Position T - Normative Comparison</h3> <div id="normative-chart-T" class="js-plotly-plot"></div> </div> </div> </div>
-                        <div id="normative-placeholder" style="display: none;"> Enter bodyweight to see normative comparisons. </div>
-                        <div id="bottom-area"></div>
-                    </div> </div>
-            </div>
-        </main>
+        </form>
     </div>
 
     <script type="module">
-        // --- Global Variables ---
-        let mockPatientScreenings = {
-            "P001": [
-                { screeningId: "test1_P001", patientId: "P001", testTimestamp: new Date(2024, 4, 1, 10, 0, 0), age: 25, gender: "Male", sport: "Football", injury: "Shoulder Dislocation", bodyweight: 80, injuredSide: "Right", ashTest: { I: {nonInjuredMaxForce: 150, nonInjuredRfd: 1000, injuredMaxForce: 130, injuredRfd: 800}, Y: {nonInjuredMaxForce: 120, nonInjuredRfd: 900, injuredMaxForce: 100, injuredRfd: 700}, T: {nonInjuredMaxForce: 140, nonInjuredRfd: 950, injuredMaxForce: 110, injuredRfd: 750}}},
-                { screeningId: "test2_P001", patientId: "P001", testTimestamp: new Date(2024, 3, 15, 14, 30, 0), age: 25, gender: "Male", sport: "Football", injury: "Shoulder Dislocation", bodyweight: 79, injuredSide: "Right", ashTest: { I: {nonInjuredMaxForce: 145, nonInjuredRfd: 980, injuredMaxForce: 125, injuredRfd: 780}, Y: {nonInjuredMaxForce: 115, nonInjuredRfd: 880, injuredMaxForce: 95, injuredRfd: 680}, T: {nonInjuredMaxForce: 135, nonInjuredRfd: 930, injuredMaxForce: 105, injuredRfd: 730}}}
-            ],
-            "P002": [
-                { screeningId: "test1_P002", patientId: "P002", testTimestamp: new Date(2024, 4, 5, 9, 15, 0), age: 32, gender: "Female", sport: "Volleyball", injury: "Rotator Cuff Strain", bodyweight: 65, injuredSide: "Left", ashTest: { I: {nonInjuredMaxForce: 100, nonInjuredRfd: 700, injuredMaxForce: 90, injuredRfd: 600}, Y: {nonInjuredMaxForce: 80, nonInjuredRfd: 600, injuredMaxForce: 70, injuredRfd: 500}, T: {nonInjuredMaxForce: 90, nonInjuredRfd: 650, injuredMaxForce: 75, injuredRfd: 550}}}
-            ],
-            "P003": [
-                 { screeningId: "test1_P003", patientId: "P003", testTimestamp: new Date(2024, 5, 1, 11, 0, 0), age: 28, gender: "Male", sport: "Basketball", injury: "Labral Tear", bodyweight: 85, injuredSide: "Left", ashTest: { I: {nonInjuredMaxForce: 160, nonInjuredRfd: 1100, injuredMaxForce: 150, injuredRfd: 1000}, Y: {nonInjuredMaxForce: 130, nonInjuredRfd: 950, injuredMaxForce: 120, injuredRfd: 850}, T: {nonInjuredMaxForce: 150, nonInjuredRfd: 1050, injuredMaxForce: 140, injuredRfd: 950}}}
-            ]
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDhEihuoWm4c5MSOHrSqkkzca7tn86roq4",
+            authDomain: "pwr-analytics.firebaseapp.com",
+            projectId: "pwr-analytics",
+            storageBucket: "pwr-analytics.appspot.com",
+            messagingSenderId: "9839468523",
+            appId: "1:9839468523:web:1d994de254b2a24d91c3ae",
+            measurementId: "G-N35HQ5CMD5"
         };
-        let currentPatientDataForApp = {}; // Holder på aktiv pasientdata for appen
-        // currentPatientDataForModal er ikke lenger nødvendig som global, håndteres inne i openPatientModal
 
-        // --- UI Element References ---
-        const appLayout = document.querySelector('.app-layout');
-        const appStatusMessage = document.getElementById('appStatusMessage');
-        const loggedInUserNameSpan = document.getElementById('loggedInUserName');
-        const loggedInUserEmailDisplaySpan = document.getElementById('loggedInUserEmailDisplay');
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
-        const patientChoiceSection = document.getElementById('patient-choice-section');
-        const newPatientChoiceButton = document.getElementById('new-patient-choice');
-        const existingPatientChoiceButton = document.getElementById('existing-patient-choice');
-        const existingPatientSearchContainer = document.getElementById('existing-patient-search-container');
-        const fpNrInputSearch = document.getElementById('fp-nr-input-search'); 
-        const mainScreeningContent = document.getElementById('main-screening-content');
-        const patientDetailsTitle = document.getElementById('patient-details-title');
+        const nextPageUrl = "screening.html";
+        const localStorageEmailKey = 'savedLoginEmail';
 
-        const patientModalOverlay = document.getElementById('patient-modal-overlay');
-        const patientModalContent = document.getElementById('patient-modal-content');
+        const loginForm = document.getElementById('login-form');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const loginErrorMessageDiv = document.getElementById('error-message');
+        const requestAccessLink = document.getElementById('request-access-link');
+        const requestAccessSection = document.getElementById('request-access-section');
+        const loginBox = loginForm.parentElement;
+        const bodyElement = document.body;
+        const originalBgImage = "assets/background.jpeg";
+        const fallbackBgImage = "url('https://placehold.co/1920x1080/333/ccc?text=Background+Error')";
 
-        const patientInfoDisplayTable = document.getElementById('patient-info-display-table');
-        const displayPatientId = document.getElementById('display-patient-id');
-        const displayAge = document.getElementById('display-age');
-        const displayGender = document.getElementById('display-gender');
-        const displaySport = document.getElementById('display-sport');
-        const displayInjury = document.getElementById('display-injury');
-        const displayInjuredSide = document.getElementById('display-injured-side');
-        const displayBodyweight = document.getElementById('display-bodyweight');
+        const modalBackdrop = document.getElementById('modalBackdrop');
+        const registrationModal = document.getElementById('registrationModal');
+        const openSignupModalButton = document.getElementById('open-signup-modal-button');
+        const closeModalButton = document.getElementById('closeModalButton');
+        const registrationForm = document.getElementById('registration-form');
+        const registrationErrorMessageDiv = document.getElementById('registration-error-message');
 
-        const plotlyConfig = { /* ... (som før) ... */ };
-        const normativeThresholds = { /* ... (som før) ... */ };
-        const percentileZones = { /* ... (som før) ... */ };
-        const percentileMidpoint = 50;
-        const normZoneColors = { /* ... (som før) ... */ };
-        const normativeLabels = { /* ... (som før) ... */ };
-        const asymmetryChartDivs = ['bar-chart-I', 'bar-chart-Y', 'bar-chart-T'];
-        const asymmetryPositionBoxDivs = ['position-box-I', 'position-box-Y', 'position-box-T'];
-        const normativeChartDivs = ['normative-chart-I', 'normative-chart-Y', 'normative-chart-T'];
-        const normativePlaceholder = document.getElementById('normative-placeholder');
-        
-        // Referanser til de (nå skjulte) inputfeltene for pasientdata
-        const injuredSideRadio = document.getElementById('injured-side-radio');
-        const bodyweightInput = document.getElementById('bodyweight-input');
-        const patientDataSecondaryControls = document.getElementById('patient-data-secondary-controls'); 
-        const fpNrInput = document.getElementById('fp-nr-input'); 
-        const ageInput = document.getElementById('age-input');
-        const genderSelect = document.getElementById('gender-select');
-        const sportInput = document.getElementById('sport-input');
-        const injuryInput = document.getElementById('injury-input');
-        
-        const saveDataButton = document.getElementById('save-data-button-main');
-        const pdfPreviewButton = document.getElementById('pdf-preview-button');
-        const exportExcelButton = document.getElementById('export-excel-button');
-        const clearAllButton = document.getElementById('clear-all-button');
-        const logoutButton = document.getElementById('logout-button');
-        const previewExitButtonInline = document.getElementById('preview-exit-button-inline');
-        const explanationBox = document.querySelector('.explanation-box');
-        const patientDataContainer = document.getElementById('patient-data-container'); 
-        
-        const inputSectionContainer = document.getElementById('input-section-container');
-        const resultsTitle = document.getElementById('results-title');
-        const positionRows = document.querySelectorAll('.position-row');
-        const saveDataButtonContainer = document.getElementById('save-data-button-container');
-
-        const inputFieldMap = {
-            'I': { nonInjured: [document.getElementById('non-injured-max-force-i'), document.getElementById('non-injured-rfd-i')], injured: [document.getElementById('injured-max-force-i'), document.getElementById('injured-rfd-i')] },
-            'Y': { nonInjured: [document.getElementById('non-injured-max-force-y'), document.getElementById('non-injured-rfd-y')], injured: [document.getElementById('injured-max-force-y'), document.getElementById('injured-rfd-y')] },
-            'T': { nonInjured: [document.getElementById('non-injured-max-force-t'), document.getElementById('non-injured-rfd-t')], injured: [document.getElementById('injured-max-force-t'), document.getElementById('injured-rfd-t')] }
-        };
-        const allNumberInputs = Array.from(document.querySelectorAll('#input-section-container input[type="number"]'));
-        
-        const existingPatientIdsDatalist = document.getElementById('existing-patient-ids'); 
-        const selectedPatientTestsContainer = document.getElementById('selected-patient-tests-container'); 
-        const selectedPatientTestsListUL = document.getElementById('selected-patient-tests-list');
-        const currentPatientForTestsSpan = document.getElementById('current-patient-for-tests');
-
-        // --- Utility Functions ---
-        function showStatusMessage(message, type = 'info', duration = 3000) {
-            if (!appStatusMessage) return;
-            appStatusMessage.textContent = message;
-            appStatusMessage.className = `status-message ${type}`;
-            appStatusMessage.style.display = 'block';
-            setTimeout(() => {
-                appStatusMessage.style.display = 'none';
-            }, duration);
-        }
-        function hexToRgba(hex, alpha) { hex = hex.replace('#', ''); const r = parseInt(hex.substring(0, 2), 16); const g = parseInt(hex.substring(2, 4), 16); const b = parseInt(hex.substring(4, 6), 16); return `rgba(${r}, ${g}, ${b}, ${alpha})`; }
-        function createEmptyPlot(targetDivId, title = 'Enter Data', height = 300, topMargin = 20) { const targetDiv = document.getElementById(targetDivId); if (!targetDiv) { return; } try { Plotly.react(targetDiv, [{ x: [], y: [], type: 'bar' }], { title: { text: title, font: { family: 'Avenir, sans-serif', size: 16, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim(), weight: 400 } }, height: height, margin: { l: 60, r: 40, b: 40, t: topMargin, pad: 4 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', xaxis: { visible: false }, yaxis: { showgrid: false, zeroline: true, gridcolor: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), showticklabels: false }, font: { family: 'Avenir, sans-serif', size: 12, weight: 400 } }, plotlyConfig); } catch (error) { console.error(`Error creating empty plot in ${targetDivId}:`, error); targetDiv.innerHTML = `<p style="color: red; text-align: center; padding: 20px;">Error displaying chart.</p>`; } }
-        function processInputAndCalculate(position) { const inputs = inputFieldMap[position]; if (!inputs) return null; const nonInjuredMaxForceVal = inputs.nonInjured[0].value; const nonInjuredRfdVal = inputs.nonInjured[1].value; const injuredMaxForceVal = inputs.injured[0].value; const injuredRfdVal = inputs.injured[1].value; if (nonInjuredMaxForceVal === '' && nonInjuredRfdVal === '' && injuredMaxForceVal === '' && injuredRfdVal === '') return null; const nonInjuredMaxForce = parseFloat(nonInjuredMaxForceVal) || 0; const nonInjuredRfd = parseFloat(nonInjuredRfdVal) || 0; const injuredMaxForce = parseFloat(injuredMaxForceVal) || 0; const injuredRfd = parseFloat(injuredRfdVal) || 0; const selectedInjuredSide = currentPatientDataForApp.injuredSide || 'Left'; let leftData = {}; let rightData = {}; if (selectedInjuredSide === 'Left') { leftData = { max_force: injuredMaxForce, rfd: injuredRfd }; rightData = { max_force: nonInjuredMaxForce, rfd: nonInjuredRfd }; } else { leftData = { max_force: nonInjuredMaxForce, rfd: nonInjuredRfd }; rightData = { max_force: injuredMaxForce, rfd: injuredRfd }; } return { left: leftData, right: rightData }; }
-        function createAsymmetryChart(positionData, injuredSide, posLabel) { if (!positionData?.left || !positionData?.right) return [{}, false]; const leftDataRaw = positionData.left; const rightDataRaw = positionData.right; const leftPctMaxAt100ms = leftDataRaw.max_force !== 0 ? (leftDataRaw.rfd * 0.1 / leftDataRaw.max_force) * 100 : 0; const rightPctMaxAt100ms = rightDataRaw.max_force !== 0 ? (rightDataRaw.rfd * 0.1 / rightDataRaw.max_force) * 100 : 0; const leftData = [leftDataRaw.max_force, leftDataRaw.rfd, leftPctMaxAt100ms]; const rightData = [rightDataRaw.max_force, rightDataRaw.rfd, rightPctMaxAt100ms]; const baseData = injuredSide === 'Right' ? leftData : rightData; const metricNames = [ 'Max Force (N)', 'RFD 100ms (Ns⁻¹)', '% Max @ 100ms (%)' ]; const barDataRatios = {}; const leftTextsAbsolute = []; const rightTextsAbsolute = []; metricNames.forEach((metricName, index) => { let leftValue = leftData[index]; let rightValue = rightData[index]; let baseValue = baseData[index]; const leftRatio = baseValue !== 0 ? (leftValue / baseValue) * 100 : (leftValue === 0 ? 100 : Infinity); const rightRatio = baseValue !== 0 ? (rightValue / baseValue) * 100 : (rightValue === 0 ? 100 : Infinity); barDataRatios[metricName] = [rightRatio, leftRatio]; const decimals = metricName.includes('% Max @ 100ms') ? 1 : 0; leftTextsAbsolute.push(leftValue.toFixed(decimals)); rightTextsAbsolute.push(rightValue.toFixed(decimals)); }); const plotX = metricNames; const plotYLeft = plotX.map(name => barDataRatios[name][1]); const plotYRight = plotX.map(name => barDataRatios[name][0]); if (plotX.length !== 3 || plotYLeft.length !== 3 || plotYRight.length !== 3) return [{}, false]; const leftColorHex = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim(); const rightColorHex = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim(); const leftColorRgba = hexToRgba(leftColorHex, 0.8); const rightColorRgba = hexToRgba(rightColorHex, 0.8); const thresholdLineColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(); const darkGrayColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(); const whiteColor = getComputedStyle(document.documentElement).getPropertyValue('--white').trim(); const validRatios = plotYLeft.concat(plotYRight).filter(isFinite); const maxYValue = validRatios.length > 0 ? Math.max(110, ...validRatios) : 110; const annotationYTop = maxYValue + 8; const yAxisUpperBound = annotationYTop + 15; const fig = { data: [ { type: 'bar', name: 'Left', x: plotX, y: plotYLeft, marker: { color: leftColorRgba }, text: leftTextsAbsolute, texttemplate: '%{text}', textposition: 'none', hoverinfo: 'x+name', hovertemplate: 'Left: %{y:.0f}%<extra></extra>' }, { type: 'bar', name: 'Right', x: plotX, y: plotYRight, marker: { color: rightColorRgba }, text: rightTextsAbsolute, texttemplate: '%{text}', textposition: 'none', hoverinfo: 'x+name', hovertemplate: 'Right: %{y:.0f}%<extra></extra>' }, { x: [null], y: [null], mode: 'lines', name: '±10% Thresholds', line: { color: thresholdLineColor, width: 1, dash: 'dash' }, hoverinfo: 'none', showlegend: true } ], layout: { height: 300, barmode: 'group', font: { color: darkGrayColor, family: 'Avenir, sans-serif', size: 12, weight: 400 }, yaxis: { title: "Injured Side Asymmetry (%)", titlefont: { size: 13, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, range: [18, yAxisUpperBound], tickmode: 'array', tickvals: [50, 100], showgrid: false, zeroline: false, }, xaxis: { showgrid: false, zeroline: false, showline: false, showticklabels: true, tickangle: 0, tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, automargin: true, fixedrange: true }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', legend: { orientation: "h", yanchor: "bottom", y: -0.30, xanchor: "center", x: 0.5, font: { size: 12, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor } }, margin: { l: 70, r: 30, b: 85, t: 20, pad: 10 }, shapes: [ { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 90, y1: 90, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" }, { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 110, y1: 110, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" } ], annotations: [] } }; let allGreen = true; const metricsNamesForAnnotation = plotX; for (let i = 0; i < metricsNamesForAnnotation.length; i++) { const metricName = metricsNamesForAnnotation[i]; const injuredRatio = injuredSide === 'Right' ? plotYRight[i] : plotYLeft[i]; const leftRatio = plotYLeft[i]; const rightRatio = plotYRight[i]; if (!isFinite(injuredRatio)) { fig.layout.annotations.push({ x: metricName, y: annotationYTop, text: "N/A", showarrow: false, font: { color: 'grey', size: 22, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'bottom' }); allGreen = false; } else { const percentageDiff = injuredRatio - 100; let color; if (percentageDiff >= -10) { color = '#2a9d8f'; } else { allGreen = false; if (percentageDiff >= -15) { color = '#ee9b00'; } else if (percentageDiff >= -20) { color = '#e85d04'; } else { color = '#ae2012'; } } fig.layout.annotations.push({ x: metricName, y: annotationYTop, text: `${percentageDiff.toFixed(0)}%`, showarrow: false, font: { color: color, size: 22, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'bottom' }); } const barTextYPosition = 31; const barTextFontSize = 17; const categoryIndex = i; const numberOfBars = 2; const groupWidth = 0.8; const barWidthFraction = groupWidth / numberOfBars; const leftBarCenter = categoryIndex - (groupWidth / 2) + (barWidthFraction / 2); const rightBarCenter = categoryIndex + (groupWidth / 2) - (barWidthFraction / 2); if (leftRatio > barTextYPosition + (barTextFontSize / 2)) { fig.layout.annotations.push({ x: leftBarCenter, y: barTextYPosition, xref: 'x', yref: 'y', text: leftTextsAbsolute[i], showarrow: false, font: { color: whiteColor, size: barTextFontSize, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'middle' }); } if (rightRatio > barTextYPosition + (barTextFontSize / 2)) { fig.layout.annotations.push({ x: rightBarCenter, y: barTextYPosition, xref: 'x', yref: 'y', text: rightTextsAbsolute[i], showarrow: false, font: { color: whiteColor, size: barTextFontSize, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'middle' }); } } return [fig, allGreen]; }
-        function mapNkgToPercentile(nkgValue, positionLabel) { const thresholds = normativeThresholds[positionLabel]; if (!thresholds || typeof nkgValue !== 'number' || !isFinite(nkgValue)) return 0; const pMap = [ { v: 0.5, p: 0 }, { v: thresholds.poor_max, p: percentileZones.poor }, { v: thresholds.average_mid, p: percentileMidpoint }, { v: thresholds.good_min, p: percentileZones.average }, { v: thresholds.excellent_min, p: percentileZones.good }, { v: thresholds.excellent_min * 1.25, p: percentileZones.excellent } ]; const minVal = pMap[0].v; const maxVal = pMap[pMap.length - 1].v; const clampedValue = Math.max(minVal, Math.min(nkgValue, maxVal)); let lowerPoint = pMap[0]; let upperPoint = pMap[pMap.length - 1]; for (let i = 0; i < pMap.length - 1; i++) { if (clampedValue === pMap[i].v) { lowerPoint = upperPoint = pMap[i]; break; } if (clampedValue > pMap[i].v && clampedValue <= pMap[i + 1].v) { lowerPoint = pMap[i]; upperPoint = pMap[i + 1]; break; } } if (clampedValue === upperPoint.v) { lowerPoint = upperPoint; } let percentile = lowerPoint.p; const valueRange = upperPoint.v - lowerPoint.v; const percentileRange = upperPoint.p - lowerPoint.p; if (valueRange > 0) { percentile += ((clampedValue - lowerPoint.v) / valueRange) * percentileRange; } return Math.max(0, Math.min(percentile, 100)); }
-        function createNormativeComparisonChart(positionData, bodyweight, positionLabel) { const bwVal = parseFloat(bodyweight); if (isNaN(bwVal) || bwVal <= 0 || !positionData) return {}; const leftNkg = positionData.left.max_force / bwVal; const rightNkg = positionData.right.max_force / bwVal; const thresholds = normativeThresholds[positionLabel]; if (!thresholds) return {}; const leftPercentile = mapNkgToPercentile(leftNkg, positionLabel); const rightPercentile = mapNkgToPercentile(rightNkg, positionLabel); const baseCurveX = []; const baseCurveY = []; const mean = 55; const stdDev = 22; const amplitude = 0.9; for (let i = 0; i <= 100; i += 0.5) { baseCurveX.push(i); const y = amplitude * Math.exp(-Math.pow(i - mean, 2) / (2 * Math.pow(stdDev, 2))); baseCurveY.push(y); } const zoneBoundaries = [0, percentileZones.poor, percentileZones.average, percentileZones.good, percentileZones.excellent]; const traces = []; const zoneColorsList = [normZoneColors.poor, normZoneColors.average, normZoneColors.good, normZoneColors.excellent]; for (let i = 0; i < zoneBoundaries.length - 1; i++) { const x0 = zoneBoundaries[i]; const x1 = zoneBoundaries[i+1]; const zoneFillColor = zoneColorsList[i]; const segmentX = [x0]; const segmentY = [0]; for(let j=0; j < baseCurveX.length; j++) { if (baseCurveX[j] >= x0 && baseCurveX[j] <= x1) { segmentX.push(baseCurveX[j]); segmentY.push(baseCurveY[j]); } } segmentX.push(x1); segmentY.push(0); traces.push({ x: segmentX, y: segmentY, type: 'scatter', mode: 'lines', line: { width: 0 }, fill: 'tozeroy', fillcolor: zoneFillColor, hoverinfo: 'none', name: Object.keys(normativeLabels)[i], showlegend: false }); } traces.push({ x: baseCurveX, y: baseCurveY, type: 'scatter', mode: 'lines', line: { color: '#ffffff', width: 1.5, shape: 'spline' }, hoverinfo: 'none', name: 'Distribution (Visual)', showlegend: false }); const layout = { height: 250, margin: { t: 35, b: 95, l: 30, r: 30 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', xaxis: { title: '', range: [0, 100], showgrid: false, zeroline: false, showticklabels: false }, yaxis: { range: [0, 1.1], showgrid: false, zeroline: false, showticklabels: false, title: '' }, shapes: [], annotations: [], font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() }, showlegend: false }; const thresholdAnnotations = [ { p: percentileZones.poor, val: thresholds.poor_max }, { p: percentileZones.average, val: thresholds.good_min }, { p: percentileZones.good, val: thresholds.excellent_min } ]; thresholdAnnotations.forEach(t => { layout.annotations.push({ xref: 'x', yref: 'paper', x: t.p, y: -0.08, text: `<span class="norm-value">${t.val.toFixed(2)}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', font: { family: 'Avenir, sans-serif', size: 10, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim() } }); }); layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: percentileMidpoint, x1: percentileMidpoint, y0: 0, y1: 1, line: { color: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), width: 1.5, dash: 'dot' }, layer: 'below' }); const avgValueForPos = thresholds.average_mid.toFixed(2); layout.annotations.push({ xref: 'x', yref: 'paper', x: percentileMidpoint, y: -0.08, text: `<span class="value-display">${avgValueForPos}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', font: { family: 'Avenir, sans-serif', size: 10, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), weight: 400 } }); const labelYPosition = 1.10; layout.annotations.push({ xref: 'x', yref: 'paper', x: 15, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.poor}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 50, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.average}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() }, align: 'center' }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 80, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.good}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 95, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.excellent}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); const leftColor = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim(); const rightColor = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim(); const lineY0 = 0.05; const lineY1 = 0.95; layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: leftPercentile, x1: leftPercentile, y0: lineY0, y1: lineY1, line: { color: leftColor, width: 2, dash: 'dash' } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: leftPercentile, y: 0.90, text: 'L', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: leftColor, font: {color: leftColor, size: 14, family: 'Avenir, sans-serif', weight: 400} }); layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: rightPercentile, x1: rightPercentile, y0: lineY0, y1: lineY1, line: { color: rightColor, width: 2, dash: 'dash' } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: rightPercentile, y: 0.90, text: 'R', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: rightColor, font: {color: rightColor, size: 14, family: 'Avenir, sans-serif', weight: 400} }); const combinedNkgText = `<span class='nkg-combined-text'>Left: <span class='left-label'>${leftNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>) &nbsp;&nbsp;|&nbsp;&nbsp; Right: <span class='right-label'>${rightNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>)</span>`; layout.annotations.push({ xref: 'paper', yref: 'paper', x: 0.5, y: -0.30, text: combinedNkgText, showarrow: false, xanchor: 'center', yanchor: 'top', align: 'center', font: { size: 15, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), family: 'Avenir, sans-serif', weight: 400 } }); return { data: traces, layout }; }
-        function updateGraphsAndTable() { const injuredSide = currentPatientDataForApp.injuredSide || injuredSideRadio.value; const bodyweight = currentPatientDataForApp.bodyweight || bodyweightInput.value; const bwVal = parseFloat(bodyweight); const bodyweightValid = !isNaN(bwVal) && bwVal > 0; if (normativePlaceholder) { normativePlaceholder.style.display = bodyweightValid ? 'none' : 'block'; } normativeChartDivs.forEach(divId => { const container = document.getElementById(divId)?.closest('.normative-graph-container'); if (container) { container.style.display = bodyweightValid ? 'block' : 'none'; } }); const positions = ['I', 'Y', 'T']; positions.forEach((pos, i) => { const asymmetryChartDivId = asymmetryChartDivs[i]; const asymmetryPositionBoxDivId = asymmetryPositionBoxDivs[i]; const asymmetryPositionBoxDiv = document.getElementById(asymmetryPositionBoxDivId); const normativeChartDivId = normativeChartDivs[i]; if (!asymmetryPositionBoxDiv || !document.getElementById(asymmetryChartDivId) || !document.getElementById(normativeChartDivId)) return; const positionData = processInputAndCalculate(pos); if (positionData) { try { const [fig, allGreen] = createAsymmetryChart(positionData, injuredSide, pos); if (fig?.data && fig?.layout) { Plotly.react(asymmetryChartDivId, fig.data, fig.layout, plotlyConfig); if (allGreen) asymmetryPositionBoxDiv.classList.add('green-box'); else asymmetryPositionBoxDiv.classList.remove('green-box'); } else { throw new Error("Generated asymmetry figure invalid."); } } catch (error) { console.error(`Error creating asymmetry chart for ${pos}:`, error); createEmptyPlot(asymmetryChartDivId, 'Error loading asymmetry data', 300, 20); asymmetryPositionBoxDiv.classList.remove('green-box'); } } else { createEmptyPlot(asymmetryChartDivId, 'Enter Data', 300, 20); asymmetryPositionBoxDiv.classList.remove('green-box'); } if (bodyweightValid && positionData) { try { const config = createNormativeComparisonChart(positionData, bodyweight, pos); if (config?.data && config?.layout) Plotly.react(normativeChartDivId, config.data, config.layout, plotlyConfig); else throw new Error("Generated normative figure invalid."); } catch (error) { console.error(`Error creating normative chart for ${pos}:`, error); createEmptyPlot(normativeChartDivId, 'Error Loading Data', 250, 35); } } else if (!bodyweightValid) { createEmptyPlot(normativeChartDivId, 'Enter Bodyweight', 250, 35); } else { createEmptyPlot(normativeChartDivId, 'Enter Data', 250, 35); } }); setTimeout(() => window.dispatchEvent(new Event('resize')), 100); }
-        function enterPreviewMode() { document.body.classList.add('pdf-preview-active'); if(previewExitButtonInline) previewExitButtonInline.style.display = 'inline-block'; if(explanationBox) explanationBox.style.display = 'block'; window.dispatchEvent(new Event('resize')); console.log("Entered PDF preview mode"); }
-        function exitPreviewMode() { document.body.classList.remove('pdf-preview-active'); if(previewExitButtonInline) previewExitButtonInline.style.display = 'none'; if(explanationBox) explanationBox.style.display = 'none'; window.dispatchEvent(new Event('resize')); console.log("Exited PDF preview mode"); }
-        function exportTableToCsv() { const fpNr = currentPatientDataForApp.patientId || ''; const age = currentPatientDataForApp.age || ''; const gender = currentPatientDataForApp.gender || ''; const sport = currentPatientDataForApp.sport || ''; const injury = currentPatientDataForApp.injury || ''; const bodyweight = currentPatientDataForApp.bodyweight || ''; const injuredSide = currentPatientDataForApp.injuredSide || ''; const date = new Date(); const year = date.getFullYear(); const month = (date.getMonth() + 1).toString().padStart(2, '0'); const day = date.getDate().toString().padStart(2, '0'); const dateString = `${year}-${month}-${day}`; const safeFpNr = fpNr.replace(/[^a-z0-9]/gi, '_') || 'Unknown'; const filename = `ASH_${safeFpNr}_${dateString}.csv`; const headers = [ "Patient ID", "Age", "Gender", "Sport", "Injury", "Bodyweight (kg)", "Injured Side", "Position", "Metric", "Left Value", "Right Value" ]; let csv = [headers.join(',')]; const positions = ['I', 'Y', 'T']; const metricsForCsv = ['Max Force (N)', 'RFD 100ms (N/s)']; positions.forEach(pos => { const positionName = `ASH Test Position ${pos}`; const positionData = processInputAndCalculate(pos); metricsForCsv.forEach(metricDisplay => { let leftVal = ''; let rightVal = ''; let metricIdentifier = metricDisplay; if (metricDisplay === 'Max Force (N)') { if (positionData) { leftVal = positionData.left.max_force; rightVal = positionData.right.max_force; } } else if (metricDisplay === 'RFD 100ms (N/s)') { if (positionData) { leftVal = positionData.left.rfd; rightVal = positionData.right.rfd; } metricIdentifier = 'RFD 100ms (N/s)'; } const rowData = [ `"${fpNr}"`, `"${age}"`, `"${gender}"`, `"${sport}"`, `"${injury}"`, `"${bodyweight}"`, `"${injuredSide}"`, `"${positionName}"`, `"${metricIdentifier}"`, `"${leftVal}"`, `"${rightVal}"` ]; csv.push(rowData.join(',')); }); }); const csvString = "\uFEFF" + csv.join('\n'); const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); if (link.download !== undefined) { const url = URL.createObjectURL(blob); link.setAttribute('href', url); link.setAttribute('download', filename); link.style.visibility = 'hidden'; document.body.appendChild(link); link.click(); document.body.removeChild(link); console.log(`CSV export initiated: ${filename}`); } else { alert("CSV export is not directly supported in this browser. Please try a modern browser."); } }
-        
-        function resetPatientDataFields() {
-            currentPatientDataForApp = {};
-            // Tømmer de (nå skjulte) inputfeltene som brukes for LocalStorage og datainnsamling
-            if (fpNrInput) fpNrInput.value = '';
-            if (ageInput) ageInput.value = '';
-            if (genderSelect) genderSelect.value = '';
-            if (sportInput) sportInput.value = '';
-            if (injuryInput) injuryInput.value = '';
-            if (injuredSideRadio) injuredSideRadio.value = 'Left';
-            if (bodyweightInput) bodyweightInput.value = '';
-        }
-
-        function resetScreeningInputFields() {
-            allNumberInputs.forEach(input => { input.value = ''; });
-        }
-        
-        function clearAllFields() { 
-            console.log("Clearing all fields..."); 
-            resetPatientDataFields();
-            resetScreeningInputFields();
-            if(selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'none'; 
-            if(selectedPatientTestsListUL) selectedPatientTestsListUL.innerHTML = ''; 
-            if(patientInfoDisplayTable) patientInfoDisplayTable.style.display = 'none';
-            updateGraphsAndTable(); 
-            saveInputsToLocalStorage(); 
-            console.log("Fields cleared."); 
-            showInitialScreenState(); 
-        }
-        
-        const localStorageKey = 'screeningAppData_v6_subcollection_standalone'; 
-        function saveInputsToLocalStorage() { 
-            const dataToSave = { 
-                injuredSide: currentPatientDataForApp.injuredSide || '', 
-                bodyweight: currentPatientDataForApp.bodyweight || '', 
-                fpNr: currentPatientDataForApp.patientId || '', 
-                age: currentPatientDataForApp.age || '', 
-                gender: currentPatientDataForApp.gender || '', 
-                sport: currentPatientDataForApp.sport || '', 
-                injury: currentPatientDataForApp.injury || '', 
-                'non-injured-max-force-i': inputFieldMap['I'].nonInjured[0].value, 'non-injured-rfd-i': inputFieldMap['I'].nonInjured[1].value, 'injured-max-force-i': inputFieldMap['I'].injured[0].value, 'injured-rfd-i': inputFieldMap['I'].injured[1].value, 'non-injured-max-force-y': inputFieldMap['Y'].nonInjured[0].value, 'non-injured-rfd-y': inputFieldMap['Y'].nonInjured[1].value, 'injured-max-force-y': inputFieldMap['Y'].injured[0].value, 'injured-rfd-y': inputFieldMap['Y'].injured[1].value, 'non-injured-max-force-t': inputFieldMap['T'].nonInjured[0].value, 'non-injured-rfd-t': inputFieldMap['T'].nonInjured[1].value, 'injured-max-force-t': inputFieldMap['T'].injured[0].value, 'injured-rfd-t': inputFieldMap['T'].injured[1].value, 
-            }; 
-            try { localStorage.setItem(localStorageKey, JSON.stringify(dataToSave)); } catch (error) { console.error('Error saving inputs:', error); } 
-        }
-        function loadInputsFromLocalStorage() { try { const savedDataString = localStorage.getItem(localStorageKey); if (savedDataString) { const savedData = JSON.parse(savedDataString); console.log('Loading inputs from localStorage:', localStorageKey); 
-            currentPatientDataForApp.injuredSide = savedData.injuredSide || 'Left';
-            currentPatientDataForApp.bodyweight = savedData.bodyweight || '';
-            currentPatientDataForApp.patientId = savedData.fpNr || '';
-            currentPatientDataForApp.age = savedData.age || '';
-            currentPatientDataForApp.gender = savedData.gender || '';
-            currentPatientDataForApp.sport = savedData.sport || '';
-            currentPatientDataForApp.injury = savedData.injury || '';
-            
-            // Oppdater skjulte felter for konsistens hvis de fortsatt brukes av annen logikk
-            if(injuredSideRadio) injuredSideRadio.value = currentPatientDataForApp.injuredSide;
-            if(bodyweightInput) bodyweightInput.value = currentPatientDataForApp.bodyweight;
-            if(fpNrInput) fpNrInput.value = currentPatientDataForApp.patientId; 
-            if(ageInput) ageInput.value = currentPatientDataForApp.age;
-            if(genderSelect) genderSelect.value = currentPatientDataForApp.gender;
-            if(sportInput) sportInput.value = currentPatientDataForApp.sport;
-            if(injuryInput) injuryInput.value = currentPatientDataForApp.injury;
-
-            inputFieldMap['I'].nonInjured[0].value = savedData['non-injured-max-force-i'] || ''; inputFieldMap['I'].nonInjured[1].value = savedData['non-injured-rfd-i'] || ''; inputFieldMap['I'].injured[0].value = savedData['injured-max-force-i'] || ''; inputFieldMap['I'].injured[1].value = savedData['injured-rfd-i'] || ''; inputFieldMap['Y'].nonInjured[0].value = savedData['non-injured-max-force-y'] || ''; inputFieldMap['Y'].nonInjured[1].value = savedData['non-injured-rfd-y'] || ''; inputFieldMap['Y'].injured[0].value = savedData['injured-max-force-y'] || ''; inputFieldMap['Y'].injured[1].value = savedData['injured-rfd-y'] || ''; inputFieldMap['T'].nonInjured[0].value = savedData['non-injured-max-force-t'] || ''; inputFieldMap['T'].nonInjured[1].value = savedData['non-injured-rfd-t'] || ''; inputFieldMap['T'].injured[0].value = savedData['injured-max-force-t'] || ''; inputFieldMap['T'].injured[1].value = savedData['injured-rfd-t'] || ''; 
-            
-            if (currentPatientDataForApp.patientId) { 
-                displayPatientInfoInTable(currentPatientDataForApp);
-            }
-
-            } } catch (error) { console.error('Error loading inputs:', error); } }
-
-        // --- UI Flow Control ---
-        function showInitialScreenState() {
-            if(patientDetailsTitle) patientDetailsTitle.style.display = 'block';
-            if(patientChoiceSection) patientChoiceSection.style.display = 'flex';
-            if(newPatientChoiceButton) newPatientChoiceButton.classList.remove('active-choice');
-            if(existingPatientChoiceButton) existingPatientChoiceButton.classList.remove('active-choice');
-
-            if(existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
-            // if(patientDataContainer) patientDataContainer.style.display = 'none'; // Denne er nå alltid skjult
-            if(selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'none';
-            if(patientInfoDisplayTable) patientInfoDisplayTable.style.display = 'none';
-
-
-            if(mainScreeningContent) mainScreeningContent.style.display = 'block'; 
-            if(inputSectionContainer) inputSectionContainer.style.display = 'flex';
-            if(resultsTitle) resultsTitle.style.display = 'block';
-            if(positionRows) positionRows.forEach(row => row.style.display = 'flex');
-            if(saveDataButtonContainer) saveDataButtonContainer.style.display = 'block';
-            updateGraphsAndTable(); 
-        }
-        
-        function openPatientModal(type, patientIdToEdit = null) {
-            patientModalOverlay.style.display = 'flex';
-            let modalHTML = '';
-            let tempPatientData = {}; // Midlertidig objekt for modalen
-
-            if (type === 'new') {
-                tempPatientData = { patientId: '', age: '', gender: '', sport: '', injury: '', injuredSide: 'Left', bodyweight: '' }; 
-                modalHTML = `
-                    <h3>Register New Patient</h3>
-                    <div class="modal-form-grid">
-                        <div class="modal-form-item"><label for="modal-fp-nr">Patient ID:</label><input type="text" id="modal-fp-nr" value="${tempPatientData.patientId}"></div>
-                        <div class="modal-form-item"><label for="modal-injured-side">Injured Side:</label><select id="modal-injured-side"><option value="Left">Left</option><option value="Right">Right</option></select></div>
-                        <div class="modal-form-item"><label for="modal-bodyweight">Bodyweight (kg):</label><input type="number" id="modal-bodyweight" value="${tempPatientData.bodyweight}"></div>
-                        <div class="modal-form-item"><label for="modal-age">Age:</label><input type="number" id="modal-age" value="${tempPatientData.age}"></div>
-                        <div class="modal-form-item"><label for="modal-gender">Gender:</label><select id="modal-gender"><option value="">Select...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select></div>
-                        <div class="modal-form-item"><label for="modal-sport">Sport:</label><input type="text" id="modal-sport" value="${tempPatientData.sport}"></div>
-                        <div class="modal-form-item full-width"><label for="modal-injury">Injury (Optional):</label><input type="text" id="modal-injury" value="${tempPatientData.injury}"></div>
-                    </div>
-                    <div class="modal-actions">
-                        <button type="button" class="modal-cancel-button" id="modal-cancel-new">Cancel</button>
-                        <button type="button" class="modal-confirm-button" id="modal-confirm-new">Confirm</button>
-                    </div>
-                `;
-            } else if (type === 'existing-search') {
-                 modalHTML = `
-                    <h3>Select Existing Patient</h3>
-                    <div class="modal-form-item">
-                        <label for="modal-search-fp-nr">Search Patient ID:</label>
-                        <input type="text" id="modal-search-fp-nr" list="modal-existing-patient-ids">
-                        <datalist id="modal-existing-patient-ids"></datalist>
-                    </div>
-                    <div class="modal-patient-id-buttons" id="modal-patient-id-button-container">
-                        </div>
-                     <div class="modal-actions">
-                        <button type="button" class="modal-cancel-button" id="modal-cancel-search">Cancel</button>
-                    </div>
-                `;
-            } else if (type === 'existing-edit' && patientIdToEdit) {
-                const screenings = mockPatientScreenings[patientIdToEdit];
-                tempPatientData = screenings && screenings.length > 0 
-                    ? { ...screenings.sort((a,b) => b.testTimestamp - a.testTimestamp)[0] } 
-                    : { patientId: patientIdToEdit, age: '', gender: '', sport: '', injury: '', injuredSide: 'Left', bodyweight: '' };
-                
-                modalHTML = `
-                    <h3>Edit Patient: ${patientIdToEdit}</h3>
-                    <div class="modal-form-grid">
-                        <div class="modal-form-item"><label>Patient ID:</label><input type="text" value="${tempPatientData.patientId}" disabled></div>
-                        <div class="modal-form-item"><label for="modal-injured-side">Injured Side:</label><select id="modal-injured-side"></select></div>
-                        <div class="modal-form-item"><label for="modal-bodyweight">Bodyweight (kg):</label><input type="number" id="modal-bodyweight" value="${tempPatientData.bodyweight || ''}"></div>
-                        <div class="modal-form-item"><label for="modal-age">Age:</label><input type="number" id="modal-age" value="${tempPatientData.age || ''}"></div>
-                        <div class="modal-form-item"><label for="modal-gender">Gender:</label><select id="modal-gender"></select></div>
-                        <div class="modal-form-item"><label for="modal-sport">Sport:</label><input type="text" id="modal-sport" value="${tempPatientData.sport || ''}"></div>
-                        <div class="modal-form-item full-width"><label for="modal-injury">Injury:</label><input type="text" id="modal-injury" value="${tempPatientData.injury || ''}"></div>
-                    </div>
-                    <div class="modal-actions">
-                        <button type="button" class="modal-cancel-button" id="modal-cancel-edit">Cancel</button>
-                        <button type="button" class="modal-confirm-button" id="modal-confirm-edit">Done</button>
-                    </div>
-                `;
-            }
-            patientModalContent.innerHTML = modalHTML;
-
-            if (type === 'existing-edit' || type === 'new') { 
-                const genderModalSelect = patientModalContent.querySelector('#modal-gender');
-                const injuredSideModalSelect = patientModalContent.querySelector('#modal-injured-side');
-                if (genderModalSelect) {
-                    ['', 'Male', 'Female', 'Other'].forEach(val => genderModalSelect.add(new Option(val || 'Select...', val)));
-                    genderModalSelect.value = tempPatientData.gender || '';
-                }
-                if (injuredSideModalSelect) {
-                    ['Left', 'Right'].forEach(val => injuredSideModalSelect.add(new Option(val, val)));
-                    injuredSideModalSelect.value = tempPatientData.injuredSide || 'Left';
-                }
-            }
-
-
-            if (type === 'new') {
-                patientModalContent.querySelector('#modal-confirm-new').addEventListener('click', handleNewPatientConfirm);
-                patientModalContent.querySelector('#modal-cancel-new').addEventListener('click', closePatientModal);
-            } else if (type === 'existing-search') {
-                populateModalPatientIdButtons();
-                const modalSearchInput = patientModalContent.querySelector('#modal-search-fp-nr');
-                if (modalSearchInput) {
-                    modalSearchInput.addEventListener('input', (e) => {
-                        const searchVal = e.target.value.trim();
-                        const options = Array.from(patientModalContent.querySelector('#modal-existing-patient-ids').options);
-                        const matchedOption = options.find(opt => opt.value === searchVal);
-                        if (matchedOption) {
-                            openPatientModal('existing-edit', searchVal);
-                        }
-                    });
-                }
-                 patientModalContent.querySelector('#modal-cancel-search').addEventListener('click', closePatientModal);
-            } else if (type === 'existing-edit') {
-                patientModalContent.querySelector('#modal-confirm-edit').addEventListener('click', () => handleExistingPatientDone(patientIdToEdit));
-                patientModalContent.querySelector('#modal-cancel-edit').addEventListener('click', closePatientModal);
+        function displayLoginError(message) {
+            loginErrorMessageDiv.textContent = message;
+            if (loginBox) {
+                loginBox.classList.add('animate-shake');
+                setTimeout(() => loginBox.classList.remove('animate-shake'), 500);
             }
         }
-
-        function closePatientModal() {
-            patientModalOverlay.style.display = 'none';
-            patientModalContent.innerHTML = ''; 
+        function displayRegistrationError(message) {
+             registrationErrorMessageDiv.textContent = message;
         }
-        
-        function populateModalPatientIdButtons() {
-            const container = document.getElementById('modal-patient-id-button-container');
-            const datalist = document.getElementById('modal-existing-patient-ids');
-            if (!container || !datalist) return;
-
-            container.innerHTML = ''; 
-            datalist.innerHTML = ''; 
-
-            const patientIds = new Set(Object.keys(mockPatientScreenings));
-            if (patientIds.size === 0) {
-                container.textContent = 'No existing patients found.';
-                return;
-            }
-            patientIds.forEach(id => {
-                const option = document.createElement('option');
-                option.value = id;
-                datalist.appendChild(option);
-
-                const button = document.createElement('button');
-                button.textContent = id;
-                button.classList.add('modal-patient-id-button');
-                button.addEventListener('click', () => {
-                    openPatientModal('existing-edit', id);
-                });
-                container.appendChild(button);
-            });
+        function loadEmailFromStorage() {
+            const savedEmail = localStorage.getItem(localStorageEmailKey);
+            if (savedEmail) emailInput.value = savedEmail;
         }
-
-
-        function handleNewPatientConfirm() {
-            const newPatientId = patientModalContent.querySelector('#modal-fp-nr').value.trim();
-            if (!newPatientId) {
-                showStatusMessage("Patient ID is required.", "error");
-                return;
-            }
-            currentPatientDataForApp = { 
-                patientId: newPatientId,
-                age: patientModalContent.querySelector('#modal-age').value,
-                gender: patientModalContent.querySelector('#modal-gender').value,
-                sport: patientModalContent.querySelector('#modal-sport').value,
-                injury: patientModalContent.querySelector('#modal-injury').value,
-                injuredSide: patientModalContent.querySelector('#modal-injured-side').value,
-                bodyweight: patientModalContent.querySelector('#modal-bodyweight').value
+        function saveEmailToStorage() {
+            const currentEmail = emailInput.value.trim();
+            if (currentEmail) localStorage.setItem(localStorageEmailKey, currentEmail);
+            else localStorage.removeItem(localStorageEmailKey);
+        }
+        function checkBackgroundImage(imageUrl) {
+            const img = new Image();
+            img.src = imageUrl;
+            img.onerror = () => {
+                bodyElement.style.backgroundImage = fallbackBgImage;
+                bodyElement.style.backgroundColor = '#333';
             };
-            
-            // Oppdater de (nå skjulte) inputfeltene for LocalStorage og annen logikk
-            fpNrInput.value = currentPatientDataForApp.patientId;
-            ageInput.value = currentPatientDataForApp.age;
-            genderSelect.value = currentPatientDataForApp.gender;
-            sportInput.value = currentPatientDataForApp.sport;
-            injuryInput.value = currentPatientDataForApp.injury;
-            injuredSideRadio.value = currentPatientDataForApp.injuredSide;
-            bodyweightInput.value = currentPatientDataForApp.bodyweight;
-            
-            displayPatientInfoInTable(currentPatientDataForApp);
-            if(existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
-            newPatientChoiceButton.classList.add('active-choice');
-            existingPatientChoiceButton.classList.remove('active-choice');
-
-            closePatientModal();
-            showStatusMessage("New patient data entered. Ready for screening.", "success");
-            resetScreeningInputFields(); 
-            updateGraphsAndTable(); 
-            if(selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'none'; 
+            img.onload = () => { bodyElement.style.backgroundColor = ''; };
         }
 
-        function handleExistingPatientDone(originalPatientId) {
-            currentPatientDataForApp = {
-                patientId: originalPatientId, 
-                age: patientModalContent.querySelector('#modal-age').value,
-                gender: patientModalContent.querySelector('#modal-gender').value,
-                sport: patientModalContent.querySelector('#modal-sport').value,
-                injury: patientModalContent.querySelector('#modal-injury').value,
-                injuredSide: patientModalContent.querySelector('#modal-injured-side').value,
-                bodyweight: patientModalContent.querySelector('#modal-bodyweight').value,
-            };
-            
-            fpNrInput.value = currentPatientDataForApp.patientId;
-            ageInput.value = currentPatientDataForApp.age;
-            genderSelect.value = currentPatientDataForApp.gender;
-            sportInput.value = currentPatientDataForApp.sport;
-            injuryInput.value = currentPatientDataForApp.injury;
-            injuredSideRadio.value = currentPatientDataForApp.injuredSide;
-            bodyweightInput.value = currentPatientDataForApp.bodyweight;
+        function openModal() {
+            modalBackdrop.style.display = 'block';
+            registrationModal.style.display = 'block';
+            bodyElement.style.overflow = 'hidden';
+        }
+        function closeModal() {
+            modalBackdrop.style.display = 'none';
+            registrationModal.style.display = 'none';
+            bodyElement.style.overflow = 'auto';
+            registrationErrorMessageDiv.textContent = '';
+            registrationForm.reset();
+        }
 
-            if (mockPatientScreenings[originalPatientId] && mockPatientScreenings[originalPatientId].length > 0) {
-                 mockPatientScreenings[originalPatientId].forEach(test => { 
-                    test.age = currentPatientDataForApp.age;
-                    test.gender = currentPatientDataForApp.gender;
-                    test.sport = currentPatientDataForApp.sport;
-                    test.injury = currentPatientDataForApp.injury;
-                    test.bodyweight = currentPatientDataForApp.bodyweight;
-                    test.injuredSide = currentPatientDataForApp.injuredSide;
-                });
+        openSignupModalButton.addEventListener('click', openModal);
+        closeModalButton.addEventListener('click', closeModal);
+        modalBackdrop.addEventListener('click', closeModal);
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log('INDEX PAGE: User is signed in (Firebase onAuthStateChanged):', user.uid);
+            } else {
+                console.log('INDEX PAGE: User is signed out (Firebase onAuthStateChanged).');
             }
+        });
 
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const enteredEmail = emailInput.value.trim();
+            const enteredPassword = passwordInput.value;
+            loginErrorMessageDiv.textContent = '';
 
-            displayPatientInfoInTable(currentPatientDataForApp);
-            if(existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
-            existingPatientChoiceButton.classList.add('active-choice');
-            newPatientChoiceButton.classList.remove('active-choice');
-
-            closePatientModal();
-            showStatusMessage(`Details for patient ${originalPatientId} updated. Ready for new screening or load existing.`, "success");
-            resetScreeningInputFields();
-            updateGraphsAndTable();
-            displayTestsForPatient(originalPatientId); 
-        }
-        
-        function displayPatientInfoInTable(data) {
-            if (!patientInfoDisplayTable) return;
-            if (displayPatientId) displayPatientId.textContent = data.patientId || 'N/A';
-            if (displayAge) displayAge.textContent = data.age || 'N/A';
-            if (displayGender) displayGender.textContent = data.gender || 'N/A';
-            if (displaySport) displaySport.textContent = data.sport || 'N/A';
-            if (displayInjury) displayInjury.textContent = data.injury || 'N/A';
-            if (displayInjuredSide) displayInjuredSide.textContent = data.injuredSide || 'N/A';
-            if (displayBodyweight) displayBodyweight.textContent = data.bodyweight ? `${data.bodyweight} kg` : 'N/A';
-            patientInfoDisplayTable.style.display = 'block';
-        }
-
-
-        // --- App Start (uten Firebase Auth) ---
-        function initializeAppUI() {
-            console.log("Initializing App UI (Standalone Mode)");
-            if (appLayout) appLayout.style.display = 'flex';
-            showInitialScreenState();
-            populatePatientIdDatalist(); 
-        }
-
-
-        // --- Data Functions (Mocked) ---
-        function populatePatientIdDatalist() {
-            console.log("Populating patient ID datalist from mock data...");
-            const patientIds = new Set(Object.keys(mockPatientScreenings));
-            
-            existingPatientIdsDatalist.innerHTML = ''; 
-            const modalDatalist = document.getElementById('modal-existing-patient-ids');
-            if(modalDatalist) modalDatalist.innerHTML = ''; 
-
-            if (patientIds.size === 0) {
-                console.log("No mock patient IDs found.");
-            }
-            patientIds.forEach(id => {
-                const option = document.createElement('option');
-                option.value = id;
-                existingPatientIdsDatalist.appendChild(option.cloneNode(true)); 
-                if(modalDatalist) modalDatalist.appendChild(option);
-            });
-            console.log("Patient ID datalist populated with (mock):", Array.from(patientIds));
-        }
-
-        function displayTestsForPatient(patientId) {
-            console.log(`displayTestsForPatient CALLED with patientId: '${patientId}' (mock)`);
-            if (!selectedPatientTestsListUL || !selectedPatientTestsContainer || !currentPatientForTestsSpan) return;
-            
-            currentPatientForTestsSpan.textContent = patientId;
-            selectedPatientTestsListUL.innerHTML = '<li>Loading tests...</li>';
-            selectedPatientTestsContainer.style.display = 'block';
-
-            const patientTests = mockPatientScreenings[patientId] || [];
-            console.log(`Mock query for patient ${patientId} found ${patientTests.length} tests.`); 
-
-            selectedPatientTestsListUL.innerHTML = '';  
-            if (patientTests.length === 0) {
-                selectedPatientTestsListUL.innerHTML = '<li>No tests found for this patient.</li>';
+            if (!enteredEmail || !enteredPassword) {
+                displayLoginError('Please enter both email and password.');
                 return;
             }
-            patientTests.sort((a,b) => b.testTimestamp - a.testTimestamp);
+            try {
+                console.log("Attempting Firebase login for:", enteredEmail);
+                const userCredential = await signInWithEmailAndPassword(auth, enteredEmail, enteredPassword);
+                const user = userCredential.user;
+                console.log("Firebase login successful for user:", user.uid);
 
-            patientTests.forEach((screening) => {
-                const screeningId = screening.screeningId; 
-                const li = document.createElement('li');
-                li.addEventListener('click', () => { 
-                    loadScreeningData(patientId, screeningId); 
-                });
+                saveEmailToStorage();
 
-                const dateSpan = document.createElement('span');
-                const screeningTimestamp = screening.testTimestamp; 
-                if (screeningTimestamp && screeningTimestamp instanceof Date) {
-                    dateSpan.textContent = screeningTimestamp.toLocaleString('nb-NO', { dateStyle: 'medium', timeStyle: 'short' });
-                } else {
-                    dateSpan.textContent = "Invalid date";
+                console.log("Attempting to redirect to:", nextPageUrl);
+                window.location.href = nextPageUrl;
+                console.log("Redirection to nextPageUrl initiated.");
+
+            } catch (error) {
+                console.error("Firebase login error object:", error);
+                let friendlyMessage = 'Login failed. Please try again.';
+                switch (error.code) {
+                    case 'auth/invalid-email': friendlyMessage = 'Invalid email format.'; break;
+                    case 'auth/user-disabled': friendlyMessage = 'This account has been disabled.'; break;
+                    case 'auth/user-not-found': case 'auth/wrong-password': case 'auth/invalid-credential':
+                        friendlyMessage = 'Incorrect email or password.'; break;
+                    default: console.log("Unhandled Firebase login error code:", error.code);
                 }
-                dateSpan.title = "Load this test"; 
-                
-                const deleteButton = document.createElement('button');
-                deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>'; 
-                deleteButton.title = "Delete this test";
-                deleteButton.classList.add('delete-test-btn');
-                deleteButton.addEventListener('click', (e) => {
-                    e.stopPropagation(); 
-                    const dateForConfirm = screeningTimestamp instanceof Date ? screeningTimestamp : new Date();
-                    confirmAndDeleteScreening(patientId, screeningId, dateForConfirm);
-                });
+                displayLoginError(friendlyMessage);
+            }
+        });
 
-                li.appendChild(dateSpan);
-                li.appendChild(deleteButton);
-                selectedPatientTestsListUL.appendChild(li);
-            });
-        }
-        
-        if (fpNrInputSearch) { 
-            fpNrInputSearch.addEventListener('focus', populatePatientIdDatalist); 
-            fpNrInputSearch.addEventListener('input', (e) => {
-                const enteredPatientId = e.target.value.trim();
-                if (enteredPatientId) {
-                    const options = Array.from(existingPatientIdsDatalist.options).map(opt => opt.value);
-                    if (options.includes(enteredPatientId)) {
-                        openPatientModal('existing-edit', enteredPatientId); 
-                    }
-                }
-            });
-        }
+        registrationForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            registrationErrorMessageDiv.textContent = '';
 
-        function loadScreeningData(patientId, screeningId) { 
-            console.log(`Loading screening data for patient ${patientId}, test ${screeningId} (mock)`);
-            const patientTests = mockPatientScreenings[patientId];
-            if (!patientTests) {
-                showStatusMessage("Patient not found in mock data.", "error");
+            const firstName = document.getElementById('reg-firstname').value.trim();
+            const lastName = document.getElementById('reg-lastname').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const confirmPassword = document.getElementById('reg-confirm-password').value;
+            const organization = document.getElementById('reg-organization').value.trim();
+            const profession = document.getElementById('reg-profession').value.trim();
+            const country = document.getElementById('reg-country').value.trim();
+
+            if (!firstName || !lastName || !email || !password || !confirmPassword) {
+                displayRegistrationError('Please fill in all required fields.');
                 return;
             }
-            const data = patientTests.find(test => test.screeningId === screeningId);
+            if (password !== confirmPassword) {
+                displayRegistrationError('Passwords do not match.');
+                return;
+            }
+            if (password.length < 6) {
+                displayRegistrationError('Password must be at least 6 characters long.');
+                return;
+            }
 
-            if (data) {
-                currentPatientDataForApp = { ...data }; 
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                console.log("User registered with Firebase Auth:", user.uid);
 
-                fpNrInput.value = data.patientId || '';  
-                ageInput.value = data.age || '';  
-                genderSelect.value = data.gender || '';  
-                sportInput.value = data.sport || '';  
-                injuryInput.value = data.injury || '';  
-                bodyweightInput.value = data.bodyweight || '';  
-                injuredSideRadio.value = data.injuredSide || 'Left';
-                
-                ['I', 'Y', 'T'].forEach(pos => {  
-                    if (data.ashTest && data.ashTest[pos]) {  
-                        if(inputFieldMap[pos].nonInjured[0]) inputFieldMap[pos].nonInjured[0].value = data.ashTest[pos].nonInjuredMaxForce || '';  
-                        if(inputFieldMap[pos].nonInjured[1]) inputFieldMap[pos].nonInjured[1].value = data.ashTest[pos].nonInjuredRfd || '';  
-                        if(inputFieldMap[pos].injured[0]) inputFieldMap[pos].injured[0].value = data.ashTest[pos].injuredMaxForce || '';  
-                        if(inputFieldMap[pos].injured[1]) inputFieldMap[pos].injured[1].value = data.ashTest[pos].injuredRfd || '';  
-                    } else {
-                        if(inputFieldMap[pos].nonInjured[0]) inputFieldMap[pos].nonInjured[0].value = '';
-                        if(inputFieldMap[pos].nonInjured[1]) inputFieldMap[pos].nonInjured[1].value = '';
-                        if(inputFieldMap[pos].injured[0]) inputFieldMap[pos].injured[0].value = '';
-                        if(inputFieldMap[pos].injured[1]) inputFieldMap[pos].injured[1].value = '';
-                    }
+                await setDoc(doc(db, "users", user.uid), {
+                    uid: user.uid, email: user.email, firstName: firstName, lastName: lastName,
+                    organization: organization || null, profession: profession || null, country: country || null,
+                    createdAt: serverTimestamp()
                 });
-                updateGraphsAndTable();  
-                saveInputsToLocalStorage();  
-                showStatusMessage('Test data loaded successfully! (Mock)', 'success');
-                displayPatientInfoInTable(data); 
-            } else {  
-                showStatusMessage("Could not find the selected test data. (Mock)", "error");
-            }
-        }
-        
-        function confirmAndDeleteScreening(patientId, screeningId, dateObject) {
-            const formattedDate = dateObject instanceof Date && !isNaN(dateObject) 
-                ? dateObject.toLocaleString('nb-NO', { dateStyle: 'medium', timeStyle: 'short' }) 
-                : "unknown date";
+                console.log("User data saved to Firestore.");
 
-            if (confirm(`Are you sure you want to delete the test for patient "${patientId}" from ${formattedDate}? This action cannot be undone. (Mock)`)) {
-                if (!screeningId) return;
-                showStatusMessage("Deleting test... (Mock)", "info", 1500);
-                
-                if (mockPatientScreenings[patientId]) {
-                    mockPatientScreenings[patientId] = mockPatientScreenings[patientId].filter(test => test.screeningId !== screeningId);
-                    if (mockPatientScreenings[patientId].length === 0) {
-                        delete mockPatientScreenings[patientId]; 
-                        if (patientInfoDisplayTable) patientInfoDisplayTable.style.display = 'none'; 
-                        if (fpNrInput.value === patientId) resetPatientDataFields(); 
-                    }
+                alert('Registration successful! Please log in.');
+                closeModal();
+
+            } catch (error) {
+                let friendlyMessage = 'Registration failed. Please try again.';
+                if (error.code === 'auth/email-already-in-use') {
+                    friendlyMessage = 'This email address is already registered.';
+                } else if (error.code === 'auth/weak-password') {
+                    friendlyMessage = 'Password is too weak. Please choose a stronger password.';
+                } else if (error.code === 'auth/invalid-email') {
+                    friendlyMessage = 'The email address is not valid.';
                 }
-                
-                console.log("Mock screening deleted:", screeningId);
-                showStatusMessage('Test deleted successfully! (Mock)', 'success');
-                
-                const activePatientIdInForm = currentPatientDataForApp.patientId || fpNrInput.value.trim(); 
-                if (activePatientIdInForm === patientId) { 
-                    displayTestsForPatient(patientId); 
-                } else { 
-                    if (selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'none';
-                }
-                populatePatientIdDatalist(); 
+                console.error("Registration error:", error);
+                displayRegistrationError(friendlyMessage);
             }
-        }
+        });
 
-        function saveDataToFirestore() { 
-            const currentPatientIdFromForm = currentPatientDataForApp.patientId || fpNrInput.value.trim(); 
-            if (!currentPatientIdFromForm) { 
-                showStatusMessage("Patient ID is required to save data.", "error"); 
-                // Vurder å åpne "New Patient" modal hvis ingen ID er satt
-                // openPatientModal('new'); 
-                return; 
-            }
-            
-            const newScreeningId = `test${(mockPatientScreenings[currentPatientIdFromForm]?.length || 0) + 1}_${currentPatientIdFromForm}`;
-            const screeningData = {
-                screeningId: newScreeningId,
-                patientId: currentPatientIdFromForm, 
-                testTimestamp: new Date(), 
-                age: currentPatientDataForApp.age, 
-                gender: currentPatientDataForApp.gender,
-                sport: currentPatientDataForApp.sport,
-                injury: currentPatientDataForApp.injury,
-                bodyweight: currentPatientDataForApp.bodyweight,
-                injuredSide: currentPatientDataForApp.injuredSide,
-                ashTest: {}
-            };
+        requestAccessLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            requestAccessSection.style.display = requestAccessSection.style.display === 'none' ? 'block' : 'none';
+        });
+        emailInput.addEventListener('blur', saveEmailToStorage);
 
-            let dataEnteredForAsh = false;
-            ['I', 'Y', 'T'].forEach(pos => { 
-                const positionData = processInputAndCalculate(pos); 
-                if (positionData) { 
-                    let nonInjuredData, injuredData; 
-                    if (screeningData.injuredSide === 'Left') { 
-                        nonInjuredData = positionData.right; 
-                        injuredData = positionData.left; 
-                    } else { 
-                        nonInjuredData = positionData.left; 
-                        injuredData = positionData.right; 
-                    } 
-                    screeningData.ashTest[pos] = { 
-                        nonInjuredMaxForce: nonInjuredData.max_force, 
-                        nonInjuredRfd: nonInjuredData.rfd, 
-                        injuredMaxForce: injuredData.max_force, 
-                        injuredRfd: injuredData.rfd 
-                    }; 
-                    dataEnteredForAsh = true; 
-                } else { 
-                    screeningData.ashTest[pos] = { nonInjuredMaxForce: null, nonInjuredRfd: null, injuredMaxForce: null, injuredRfd: null }; 
-                } 
-            });
-            
-            if (!dataEnteredForAsh) { 
-                showStatusMessage("No ASH test data entered to save.", "warning"); return; 
-            }
-            
-            if (!mockPatientScreenings[currentPatientIdFromForm]) {
-                mockPatientScreenings[currentPatientIdFromForm] = [];
-            }
-            mockPatientScreenings[currentPatientIdFromForm].push(screeningData);
-            
-            console.log("Mock screening data saved:", screeningData);
-            showStatusMessage("Data saved successfully! (Mock)", "success");
-            
-            populatePatientIdDatalist(); 
-            displayTestsForPatient(currentPatientIdFromForm); 
-            displayPatientInfoInTable(screeningData); 
-        }
-        
-        // --- Initialisering og Event Listeners ---
         document.addEventListener('DOMContentLoaded', () => {
-            asymmetryChartDivs.forEach(divId => createEmptyPlot(divId, 'Enter Data', 300, 20));
-            normativeChartDivs.forEach(divId => createEmptyPlot(divId, 'Enter Bodyweight', 250, 35));
-            loadInputsFromLocalStorage();
-            initializeAppUI(); 
+            loadEmailFromStorage();
+            checkBackgroundImage(originalBgImage);
         });
-
-        if (newPatientChoiceButton) {
-            newPatientChoiceButton.addEventListener('click', () => {
-                newPatientChoiceButton.classList.add('active-choice');
-                existingPatientChoiceButton.classList.remove('active-choice');
-                openPatientModal('new');
-            });
-        }
-        if (existingPatientChoiceButton) {
-            existingPatientChoiceButton.addEventListener('click', () => {
-                existingPatientChoiceButton.classList.add('active-choice');
-                newPatientChoiceButton.classList.remove('active-choice');
-                openPatientModal('existing-search');
-            });
-        }
-
-
-        if (injuredSideRadio) injuredSideRadio.addEventListener('change', () => { updateGraphsAndTable(); saveInputsToLocalStorage(); });
-        if (bodyweightInput) bodyweightInput.addEventListener('input', () => { updateGraphsAndTable(); saveInputsToLocalStorage(); });
-        
-        if (fpNrInput) fpNrInput.addEventListener('change', saveInputsToLocalStorage);
-        if (ageInput) ageInput.addEventListener('change', saveInputsToLocalStorage);
-        if (genderSelect) genderSelect.addEventListener('change', saveInputsToLocalStorage);
-        if (sportInput) sportInput.addEventListener('change', saveInputsToLocalStorage);
-        if (injuryInput) injuryInput.addEventListener('change', saveInputsToLocalStorage);
-        
-        allNumberInputs.forEach(input => { 
-            input.addEventListener('input', updateGraphsAndTable); 
-            input.addEventListener('change', saveInputsToLocalStorage); 
-        });
-        if (pdfPreviewButton) pdfPreviewButton.addEventListener('click', enterPreviewMode);
-        if (exportExcelButton) exportExcelButton.addEventListener('click', exportTableToCsv);
-        if (previewExitButtonInline) previewExitButtonInline.addEventListener('click', exitPreviewMode);
-        if (clearAllButton) clearAllButton.addEventListener('click', clearAllFields);
-        if(saveDataButton) saveDataButton.addEventListener('click', saveDataToFirestore); 
-        
-        if(logoutButton) {
-            logoutButton.addEventListener('click', () => {
-                console.log("Logout button clicked (UI Only).");
-                localStorage.removeItem(localStorageKey); 
-                showStatusMessage("Logged out (Demo mode)", "info");
-                showInitialScreenState();
-
-            });
-        }
-        window.addEventListener('load', () => { setTimeout(() => window.dispatchEvent(new Event('resize')), 200); });
-        window.addEventListener('resize', () => {
-            asymmetryChartDivs.concat(normativeChartDivs).forEach(divId => {
-                const gd = document.getElementById(divId);
-                if (gd && gd.classList.contains('js-plotly-plot')) { try { Plotly.Plots.resize(gd); } catch (e) { /* Ignorer */ } }
-            });
-        });
-
     </script>
 </body>
 </html>
