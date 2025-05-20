@@ -40,11 +40,17 @@
             --subtle-shadow: 0 1px 3px rgba(0,0,0,0.07);
             --left-line-color: #ff7f0e;
             --right-line-color: #1f77b4;
-            /* Normative Background Colors with Alpha */
-            --norm-poor-bg: rgba(220, 38, 38, 0.5); /* Red */
-            --norm-average-bg: rgba(250, 204, 21, 0.5); /* Yellow */
-            --norm-good-bg: rgba(74, 222, 128, 0.5); /* Light Green */
-            --norm-excellent-bg: rgba(22, 163, 74, 0.5); /* Darker Green */
+            /* Normative Background Colors with More Alpha */
+            --norm-poor-bg: rgba(220, 38, 38, 0.35); /* Red */
+            --norm-average-bg: rgba(250, 204, 21, 0.35); /* Yellow */
+            --norm-good-bg: rgba(74, 222, 128, 0.35); /* Light Green */
+            --norm-excellent-bg: rgba(22, 163, 74, 0.35); /* Darker Green */
+
+            /* Status Message Background Colors with Alpha for Frosted Glass Effect */
+            --status-success-bg: rgba(74, 222, 128, 0.6);
+            --status-error-bg: rgba(220, 38, 38, 0.6);
+            --status-info-bg: rgba(250, 204, 21, 0.6);
+
             --base-font-size: 16px;
             --graph-box-height: 340px;
             --sidebar-width: 180px;
@@ -90,21 +96,25 @@
         }
         .status-message {
             height: auto;
-            padding: 10px 15px;
+            padding: 12px 18px; /* Slightly more padding */
             border-radius: var(--border-radius);
-            min-width: 200px;
+            min-width: 220px; /* Slightly wider */
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
             width: auto;
             display: none; /* Initially hidden */
-            font-size: 0.9rem;
+            font-size: 0.95rem; /* Slightly larger font */
             position: fixed;
             z-index: 2000;
+            -webkit-backdrop-filter: blur(8px); /* Frosted glass effect */
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Softer shadow */
+            border: 1px solid rgba(255,255,255,0.1); /* Subtle border */
         }
-        .status-message.success { background-color: var(--norm-good-bg); color: var(--text-color); }
-        .status-message.error { background-color: var(--norm-poor-bg); color: var(--text-color); }
-        .status-message.info { background-color: var(--norm-average-bg); color: var(--text-color); }
+        .status-message.success { background-color: var(--status-success-bg); color: var(--text-color); }
+        .status-message.error { background-color: var(--status-error-bg); color: var(--text-color); }
+        .status-message.info { background-color: var(--status-info-bg); color: var(--text-color); }
 
 
         .app-sidebar {
@@ -123,9 +133,9 @@
             border-right: none;
         }
         .sidebar-logo-placeholder {
-           display: none; /* Logo completely removed */
+           display: none;
         }
-        .sidebar-buttons { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; /* Added margin if logo is gone */ }
+        .sidebar-buttons { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
 
         .sidebar-user-info {
             margin-top: auto;
@@ -140,7 +150,6 @@
             gap: 8px;
             margin-bottom: 15px;
         }
-        /* Icon next to user name is removed from HTML directly */
         #loggedInUserName {
             font-weight: var(--semibold-font-weight);
             font-size: 0.95rem;
@@ -160,8 +169,8 @@
             margin-bottom: 25px;
             text-align: center;
         }
-        .sidebar-social-links a { color: var(--app-primary-color); margin: 0 20px; font-size: 1.5rem; text-decoration: none; transition: color 0.2s ease; } /* Changed to primary color */
-        .sidebar-social-links a:hover { color: var(--app-secondary-color); } /* Lighter blue on hover */
+        .sidebar-social-links a { color: var(--app-primary-color); margin: 0 20px; font-size: 1.5rem; text-decoration: none; transition: color 0.2s ease; }
+        .sidebar-social-links a:hover { color: var(--app-secondary-color); }
         .app-main-content { flex-grow: 1; margin-left: calc(var(--sidebar-width) + var(--main-content-margin)); padding: 30px 40px 30px 40px; background-color: var(--white); overflow-y: auto; height: 100vh; box-sizing: border-box; }
 
         .app-sidebar button, .app-sidebar a button { font-family: 'Avenir', sans-serif; font-size: 0.9rem; font-weight: var(--normal-font-weight); padding: 10px 15px; color: var(--app-primary-color); background-color: transparent; background-image: none; border: none; border-radius: var(--border-radius); cursor: pointer; transition: all 0.3s ease; box-shadow: none; letter-spacing: 0.5px; width: 100%; text-align: left; display: flex; align-items: center; gap: 10px; }
@@ -441,8 +450,8 @@
         }
 
         .patient-card {
-            flex: 1 1 280px; /* Made thinner: grow 1, shrink 1, base 280px */
-            min-width: 250px; /* Adjusted min-width */
+            flex: 1 1 240px; /* Made thinner */
+            min-width: 220px; /* Adjusted min-width */
             background-color: var(--light-gray);
             border-radius: var(--border-radius);
             padding: 20px;
@@ -460,9 +469,9 @@
             justify-content: flex-start;
         }
         .patient-card-icon {
-            font-size: 6rem; /* Significantly larger icon */
+            font-size: 6rem;
             color: var(--app-primary-color);
-            margin-right: 20px; /* Adjusted margin */
+            margin-right: 30px; /* Increased space */
         }
         .patient-card-id-container {
             display: flex;
@@ -506,8 +515,8 @@
         }
 
         #selected-patient-tests-container {
-            flex: 3 1 450px; /* Test list takes more space: grow 3, shrink 1, base 450px */
-            min-width: 300px;
+            flex: 3 1 480px; /* Test list takes more space */
+            min-width: 320px; /* Adjusted min-width */
             background-color: var(--light-gray);
             padding: 20px;
             border-radius: var(--border-radius);
@@ -1720,7 +1729,7 @@
                 });
             } catch (error) {
                 localTestsListUL.innerHTML = '<li>Error loading tests. Check console for details.</li>';
-                showStatusMessage("Error loading patient tests. See console for details.", "error");
+                showStatusMessage("Error loading patient tests.", "error");
             }
         }
 
@@ -1762,7 +1771,7 @@
 
                     updateGraphsAndTable();
                     saveInputsToLocalStorage();
-                    showStatusMessage('Test data loaded from Firebase!', 'success');
+                    showStatusMessage('Test data loaded.', 'success'); // Removed "from Firebase"
                     displayPatientInfoInCard(currentPatientDataForApp);
 
                     // Set active state for the loaded test item
@@ -1773,7 +1782,7 @@
                     }
 
                 } else {
-                    showStatusMessage("Could not find selected test data in Firebase.", "error");
+                    showStatusMessage("Could not find selected test data.", "error"); // Removed "in Firebase"
                 }
             } catch (error) {
                 console.error("Error loading screening data:", error);
@@ -1790,11 +1799,11 @@
             // IMPORTANT: window.confirm is used here as a placeholder.
             // For a production application, replace this with a custom modal dialog for better UX and control.
             if (confirm(`Are you sure you want to delete the test for patient "${patientId}" from ${formattedDate}? This action cannot be undone.`)) {
-                showStatusMessage("Deleting test from Firebase...", "info", 1500);
+                showStatusMessage("Deleting test...", "info", 1500); // Removed "from Firebase"
                 try {
                     const screeningDocRef = doc(db, "users", currentUserId, "patients", patientId, "screenings", screeningDocId);
                     await deleteDoc(screeningDocRef);
-                    showStatusMessage('Test deleted from Firebase!', 'success');
+                    showStatusMessage('Test deleted.', 'success'); // Removed "from Firebase"
 
                     if (currentPatientDataForApp.screeningId === screeningDocId && currentPatientDataForApp.patientId === patientId) {
                         resetScreeningInputFields(); // This will also clear active state
