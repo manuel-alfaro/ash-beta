@@ -565,15 +565,23 @@
             min-width: 150px; /* Minimum width for each test item */
             box-sizing: border-box;
             text-align: center;
-            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; /* Removed transform */
             cursor: pointer;
         }
 
         #selected-patient-tests-list li:hover {
-            background-color: rgba(112, 188, 252, 0.12); /* Darker on hover */
-            transform: translateY(-2px); /* Slight lift on hover */
-            border-color: rgba(40, 84, 132, 0.5);
+            background-color: rgba(112, 188, 252, 0.3); /* Adjusted hover color */
+            border-color: rgba(40, 84, 132, 0.6);
             box-shadow: var(--subtle-shadow);
+        }
+
+        #selected-patient-tests-list li.active-test-item {
+            background-color: rgba(40, 84, 132, 0.4); /* Primary color with alpha for active */
+            border-color: var(--app-primary-color);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.05);
+        }
+        #selected-patient-tests-list li.active-test-item:hover {
+            background-color: rgba(40, 84, 132, 0.45); /* Slightly darker hover for active item */
         }
 
 
@@ -1034,7 +1042,6 @@
         const displayBodyweightCard = document.getElementById('display-bodyweight-card');
         const selectedPatientTestsContainer = document.getElementById('selected-patient-tests-container');
         const selectedPatientTestsListUL = document.getElementById('selected-patient-tests-list');
-        // const currentPatientForTestsSpan = document.getElementById('current-patient-for-tests'); // This is now dynamically found
 
         // Plotly and Normative Data Configuration
         const plotlyConfig = { responsive: true, displaylogo: false, modeBarButtonsToRemove: ['sendDataToCloud', 'lasso2d', 'select2d', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'toggleSpikelines'] };
@@ -1172,14 +1179,22 @@
             if (bodyweightInput) bodyweightInput.value = '';
         }
 
+        function clearActiveTestItemState() {
+            if (selectedPatientTestsListUL) {
+                const allTestItems = selectedPatientTestsListUL.querySelectorAll('li');
+                allTestItems.forEach(item => item.classList.remove('active-test-item'));
+            }
+        }
+
         function resetScreeningInputFields() {
             allNumberInputs.forEach(input => { input.value = ''; });
             if (currentPatientDataForApp) currentPatientDataForApp.screeningId = null; // Clear loaded screening ID
+            clearActiveTestItemState(); // Clear visual active state from test list
         }
 
         function clearAllFields() {
             resetPatientDataForApp();
-            resetScreeningInputFields();
+            resetScreeningInputFields(); // This now also calls clearActiveTestItemState()
             // Hide patient overview sections
             if(patientOverviewSection) patientOverviewSection.style.display = 'none';
             if(patientIdentityCard) patientIdentityCard.style.display = 'none';
@@ -1544,7 +1559,18 @@
                 if(bodyweightInput) bodyweightInput.value = currentPatientDataForApp.bodyweight;
 
                 displayPatientInfoInCard(currentPatientDataForApp); // Update UI card
-                await displayTestsForPatientFromFirestore(originalPatientId); // Refresh test list (if needed)
+                await displayTestsForPatientFromFirestore(originalPatientId); // Refresh test list
+
+                // After tests are re-rendered, if a screening was loaded, re-apply active state
+                if (currentPatientDataForApp.screeningId) {
+                    const activeLi = selectedPatientTestsListUL.querySelector(`li[data-screening-id="${currentPatientDataForApp.screeningId}"]`);
+                    if (activeLi) {
+                        activeLi.classList.add('active-test-item');
+                    }
+                } else {
+                    resetScreeningInputFields(); // If no specific test was loaded, clear inputs & active state
+                }
+
                 closePatientModal();
 
                 // Update UI state
@@ -1553,10 +1579,6 @@
                 if (existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
                 if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
 
-
-                if (!currentPatientDataForApp.screeningId) { // If no specific screening was loaded, clear inputs
-                    resetScreeningInputFields();
-                }
                 updateGraphsAndTable();
                 // Update the span in H3 for saved tests title
                 const currentPatientSpanInH3 = selectedPatientTestsContainer?.querySelector('h3 #current-patient-for-tests');
@@ -1627,17 +1649,11 @@
         async function displayTestsForPatientFromFirestore(patientId) {
             const localTestsContainer = document.getElementById('selected-patient-tests-container');
             const localTestsListUL = document.getElementById('selected-patient-tests-list');
-            // Dynamically find the H3 and then the span inside it
             const h3TitleElement = localTestsContainer ? localTestsContainer.querySelector('h3') : null;
             const localCurrentPatientSpan = h3TitleElement ? h3TitleElement.querySelector('#current-patient-for-tests') : null;
             const localPatientOverviewSection = document.getElementById('patient-overview-section');
 
-            // console.log('[DEBUG] displayTestsForPatientFromFirestore - START. Patient ID:', patientId, 'User ID:', currentUserId);
-            // console.log('[DEBUG] UI Elements: Container:', !!localTestsContainer, 'List UL:', !!localTestsListUL, 'H3 Title:', !!h3TitleElement, 'Span:', !!localCurrentPatientSpan, 'Overview:', !!localPatientOverviewSection);
-
-
             if (!currentUserId || !patientId) {
-                // console.warn("[DEBUG] displayTestsForPatientFromFirestore - ABORT: Missing userId or patientId.");
                 if (localTestsListUL) localTestsListUL.innerHTML = '<li>Select a patient to see tests.</li>';
                 if (localTestsContainer) localTestsContainer.style.display = 'block';
                 if (localPatientOverviewSection && document.getElementById('patient-identity-card')?.style.display === 'block') {
@@ -1647,34 +1663,22 @@
             }
 
             if (!localTestsListUL || !localTestsContainer || !localCurrentPatientSpan) {
-                // console.error("[DEBUG] displayTestsForPatientFromFirestore - ABORT: Critical UI elements for tests are missing.");
-                // if (!localTestsContainer) console.error("[DEBUG] #selected-patient-tests-container NOT FOUND.");
-                // if (!h3TitleElement) console.error("[DEBUG] H3 element within #selected-patient-tests-container NOT FOUND.");
-                // if (h3TitleElement && !localCurrentPatientSpan) console.error("[DEBUG] #current-patient-for-tests (span) NOT FOUND within H3.");
-                // if (!localTestsListUL) console.error("[DEBUG] #selected-patient-tests-list (ul) NOT FOUND.");
                 return;
             }
 
-            localCurrentPatientSpan.textContent = patientId; // Set patient ID in the title
+            localCurrentPatientSpan.textContent = patientId;
             localTestsListUL.innerHTML = '<li>Loading tests...</li>';
             localTestsContainer.style.display = 'block';
             if (localPatientOverviewSection) localPatientOverviewSection.style.display = 'flex';
-            // console.log('[DEBUG] displayTestsForPatientFromFirestore - UI set to loading state. Patient ID set in span.');
-
 
             const screeningsPath = `users/${currentUserId}/patients/${patientId}/screenings`;
-            // console.log('[DEBUG] displayTestsForPatientFromFirestore - Querying Firestore path:', screeningsPath);
             const screeningsRef = collection(db, screeningsPath);
-            const q = query(screeningsRef, orderBy("testTimestamp", "desc")); // Order by most recent
+            const q = query(screeningsRef, orderBy("testTimestamp", "asc")); // Order by oldest first
 
             try {
                 const querySnapshot = await getDocs(q);
-                // console.log('[DEBUG] displayTestsForPatientFromFirestore - Firestore query executed. Snapshot empty:', querySnapshot.empty, 'Size:', querySnapshot.size);
-
-
-                localTestsListUL.innerHTML = ''; // Clear loading message
+                localTestsListUL.innerHTML = '';
                 if (querySnapshot.empty) {
-                    // console.log('[DEBUG] displayTestsForPatientFromFirestore - No screening documents found for this patient.');
                     localTestsListUL.innerHTML = '<li>No tests found for this patient.</li>';
                     return;
                 }
@@ -1682,18 +1686,15 @@
                 querySnapshot.forEach((docSnap) => {
                     const screening = docSnap.data();
                     const screeningDocId = docSnap.id;
-                    // console.log('[DEBUG] displayTestsForPatientFromFirestore - Processing screening doc ID:', screeningDocId, 'Data:', screening);
-
-
                     const li = document.createElement('li');
+                    li.dataset.screeningId = screeningDocId; // Store screening ID for identifying active item
                     li.addEventListener('click', () => loadScreeningDataFromFirestore(patientId, screeningDocId));
 
                     const dateSpan = document.createElement('span');
-                    const screeningTimestampDate = screening.testTimestamp?.toDate(); // Convert Firestore Timestamp to JS Date
+                    const screeningTimestampDate = screening.testTimestamp?.toDate();
                     if (screeningTimestampDate instanceof Date && !isNaN(screeningTimestampDate)) {
                         dateSpan.textContent = screeningTimestampDate.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
                     } else {
-                        // console.warn('[DEBUG] displayTestsForPatientFromFirestore - Invalid or missing testTimestamp for screening:', screeningDocId, 'Actual value:', screening.testTimestamp);
                         dateSpan.textContent = "Invalid date";
                     }
                     dateSpan.title = "Load this test";
@@ -1703,7 +1704,8 @@
                     deleteButton.title = "Delete this test";
                     deleteButton.classList.add('delete-test-btn');
                     deleteButton.addEventListener('click', (e) => {
-                        e.stopPropagation(); // Prevent li click event
+                        e.stopPropagation();
+                        // Note: window.confirm is used here. For production, a custom modal is better.
                         confirmAndDeleteScreeningFromFirestore(patientId, screeningDocId, screeningTimestampDate || new Date());
                     });
                     li.appendChild(dateSpan);
@@ -1711,7 +1713,6 @@
                     localTestsListUL.appendChild(li);
                 });
             } catch (error) {
-                // console.error(`[DEBUG] displayTestsForPatientFromFirestore - Error fetching tests for patient ${patientId}: `, error);
                 localTestsListUL.innerHTML = '<li>Error loading tests. Check console for details.</li>';
                 showStatusMessage("Error loading patient tests. See console for details.", "error");
             }
@@ -1726,19 +1727,17 @@
 
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    // Update global patient data with screening-specific details
                     currentPatientDataForApp = {
-                        patientId: data.patientId, // Should match the passed patientId
+                        patientId: data.patientId,
                         age: data.ageAtScreening,
                         gender: data.genderAtScreening,
                         sport: data.sportAtScreening,
                         injury: data.injuryAtScreening,
                         bodyweight: data.bodyweightAtScreening,
                         injuredSide: data.injuredSideAtScreening,
-                        screeningId: screeningDocId // IMPORTANT: Set the loaded screening ID
+                        screeningId: screeningDocId
                     };
 
-                    // Update hidden input fields (for consistency)
                     if(fpNrInput) fpNrInput.value = currentPatientDataForApp.patientId || '';
                     if(ageInput) ageInput.value = currentPatientDataForApp.age || '';
                     if(genderSelect) genderSelect.value = currentPatientDataForApp.gender || '';
@@ -1747,7 +1746,6 @@
                     if(bodyweightInput) bodyweightInput.value = currentPatientDataForApp.bodyweight || '';
                     if(injuredSideRadio) injuredSideRadio.value = currentPatientDataForApp.injuredSide || 'Left';
 
-                    // Populate ASH test input fields
                     ['I', 'Y', 'T'].forEach(pos => {
                         const testPosData = data.ashTest ? data.ashTest[pos] : null;
                         if (inputFieldMap[pos]?.nonInjured[0]) inputFieldMap[pos].nonInjured[0].value = testPosData?.nonInjuredMaxForce || '';
@@ -1757,9 +1755,17 @@
                     });
 
                     updateGraphsAndTable();
-                    saveInputsToLocalStorage(); // Save this loaded state
+                    saveInputsToLocalStorage();
                     showStatusMessage('Test data loaded from Firebase!', 'success');
-                    displayPatientInfoInCard(currentPatientDataForApp); // Update patient card with screening-time data
+                    displayPatientInfoInCard(currentPatientDataForApp);
+
+                    // Set active state for the loaded test item
+                    clearActiveTestItemState(); // Clear previous active states
+                    const activeLi = selectedPatientTestsListUL.querySelector(`li[data-screening-id="${screeningDocId}"]`);
+                    if (activeLi) {
+                        activeLi.classList.add('active-test-item');
+                    }
+
                 } else {
                     showStatusMessage("Could not find selected test data in Firebase.", "error");
                 }
@@ -1775,7 +1781,8 @@
                 ? dateObject.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })
                 : "unknown date";
 
-            // Replace window.confirm with a custom modal or a simpler approach if modals are complex here
+            // IMPORTANT: window.confirm is used here as a placeholder.
+            // For a production application, replace this with a custom modal dialog for better UX and control.
             if (confirm(`Are you sure you want to delete the test for patient "${patientId}" from ${formattedDate}? This action cannot be undone.`)) {
                 showStatusMessage("Deleting test from Firebase...", "info", 1500);
                 try {
@@ -1783,10 +1790,9 @@
                     await deleteDoc(screeningDocRef);
                     showStatusMessage('Test deleted from Firebase!', 'success');
 
-                    // If the deleted test was the one currently loaded, clear inputs
                     if (currentPatientDataForApp.screeningId === screeningDocId && currentPatientDataForApp.patientId === patientId) {
-                        resetScreeningInputFields();
-                        currentPatientDataForApp.screeningId = null;
+                        resetScreeningInputFields(); // This will also clear active state
+                        // currentPatientDataForApp.screeningId = null; // Already done in resetScreeningInputFields
                         updateGraphsAndTable();
                         saveInputsToLocalStorage();
                     }
@@ -1882,7 +1888,7 @@
 
                                 displayPatientInfoInCard(currentPatientDataForApp);
                                 await displayTestsForPatientFromFirestore(enteredPatientId);
-                                resetScreeningInputFields(); // Clear ASH inputs for a new screening
+                                resetScreeningInputFields(); // Clear ASH inputs and active test state
                                 updateGraphsAndTable();
                                 saveInputsToLocalStorage(); // Save this state
 
@@ -1920,8 +1926,6 @@
         }
         if (injuredSideRadio) injuredSideRadio.addEventListener('change', (e) => updateCurrentPatientDataAndSave('injuredSide', e.target.value));
         if (bodyweightInput) bodyweightInput.addEventListener('input', (e) => updateCurrentPatientDataAndSave('bodyweight', e.target.value));
-        // Other direct input listeners (age, gender, sport, injury) are less critical now with modal flow
-        // but kept for potential direct edits if UI allowed or for localStorage consistency.
         if (ageInput) ageInput.addEventListener('input', (e) => updateCurrentPatientDataAndSave('age', e.target.value));
         if (genderSelect) genderSelect.addEventListener('change', (e) => updateCurrentPatientDataAndSave('gender', e.target.value));
         if (sportInput) sportInput.addEventListener('input', (e) => updateCurrentPatientDataAndSave('sport', e.target.value));
