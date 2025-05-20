@@ -220,13 +220,19 @@
         h3.normative-title { text-align: center;}
         #report-content { background-color: var(--white); padding: 15px 0; }
 
+        /* New container for patient choice buttons */
+        #patient-choice-container {
+            background-color: var(--box-background-color);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 25px; /* Same as existing-patient-search-container */
+        }
         #patient-choice-section {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 30px;
-            padding: 20px 0;
-            margin-bottom: 20px;
+            /* padding and margin-bottom removed as they are on the new container */
         }
         .choice-box {
             background-color: var(--white);
@@ -276,7 +282,7 @@
             display: none;
             margin-bottom: 25px;
             padding: 20px;
-            background-color: var(--box-background-color); /* Use new darker gray */
+            background-color: var(--box-background-color);
             border-radius: var(--border-radius);
         }
         #existing-patient-search-container label {
@@ -449,19 +455,19 @@
             align-items: stretch;
         }
 
-        .patient-profile-title {
+        .patient-profile-title, .test-log-title { /* Shared class for consistent titling */
             width: 100%;
             font-size: 1.3rem;
-            color: var(--app-primary-color);
+            color: var(--app-secondary-color); /* Light blue title */
             margin-bottom: 10px;
             padding-bottom: 5px;
-            margin-top: 0; /* Ensure no extra top margin */
+            margin-top: 0; /* Reset top margin */
         }
 
         .patient-card {
-            flex: 1 1 200px; /* Made thinner */
-            min-width: 180px; /* Adjusted min-width */
-            background-color: var(--box-background-color); /* Use new darker gray */
+            flex: 1 1 240px; /* Made thinner */
+            min-width: 220px; /* Adjusted min-width */
+            background-color: var(--box-background-color);
             border-radius: var(--border-radius);
             padding: 20px;
             border: none;
@@ -480,7 +486,7 @@
         .patient-card-icon {
             font-size: 6rem;
             color: var(--app-primary-color);
-            margin-right: 45px; /* Increased space */
+            margin-right: 50px; /* Increased space */
         }
         .patient-card-id-container {
             display: flex;
@@ -524,9 +530,9 @@
         }
 
         #selected-patient-tests-container {
-            flex: 2 1 400px; /* Adjusted flex properties */
-            min-width: 300px;
-            background-color: var(--box-background-color); /* Use new darker gray */
+            flex: 2 1 420px; /* Adjusted flex properties */
+            min-width: 280px; /* Adjusted min-width */
+            background-color: var(--box-background-color);
             padding: 20px;
             border-radius: var(--border-radius);
             border: none;
@@ -537,12 +543,12 @@
         }
 
         #selected-patient-tests-container h3 {
-            margin-top: 0; /* Ensure no extra top margin to align with patient profile title */
+            margin-top: 0; /* Align with patient profile title */
             margin-bottom: 18px;
             font-size: 1.3rem;
-            color: var(--app-primary-color);
+            color: var(--app-secondary-color); /* Light blue title */
             padding-bottom: 10px;
-            border-bottom: 1px solid var(--medium-gray);
+            border-bottom: none; /* Removed border */
             font-weight: var(--normal-font-weight);
         }
 
@@ -914,16 +920,19 @@
                     <h1>Functional Shoulder Screening</h1>
                     <h2 id="patient-details-title">Patient Selection</h2>
 
-                    <div id="patient-choice-section">
-                        <div class="choice-box" id="new-patient-choice">
-                            <i class="fas fa-plus"></i>
-                            <span>New Patient</span>
-                        </div>
-                        <div class="choice-box" id="existing-patient-choice">
-                            <i class="fas fa-search"></i>
-                            <span>Existing Patient</span>
+                    <div id="patient-choice-container">
+                        <div id="patient-choice-section">
+                            <div class="choice-box" id="new-patient-choice">
+                                <i class="fas fa-plus"></i>
+                                <span>New Patient</span>
+                            </div>
+                            <div class="choice-box" id="existing-patient-choice">
+                                <i class="fas fa-search"></i>
+                                <span>Existing Patient</span>
+                            </div>
                         </div>
                     </div>
+
 
                     <div id="existing-patient-search-container" style="display: none;">
                         <label for="fp-nr-input-search">Search Patient ID:</label>
@@ -952,8 +961,9 @@
                                </div>
                         </div>
 
-                        <div id="patient-overview-section"> <div id="patient-identity-card" class="patient-card" style="display: none;">
-                                <h3 class="patient-profile-title">Patient Profile</h3>
+                        <div id="patient-overview-section">
+                            <div id="patient-identity-card" class="patient-card" style="display: none;">
+                                <h3 class="patient-profile-title">Details</h3>
                                 <div class="patient-card-header">
                                     <i class="fas fa-address-card patient-card-icon"></i>
                                     <div class="patient-card-id-container">
@@ -972,7 +982,7 @@
                             </div>
 
                             <div id="selected-patient-tests-container" style="display: none;">
-                                <h3>Saved Tests for Patient: <span id="current-patient-for-tests"></span></h3>
+                                <h3 class="test-log-title">Test Logg <span id="current-patient-for-tests" style="font-weight: normal; color: var(--dark-gray);"></span></h3>
                                 <ul id="selected-patient-tests-list">
                                     </ul>
                             </div>
