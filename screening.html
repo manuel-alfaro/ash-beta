@@ -23,7 +23,7 @@
             --app-button-light-gradient-start: rgba(112, 188, 252, 0.8);
             --app-button-light-gradient-end: rgba(40, 84, 132, 0.9);
             --light-gray: #f8f9fa; /* Main page background */
-            --box-background-color: #e9ecef; /* Slightly darker gray for boxes */
+            --box-background-color: #f0f2f5; /* New intermediate gray for boxes and sidebar */
             --medium-gray: #dee2e6;
             --dark-gray: #495057;
             --text-color: #212529;
@@ -121,7 +121,7 @@
 
         .app-sidebar {
             width: var(--sidebar-width);
-            background-color: var(--light-gray); /* Use main light gray for sidebar bg */
+            background-color: var(--box-background-color); /* Use new box background color */
             color: var(--text-color);
             padding: 20px 15px;
             display: flex;
@@ -135,15 +135,15 @@
             border-right: none;
         }
         .sidebar-logo-placeholder {
-           display: flex; /* Make it visible again */
+           display: flex;
            align-items: center;
            justify-content: center;
            height: 50px;
            margin-bottom: 30px;
-           font-size: 1.8rem; /* Adjust size as needed */
+           font-size: 1.8rem;
            color: var(--app-primary-color);
         }
-        .sidebar-buttons { display: flex; flex-direction: column; gap: 12px; /* Removed margin-top, handled by logo placeholder */ }
+        .sidebar-buttons { display: flex; flex-direction: column; gap: 12px; }
 
         .sidebar-user-info {
             margin-top: auto;
@@ -455,6 +455,7 @@
             color: var(--app-primary-color);
             margin-bottom: 10px;
             padding-bottom: 5px;
+            margin-top: 0; /* Ensure no extra top margin */
         }
 
         .patient-card {
@@ -536,7 +537,7 @@
         }
 
         #selected-patient-tests-container h3 {
-            margin-top: 0;
+            margin-top: 0; /* Ensure no extra top margin to align with patient profile title */
             margin-bottom: 18px;
             font-size: 1.3rem;
             color: var(--app-primary-color);
