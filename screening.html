@@ -22,7 +22,8 @@
             --app-button-hover-gradient-end: #121630;
             --app-button-light-gradient-start: rgba(112, 188, 252, 0.8);
             --app-button-light-gradient-end: rgba(40, 84, 132, 0.9);
-            --light-gray: #f8f9fa;
+            --light-gray: #f8f9fa; /* Main page background */
+            --box-background-color: #e9ecef; /* Slightly darker gray for boxes */
             --medium-gray: #dee2e6;
             --dark-gray: #495057;
             --text-color: #212529;
@@ -40,16 +41,17 @@
             --subtle-shadow: 0 1px 3px rgba(0,0,0,0.07);
             --left-line-color: #ff7f0e;
             --right-line-color: #1f77b4;
+
             /* Normative Background Colors with More Alpha */
-            --norm-poor-bg: rgba(220, 38, 38, 0.35); /* Red */
-            --norm-average-bg: rgba(250, 204, 21, 0.35); /* Yellow */
-            --norm-good-bg: rgba(74, 222, 128, 0.35); /* Light Green */
-            --norm-excellent-bg: rgba(22, 163, 74, 0.35); /* Darker Green */
+            --norm-poor-bg: rgba(220, 38, 38, 0.3); /* Red - more transparent */
+            --norm-average-bg: rgba(250, 204, 21, 0.3); /* Yellow - more transparent */
+            --norm-good-bg: rgba(74, 222, 128, 0.3); /* Light Green - more transparent */
+            --norm-excellent-bg: rgba(22, 163, 74, 0.3); /* Darker Green - more transparent */
 
             /* Status Message Background Colors with Alpha for Frosted Glass Effect */
-            --status-success-bg: rgba(74, 222, 128, 0.6);
-            --status-error-bg: rgba(220, 38, 38, 0.6);
-            --status-info-bg: rgba(250, 204, 21, 0.6);
+            --status-success-bg: rgba(74, 222, 128, 0.55);
+            --status-error-bg: rgba(220, 38, 38, 0.55);
+            --status-info-bg: rgba(250, 204, 21, 0.55);
 
             --base-font-size: 16px;
             --graph-box-height: 340px;
@@ -96,21 +98,21 @@
         }
         .status-message {
             height: auto;
-            padding: 12px 18px; /* Slightly more padding */
+            padding: 12px 18px;
             border-radius: var(--border-radius);
-            min-width: 220px; /* Slightly wider */
+            min-width: 220px;
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
             width: auto;
-            display: none; /* Initially hidden */
-            font-size: 0.95rem; /* Slightly larger font */
+            display: none;
+            font-size: 0.95rem;
             position: fixed;
             z-index: 2000;
-            -webkit-backdrop-filter: blur(8px); /* Frosted glass effect */
-            backdrop-filter: blur(8px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Softer shadow */
-            border: 1px solid rgba(255,255,255,0.1); /* Subtle border */
+            -webkit-backdrop-filter: blur(10px); /* Increased blur */
+            backdrop-filter: blur(10px); /* Increased blur */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.1);
         }
         .status-message.success { background-color: var(--status-success-bg); color: var(--text-color); }
         .status-message.error { background-color: var(--status-error-bg); color: var(--text-color); }
@@ -119,7 +121,7 @@
 
         .app-sidebar {
             width: var(--sidebar-width);
-            background-color: var(--light-gray);
+            background-color: var(--light-gray); /* Use main light gray for sidebar bg */
             color: var(--text-color);
             padding: 20px 15px;
             display: flex;
@@ -133,9 +135,15 @@
             border-right: none;
         }
         .sidebar-logo-placeholder {
-           display: none;
+           display: flex; /* Make it visible again */
+           align-items: center;
+           justify-content: center;
+           height: 50px;
+           margin-bottom: 30px;
+           font-size: 1.8rem; /* Adjust size as needed */
+           color: var(--app-primary-color);
         }
-        .sidebar-buttons { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+        .sidebar-buttons { display: flex; flex-direction: column; gap: 12px; /* Removed margin-top, handled by logo placeholder */ }
 
         .sidebar-user-info {
             margin-top: auto;
@@ -268,7 +276,7 @@
             display: none;
             margin-bottom: 25px;
             padding: 20px;
-            background-color: var(--light-gray);
+            background-color: var(--box-background-color); /* Use new darker gray */
             border-radius: var(--border-radius);
         }
         #existing-patient-search-container label {
@@ -450,9 +458,9 @@
         }
 
         .patient-card {
-            flex: 1 1 240px; /* Made thinner */
-            min-width: 220px; /* Adjusted min-width */
-            background-color: var(--light-gray);
+            flex: 1 1 200px; /* Made thinner */
+            min-width: 180px; /* Adjusted min-width */
+            background-color: var(--box-background-color); /* Use new darker gray */
             border-radius: var(--border-radius);
             padding: 20px;
             border: none;
@@ -471,7 +479,7 @@
         .patient-card-icon {
             font-size: 6rem;
             color: var(--app-primary-color);
-            margin-right: 30px; /* Increased space */
+            margin-right: 45px; /* Increased space */
         }
         .patient-card-id-container {
             display: flex;
@@ -515,9 +523,9 @@
         }
 
         #selected-patient-tests-container {
-            flex: 3 1 480px; /* Test list takes more space */
-            min-width: 320px; /* Adjusted min-width */
-            background-color: var(--light-gray);
+            flex: 2 1 400px; /* Adjusted flex properties */
+            min-width: 300px;
+            background-color: var(--box-background-color); /* Use new darker gray */
             padding: 20px;
             border-radius: var(--border-radius);
             border: none;
@@ -654,7 +662,7 @@
             border: none;
             padding: 10px 20px 15px 20px;
             border-radius: var(--border-radius);
-            background-color: var(--light-gray);
+            background-color: var(--box-background-color); /* Use new darker gray */
             box-shadow: var(--subtle-shadow);
             margin-bottom: 0; /* Handled by position-row gap */
             transition: box-shadow 0.3s ease, opacity 0.3s ease;
@@ -671,13 +679,13 @@
         .position-box::after { content: ''; position: absolute; top: -100px; right: -100px; width: 500px; height: 500px; background-image: radial-gradient(circle at top right, var(--success-gradient-start-color) 0%, rgba(from var(--light-gray) r g b / 0) 65% ); opacity: 0; pointer-events: none; z-index: 0; border-radius: 50%; transition: opacity 0.3s ease; }
         .position-box.green-box::after { opacity: 0.85; } /* Make gradient visible */
         .js-plotly-plot { flex-grow: 1; position: relative; z-index: 1; } /* Ensure chart is above pseudo-element */
-        #normative-placeholder { text-align: center; color: var(--dark-gray); font-style: italic; padding: 20px; background-color: var(--light-gray); border-radius: var(--border-radius); margin-top: 1em;}
+        #normative-placeholder { text-align: center; color: var(--dark-gray); font-style: italic; padding: 20px; background-color: var(--box-background-color); border-radius: var(--border-radius); margin-top: 1em;}
         #bottom-area { margin-top: 30px; padding-top: 15px; border-top: 1px solid var(--medium-gray); min-height: 30px; }
         #preview-exit-button-inline { display: none; position: fixed; top: 15px; right: 15px; background-color: var(--danger-color-dark); color: white; padding: 8px 15px; font-size: 0.9rem; font-weight: var(--normal-font-weight); border: none; border-radius: var(--border-radius); cursor: pointer; z-index: 1001; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: all 0.3s ease; font-family: inherit; }
         #preview-exit-button-inline:hover { background-color: #b91c1c; box-shadow: 0 4px 10px rgba(185, 28, 28, 0.3); transform: translateY(-1px); }
         #preview-exit-button-inline:active { transform: translateY(0px); box-shadow: 0 2px 5px rgba(185, 28, 28, 0.2); }
         #preview-exit-button-inline i { margin-right: 6px; }
-        .explanation-box { display: none; background-color: var(--light-gray); border: 1px solid var(--medium-gray); border-left: 5px solid var(--app-primary-color); padding: 15px; margin: 1em 0 2em 0; border-radius: var(--border-radius); font-size: 0.9em; color: var(--dark-gray); }
+        .explanation-box { display: none; background-color: var(--box-background-color); border: 1px solid var(--medium-gray); border-left: 5px solid var(--app-primary-color); padding: 15px; margin: 1em 0 2em 0; border-radius: var(--border-radius); font-size: 0.9em; color: var(--dark-gray); }
         .explanation-box h4 { margin-top: 0; color: var(--app-primary-color); font-family: inherit; font-weight: var(--normal-font-weight); }
         .explanation-box p { margin-bottom: 0.5em; }
         .explanation-box ul { margin-top: 0.5em; padding-left: 20px; }
@@ -880,7 +888,7 @@
 
     <div class="app-layout">
         <aside class="app-sidebar">
-            <div class="sidebar-logo-placeholder"></div> <div class="sidebar-buttons">
+            <div class="sidebar-logo-placeholder"><i class="fas fa-bars"></i></div> <div class="sidebar-buttons">
                 <a href="assets/analysis.html" id="analysis-link-button"><button type="button" id="view-analysis-button"><i class="fas fa-history"></i> <span class="button-text">Patient History</span></button></a>
                 <button id="pdf-preview-button"><i class="fas fa-file-pdf"></i><span class="button-text">PDF Preview</span></button>
                 <button id="export-excel-button"><i class="fas fa-file-excel"></i><span class="button-text">Export Data</span></button>
