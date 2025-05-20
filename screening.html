@@ -1425,9 +1425,7 @@
 
                 resetScreeningInputFields();
                 updateGraphsAndTable();
-                if (selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'block';
-                if (selectedPatientTestsListUL) selectedPatientTestsListUL.innerHTML = '<li>No tests found for this new patient.</li>';
-                if (currentPatientForTestsSpan) currentPatientForTestsSpan.textContent = newPatientId;
+                await displayTestsForPatientFromFirestore(newPatientId); // Display tests for the new patient
                 saveInputsToLocalStorage();
             } catch (error) {
                 showStatusMessage("Error saving patient data.", "error");
@@ -1520,14 +1518,14 @@
             if (bodyweightCard) bodyweightCard.textContent = data.bodyweight ? `${data.bodyweight} kg` : 'N/A';
 
             card.style.display = 'block';
-            testsContainer.style.display = 'block'; // Ensure test container is also shown
+            testsContainer.style.display = 'block';
             overview.style.display = 'flex';
         }
 
         async function populatePatientIdDatalistFromFirestore() {
             if (!currentUserId) return;
             const patientsCollectionRef = collection(db, "users", currentUserId, "patients");
-            const localExistingPatientIdsDatalist = document.getElementById('existing-patient-ids'); // Fetch here
+            const localExistingPatientIdsDatalist = document.getElementById('existing-patient-ids');
 
             if(localExistingPatientIdsDatalist) localExistingPatientIdsDatalist.innerHTML = '';
 
@@ -1547,30 +1545,29 @@
         }
 
         async function displayTestsForPatientFromFirestore(patientId) {
-            const localTestsListUL = document.getElementById('selected-patient-tests-list');
             const localTestsContainer = document.getElementById('selected-patient-tests-container');
-            const localCurrentPatientSpan = document.getElementById('current-patient-for-tests');
+            const localTestsListUL = document.getElementById('selected-patient-tests-list');
+            const localCurrentPatientSpan = localTestsContainer ? localTestsContainer.querySelector('#current-patient-for-tests') : null;
             const localPatientOverviewSection = document.getElementById('patient-overview-section');
 
             console.log('[DEBUG] displayTestsForPatientFromFirestore - START. Patient ID:', patientId, 'User ID:', currentUserId);
-            console.log('[DEBUG] UI Elements: List UL:', localTestsListUL, 'Container:', localTestsContainer, 'Span:', localCurrentPatientSpan, 'Overview:', localPatientOverviewSection);
-
+            console.log('[DEBUG] UI Elements: Container:', !!localTestsContainer, 'List UL:', !!localTestsListUL, 'Span:', !!localCurrentPatientSpan, 'Overview:', !!localPatientOverviewSection);
 
             if (!currentUserId || !patientId) {
                 console.warn("[DEBUG] displayTestsForPatientFromFirestore - ABORT: Missing userId or patientId.");
                 if (localTestsListUL) localTestsListUL.innerHTML = '<li>Select a patient to see tests.</li>';
                 if (localTestsContainer) localTestsContainer.style.display = 'block';
-                if (localPatientOverviewSection && document.getElementById('patient-identity-card').style.display === 'block') {
-                    localPatientOverviewSection.style.display = 'flex';
+                if (localPatientOverviewSection && document.getElementById('patient-identity-card')?.style.display === 'block') {
+                     localPatientOverviewSection.style.display = 'flex';
                 }
                 return;
             }
 
             if (!localTestsListUL || !localTestsContainer || !localCurrentPatientSpan) {
-                console.error("[DEBUG] displayTestsForPatientFromFirestore - ABORT: UI elements for displaying tests are missing.");
-                if (!localTestsListUL) console.error("[DEBUG] selectedPatientTestsListUL is NULL");
-                if (!localTestsContainer) console.error("[DEBUG] selectedPatientTestsContainer is NULL");
-                if (!localCurrentPatientSpan) console.error("[DEBUG] currentPatientForTestsSpan is NULL");
+                console.error("[DEBUG] displayTestsForPatientFromFirestore - ABORT: Critical UI elements for tests are missing.");
+                if (!localTestsContainer) console.error("[DEBUG] #selected-patient-tests-container NOT FOUND.");
+                if (localTestsContainer && !localCurrentPatientSpan) console.error("[DEBUG] #current-patient-for-tests (span) NOT FOUND within container.");
+                if (localTestsContainer && !localTestsListUL) console.error("[DEBUG] #selected-patient-tests-list (ul) NOT FOUND within container.");
                 return;
             }
 
@@ -1625,7 +1622,6 @@
                     li.appendChild(dateSpan);
                     li.appendChild(deleteButton);
                     localTestsListUL.appendChild(li);
-                    console.log('[DEBUG] displayTestsForPatientFromFirestore - Appended <li> for screening:', screeningDocId);
                 });
             } catch (error) {
                 console.error(`[DEBUG] displayTestsForPatientFromFirestore - Error fetching tests for patient ${patientId}: `, error);
