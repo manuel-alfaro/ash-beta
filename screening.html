@@ -179,43 +179,22 @@
         }
         .sidebar-social-links a { color: var(--app-primary-color); margin: 0 20px; font-size: 1.5rem; text-decoration: none; transition: color 0.2s ease; }
         .sidebar-social-links a:hover { color: var(--app-secondary-color); }
-        .app-main-content { flex-grow: 1; margin-left: calc(var(--sidebar-width) + var(--main-content-margin)); padding: 30px 40px 30px 40px; background-color: var(--white); overflow-y: auto; height: 100vh; box-sizing: border-box; }
-
-        .app-sidebar button, .app-sidebar a button { font-family: 'Avenir', sans-serif; font-size: 0.9rem; font-weight: var(--normal-font-weight); padding: 10px 15px; color: var(--app-primary-color); background-color: transparent; background-image: none; border: none; border-radius: var(--border-radius); cursor: pointer; transition: all 0.3s ease; box-shadow: none; letter-spacing: 0.5px; width: 100%; text-align: left; display: flex; align-items: center; gap: 10px; }
-
-        .app-sidebar button#logout-button {
-            margin-top: 10px;
-            background-image: none;
-            background-color: transparent;
-            color: var(--app-primary-color);
-            border: 1px solid var(--app-primary-color);
+        .app-main-content {
+            flex-grow: 1;
+            margin-left: calc(var(--sidebar-width) + var(--main-content-margin));
+            padding: 30px 40px; /* Default padding */
+            background-color: var(--white);
+            overflow-y: auto;
+            height: 100vh;
+            box-sizing: border-box;
         }
-        .app-sidebar button#logout-button:hover {
-            background-color: var(--app-primary-color);
-            color: var(--app-text-on-primary);
+        .content-container {
+            max-width: 900px; /* MODIFIED: Reduced max-width for larger side margins */
+            margin: 0 auto;
         }
-        .app-sidebar button#logout-button i { color: var(--app-primary-color); }
-        .app-sidebar button#logout-button:hover i { color: var(--app-text-on-primary); }
-
-
-        .app-sidebar button i { width: 20px; text-align: center; color: var(--app-primary-color); transition: color 0.3s ease; }
-        .app-sidebar button:not(#logout-button):hover,
-        .app-sidebar a button:hover {
-            background-image: linear-gradient(to right, var(--app-button-light-gradient-start), var(--app-button-light-gradient-end));
-            color: var(--app-text-on-primary);
-            transform: translateY(-1px);
-            border-color: transparent;
-        }
-        .app-sidebar button:not(#logout-button):hover i,
-        .app-sidebar a button:hover i {
-            color: var(--app-text-on-primary);
-        }
-        .app-sidebar button:active, .app-sidebar a button:active { transform: translateY(0px); }
-        .app-sidebar a { text-decoration: none; display: block; }
-        .content-container { max-width: 1100px; margin: 0 auto; }
         h1, h2, h3 { font-family: 'Avenir', sans-serif; margin-bottom: 0.75em; font-weight: var(--normal-font-weight); }
         h1 { text-align: left; font-size: 2.0rem; margin-top: 0; margin-bottom: 1em; color: var(--app-primary-color); font-weight: var(--normal-font-weight); }
-        h2.section-title-main { /* For main section titles like "Patient Selection" */
+        h2.section-title-main {
             font-size: 1.5rem;
             padding-bottom: 0.4em;
             margin-top: 1.8em;
@@ -239,7 +218,7 @@
             gap: 30px;
         }
         .choice-box {
-            background-color: transparent; /* Made transparent */
+            background-color: transparent;
             border: 1px solid var(--medium-gray);
             border-radius: var(--border-radius);
             padding: 20px 25px;
@@ -250,7 +229,7 @@
             box-shadow: none;
         }
         .choice-box:hover {
-            background-color: rgba(40, 84, 132, 0.8); /* Dark blueish on hover */
+            background-color: rgba(40, 84, 132, 0.8);
             border-color: transparent;
         }
         .choice-box:hover i,
@@ -456,7 +435,7 @@
             flex-wrap: wrap;
             gap: 20px;
             margin-bottom: 25px;
-            align-items: stretch; /* MODIFIED: Was flex-start, now stretch for equal height columns */
+            align-items: stretch;
         }
 
         .overview-column {
@@ -475,7 +454,7 @@
             min-width: 300px;
         }
 
-        .patient-card, #selected-patient-tests-container { /* MODIFIED: Grouped for height */
+        .patient-card, #selected-patient-tests-container {
             background-color: var(--box-background-color);
             border-radius: var(--border-radius);
             padding: 20px;
@@ -485,8 +464,8 @@
             display: flex;
             flex-direction: column;
             width: 100%;
-            height: 100%; /* ADDED: To make cards fill stretched column */
-            box-sizing: border-box; /* ADDED: To include padding in 100% height */
+            height: 100%;
+            box-sizing: border-box;
         }
          .patient-profile-title-internal {
             font-size: 1.3rem;
@@ -549,8 +528,6 @@
             text-align: right;
         }
 
-        /* #selected-patient-tests-container specific styles were merged above */
-
         #selected-patient-tests-container .test-log-title-internal {
             font-size: 1.3rem;
             color: var(--app-primary-color);
@@ -570,8 +547,8 @@
             gap: 10px;
             overflow-y: auto;
             flex-grow: 1;
-            justify-content: flex-start; /* ADDED: To pack items to the start */
-            align-content: flex-start; /* ADDED: To pack lines to the start */
+            justify-content: flex-start;
+            align-content: flex-start;
         }
 
         #selected-patient-tests-list li {
@@ -579,7 +556,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 8px 10px; /* MODIFIED: Slightly reduced padding */
+            padding: 8px 10px;
             border: 1px solid rgba(40, 84, 132, 0.3);
             background-color: rgba(112, 188, 252, 0.05);
             border-radius: var(--border-radius);
@@ -590,7 +567,7 @@
             text-align: center;
             transition: background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
             cursor: pointer;
-            max-width: max-content; /* ADDED: To ensure button does not stretch unnecessarily */
+            max-width: max-content;
         }
 
         #selected-patient-tests-list li:hover {
@@ -611,7 +588,7 @@
             color: var(--app-primary-color);
             font-size: 0.85rem;
             font-weight: var(--semibold-font-weight);
-            margin-bottom: 5px; /* MODIFIED: Reduced margin */
+            margin-bottom: 5px;
         }
 
         #selected-patient-tests-list button.delete-test-btn {
@@ -620,14 +597,14 @@
             color: var(--danger-color-dark);
             border-radius: var(--border-radius);
             cursor: pointer;
-            padding: 3px 6px; /* MODIFIED: Slightly reduced padding */
-            font-size: 0.75rem; /* MODIFIED: Slightly reduced font size */
+            padding: 3px 6px;
+            font-size: 0.75rem;
             transition: all 0.2s ease;
             width: auto;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-top: 4px; /* ADDED: Small space above delete button */
+            margin-top: 4px;
         }
         #selected-patient-tests-list button.delete-test-btn:hover {
             background-color: var(--danger-color-dark);
@@ -684,23 +661,23 @@
             border: none;
             padding: 10px 20px 15px 20px;
             border-radius: var(--border-radius);
-            background-color: var(--box-background-color); /* Use new darker gray */
+            background-color: var(--box-background-color);
             box-shadow: var(--subtle-shadow);
-            margin-bottom: 0; /* Handled by position-row gap */
+            margin-bottom: 0;
             transition: box-shadow 0.3s ease, opacity 0.3s ease;
             display: flex;
             flex-direction: column;
-            height: var(--graph-box-height); /* Fixed height for alignment */
-            position: relative; /* For pseudo-elements */
-            overflow: hidden; /* To contain pseudo-elements */
+            height: var(--graph-box-height);
+            position: relative;
+            overflow: hidden;
         }
         .position-box.green-box {
-            box-shadow: 0 0 15px 5px var(--success-shadow-color); /* More prominent shadow */
-            border-color: var(--success-border-color); /* If you add border back */
+            box-shadow: 0 0 15px 5px var(--success-shadow-color);
+            border-color: var(--success-border-color);
         }
         .position-box::after { content: ''; position: absolute; top: -100px; right: -100px; width: 500px; height: 500px; background-image: radial-gradient(circle at top right, var(--success-gradient-start-color) 0%, rgba(from var(--light-gray) r g b / 0) 65% ); opacity: 0; pointer-events: none; z-index: 0; border-radius: 50%; transition: opacity 0.3s ease; }
-        .position-box.green-box::after { opacity: 0.85; } /* Make gradient visible */
-        .js-plotly-plot { flex-grow: 1; position: relative; z-index: 1; } /* Ensure chart is above pseudo-element */
+        .position-box.green-box::after { opacity: 0.85; }
+        .js-plotly-plot { flex-grow: 1; position: relative; z-index: 1; }
         #normative-placeholder { text-align: center; color: var(--dark-gray); font-style: italic; padding: 20px; background-color: var(--box-background-color); border-radius: var(--border-radius); margin-top: 1em;}
         #bottom-area { margin-top: 30px; padding-top: 15px; border-top: 1px solid var(--medium-gray); min-height: 30px; }
         #preview-exit-button-inline { display: none; position: fixed; top: 15px; right: 15px; background-color: var(--danger-color-dark); color: white; padding: 8px 15px; font-size: 0.9rem; font-weight: var(--normal-font-weight); border: none; border-radius: var(--border-radius); cursor: pointer; z-index: 1001; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: all 0.3s ease; font-family: inherit; }
@@ -718,30 +695,33 @@
         body.pdf-preview-active #existing-patient-search-container,
         body.pdf-preview-active #patient-data-secondary-controls,
         body.pdf-preview-active #patient-data-container,
-        /* body.pdf-preview-active #patient-overview-section, */ /* This should be visible */
-        /* body.pdf-preview-active #patient-card-and-log-title, */ /* This should be visible */
+        body.pdf-preview-active #patient-overview-section, /* Hide patient details card & test log for PDF */
+        body.pdf-preview-active #patient-card-and-log-title, /* Hide "Details" title for PDF */
         body.pdf-preview-active #input-section-container,
         body.pdf-preview-active #save-data-button-container,
         body.pdf-preview-active #bottom-area,
         body.pdf-preview-active .sidebar-social-links,
         body.pdf-preview-active #loggedInUserContainer,
         body.pdf-preview-active .sidebar-buttons,
-        body.pdf-preview-active #results-title,
+        body.pdf-preview-active #results-title, /* This is "Results", keep for context of graphs */
         body.pdf-preview-active #patient-details-title, /* This is "Patient Selection", should be hidden */
-        body.pdf-preview-active #input-title
+        body.pdf-preview-active #input-title /* This is "Input Overview", should be hidden */
         {
             display: none !important;
         }
 
-        body.pdf-preview-active #patient-card-and-log-title, /* Ensure "Details" title is visible */
-        body.pdf-preview-active #patient-overview-section /* Ensure overview section is visible */
+        /* Ensure specific elements ARE visible in PDF */
+        body.pdf-preview-active h1, /* Main App Title */
+        body.pdf-preview-active .explanation-box,
+        body.pdf-preview-active .position-row, /* Contains graphs */
+        body.pdf-preview-active #results-title /* "Results" title above graphs */
         {
             display: block !important; /* or flex if appropriate for the element */
         }
-        body.pdf-preview-active #patient-overview-section {
-             flex-direction: column !important; /* Stack cards in PDF */
-             gap: 5mm !important;
-        }
+         body.pdf-preview-active #results-title {
+            margin-top: 10mm !important; /* Add space above results title in PDF */
+            text-align: center !important;
+         }
 
 
         body.pdf-preview-active .app-main-content {
@@ -751,27 +731,30 @@
             overflow: visible !important;
         }
         body.pdf-preview-active .content-container {
-            max-width: 100% !important;
+            max-width: 100% !important; /* PDF content should use full width within margins */
         }
 
-        body.pdf-preview-active .patient-card,
-        body.pdf-preview-active #selected-patient-tests-container {
-            width: 100% !important;
-            flex-basis: auto !important;
-            margin-bottom: 5mm !important;
-            height: auto !important; /* Allow height to adjust in PDF */
-        }
-        body.pdf-preview-active #selected-patient-tests-container h3,
-        body.pdf-preview-active #selected-patient-tests-list {
-            display: none !important;
-        }
         body.pdf-preview-active .explanation-box {
-            display: block !important;
             margin: 0 0 10mm 0 !important;
         }
         body.pdf-preview-active .position-row {
-            display: flex !important;
+            display: flex !important; /* Keep graphs side-by-side if space allows, will wrap due to flex-wrap */
+            flex-direction: row !important; /* Explicitly row for PDF */
+            flex-wrap: wrap !important; /* Allow wrapping for smaller PDF viewports / print scaling */
+            page-break-inside: avoid !important;
         }
+         body.pdf-preview-active .asymmetry-graph-container,
+         body.pdf-preview-active .normative-graph-container {
+            width: 100% !important; /* Make each graph take full width when stacked in PDF due to wrapping */
+            flex-basis: 100% !important;
+            margin-bottom: 5mm;
+         }
+        body.pdf-preview-active .position-box,
+        body.pdf-preview-active .normative-box {
+            height: auto !important; /* Allow height to adjust in PDF */
+            min-height: var(--graph-box-height); /* Keep a min height for consistency if possible */
+        }
+
         body.pdf-preview-active h1 {
             text-align: center !important;
             margin-bottom: 10mm !important;
@@ -789,13 +772,13 @@
             .sidebar-social-links { display: none; }
 
             #patient-overview-section {
-                flex-direction: column; /* Stack columns on medium devices for better readability */
+                flex-direction: column;
             }
              .overview-column {
-                min-width: 100%; /* Make columns take full width when stacked */
+                min-width: 100%;
                 flex-basis: auto;
             }
-            .patient-details-column, .test-log-column { /* Reset min-width when stacked */
+            .patient-details-column, .test-log-column {
                 min-width: unset;
             }
 
@@ -866,33 +849,35 @@
             .sidebar-social-links,
             #loggedInUserContainer,
             .sidebar-buttons,
-            #results-title,
-            #patient-details-title, /* This is "Patient Selection", should be hidden */
-            #input-title
+            #patient-details-title,
+            #input-title,
+            #patient-overview-section, /* Hide patient details for print */
+            #patient-card-and-log-title, /* Hide "Details" title for print */
+            #selected-patient-tests-container /* Hide test log for print */
             {
                 display: none !important;
             }
 
-            #patient-card-and-log-title, /* Ensure "Details" title is visible for print */
-            #patient-overview-section    /* Ensure overview section is visible for print */
+            /* Elements to SHOW in print */
+            h1, /* Main App Title */
+            .explanation-box,
+            #results-title, /* "Results" title above graphs */
+            .position-row /* Contains graphs */
             {
                 display: block !important;
             }
-             #patient-overview-section {
-                flex-direction: column !important;
-                gap: 5mm !important;
-                margin-bottom: 5mm !important;
+            #results-title {
+                 margin-top: 10mm !important;
+                 text-align: center !important;
             }
 
 
             .app-layout { display: block !important; }
             .app-main-content { margin: 0 !important; padding: 5mm !important; width: 100% !important; max-width: 100% !important; box-shadow: none !important; border: none !important; height: auto !important; overflow: visible !important; }
             .content-container { margin: 0 !important; padding: 0 !important; max-width: 100% !important; }
-            .patient-card { width: 100% !important; flex-basis: auto !important; border: 1px solid #ccc !important; box-shadow: none !important; padding: 5px !important; margin-bottom: 3mm !important; page-break-inside: avoid !important; height: auto !important;}
-            #selected-patient-tests-container { display: none !important; }
 
-            .explanation-box { display: block !important; margin: 0 0 5mm 0 !important; border-left-color: black !important; padding: 10px !important; font-size: 8pt !important; }
-            h1 { font-size: 16pt !important; margin-bottom: 5mm !important; text-align: center !important; display: block !important; color: black !important; font-weight: normal !important; }
+            .explanation-box { margin: 0 0 5mm 0 !important; border-left-color: black !important; padding: 10px !important; font-size: 8pt !important; }
+            h1 { font-size: 16pt !important; margin-bottom: 5mm !important; text-align: center !important; color: black !important; font-weight: normal !important; }
             h2 { display: block !important; font-size: 12pt !important; margin-top: 8mm; margin-bottom: 4mm; border: none !important; color: black !important; font-weight: normal !important; }
             h3 { font-size: 10pt !important; margin-bottom: 3mm !important; color: black !important; font-weight: normal !important; }
             #report-content { padding: 0 !important; }
@@ -927,115 +912,115 @@
     <div class="app-layout">
         <aside class="app-sidebar">
             <div class="sidebar-logo-placeholder"><i class="fas fa-bars"></i></div> <div class="sidebar-buttons">
-                <a href="assets/analysis.html" id="analysis-link-button"><button type="button" id="view-analysis-button"><i class="fas fa-history"></i> <span class="button-text">Pasienthistorikk</span></button></a>
-                <button id="pdf-preview-button"><i class="fas fa-file-pdf"></i><span class="button-text">PDF Forhåndsvisning</span></button>
-                <button id="export-excel-button"><i class="fas fa-file-excel"></i><span class="button-text">Eksporter Data</span></button>
-                <button id="clear-all-button"><i class="fas fa-eraser"></i><span class="button-text">Slett Alt</span></button>
+                <a href="assets/analysis.html" id="analysis-link-button"><button type="button" id="view-analysis-button"><i class="fas fa-history"></i> <span class="button-text">Patient History</span></button></a>
+                <button id="pdf-preview-button"><i class="fas fa-file-pdf"></i><span class="button-text">PDF Preview</span></button>
+                <button id="export-excel-button"><i class="fas fa-file-excel"></i><span class="button-text">Export Data</span></button>
+                <button id="clear-all-button"><i class="fas fa-eraser"></i><span class="button-text">Clear All</span></button>
             </div>
             <div id="loggedInUserContainer" class="sidebar-user-info">
                 <div class="user-details">
-                    <span id="loggedInUserName">Laster...</span>
+                    <span id="loggedInUserName">Loading...</span>
                     <span id="loggedInUserEmailDisplay"></span>
                 </div>
-                <button id="logout-button"><i class="fas fa-sign-out-alt"></i><span class="button-text">Logg ut</span></button>
+                <button id="logout-button"><i class="fas fa-sign-out-alt"></i><span class="button-text">Logout</span></button>
             </div>
             <div class="sidebar-social-links">
                 <a href="https://www.instagram.com/alphatekofficial" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
                 <a href="https://www.alphatek.no" target="_blank" title="Website"><i class="fas fa-globe"></i></a>
-                <a href="#" title="Info/Hjelp"><i class="fas fa-circle-info"></i></a> </div>
+                <a href="#" title="Info/Help"><i class="fas fa-circle-info"></i></a> </div>
         </aside>
         <main class="app-main-content">
-            <button id="preview-exit-button-inline"><i class="fas fa-times-circle"></i> Avslutt Forhåndsvisning</button>
+            <button id="preview-exit-button-inline"><i class="fas fa-times-circle"></i> Exit Preview</button>
             <div class="content-container">
                 <div id="report-content">
-                    <h1>Funksjonell Skulder Screening</h1>
-                    <h2 class="section-title-main" id="patient-details-title">Pasientvalg</h2>
+                    <h1>Functional Shoulder Screening</h1>
+                    <h2 class="section-title-main" id="patient-details-title">Patient Selection</h2>
 
                     <div id="patient-choice-container">
                         <div id="patient-choice-section">
                             <div class="choice-box" id="new-patient-choice">
                                 <i class="fas fa-plus"></i>
-                                <span>Ny Pasient</span>
+                                <span>New Patient</span>
                             </div>
                             <div class="choice-box" id="existing-patient-choice">
                                 <i class="fas fa-search"></i>
-                                <span>Eksisterende Pasient</span>
+                                <span>Existing Patient</span>
                             </div>
                         </div>
                     </div>
 
 
                     <div id="existing-patient-search-container" style="display: none;">
-                        <label for="fp-nr-input-search">Søk Pasient ID:</label>
+                        <label for="fp-nr-input-search">Search Patient ID:</label>
                         <input id="fp-nr-input-search" type="text" list="existing-patient-ids">
                         </div>
 
                     <div id="main-screening-content">
-                        <div class="explanation-box"><h4>Om Denne Rapporten</h4> <p>Denne rapporten oppsummerer resultatene av Funksjonell Skulder Screening ved bruk av ASH-testen (Posisjon I, Y, T).</p><ul> <li><strong>Asymmetrgrafer:</strong> Viser prosentvis forskjell mellom skadet og uskadd side for nøkkelmetrikker (Maks Kraft, RFD, % Maks Kraft ved 100ms). Verdier nærmere 100% indikerer bedre symmetri. Annotasjoner over søylene viser prosentvis forskjell relativt til uskadd side (100%). Tall inne i søylene viser absolutte verdier for hver side.</li> <li><strong>Normative Grafer:</strong> Viser visuelt den estimerte persentilrangeringen for Maks Kraft / Kroppsvekt (N/kg) for hver side, basert på normative terskler. Bakgrunnsfarger indikerer ytelsessoner (Dårlig, Gjennomsnittlig, God, Utmerket). Vertikale stiplede linjer viser estimert persentil for Venstre (Oransje) og Høyre (Blå) verdier.</li> </ul><p><i>For å lagre som PDF: Klikk 'PDF Forhåndsvisning', bruk deretter nettleserens Print-funksjon (Ctrl+P eller Cmd+P) og velg 'Lagre som PDF'. Klikk 'Avslutt Forhåndsvisning' for å returnere.</i></p></div>
+                        <div class="explanation-box"><h4>About This Report</h4> <p>This report summarizes the results of the Functional Shoulder Screening using the ASH test (Positions I, Y, T).</p><ul> <li><strong>Asymmetry Graphs:</strong> Show the percentage difference between the injured and uninjured side for key metrics (Max Force, RFD, % Max Force at 100ms). Values closer to 100% indicate better symmetry. Annotations above the bars show the percentage difference relative to the uninjured side (100%). Numbers inside the bars show the absolute values for each side.</li> <li><strong>Normative Graphs:</strong> Visually represent the estimated percentile rank for Max Force / Bodyweight (N/kg) for each side, based on normative thresholds. Background colors indicate performance zones (Poor, Average, Good, Excellent). Vertical dashed lines show the estimated percentile for the Left (Orange) and Right (Blue) values.</li> </ul><p><i>To save as PDF: Click 'PDF Preview', then use your browser's Print function (Ctrl+P or Cmd+P) and select 'Save as PDF'. Click 'Exit Preview' to return.</i></p></div>
 
-                        <h2 class="section-title-main" id="patient-card-and-log-title" style="display: none;">Detaljer</h2>
+                        <h2 class="section-title-main" id="patient-card-and-log-title" style="display: none;">Details</h2>
                         <div id="patient-overview-section">
                             <div class="overview-column patient-details-column">
                                 <div id="patient-identity-card" class="patient-card" style="display: none;">
-                                    <h3 class="patient-profile-title-internal">Pasientprofil</h3>
+                                    <h3 class="patient-profile-title-internal">Patient Profile</h3>
                                     <div class="patient-card-header">
                                         <i class="fas fa-address-card patient-card-icon"></i>
                                         <div class="patient-card-id-container">
-                                            <span class="patient-card-id-label">Pasient ID:</span>
+                                            <span class="patient-card-id-label">Patient ID:</span>
                                             <span class="patient-card-id" id="display-patient-id-card"></span>
                                         </div>
                                     </div>
                                     <div class="patient-card-body">
-                                        <div class="info-item"><i class="fas fa-birthday-cake info-icon"></i><span class="label">Alder:</span><span class="value" id="display-age-card"></span></div>
-                                        <div class="info-item"><i class="fas fa-venus-mars info-icon"></i><span class="label">Kjønn:</span><span class="value" id="display-gender-card"></span></div>
-                                        <div class="info-item"><i class="fas fa-futbol info-icon"></i><span class="label">Idrett:</span><span class="value" id="display-sport-card"></span></div>
-                                        <div class="info-item"><i class="fas fa-notes-medical info-icon"></i><span class="label">Skade:</span><span class="value" id="display-injury-card"></span></div>
-                                        <div class="info-item"><i class="fas fa-user-injured info-icon"></i><span class="label">Skadet Side:</span><span class="value" id="display-injured-side-card"></span></div>
-                                        <div class="info-item"><i class="fas fa-weight-hanging info-icon"></i><span class="label">Kroppsvekt:</span><span class="value" id="display-bodyweight-card"></span></div>
+                                        <div class="info-item"><i class="fas fa-birthday-cake info-icon"></i><span class="label">Age:</span><span class="value" id="display-age-card"></span></div>
+                                        <div class="info-item"><i class="fas fa-venus-mars info-icon"></i><span class="label">Gender:</span><span class="value" id="display-gender-card"></span></div>
+                                        <div class="info-item"><i class="fas fa-futbol info-icon"></i><span class="label">Sport:</span><span class="value" id="display-sport-card"></span></div>
+                                        <div class="info-item"><i class="fas fa-notes-medical info-icon"></i><span class="label">Injury:</span><span class="value" id="display-injury-card"></span></div>
+                                        <div class="info-item"><i class="fas fa-user-injured info-icon"></i><span class="label">Injured Side:</span><span class="value" id="display-injured-side-card"></span></div>
+                                        <div class="info-item"><i class="fas fa-weight-hanging info-icon"></i><span class="label">Bodyweight:</span><span class="value" id="display-bodyweight-card"></span></div>
                                     </div>
                                 </div>
                             </div>
                             <div class="overview-column test-log-column">
                                 <div id="selected-patient-tests-container" style="display: none;">
-                                     <h3 class="test-log-title-internal">Testlogg</h3>
+                                     <h3 class="test-log-title-internal">Test Log</h3>
                                     <ul id="selected-patient-tests-list">
                                     </ul>
                                 </div>
                             </div>
                         </div>
-                        <h2 class="section-title-main" id="input-title">Inndata Oversikt</h2>
+                        <h2 class="section-title-main" id="input-title">Input Overview</h2>
                         <div id="input-section-container">
-                            <div class="input-position-box"><h4>ASH Test Posisjon I</h4><div class="input-row"> <label>Maks Kraft</label> <div class="input-wrapper"> <input id="non-injured-max-force-i" type="number" class="number-input" placeholder="Uskadd"> <span class="unit-text">- N</span> </div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"> <input id="non-injured-rfd-i" type="number" class="number-input" placeholder="Uskadd"> <span class="unit-text">- Ns<sup>-1</sup></span> </div> </div><div class="input-row"> <label>Maks Kraft</label> <div class="input-wrapper"> <input id="injured-max-force-i" type="number" class="number-input" placeholder="Skadd"> <span class="unit-text">- N</span> </div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"> <input id="injured-rfd-i" type="number" class="number-input" placeholder="Skadd"> <span class="unit-text">- Ns<sup>-1</sup></span> </div> </div></div>
-                            <div class="input-position-box"><h4>ASH Test Posisjon Y</h4><div class="input-row"> <label>Maks Kraft</label> <div class="input-wrapper"><input id="non-injured-max-force-y" type="number" class="number-input" placeholder="Uskadd"> <span class="unit-text">- N</span></div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="non-injured-rfd-y" type="number" class="number-input" placeholder="Uskadd"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div><div class="input-row"> <label>Maks Kraft</label> <div class="input-wrapper"><input id="injured-max-force-y" type="number" class="number-input" placeholder="Skadd"> <span class="unit-text">- N</span></div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="injured-rfd-y" type="number" class="number-input" placeholder="Skadd"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div></div>
-                            <div class="input-position-box"><h4>ASH Test Posisjon T</h4><div class="input-row"> <label>Maks Kraft</label> <div class="input-wrapper"><input id="non-injured-max-force-t" type="number" class="number-input" placeholder="Uskadd"> <span class="unit-text">- N</span></div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="non-injured-rfd-t" type="number" class="number-input" placeholder="Uskadd"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div><div class="input-row"> <label>Maks Kraft</label> <div class="input-wrapper"><input id="injured-max-force-t" type="number" class="number-input" placeholder="Skadd"> <span class="unit-text">- N</span></div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="injured-rfd-t" type="number" class="number-input" placeholder="Skadd"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div></div>
+                            <div class="input-position-box"><h4>ASH Test Position I</h4><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"> <input id="non-injured-max-force-i" type="number" class="number-input" placeholder="Uninjured"> <span class="unit-text">- N</span> </div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"> <input id="non-injured-rfd-i" type="number" class="number-input" placeholder="Uninjured"> <span class="unit-text">- Ns<sup>-1</sup></span> </div> </div><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"> <input id="injured-max-force-i" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- N</span> </div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"> <input id="injured-rfd-i" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- Ns<sup>-1</sup></span> </div> </div></div>
+                            <div class="input-position-box"><h4>ASH Test Position Y</h4><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"><input id="non-injured-max-force-y" type="number" class="number-input" placeholder="Uninjured"> <span class="unit-text">- N</span></div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="non-injured-rfd-y" type="number" class="number-input" placeholder="Uninjured"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"><input id="injured-max-force-y" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- N</span></div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="injured-rfd-y" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div></div>
+                            <div class="input-position-box"><h4>ASH Test Position T</h4><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"><input id="non-injured-max-force-t" type="number" class="number-input" placeholder="Uninjured"> <span class="unit-text">- N</span></div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="non-injured-rfd-t" type="number" class="number-input" placeholder="Uninjured"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div><div class="input-row"> <label>Max Force</label> <div class="input-wrapper"><input id="injured-max-force-t" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- N</span></div> </div><div class="input-row"> <label>RFD 100ms</label> <div class="input-wrapper"><input id="injured-rfd-t" type="number" class="number-input" placeholder="Injured"> <span class="unit-text">- Ns<sup>-1</sup></span></div> </div></div>
                         </div>
                         <div id="save-data-button-container">
-                            <button id="save-data-button-main"><i class="fas fa-save"></i> Lagre Screeningdata</button>
+                            <button id="save-data-button-main"><i class="fas fa-save"></i> Save Screening Data</button>
                         </div>
 
-                        <h2 class="section-title-main" id="results-title">Resultater</h2>
-                        <div class="position-row"> <div class="asymmetry-graph-container"> <div id="position-box-I" class="position-box"> <h3 class="position-title">Posisjon I - Asymmetri</h3> <div id="bar-chart-I" class="js-plotly-plot"></div> </div> </div> <div class="normative-graph-container"> <div id="normative-chart-container-I" class="normative-box"> <h3 class="normative-title">Posisjon I - Normativ Sammenligning</h3> <div id="normative-chart-I" class="js-plotly-plot"></div> </div> </div> </div>
-                        <div class="position-row"> <div class="asymmetry-graph-container"> <div id="position-box-Y" class="position-box"> <h3 class="position-title">Posisjon Y - Asymmetri</h3> <div id="bar-chart-Y" class="js-plotly-plot"></div> </div> </div> <div class="normative-graph-container"> <div id="normative-chart-container-Y" class="normative-box"> <h3 class="normative-title">Posisjon Y - Normativ Sammenligning</h3> <div id="normative-chart-Y" class="js-plotly-plot"></div> </div> </div> </div>
-                        <div class="position-row"> <div class="asymmetry-graph-container"> <div id="position-box-T" class="position-box"> <h3 class="position-title">Posisjon T - Asymmetri</h3> <div id="bar-chart-T" class="js-plotly-plot"></div> </div> </div> <div class="normative-graph-container"> <div id="normative-chart-container-T" class="normative-box"> <h3 class="normative-title">Posisjon T - Normativ Sammenligning</h3> <div id="normative-chart-T" class="js-plotly-plot"></div> </div> </div> </div>
-                        <div id="normative-placeholder" style="display: none;"> Skriv inn kroppsvekt for å se normative sammenligninger. </div>
+                        <h2 class="section-title-main" id="results-title">Results</h2>
+                        <div class="position-row"> <div class="asymmetry-graph-container"> <div id="position-box-I" class="position-box"> <h3 class="position-title">Position I - Asymmetry</h3> <div id="bar-chart-I" class="js-plotly-plot"></div> </div> </div> <div class="normative-graph-container"> <div id="normative-chart-container-I" class="normative-box"> <h3 class="normative-title">Position I - Normative Comparison</h3> <div id="normative-chart-I" class="js-plotly-plot"></div> </div> </div> </div>
+                        <div class="position-row"> <div class="asymmetry-graph-container"> <div id="position-box-Y" class="position-box"> <h3 class="position-title">Position Y - Asymmetry</h3> <div id="bar-chart-Y" class="js-plotly-plot"></div> </div> </div> <div class="normative-graph-container"> <div id="normative-chart-container-Y" class="normative-box"> <h3 class="normative-title">Position Y - Normative Comparison</h3> <div id="normative-chart-Y" class="js-plotly-plot"></div> </div> </div> </div>
+                        <div class="position-row"> <div class="asymmetry-graph-container"> <div id="position-box-T" class="position-box"> <h3 class="position-title">Position T - Asymmetry</h3> <div id="bar-chart-T" class="js-plotly-plot"></div> </div> </div> <div class="normative-graph-container"> <div id="normative-chart-container-T" class="normative-box"> <h3 class="normative-title">Position T - Normative Comparison</h3> <div id="normative-chart-T" class="js-plotly-plot"></div> </div> </div> </div>
+                        <div id="normative-placeholder" style="display: none;"> Enter bodyweight to see normative comparisons. </div>
                         <div id="bottom-area"></div>
                          <div id="patient-data-container" style="display:none;">
                             <div id="patient-id-and-secondary-controls">
                                     <div class="patient-id-standalone-item">
-                                        <label for="fp-nr-input">Pasient ID (Intern):</label>
+                                        <label for="fp-nr-input">Patient ID (Internal):</label>
                                         <input id="fp-nr-input" type="text">
                                         <datalist id="existing-patient-ids"></datalist>
                                     </div>
                                     <div id="patient-data-secondary-controls">
-                                        <div class="control-item"><label class="control-label" for="injured-side-radio">Skadet Side:</label><select id="injured-side-radio"><option value="Left">Venstre</option><option value="Right">Høyre</option></select></div>
-                                        <div class="control-item"><label class="control-label" for="bodyweight-input">Kroppsvekt (kg):</label><input id="bodyweight-input" type="number"></div>
+                                        <div class="control-item"><label class="control-label" for="injured-side-radio">Injured Side:</label><select id="injured-side-radio"><option value="Left">Left</option><option value="Right">Right</option></select></div>
+                                        <div class="control-item"><label class="control-label" for="bodyweight-input">Bodyweight (kg):</label><input id="bodyweight-input" type="number"></div>
                                     </div>
                                 </div>
                                 <div id="patient-data-grid">
-                                    <div class="patient-data-item"><label for="age-input">Alder:</label><input id="age-input" type="number"></div>
-                                    <div class="patient-data-item"><label for="gender-select">Kjønn:</label><select id="gender-select"><option value="">Velg...</option><option value="Male">Mann</option><option value="Female">Kvinne</option><option value="Other">Annet</option><option value="Prefer not to say">Ønsker ikke å oppgi</option></select></div>
-                                    <div class="patient-data-item"><label for="sport-input">Idrett:</label><input id="sport-input" type="text"></div>
-                                    <div class="patient-data-item"><label for="injury-input">Skade (Valgfritt):</label><input id="injury-input" type="text"></div>
+                                    <div class="patient-data-item"><label for="age-input">Age:</label><input id="age-input" type="number"></div>
+                                    <div class="patient-data-item"><label for="gender-select">Gender:</label><select id="gender-select"><option value="">Select...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option><option value="Prefer not to say">Prefer not to say</option></select></div>
+                                    <div class="patient-data-item"><label for="sport-input">Sport:</label><input id="sport-input" type="text"></div>
+                                    <div class="patient-data-item"><label for="injury-input">Injury (Optional):</label><input id="injury-input" type="text"></div>
                                 </div>
                         </div>
                     </div>
@@ -1094,8 +1079,8 @@
         const existingPatientSearchContainer = document.getElementById('existing-patient-search-container');
         const fpNrInputSearch = document.getElementById('fp-nr-input-search');
         const mainScreeningContent = document.getElementById('main-screening-content');
-        const patientDetailsTitle = document.getElementById('patient-details-title'); // "Pasientvalg" H2
-        const patientCardAndLogTitle = document.getElementById('patient-card-and-log-title'); // "Detaljer" H2
+        const patientDetailsTitle = document.getElementById('patient-details-title');
+        const patientCardAndLogTitle = document.getElementById('patient-card-and-log-title');
 
         const patientModalOverlay = document.getElementById('patient-modal-overlay');
         const patientModalContent = document.getElementById('patient-modal-content');
@@ -1122,7 +1107,7 @@
             good: getComputedStyle(document.documentElement).getPropertyValue('--norm-good-bg').trim(),
             excellent: getComputedStyle(document.documentElement).getPropertyValue('--norm-excellent-bg').trim()
         };
-        const normativeLabels = { poor: 'Dårlig', average: 'Gjennomsnittlig', good: 'God', excellent: 'Utmerket' };
+        const normativeLabels = { poor: 'Poor', average: 'Average', good: 'Good', excellent: 'Excellent' }; // Translated
         const asymmetryChartDivs = ['bar-chart-I', 'bar-chart-Y', 'bar-chart-T'];
         const asymmetryPositionBoxDivs = ['position-box-I', 'position-box-Y', 'position-box-T'];
         const normativeChartDivs = ['normative-chart-I', 'normative-chart-Y', 'normative-chart-T'];
@@ -1164,22 +1149,22 @@
             if (user) {
                 currentUser = user;
                 currentUserId = user.uid;
-                if (appLoadingMessage) appLoadingMessage.textContent = `Velkommen, laster data...`;
+                if (appLoadingMessage) appLoadingMessage.textContent = `Welcome, loading data...`; // Translated
 
                 try {
                     const userDocRef = doc(db, "users", currentUserId);
                     const userDocSnap = await getDoc(userDocRef);
                     if (userDocSnap.exists()) {
                         const userData = userDocSnap.data();
-                        loggedInUserNameSpan.textContent = `Hei! ${userData.firstName || 'Bruker'}`;
+                        loggedInUserNameSpan.textContent = `Hi! ${userData.firstName || 'User'}`;
                         loggedInUserEmailDisplaySpan.textContent = currentUser.email || '';
                     } else {
-                        loggedInUserNameSpan.textContent = 'Hei! Bruker';
+                        loggedInUserNameSpan.textContent = 'Hi! User';
                         loggedInUserEmailDisplaySpan.textContent = currentUser.email || '';
                     }
                 } catch (error) {
                     console.error("Error fetching user data:", error);
-                    loggedInUserNameSpan.textContent = 'Hei! Bruker';
+                    loggedInUserNameSpan.textContent = 'Hi! User';
                     loggedInUserEmailDisplaySpan.textContent = currentUser.email || '';
                 }
 
@@ -1190,22 +1175,22 @@
             } else {
                 currentUser = null;
                 currentUserId = null;
-                if (appLoadingMessage) appLoadingMessage.textContent = 'Omdirigerer til innlogging...';
+                if (appLoadingMessage) appLoadingMessage.textContent = 'Redirecting to login...'; // Translated
                 localStorage.setItem('redirectToAfterLogin', window.location.pathname + window.location.search);
                 window.location.href = "index.html";
             }
         });
 
         async function initializeAppUI() {
-            asymmetryChartDivs.forEach(divId => createEmptyPlot(divId, 'Skriv inn Data', 300, 20));
-            normativeChartDivs.forEach(divId => createEmptyPlot(divId, 'Skriv inn Kroppsvekt', 250, 35));
+            asymmetryChartDivs.forEach(divId => createEmptyPlot(divId, 'Enter Data', 300, 20)); // Translated
+            normativeChartDivs.forEach(divId => createEmptyPlot(divId, 'Enter Bodyweight', 250, 35)); // Translated
             loadInputsFromLocalStorage();
             await populatePatientIdDatalistFromFirestore();
 
             if (currentPatientDataForApp.patientId) {
                 displayPatientInfoInCard(currentPatientDataForApp);
                 await displayTestsForPatientFromFirestore(currentPatientDataForApp.patientId);
-                 if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block'; // Show "Detaljer" title
+                 if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
             } else {
                 showInitialScreenState();
             }
@@ -1222,15 +1207,15 @@
             }, duration);
         }
         function hexToRgba(hex, alpha) { hex = hex.replace('#', ''); const r = parseInt(hex.substring(0, 2), 16); const g = parseInt(hex.substring(2, 4), 16); const b = parseInt(hex.substring(4, 6), 16); return `rgba(${r}, ${g}, ${b}, ${alpha})`; }
-        function createEmptyPlot(targetDivId, title = 'Skriv inn Data', height = 300, topMargin = 20) { const targetDiv = document.getElementById(targetDivId); if (!targetDiv) { console.error(`Target div '${targetDivId}' not found for empty plot.`); return; } try { Plotly.react(targetDiv, [{ x: [], y: [], type: 'bar' }], { title: { text: title, font: { family: 'Avenir, sans-serif', size: 16, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim(), weight: 400 } }, height: height, margin: { l: 60, r: 40, b: 40, t: topMargin, pad: 4 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', xaxis: { visible: false }, yaxis: { showgrid: false, zeroline: true, gridcolor: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), showticklabels: false }, font: { family: 'Avenir, sans-serif', size: 12, weight: 400 } }, plotlyConfig); } catch (error) { console.error(`Error creating empty plot for '${targetDivId}':`, error); targetDiv.innerHTML = `<p style="color: red; text-align: center; padding: 20px;">Feil ved visning av diagram.</p>`; } }
+        function createEmptyPlot(targetDivId, title = 'Enter Data', height = 300, topMargin = 20) { const targetDiv = document.getElementById(targetDivId); if (!targetDiv) { console.error(`Target div '${targetDivId}' not found for empty plot.`); return; } try { Plotly.react(targetDiv, [{ x: [], y: [], type: 'bar' }], { title: { text: title, font: { family: 'Avenir, sans-serif', size: 16, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim(), weight: 400 } }, height: height, margin: { l: 60, r: 40, b: 40, t: topMargin, pad: 4 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', xaxis: { visible: false }, yaxis: { showgrid: false, zeroline: true, gridcolor: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), showticklabels: false }, font: { family: 'Avenir, sans-serif', size: 12, weight: 400 } }, plotlyConfig); } catch (error) { console.error(`Error creating empty plot for '${targetDivId}':`, error); targetDiv.innerHTML = `<p style="color: red; text-align: center; padding: 20px;">Error displaying chart.</p>`; } } // Translated error
         function processInputAndCalculate(position) { const inputs = inputFieldMap[position]; if (!inputs) return null; const nonInjuredMaxForceVal = inputs.nonInjured[0].value; const nonInjuredRfdVal = inputs.nonInjured[1].value; const injuredMaxForceVal = inputs.injured[0].value; const injuredRfdVal = inputs.injured[1].value; if (nonInjuredMaxForceVal === '' && nonInjuredRfdVal === '' && injuredMaxForceVal === '' && injuredRfdVal === '') return null; const nonInjuredMaxForce = parseFloat(nonInjuredMaxForceVal) || 0; const nonInjuredRfd = parseFloat(nonInjuredRfdVal) || 0; const injuredMaxForce = parseFloat(injuredMaxForceVal) || 0; const injuredRfd = parseFloat(injuredRfdVal) || 0; const selectedInjuredSide = currentPatientDataForApp.injuredSide || 'Left'; let leftData = {}; let rightData = {}; if (selectedInjuredSide === 'Left') { leftData = { max_force: injuredMaxForce, rfd: injuredRfd }; rightData = { max_force: nonInjuredMaxForce, rfd: nonInjuredRfd }; } else { leftData = { max_force: nonInjuredMaxForce, rfd: nonInjuredRfd }; rightData = { max_force: injuredMaxForce, rfd: injuredRfd }; } return { left: leftData, right: rightData }; }
-        function createAsymmetryChart(positionData, injuredSide, posLabel) { if (!positionData?.left || !positionData?.right) return [{}, false]; const leftDataRaw = positionData.left; const rightDataRaw = positionData.right; const leftPctMaxAt100ms = leftDataRaw.max_force !== 0 ? (leftDataRaw.rfd * 0.1 / leftDataRaw.max_force) * 100 : 0; const rightPctMaxAt100ms = rightDataRaw.max_force !== 0 ? (rightDataRaw.rfd * 0.1 / rightDataRaw.max_force) * 100 : 0; const leftData = [leftDataRaw.max_force, leftDataRaw.rfd, leftPctMaxAt100ms]; const rightData = [rightDataRaw.max_force, rightDataRaw.rfd, rightPctMaxAt100ms]; const baseData = injuredSide === 'Right' ? leftData : rightData; const metricNames = [ 'Maks Kraft (N)', 'RFD 100ms (Ns⁻¹)', '% Maks @ 100ms (%)' ]; const barDataRatios = {}; const leftTextsAbsolute = []; const rightTextsAbsolute = []; metricNames.forEach((metricName, index) => { let leftValue = leftData[index]; let rightValue = rightData[index]; let baseValue = baseData[index]; const leftRatio = baseValue !== 0 ? (leftValue / baseValue) * 100 : (leftValue === 0 ? 100 : Infinity); const rightRatio = baseValue !== 0 ? (rightValue / baseValue) * 100 : (rightValue === 0 ? 100 : Infinity); barDataRatios[metricName] = [rightRatio, leftRatio]; const decimals = metricName.includes('% Maks @ 100ms') ? 1 : 0; leftTextsAbsolute.push(leftValue.toFixed(decimals)); rightTextsAbsolute.push(rightValue.toFixed(decimals)); }); const plotX = metricNames; const plotYLeft = plotX.map(name => barDataRatios[name][1]); const plotYRight = plotX.map(name => barDataRatios[name][0]); if (plotX.length !== 3 || plotYLeft.length !== 3 || plotYRight.length !== 3) return [{}, false]; const leftColorHex = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim(); const rightColorHex = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim(); const leftColorRgba = hexToRgba(leftColorHex, 0.8); const rightColorRgba = hexToRgba(rightColorHex, 0.8); const thresholdLineColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(); const darkGrayColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(); const whiteColor = getComputedStyle(document.documentElement).getPropertyValue('--white').trim(); const validRatios = plotYLeft.concat(plotYRight).filter(isFinite); const maxYValue = validRatios.length > 0 ? Math.max(110, ...validRatios) : 110; const annotationYTop = maxYValue + 8; const yAxisUpperBound = annotationYTop + 15; const fig = { data: [ { type: 'bar', name: 'Venstre', x: plotX, y: plotYLeft, marker: { color: leftColorRgba }, text: leftTextsAbsolute, texttemplate: '%{text}', textposition: 'none', hoverinfo: 'x+name', hovertemplate: 'Venstre: %{y:.0f}%<extra></extra>' }, { type: 'bar', name: 'Høyre', x: plotX, y: plotYRight, marker: { color: rightColorRgba }, text: rightTextsAbsolute, texttemplate: '%{text}', textposition: 'none', hoverinfo: 'x+name', hovertemplate: 'Høyre: %{y:.0f}%<extra></extra>' }, { x: [null], y: [null], mode: 'lines', name: '±10% Terskel', line: { color: thresholdLineColor, width: 1, dash: 'dash' }, hoverinfo: 'none', showlegend: true } ], layout: { height: 300, barmode: 'group', font: { color: darkGrayColor, family: 'Avenir, sans-serif', size: 12, weight: 400 }, yaxis: { title: "Skadet Side Asymmetri (%)", titlefont: { size: 13, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, range: [18, yAxisUpperBound], tickmode: 'array', tickvals: [50, 100], showgrid: false, zeroline: false, }, xaxis: { showgrid: false, zeroline: false, showline: false, showticklabels: true, tickangle: 0, tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, automargin: true, fixedrange: true }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', legend: { orientation: "h", yanchor: "bottom", y: -0.30, xanchor: "center", x: 0.5, font: { size: 12, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor } }, margin: { l: 70, r: 30, b: 85, t: 20, pad: 10 }, shapes: [ { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 90, y1: 90, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" }, { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 110, y1: 110, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" } ], annotations: [] } }; let allGreen = true; const metricsNamesForAnnotation = plotX; for (let i = 0; i < metricsNamesForAnnotation.length; i++) { const metricName = metricsNamesForAnnotation[i]; const injuredRatio = injuredSide === 'Right' ? plotYRight[i] : plotYLeft[i]; const leftRatio = plotYLeft[i]; const rightRatio = plotYRight[i]; if (!isFinite(injuredRatio)) { fig.layout.annotations.push({ x: metricName, y: annotationYTop, text: "N/A", showarrow: false, font: { color: 'grey', size: 22, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'bottom' }); allGreen = false; } else { const percentageDiff = injuredRatio - 100; let color; if (percentageDiff >= -10) { color = '#2a9d8f'; } else { allGreen = false; if (percentageDiff >= -15) { color = '#ee9b00'; } else if (percentageDiff >= -20) { color = '#e85d04'; } else { color = '#ae2012'; } } fig.layout.annotations.push({ x: metricName, y: annotationYTop, text: `${percentageDiff.toFixed(0)}%`, showarrow: false, font: { color: color, size: 22, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'bottom' }); } const barTextYPosition = 31; const barTextFontSize = 17; const categoryIndex = i; const numberOfBars = 2; const groupWidth = 0.8; const barWidthFraction = groupWidth / numberOfBars; const leftBarCenter = categoryIndex - (groupWidth / 2) + (barWidthFraction / 2); const rightBarCenter = categoryIndex + (groupWidth / 2) - (barWidthFraction / 2); if (leftRatio > barTextYPosition + (barTextFontSize / 2)) { fig.layout.annotations.push({ x: leftBarCenter, y: barTextYPosition, xref: 'x', yref: 'y', text: leftTextsAbsolute[i], showarrow: false, font: { color: whiteColor, size: barTextFontSize, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'middle' }); } if (rightRatio > barTextYPosition + (barTextFontSize / 2)) { fig.layout.annotations.push({ x: rightBarCenter, y: barTextYPosition, xref: 'x', yref: 'y', text: rightTextsAbsolute[i], showarrow: false, font: { color: whiteColor, size: barTextFontSize, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'middle' }); } } return [fig, allGreen]; }
+        function createAsymmetryChart(positionData, injuredSide, posLabel) { if (!positionData?.left || !positionData?.right) return [{}, false]; const leftDataRaw = positionData.left; const rightDataRaw = positionData.right; const leftPctMaxAt100ms = leftDataRaw.max_force !== 0 ? (leftDataRaw.rfd * 0.1 / leftDataRaw.max_force) * 100 : 0; const rightPctMaxAt100ms = rightDataRaw.max_force !== 0 ? (rightDataRaw.rfd * 0.1 / rightDataRaw.max_force) * 100 : 0; const leftData = [leftDataRaw.max_force, leftDataRaw.rfd, leftPctMaxAt100ms]; const rightData = [rightDataRaw.max_force, rightDataRaw.rfd, rightPctMaxAt100ms]; const baseData = injuredSide === 'Right' ? leftData : rightData; const metricNames = [ 'Max Force (N)', 'RFD 100ms (Ns⁻¹)', '% Max @ 100ms (%)' ]; const barDataRatios = {}; const leftTextsAbsolute = []; const rightTextsAbsolute = []; metricNames.forEach((metricName, index) => { let leftValue = leftData[index]; let rightValue = rightData[index]; let baseValue = baseData[index]; const leftRatio = baseValue !== 0 ? (leftValue / baseValue) * 100 : (leftValue === 0 ? 100 : Infinity); const rightRatio = baseValue !== 0 ? (rightValue / baseValue) * 100 : (rightValue === 0 ? 100 : Infinity); barDataRatios[metricName] = [rightRatio, leftRatio]; const decimals = metricName.includes('% Max @ 100ms') ? 1 : 0; leftTextsAbsolute.push(leftValue.toFixed(decimals)); rightTextsAbsolute.push(rightValue.toFixed(decimals)); }); const plotX = metricNames; const plotYLeft = plotX.map(name => barDataRatios[name][1]); const plotYRight = plotX.map(name => barDataRatios[name][0]); if (plotX.length !== 3 || plotYLeft.length !== 3 || plotYRight.length !== 3) return [{}, false]; const leftColorHex = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim(); const rightColorHex = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim(); const leftColorRgba = hexToRgba(leftColorHex, 0.8); const rightColorRgba = hexToRgba(rightColorHex, 0.8); const thresholdLineColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(); const darkGrayColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(); const whiteColor = getComputedStyle(document.documentElement).getPropertyValue('--white').trim(); const validRatios = plotYLeft.concat(plotYRight).filter(isFinite); const maxYValue = validRatios.length > 0 ? Math.max(110, ...validRatios) : 110; const annotationYTop = maxYValue + 8; const yAxisUpperBound = annotationYTop + 15; const fig = { data: [ { type: 'bar', name: 'Left', x: plotX, y: plotYLeft, marker: { color: leftColorRgba }, text: leftTextsAbsolute, texttemplate: '%{text}', textposition: 'none', hoverinfo: 'x+name', hovertemplate: 'Left: %{y:.0f}%<extra></extra>' }, { type: 'bar', name: 'Right', x: plotX, y: plotYRight, marker: { color: rightColorRgba }, text: rightTextsAbsolute, texttemplate: '%{text}', textposition: 'none', hoverinfo: 'x+name', hovertemplate: 'Right: %{y:.0f}%<extra></extra>' }, { x: [null], y: [null], mode: 'lines', name: '±10% Threshold', line: { color: thresholdLineColor, width: 1, dash: 'dash' }, hoverinfo: 'none', showlegend: true } ], layout: { height: 300, barmode: 'group', font: { color: darkGrayColor, family: 'Avenir, sans-serif', size: 12, weight: 400 }, yaxis: { title: "Injured Side Asymmetry (%)", titlefont: { size: 13, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, range: [18, yAxisUpperBound], tickmode: 'array', tickvals: [50, 100], showgrid: false, zeroline: false, }, xaxis: { showgrid: false, zeroline: false, showline: false, showticklabels: true, tickangle: 0, tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, automargin: true, fixedrange: true }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', legend: { orientation: "h", yanchor: "bottom", y: -0.30, xanchor: "center", x: 0.5, font: { size: 12, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor } }, margin: { l: 70, r: 30, b: 85, t: 20, pad: 10 }, shapes: [ { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 90, y1: 90, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" }, { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 110, y1: 110, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" } ], annotations: [] } }; let allGreen = true; const metricsNamesForAnnotation = plotX; for (let i = 0; i < metricsNamesForAnnotation.length; i++) { const metricName = metricsNamesForAnnotation[i]; const injuredRatio = injuredSide === 'Right' ? plotYRight[i] : plotYLeft[i]; const leftRatio = plotYLeft[i]; const rightRatio = plotYRight[i]; if (!isFinite(injuredRatio)) { fig.layout.annotations.push({ x: metricName, y: annotationYTop, text: "N/A", showarrow: false, font: { color: 'grey', size: 22, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'bottom' }); allGreen = false; } else { const percentageDiff = injuredRatio - 100; let color; if (percentageDiff >= -10) { color = '#2a9d8f'; } else { allGreen = false; if (percentageDiff >= -15) { color = '#ee9b00'; } else if (percentageDiff >= -20) { color = '#e85d04'; } else { color = '#ae2012'; } } fig.layout.annotations.push({ x: metricName, y: annotationYTop, text: `${percentageDiff.toFixed(0)}%`, showarrow: false, font: { color: color, size: 22, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'bottom' }); } const barTextYPosition = 31; const barTextFontSize = 17; const categoryIndex = i; const numberOfBars = 2; const groupWidth = 0.8; const barWidthFraction = groupWidth / numberOfBars; const leftBarCenter = categoryIndex - (groupWidth / 2) + (barWidthFraction / 2); const rightBarCenter = categoryIndex + (groupWidth / 2) - (barWidthFraction / 2); if (leftRatio > barTextYPosition + (barTextFontSize / 2)) { fig.layout.annotations.push({ x: leftBarCenter, y: barTextYPosition, xref: 'x', yref: 'y', text: leftTextsAbsolute[i], showarrow: false, font: { color: whiteColor, size: barTextFontSize, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'middle' }); } if (rightRatio > barTextYPosition + (barTextFontSize / 2)) { fig.layout.annotations.push({ x: rightBarCenter, y: barTextYPosition, xref: 'x', yref: 'y', text: rightTextsAbsolute[i], showarrow: false, font: { color: whiteColor, size: barTextFontSize, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'middle' }); } } return [fig, allGreen]; }
         function mapNkgToPercentile(nkgValue, positionLabel) { const thresholds = normativeThresholds[positionLabel]; if (!thresholds || typeof nkgValue !== 'number' || !isFinite(nkgValue)) return 0; const pMap = [ { v: 0.5, p: 0 }, { v: thresholds.poor_max, p: percentileZones.poor }, { v: thresholds.average_mid, p: percentileMidpoint }, { v: thresholds.good_min, p: percentileZones.average }, { v: thresholds.excellent_min, p: percentileZones.good }, { v: thresholds.excellent_min * 1.25, p: percentileZones.excellent } ]; const minVal = pMap[0].v; const maxVal = pMap[pMap.length - 1].v; const clampedValue = Math.max(minVal, Math.min(nkgValue, maxVal)); let lowerPoint = pMap[0]; let upperPoint = pMap[pMap.length - 1]; for (let i = 0; i < pMap.length - 1; i++) { if (clampedValue === pMap[i].v) { lowerPoint = upperPoint = pMap[i]; break; } if (clampedValue > pMap[i].v && clampedValue <= pMap[i + 1].v) { lowerPoint = pMap[i]; upperPoint = pMap[i + 1]; break; } } if (clampedValue === upperPoint.v) { lowerPoint = upperPoint; } let percentile = lowerPoint.p; const valueRange = upperPoint.v - lowerPoint.v; const percentileRange = upperPoint.p - lowerPoint.p; if (valueRange > 0) { percentile += ((clampedValue - lowerPoint.v) / valueRange) * percentileRange; } return Math.max(0, Math.min(percentile, 100)); }
-        function createNormativeComparisonChart(positionData, bodyweight, positionLabel) { const bwVal = parseFloat(bodyweight); if (isNaN(bwVal) || bwVal <= 0 || !positionData) return {}; const leftNkg = positionData.left.max_force / bwVal; const rightNkg = positionData.right.max_force / bwVal; const thresholds = normativeThresholds[positionLabel]; if (!thresholds) return {}; const leftPercentile = mapNkgToPercentile(leftNkg, positionLabel); const rightPercentile = mapNkgToPercentile(rightNkg, positionLabel); const baseCurveX = []; const baseCurveY = []; const mean = 55; const stdDev = 22; const amplitude = 0.9; for (let i = 0; i <= 100; i += 0.5) { baseCurveX.push(i); const y = amplitude * Math.exp(-Math.pow(i - mean, 2) / (2 * Math.pow(stdDev, 2))); baseCurveY.push(y); } const zoneBoundaries = [0, percentileZones.poor, percentileZones.average, percentileZones.good, percentileZones.excellent]; const traces = []; const zoneColorsList = [normZoneColors.poor, normZoneColors.average, normZoneColors.good, normZoneColors.excellent]; for (let i = 0; i < zoneBoundaries.length - 1; i++) { const x0 = zoneBoundaries[i]; const x1 = zoneBoundaries[i+1]; const zoneFillColor = zoneColorsList[i]; const segmentX = [x0]; const segmentY = [0]; for(let j=0; j < baseCurveX.length; j++) { if (baseCurveX[j] >= x0 && baseCurveX[j] <= x1) { segmentX.push(baseCurveX[j]); segmentY.push(baseCurveY[j]); } } segmentX.push(x1); segmentY.push(0); traces.push({ x: segmentX, y: segmentY, type: 'scatter', mode: 'lines', line: { width: 0 }, fill: 'tozeroy', fillcolor: zoneFillColor, hoverinfo: 'none', name: Object.keys(normativeLabels)[i], showlegend: false }); } traces.push({ x: baseCurveX, y: baseCurveY, type: 'scatter', mode: 'lines', line: { color: '#ffffff', width: 1.5, shape: 'spline' }, hoverinfo: 'none', name: 'Distribution (Visual)', showlegend: false }); const layout = { height: 250, margin: { t: 35, b: 95, l: 30, r: 30 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', xaxis: { title: '', range: [0, 100], showgrid: false, zeroline: false, showticklabels: false }, yaxis: { range: [0, 1.1], showgrid: false, zeroline: false, showticklabels: false, title: '' }, shapes: [], annotations: [], font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() }, showlegend: false }; const thresholdAnnotations = [ { p: percentileZones.poor, val: thresholds.poor_max }, { p: percentileZones.average, val: thresholds.good_min }, { p: percentileZones.good, val: thresholds.excellent_min } ]; thresholdAnnotations.forEach(t => { layout.annotations.push({ xref: 'x', yref: 'paper', x: t.p, y: -0.08, text: `<span class="norm-value">${t.val.toFixed(2)}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', font: { family: 'Avenir, sans-serif', size: 10, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim() } }); }); layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: percentileMidpoint, x1: percentileMidpoint, y0: 0, y1: 1, line: { color: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), width: 1.5, dash: 'dot' }, layer: 'below' }); const avgValueForPos = thresholds.average_mid.toFixed(2); layout.annotations.push({ xref: 'x', yref: 'paper', x: percentileMidpoint, y: -0.08, text: `<span class="value-display">${avgValueForPos}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', font: { family: 'Avenir, sans-serif', size: 10, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), weight: 400 } }); const labelYPosition = 1.10; layout.annotations.push({ xref: 'x', yref: 'paper', x: 15, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.poor}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 50, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.average}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() }, align: 'center' }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 80, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.good}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 95, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.excellent}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); const leftColor = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim(); const rightColor = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim(); const lineY0 = 0.05; const lineY1 = 0.95; layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: leftPercentile, x1: leftPercentile, y0: lineY0, y1: lineY1, line: { color: leftColor, width: 2, dash: 'dash' } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: leftPercentile, y: 0.90, text: 'V', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: leftColor, font: {color: leftColor, size: 14, family: 'Avenir, sans-serif', weight: 400} }); layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: rightPercentile, x1: rightPercentile, y0: lineY0, y1: lineY1, line: { color: rightColor, width: 2, dash: 'dash' } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: rightPercentile, y: 0.90, text: 'H', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: rightColor, font: {color: rightColor, size: 14, family: 'Avenir, sans-serif', weight: 400} }); const combinedNkgText = `<span class='nkg-combined-text'>Venstre: <span class='left-label'>${leftNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>) &nbsp;&nbsp;|&nbsp;&nbsp; Høyre: <span class='right-label'>${rightNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>)</span>`; layout.annotations.push({ xref: 'paper', yref: 'paper', x: 0.5, y: -0.30, text: combinedNkgText, showarrow: false, xanchor: 'center', yanchor: 'top', align: 'center', font: { size: 15, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), family: 'Avenir, sans-serif', weight: 400 } }); return { data: traces, layout }; }
-        function updateGraphsAndTable() { const injuredSide = currentPatientDataForApp.injuredSide || (injuredSideRadio ? injuredSideRadio.value : 'Left'); const bodyweightValue = currentPatientDataForApp.bodyweight || (bodyweightInput ? bodyweightInput.value : ''); const bwVal = parseFloat(bodyweightValue); const bodyweightValid = !isNaN(bwVal) && bwVal > 0; if (normativePlaceholder) { normativePlaceholder.style.display = bodyweightValid ? 'none' : 'block'; } normativeChartDivs.forEach(divId => { const container = document.getElementById(divId)?.closest('.normative-graph-container'); if (container) { container.style.display = bodyweightValid ? 'block' : 'none'; } }); const positions = ['I', 'Y', 'T']; positions.forEach((pos, i) => { const asymmetryChartDivId = asymmetryChartDivs[i]; const asymmetryPositionBoxDivId = asymmetryPositionBoxDivs[i]; const asymmetryPositionBoxDiv = document.getElementById(asymmetryPositionBoxDivId); const normativeChartDivId = normativeChartDivs[i]; if (!asymmetryPositionBoxDiv || !document.getElementById(asymmetryChartDivId) || !document.getElementById(normativeChartDivId)) return; const positionData = processInputAndCalculate(pos); if (positionData) { try { const [fig, allGreen] = createAsymmetryChart(positionData, injuredSide, pos); if (fig?.data && fig?.layout) { Plotly.react(asymmetryChartDivId, fig.data, fig.layout, plotlyConfig); if (allGreen) asymmetryPositionBoxDiv.classList.add('green-box'); else asymmetryPositionBoxDiv.classList.remove('green-box'); } else { throw new Error("Generated asymmetry figure invalid."); } } catch (error) { console.error(`Error creating asymmetry chart for ${pos}:`, error); createEmptyPlot(asymmetryChartDivId, 'Feil ved lasting av asymmetridata', 300, 20); asymmetryPositionBoxDiv.classList.remove('green-box'); } } else { createEmptyPlot(asymmetryChartDivId, 'Skriv inn Data', 300, 20); asymmetryPositionBoxDiv.classList.remove('green-box'); } if (bodyweightValid && positionData) { try { const config = createNormativeComparisonChart(positionData, bodyweightValue, pos); if (config?.data && config?.layout) Plotly.react(normativeChartDivId, config.data, config.layout, plotlyConfig); else throw new Error("Generated normative figure invalid."); } catch (error) { console.error(`Error creating normative chart for ${pos}:`, error); createEmptyPlot(normativeChartDivId, 'Feil ved lasting av Data', 250, 35); } } else if (!bodyweightValid) { createEmptyPlot(normativeChartDivId, 'Skriv inn Kroppsvekt', 250, 35); } else { createEmptyPlot(normativeChartDivId, 'Skriv inn Data', 250, 35); } }); setTimeout(() => window.dispatchEvent(new Event('resize')), 100); }
+        function createNormativeComparisonChart(positionData, bodyweight, positionLabel) { const bwVal = parseFloat(bodyweight); if (isNaN(bwVal) || bwVal <= 0 || !positionData) return {}; const leftNkg = positionData.left.max_force / bwVal; const rightNkg = positionData.right.max_force / bwVal; const thresholds = normativeThresholds[positionLabel]; if (!thresholds) return {}; const leftPercentile = mapNkgToPercentile(leftNkg, positionLabel); const rightPercentile = mapNkgToPercentile(rightNkg, positionLabel); const baseCurveX = []; const baseCurveY = []; const mean = 55; const stdDev = 22; const amplitude = 0.9; for (let i = 0; i <= 100; i += 0.5) { baseCurveX.push(i); const y = amplitude * Math.exp(-Math.pow(i - mean, 2) / (2 * Math.pow(stdDev, 2))); baseCurveY.push(y); } const zoneBoundaries = [0, percentileZones.poor, percentileZones.average, percentileZones.good, percentileZones.excellent]; const traces = []; const zoneColorsList = [normZoneColors.poor, normZoneColors.average, normZoneColors.good, normZoneColors.excellent]; for (let i = 0; i < zoneBoundaries.length - 1; i++) { const x0 = zoneBoundaries[i]; const x1 = zoneBoundaries[i+1]; const zoneFillColor = zoneColorsList[i]; const segmentX = [x0]; const segmentY = [0]; for(let j=0; j < baseCurveX.length; j++) { if (baseCurveX[j] >= x0 && baseCurveX[j] <= x1) { segmentX.push(baseCurveX[j]); segmentY.push(baseCurveY[j]); } } segmentX.push(x1); segmentY.push(0); traces.push({ x: segmentX, y: segmentY, type: 'scatter', mode: 'lines', line: { width: 0 }, fill: 'tozeroy', fillcolor: zoneFillColor, hoverinfo: 'none', name: Object.keys(normativeLabels)[i], showlegend: false }); } traces.push({ x: baseCurveX, y: baseCurveY, type: 'scatter', mode: 'lines', line: { color: '#ffffff', width: 1.5, shape: 'spline' }, hoverinfo: 'none', name: 'Distribution (Visual)', showlegend: false }); const layout = { height: 250, margin: { t: 35, b: 95, l: 30, r: 30 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', xaxis: { title: '', range: [0, 100], showgrid: false, zeroline: false, showticklabels: false }, yaxis: { range: [0, 1.1], showgrid: false, zeroline: false, showticklabels: false, title: '' }, shapes: [], annotations: [], font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() }, showlegend: false }; const thresholdAnnotations = [ { p: percentileZones.poor, val: thresholds.poor_max }, { p: percentileZones.average, val: thresholds.good_min }, { p: percentileZones.good, val: thresholds.excellent_min } ]; thresholdAnnotations.forEach(t => { layout.annotations.push({ xref: 'x', yref: 'paper', x: t.p, y: -0.08, text: `<span class="norm-value">${t.val.toFixed(2)}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', font: { family: 'Avenir, sans-serif', size: 10, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim() } }); }); layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: percentileMidpoint, x1: percentileMidpoint, y0: 0, y1: 1, line: { color: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), width: 1.5, dash: 'dot' }, layer: 'below' }); const avgValueForPos = thresholds.average_mid.toFixed(2); layout.annotations.push({ xref: 'x', yref: 'paper', x: percentileMidpoint, y: -0.08, text: `<span class="value-display">${avgValueForPos}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', font: { family: 'Avenir, sans-serif', size: 10, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), weight: 400 } }); const labelYPosition = 1.10; layout.annotations.push({ xref: 'x', yref: 'paper', x: 15, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.poor}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 50, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.average}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() }, align: 'center' }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 80, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.good}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 95, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.excellent}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); const leftColor = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim(); const rightColor = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim(); const lineY0 = 0.05; const lineY1 = 0.95; layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: leftPercentile, x1: leftPercentile, y0: lineY0, y1: lineY1, line: { color: leftColor, width: 2, dash: 'dash' } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: leftPercentile, y: 0.90, text: 'L', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: leftColor, font: {color: leftColor, size: 14, family: 'Avenir, sans-serif', weight: 400} }); layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: rightPercentile, x1: rightPercentile, y0: lineY0, y1: lineY1, line: { color: rightColor, width: 2, dash: 'dash' } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: rightPercentile, y: 0.90, text: 'R', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: rightColor, font: {color: rightColor, size: 14, family: 'Avenir, sans-serif', weight: 400} }); const combinedNkgText = `<span class='nkg-combined-text'>Left: <span class='left-label'>${leftNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>) &nbsp;&nbsp;|&nbsp;&nbsp; Right: <span class='right-label'>${rightNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>)</span>`; layout.annotations.push({ xref: 'paper', yref: 'paper', x: 0.5, y: -0.30, text: combinedNkgText, showarrow: false, xanchor: 'center', yanchor: 'top', align: 'center', font: { size: 15, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), family: 'Avenir, sans-serif', weight: 400 } }); return { data: traces, layout }; }
+        function updateGraphsAndTable() { const injuredSide = currentPatientDataForApp.injuredSide || (injuredSideRadio ? injuredSideRadio.value : 'Left'); const bodyweightValue = currentPatientDataForApp.bodyweight || (bodyweightInput ? bodyweightInput.value : ''); const bwVal = parseFloat(bodyweightValue); const bodyweightValid = !isNaN(bwVal) && bwVal > 0; if (normativePlaceholder) { normativePlaceholder.style.display = bodyweightValid ? 'none' : 'block'; } normativeChartDivs.forEach(divId => { const container = document.getElementById(divId)?.closest('.normative-graph-container'); if (container) { container.style.display = bodyweightValid ? 'block' : 'none'; } }); const positions = ['I', 'Y', 'T']; positions.forEach((pos, i) => { const asymmetryChartDivId = asymmetryChartDivs[i]; const asymmetryPositionBoxDivId = asymmetryPositionBoxDivs[i]; const asymmetryPositionBoxDiv = document.getElementById(asymmetryPositionBoxDivId); const normativeChartDivId = normativeChartDivs[i]; if (!asymmetryPositionBoxDiv || !document.getElementById(asymmetryChartDivId) || !document.getElementById(normativeChartDivId)) return; const positionData = processInputAndCalculate(pos); if (positionData) { try { const [fig, allGreen] = createAsymmetryChart(positionData, injuredSide, pos); if (fig?.data && fig?.layout) { Plotly.react(asymmetryChartDivId, fig.data, fig.layout, plotlyConfig); if (allGreen) asymmetryPositionBoxDiv.classList.add('green-box'); else asymmetryPositionBoxDiv.classList.remove('green-box'); } else { throw new Error("Generated asymmetry figure invalid."); } } catch (error) { console.error(`Error creating asymmetry chart for ${pos}:`, error); createEmptyPlot(asymmetryChartDivId, 'Error loading asymmetry data', 300, 20); asymmetryPositionBoxDiv.classList.remove('green-box'); } } else { createEmptyPlot(asymmetryChartDivId, 'Enter Data', 300, 20); asymmetryPositionBoxDiv.classList.remove('green-box'); } if (bodyweightValid && positionData) { try { const config = createNormativeComparisonChart(positionData, bodyweightValue, pos); if (config?.data && config?.layout) Plotly.react(normativeChartDivId, config.data, config.layout, plotlyConfig); else throw new Error("Generated normative figure invalid."); } catch (error) { console.error(`Error creating normative chart for ${pos}:`, error); createEmptyPlot(normativeChartDivId, 'Error Loading Data', 250, 35); } } else if (!bodyweightValid) { createEmptyPlot(normativeChartDivId, 'Enter Bodyweight', 250, 35); } else { createEmptyPlot(normativeChartDivId, 'Enter Data', 250, 35); } }); setTimeout(() => window.dispatchEvent(new Event('resize')), 100); }
         function enterPreviewMode() { document.body.classList.add('pdf-preview-active'); if(previewExitButtonInline) previewExitButtonInline.style.display = 'inline-block'; if(explanationBox) explanationBox.style.display = 'block'; window.dispatchEvent(new Event('resize')); }
         function exitPreviewMode() { document.body.classList.remove('pdf-preview-active'); if(previewExitButtonInline) previewExitButtonInline.style.display = 'none'; if(explanationBox) explanationBox.style.display = 'none'; window.dispatchEvent(new Event('resize')); }
-        function exportTableToCsv() { const fpNr = currentPatientDataForApp.patientId || ''; const age = currentPatientDataForApp.age || ''; const gender = currentPatientDataForApp.gender || ''; const sport = currentPatientDataForApp.sport || ''; const injuryValue = currentPatientDataForApp.injury || ''; const bodyweightValue = currentPatientDataForApp.bodyweight || ''; const injuredSide = currentPatientDataForApp.injuredSide || ''; const date = new Date(); const year = date.getFullYear(); const month = (date.getMonth() + 1).toString().padStart(2, '0'); const day = date.getDate().toString().padStart(2, '0'); const dateString = `${year}-${month}-${day}`; const safeFpNr = fpNr.replace(/[^a-z0-9]/gi, '_') || 'Ukjent'; const filename = `ASH_${safeFpNr}_${dateString}.csv`; const headers = [ "Pasient ID", "Alder", "Kjønn", "Idrett", "Skade", "Kroppsvekt (kg)", "Skadet Side", "Posisjon", "Metrikk", "Venstre Verdi", "Høyre Verdi" ]; let csv = [headers.join(',')]; const positions = ['I', 'Y', 'T']; const metricsForCsv = ['Maks Kraft (N)', 'RFD 100ms (N/s)']; positions.forEach(pos => { const positionName = `ASH Test Posisjon ${pos}`; const positionData = processInputAndCalculate(pos); metricsForCsv.forEach(metricDisplay => { let leftVal = ''; let rightVal = ''; let metricIdentifier = metricDisplay; if (metricDisplay === 'Maks Kraft (N)') { if (positionData) { leftVal = positionData.left.max_force; rightVal = positionData.right.max_force; } } else if (metricDisplay === 'RFD 100ms (N/s)') { if (positionData) { leftVal = positionData.left.rfd; rightVal = positionData.right.rfd; } metricIdentifier = 'RFD 100ms (N/s)'; } const rowData = [ `"${fpNr}"`, `"${age}"`, `"${gender}"`, `"${sport}"`, `"${injuryValue}"`, `"${bodyweightValue}"`, `"${injuredSide}"`, `"${positionName}"`, `"${metricIdentifier}"`, `"${leftVal}"`, `"${rightVal}"` ]; csv.push(rowData.join(',')); }); }); const csvString = "\uFEFF" + csv.join('\n'); const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); if (link.download !== undefined) { const url = URL.createObjectURL(blob); link.setAttribute('href', url); link.setAttribute('download', filename); link.style.visibility = 'hidden'; document.body.appendChild(link); link.click(); document.body.removeChild(link); showStatusMessage("Data eksportert til CSV.", "success"); } else { alert("CSV-eksport støttes ikke direkte i denne nettleseren. Prøv en moderne nettleser."); } }
+        function exportTableToCsv() { const fpNr = currentPatientDataForApp.patientId || ''; const age = currentPatientDataForApp.age || ''; const gender = currentPatientDataForApp.gender || ''; const sport = currentPatientDataForApp.sport || ''; const injuryValue = currentPatientDataForApp.injury || ''; const bodyweightValue = currentPatientDataForApp.bodyweight || ''; const injuredSide = currentPatientDataForApp.injuredSide || ''; const date = new Date(); const year = date.getFullYear(); const month = (date.getMonth() + 1).toString().padStart(2, '0'); const day = date.getDate().toString().padStart(2, '0'); const dateString = `${year}-${month}-${day}`; const safeFpNr = fpNr.replace(/[^a-z0-9]/gi, '_') || 'Unknown'; const filename = `ASH_${safeFpNr}_${dateString}.csv`; const headers = [ "Patient ID", "Age", "Gender", "Sport", "Injury", "Bodyweight (kg)", "Injured Side", "Position", "Metric", "Left Value", "Right Value" ]; let csv = [headers.join(',')]; const positions = ['I', 'Y', 'T']; const metricsForCsv = ['Max Force (N)', 'RFD 100ms (N/s)']; positions.forEach(pos => { const positionName = `ASH Test Position ${pos}`; const positionData = processInputAndCalculate(pos); metricsForCsv.forEach(metricDisplay => { let leftVal = ''; let rightVal = ''; let metricIdentifier = metricDisplay; if (metricDisplay === 'Max Force (N)') { if (positionData) { leftVal = positionData.left.max_force; rightVal = positionData.right.max_force; } } else if (metricDisplay === 'RFD 100ms (N/s)') { if (positionData) { leftVal = positionData.left.rfd; rightVal = positionData.right.rfd; } metricIdentifier = 'RFD 100ms (N/s)'; } const rowData = [ `"${fpNr}"`, `"${age}"`, `"${gender}"`, `"${sport}"`, `"${injuryValue}"`, `"${bodyweightValue}"`, `"${injuredSide}"`, `"${positionName}"`, `"${metricIdentifier}"`, `"${leftVal}"`, `"${rightVal}"` ]; csv.push(rowData.join(',')); }); }); const csvString = "\uFEFF" + csv.join('\n'); const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); if (link.download !== undefined) { const url = URL.createObjectURL(blob); link.setAttribute('href', url); link.setAttribute('download', filename); link.style.visibility = 'hidden'; document.body.appendChild(link); link.click(); document.body.removeChild(link); showStatusMessage("Data exported to CSV.", "success"); } else { alert("CSV export is not directly supported in this browser. Please try a modern browser."); } } // Translated messages
 
         function resetPatientDataForApp() {
             currentPatientDataForApp = { patientId: null, age: '', gender: '', sport: '', injury: '', injuredSide: 'Left', bodyweight: '', screeningId: null };
@@ -1263,12 +1248,12 @@
             if(patientIdentityCard) patientIdentityCard.style.display = 'none';
             if(selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'none';
             if(selectedPatientTestsListUL) selectedPatientTestsListUL.innerHTML = '';
-            if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'none'; // Hide "Detaljer" title
+            if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'none';
 
             updateGraphsAndTable();
             saveInputsToLocalStorage();
             showInitialScreenState();
-            showStatusMessage("Alle felt tømt.", "info");
+            showStatusMessage("All fields cleared.", "info"); // Translated
         }
 
         const localStorageKey = 'screeningAppData_vFirebase_01_EN';
@@ -1329,7 +1314,7 @@
             if(existingPatientChoiceButton) existingPatientChoiceButton.classList.remove('active-choice');
             if(existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
             if(patientOverviewSection) patientOverviewSection.style.display = 'none';
-            if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'none'; // Hide "Detaljer" title
+            if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'none';
 
             if(mainScreeningContent) mainScreeningContent.style.display = 'block';
             if(inputSectionContainer) inputSectionContainer.style.display = 'flex';
@@ -1340,7 +1325,7 @@
 
         async function openPatientModal(type, patientIdToEdit = null) {
             if (!currentUserId) {
-                showStatusMessage("Du må være logget inn.", "error");
+                showStatusMessage("You must be logged in.", "error"); // Translated
                 return;
             }
             patientModalOverlay.style.display = 'flex';
@@ -1350,32 +1335,32 @@
             if (type === 'new') {
                 tempPatientData = { patientId: '', age: '', gender: '', sport: '', injury: '', injuredSide: 'Left', bodyweight: '' };
                 modalHTML = `
-                    <h3>Registrer Ny Pasient</h3>
+                    <h3>Register New Patient</h3>
                     <div class="modal-form-grid">
-                        <div class="modal-form-item"><label for="modal-fp-nr">Pasient ID:</label><input type="text" id="modal-fp-nr" value="${tempPatientData.patientId}"></div>
-                        <div class="modal-form-item"><label for="modal-injured-side">Skadet Side:</label><select id="modal-injured-side"><option value="Left">Venstre</option><option value="Right">Høyre</option></select></div>
-                        <div class="modal-form-item"><label for="modal-bodyweight">Kroppsvekt (kg):</label><input type="number" id="modal-bodyweight" value="${tempPatientData.bodyweight}"></div>
-                        <div class="modal-form-item"><label for="modal-age">Alder:</label><input type="number" id="modal-age" value="${tempPatientData.age}"></div>
-                        <div class="modal-form-item"><label for="modal-gender">Kjønn:</label><select id="modal-gender"><option value="">Velg...</option><option value="Male">Mann</option><option value="Female">Kvinne</option><option value="Other">Annet</option></select></div>
-                        <div class="modal-form-item"><label for="modal-sport">Idrett:</label><input type="text" id="modal-sport" value="${tempPatientData.sport}"></div>
-                        <div class="modal-form-item full-width" style="grid-column: 1 / -1;"><label for="modal-injury">Skade (Valgfritt):</label><input type="text" id="modal-injury" value="${tempPatientData.injury}"></div>
+                        <div class="modal-form-item"><label for="modal-fp-nr">Patient ID:</label><input type="text" id="modal-fp-nr" value="${tempPatientData.patientId}"></div>
+                        <div class="modal-form-item"><label for="modal-injured-side">Injured Side:</label><select id="modal-injured-side"><option value="Left">Left</option><option value="Right">Right</option></select></div>
+                        <div class="modal-form-item"><label for="modal-bodyweight">Bodyweight (kg):</label><input type="number" id="modal-bodyweight" value="${tempPatientData.bodyweight}"></div>
+                        <div class="modal-form-item"><label for="modal-age">Age:</label><input type="number" id="modal-age" value="${tempPatientData.age}"></div>
+                        <div class="modal-form-item"><label for="modal-gender">Gender:</label><select id="modal-gender"><option value="">Select...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select></div>
+                        <div class="modal-form-item"><label for="modal-sport">Sport:</label><input type="text" id="modal-sport" value="${tempPatientData.sport}"></div>
+                        <div class="modal-form-item full-width" style="grid-column: 1 / -1;"><label for="modal-injury">Injury (Optional):</label><input type="text" id="modal-injury" value="${tempPatientData.injury}"></div>
                     </div>
                     <div class="modal-actions">
-                        <button type="button" class="modal-cancel-button" id="modal-cancel-new">Avbryt</button>
-                        <button type="button" class="modal-confirm-button" id="modal-confirm-new">Bekreft</button>
+                        <button type="button" class="modal-cancel-button" id="modal-cancel-new">Cancel</button>
+                        <button type="button" class="modal-confirm-button" id="modal-confirm-new">Confirm</button>
                     </div>`;
             } else if (type === 'existing-search') {
                 modalHTML = `
-                    <h3>Velg Eksisterende Pasient</h3>
+                    <h3>Select Existing Patient</h3>
                     <div class="modal-form-item">
-                        <label for="modal-search-fp-nr">Søk Pasient ID:</label>
+                        <label for="modal-search-fp-nr">Search Patient ID:</label>
                         <input type="text" id="modal-search-fp-nr" list="modal-existing-patient-ids-list">
                         <datalist id="modal-existing-patient-ids-list"></datalist>
                     </div>
                     <div class="modal-patient-id-buttons" id="modal-patient-id-button-container">
                         </div>
                     <div class="modal-actions">
-                        <button type="button" class="modal-cancel-button" id="modal-cancel-search">Avbryt</button>
+                        <button type="button" class="modal-cancel-button" id="modal-cancel-search">Cancel</button>
                     </div>`;
             } else if (type === 'existing-edit' && patientIdToEdit) {
                 try {
@@ -1384,27 +1369,27 @@
                     if (patientDocSnap.exists()) {
                         tempPatientData = { patientId: patientIdToEdit, ...patientDocSnap.data() };
                     } else {
-                        showStatusMessage(`Pasientdata for ${patientIdToEdit} ikke funnet. Kan ikke redigere.`, "error");
+                        showStatusMessage(`Patient data for ${patientIdToEdit} not found. Cannot edit.`, "error"); // Translated
                         tempPatientData = { patientId: patientIdToEdit, age: '', gender: '', sport: '', injury: '', injuredSide: 'Left', bodyweight: '' };
                     }
                 } catch(error) {
                     console.error("Error fetching patient data for edit:", error);
-                    showStatusMessage("Kunne ikke hente pasientdata for redigering.", "error");
+                    showStatusMessage("Could not fetch patient data for editing.", "error"); // Translated
                     tempPatientData = { patientId: patientIdToEdit, age: '', gender: '', sport: '', injury: '', injuredSide: 'Left', bodyweight: '' };
                 }
                 modalHTML = `
-                    <h3>Rediger Pasient: ${patientIdToEdit}</h3>
+                    <h3>Edit Patient: ${patientIdToEdit}</h3>
                     <div class="modal-form-grid">
-                        <div class="modal-form-item"><label>Pasient ID:</label><input type="text" value="${tempPatientData.patientId}" disabled></div> <div class="modal-form-item"><label for="modal-injured-side">Skadet Side:</label><select id="modal-injured-side"></select></div>
-                        <div class="modal-form-item"><label for="modal-bodyweight">Kroppsvekt (kg):</label><input type="number" id="modal-bodyweight" value="${tempPatientData.bodyweight || ''}"></div>
-                        <div class="modal-form-item"><label for="modal-age">Alder:</label><input type="number" id="modal-age" value="${tempPatientData.age || ''}"></div>
-                        <div class="modal-form-item"><label for="modal-gender">Kjønn:</label><select id="modal-gender"></select></div>
-                        <div class="modal-form-item"><label for="modal-sport">Idrett:</label><input type="text" id="modal-sport" value="${tempPatientData.sport || ''}"></div>
-                        <div class="modal-form-item full-width" style="grid-column: 1 / -1;"><label for="modal-injury">Skade:</label><input type="text" id="modal-injury" value="${tempPatientData.injury || ''}"></div>
+                        <div class="modal-form-item"><label>Patient ID:</label><input type="text" value="${tempPatientData.patientId}" disabled></div> <div class="modal-form-item"><label for="modal-injured-side">Injured Side:</label><select id="modal-injured-side"></select></div>
+                        <div class="modal-form-item"><label for="modal-bodyweight">Bodyweight (kg):</label><input type="number" id="modal-bodyweight" value="${tempPatientData.bodyweight || ''}"></div>
+                        <div class="modal-form-item"><label for="modal-age">Age:</label><input type="number" id="modal-age" value="${tempPatientData.age || ''}"></div>
+                        <div class="modal-form-item"><label for="modal-gender">Gender:</label><select id="modal-gender"></select></div>
+                        <div class="modal-form-item"><label for="modal-sport">Sport:</label><input type="text" id="modal-sport" value="${tempPatientData.sport || ''}"></div>
+                        <div class="modal-form-item full-width" style="grid-column: 1 / -1;"><label for="modal-injury">Injury:</label><input type="text" id="modal-injury" value="${tempPatientData.injury || ''}"></div>
                     </div>
                     <div class="modal-actions">
-                        <button type="button" class="modal-cancel-button" id="modal-cancel-edit">Avbryt</button>
-                        <button type="button" class="modal-confirm-button" id="modal-confirm-edit">Ferdig</button>
+                        <button type="button" class="modal-cancel-button" id="modal-cancel-edit">Cancel</button>
+                        <button type="button" class="modal-confirm-button" id="modal-confirm-edit">Done</button>
                     </div>`;
             }
             patientModalContent.innerHTML = modalHTML;
@@ -1414,11 +1399,11 @@
                 const injuredSideModalSelect = patientModalContent.querySelector('#modal-injured-side');
 
                 if (genderModalSelect) {
-                    ['', 'Male', 'Female', 'Other'].forEach(val => genderModalSelect.add(new Option(val === '' ? 'Velg...' : (val === 'Male' ? 'Mann' : (val === 'Female' ? 'Kvinne' : 'Annet')), val)));
+                    ['', 'Male', 'Female', 'Other'].forEach(val => genderModalSelect.add(new Option(val === '' ? 'Select...' : val, val)));
                     genderModalSelect.value = tempPatientData.gender || '';
                 }
                 if (injuredSideModalSelect) {
-                    ['Left', 'Right'].forEach(val => injuredSideModalSelect.add(new Option(val === 'Left' ? 'Venstre' : 'Høyre', val)));
+                    ['Left', 'Right'].forEach(val => injuredSideModalSelect.add(new Option(val, val)));
                     injuredSideModalSelect.value = tempPatientData.injuredSide || 'Left';
                 }
             }
@@ -1463,7 +1448,7 @@
             try {
                 const querySnapshot = await getDocs(patientsCollectionRef);
                 if (querySnapshot.empty) {
-                    container.textContent = 'Ingen eksisterende pasienter funnet.';
+                    container.textContent = 'No existing patients found.'; // Translated
                     return;
                 }
                 querySnapshot.forEach((docSnap) => {
@@ -1482,19 +1467,19 @@
                 });
             } catch (error) {
                 console.error("Error populating modal patient list:", error);
-                container.textContent = 'Feil ved lasting av pasienter.';
+                container.textContent = 'Error loading patients.'; // Translated
             }
         }
 
 
         async function handleNewPatientConfirm() {
             if (!currentUserId) {
-                showStatusMessage("Du må være logget inn for å legge til pasienter.", "error");
+                showStatusMessage("You must be logged in to add patients.", "error"); // Translated
                 return;
             }
             const newPatientId = patientModalContent.querySelector('#modal-fp-nr').value.trim();
             if (!newPatientId) {
-                showStatusMessage("Pasient ID er påkrevd.", "error");
+                showStatusMessage("Patient ID is required.", "error"); // Translated
                 return;
             }
 
@@ -1502,12 +1487,12 @@
             try {
                 const docSnap = await getDoc(patientDocRef);
                 if (docSnap.exists()) {
-                    showStatusMessage(`Pasient ID "${newPatientId}" finnes allerede. Velg en annen ID eller rediger eksisterende.`, "error");
+                    showStatusMessage(`Patient ID "${newPatientId}" already exists. Choose a different ID or edit existing.`, "error"); // Translated
                     return;
                 }
             } catch (error) {
                 console.error("Error checking patient ID existence:", error);
-                showStatusMessage("Feil ved sjekking av pasient ID.", "error");
+                showStatusMessage("Error checking patient ID.", "error"); // Translated
                 return;
             }
 
@@ -1535,9 +1520,9 @@
 
             try {
                 await setDoc(patientDocRef, patientDataToSave);
-                showStatusMessage(`Ny pasient "${newPatientId}" lagret. Klar for screening.`, "success");
+                showStatusMessage(`New patient "${newPatientId}" saved. Ready for screening.`, "success"); // Translated
                 displayPatientInfoInCard(currentPatientDataForApp);
-                if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block'; // Show "Detaljer" title
+                if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
                 await populatePatientIdDatalistFromFirestore();
                 closePatientModal();
 
@@ -1561,7 +1546,7 @@
                 saveInputsToLocalStorage();
             } catch (error) {
                 console.error("Error saving new patient:", error);
-                showStatusMessage("Feil ved lagring av pasientdata.", "error");
+                showStatusMessage("Error saving patient data.", "error"); // Translated
             }
         }
 
@@ -1593,7 +1578,7 @@
             try {
                 const patientDocRef = doc(db, "users", currentUserId, "patients", originalPatientId);
                 await updateDoc(patientDocRef, patientDataToUpdateFirestore);
-                showStatusMessage(`Detaljer for pasient "${originalPatientId}" oppdatert.`, "success");
+                showStatusMessage(`Details for patient "${originalPatientId}" updated.`, "success"); // Translated
 
                 if(fpNrInput) fpNrInput.value = originalPatientId;
                 if(ageInput) ageInput.value = currentPatientDataForApp.age;
@@ -1604,7 +1589,7 @@
                 if(bodyweightInput) bodyweightInput.value = currentPatientDataForApp.bodyweight;
 
                 displayPatientInfoInCard(currentPatientDataForApp);
-                if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block'; // Show "Detaljer" title
+                if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
                 await displayTestsForPatientFromFirestore(originalPatientId);
 
                 if (currentPatientDataForApp.screeningId) {
@@ -1627,7 +1612,7 @@
                 saveInputsToLocalStorage();
             } catch (error) {
                 console.error("Error updating patient data:", error);
-                showStatusMessage("Feil ved oppdatering av pasientdata.", "error");
+                showStatusMessage("Error updating patient data.", "error"); // Translated
             }
         }
 
@@ -1653,16 +1638,16 @@
 
             if (idCard) idCard.textContent = data.patientId || 'N/A';
             if (ageCard) ageCard.textContent = data.age || 'N/A';
-            if (genderCard) genderCard.textContent = data.gender ? (data.gender === 'Male' ? 'Mann' : (data.gender === 'Female' ? 'Kvinne' : 'Annet')) : 'N/A';
+            if (genderCard) genderCard.textContent = data.gender || 'N/A'; // Already English in modal
             if (sportCard) sportCard.textContent = data.sport || 'N/A';
             if (injuryCard) injuryCard.textContent = data.injury || 'N/A';
-            if (injuredSideCard) injuredSideCard.textContent = data.injuredSide === 'Left' ? 'Venstre' : (data.injuredSide === 'Right' ? 'Høyre' : 'N/A');
+            if (injuredSideCard) injuredSideCard.textContent = data.injuredSide || 'N/A';
             if (bodyweightCard) bodyweightCard.textContent = data.bodyweight ? `${data.bodyweight} kg` : 'N/A';
 
             card.style.display = 'flex';
             testsContainer.style.display = 'flex';
             overview.style.display = 'flex';
-            overviewTitle.style.display = 'block'; // Show "Detaljer" title
+            overviewTitle.style.display = 'block';
         }
 
         async function populatePatientIdDatalistFromFirestore() {
@@ -1684,7 +1669,7 @@
                 });
             } catch (error) {
                 console.error("Error populating main patient ID datalist:", error);
-                showStatusMessage("Feil ved lasting av pasientliste.", "error");
+                showStatusMessage("Error loading patient list.", "error"); // Translated
             }
         }
 
@@ -1696,8 +1681,8 @@
 
 
             if (!currentUserId || !patientId) {
-                if (localTestsListUL) localTestsListUL.innerHTML = '<li>Velg en pasient for å se tester.</li>';
-                if (localTestsContainer) localTestsContainer.style.display = 'flex'; // Keep container visible
+                if (localTestsListUL) localTestsListUL.innerHTML = '<li>Select a patient to see tests.</li>'; // Translated
+                if (localTestsContainer) localTestsContainer.style.display = 'flex';
                 if (overviewTitle) overviewTitle.style.display = (document.getElementById('patient-identity-card')?.style.display === 'flex') ? 'block' : 'none';
                 if (localPatientOverviewSection && document.getElementById('patient-identity-card')?.style.display === 'flex') {
                     localPatientOverviewSection.style.display = 'flex';
@@ -1708,8 +1693,8 @@
             if (!localTestsListUL || !localTestsContainer || !overviewTitle ) {
                 return;
             }
-            overviewTitle.style.display = 'block'; // Ensure "Detaljer" is visible when tests are loaded
-            localTestsListUL.innerHTML = '<li>Laster tester...</li>';
+            overviewTitle.style.display = 'block';
+            localTestsListUL.innerHTML = '<li>Loading tests...</li>'; // Translated
             localTestsContainer.style.display = 'flex';
             if (localPatientOverviewSection) localPatientOverviewSection.style.display = 'flex';
 
@@ -1721,7 +1706,7 @@
                 const querySnapshot = await getDocs(q);
                 localTestsListUL.innerHTML = '';
                 if (querySnapshot.empty) {
-                    localTestsListUL.innerHTML = '<li>Ingen tester funnet for denne pasienten.</li>';
+                    localTestsListUL.innerHTML = '<li>No tests found for this patient.</li>'; // Translated
                     return;
                 }
 
@@ -1735,15 +1720,15 @@
                     const dateSpan = document.createElement('span');
                     const screeningTimestampDate = screening.testTimestamp?.toDate();
                     if (screeningTimestampDate instanceof Date && !isNaN(screeningTimestampDate)) {
-                        dateSpan.textContent = screeningTimestampDate.toLocaleString('nb-NO', { dateStyle: 'medium', timeStyle: 'short' }); // Norwegian locale
+                        dateSpan.textContent = screeningTimestampDate.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }); // English locale
                     } else {
-                        dateSpan.textContent = "Ugyldig dato";
+                        dateSpan.textContent = "Invalid date"; // Translated
                     }
-                    dateSpan.title = "Last denne testen";
+                    dateSpan.title = "Load this test"; // Translated
 
                     const deleteButton = document.createElement('button');
                     deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
-                    deleteButton.title = "Slett denne testen";
+                    deleteButton.title = "Delete this test"; // Translated
                     deleteButton.classList.add('delete-test-btn');
                     deleteButton.addEventListener('click', (e) => {
                         e.stopPropagation();
@@ -1754,8 +1739,8 @@
                     localTestsListUL.appendChild(li);
                 });
             } catch (error) {
-                localTestsListUL.innerHTML = '<li>Feil ved lasting av tester. Sjekk konsollen for detaljer.</li>';
-                showStatusMessage("Feil ved lasting av pasienttester.", "error");
+                localTestsListUL.innerHTML = '<li>Error loading tests. Check console for details.</li>'; // Translated
+                showStatusMessage("Error loading patient tests.", "error"); // Translated
             }
         }
 
@@ -1797,9 +1782,9 @@
 
                     updateGraphsAndTable();
                     saveInputsToLocalStorage();
-                    showStatusMessage('Testdata lastet.', 'success');
+                    showStatusMessage('Test data loaded.', 'success'); // Translated
                     displayPatientInfoInCard(currentPatientDataForApp);
-                     if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block'; // Ensure "Detaljer" title is shown
+                     if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
 
                     clearActiveTestItemState();
                     const activeLi = selectedPatientTestsListUL.querySelector(`li[data-screening-id="${screeningDocId}"]`);
@@ -1808,26 +1793,26 @@
                     }
 
                 } else {
-                    showStatusMessage("Kunne ikke finne valgte testdata.", "error");
+                    showStatusMessage("Could not find selected test data.", "error"); // Translated
                 }
             } catch (error) {
                 console.error("Error loading screening data:", error);
-                showStatusMessage("Feil ved lasting av testdata.", "error");
+                showStatusMessage("Error loading test data.", "error"); // Translated
             }
         }
 
         async function confirmAndDeleteScreeningFromFirestore(patientId, screeningDocId, dateObject) {
             if (!currentUserId) return;
             const formattedDate = dateObject instanceof Date && !isNaN(dateObject)
-                ? dateObject.toLocaleString('nb-NO', { dateStyle: 'medium', timeStyle: 'short' })
-                : "ukjent dato";
+                ? dateObject.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }) // English locale
+                : "unknown date"; // Translated
 
-            if (confirm(`Er du sikker på at du vil slette testen for pasient "${patientId}" fra ${formattedDate}? Denne handlingen kan ikke angres.`)) {
-                showStatusMessage("Sletter test...", "info", 1500);
+            if (confirm(`Are you sure you want to delete the test for patient "${patientId}" from ${formattedDate}? This action cannot be undone.`)) { // Translated
+                showStatusMessage("Deleting test...", "info", 1500); // Translated
                 try {
                     const screeningDocRef = doc(db, "users", currentUserId, "patients", patientId, "screenings", screeningDocId);
                     await deleteDoc(screeningDocRef);
-                    showStatusMessage('Test slettet.', 'success');
+                    showStatusMessage('Test deleted.', 'success'); // Translated
 
                     if (currentPatientDataForApp.screeningId === screeningDocId && currentPatientDataForApp.patientId === patientId) {
                         resetScreeningInputFields();
@@ -1837,14 +1822,14 @@
                     await displayTestsForPatientFromFirestore(patientId);
                 } catch (error) {
                     console.error("Error deleting screening:", error);
-                    showStatusMessage("Feil ved sletting av test.", "error");
+                    showStatusMessage("Error deleting test.", "error"); // Translated
                 }
             }
         }
 
         async function saveScreeningToFirestore() {
             if (!currentUserId || !currentPatientDataForApp || !currentPatientDataForApp.patientId) {
-                showStatusMessage("Ingen pasient valgt eller bruker ikke logget inn. Velg eller opprett en pasient først.", "error");
+                showStatusMessage("No patient selected or user not logged in. Please select or create a patient first.", "error"); // Translated
                 openPatientModal('new');
                 return;
             }
@@ -1876,19 +1861,19 @@
             });
 
             if (!dataEnteredForAsh) {
-                showStatusMessage("Ingen ASH testdata skrevet inn for å lagre.", "warning"); return;
+                showStatusMessage("No ASH test data entered to save.", "warning"); return; // Translated
             }
 
             try {
                 const screeningsCollectionRef = collection(db, "users", currentUserId, "patients", patientId, "screenings");
                 const docRef = await addDoc(screeningsCollectionRef, screeningData);
-                showStatusMessage("Screening lagret!", "success");
+                showStatusMessage("Screening saved!", "success"); // Translated
                 await displayTestsForPatientFromFirestore(patientId);
                 displayPatientInfoInCard(currentPatientDataForApp);
-                 if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block'; // Ensure "Detaljer" title is shown
+                 if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
             } catch (error) {
                 console.error("Error saving screening:", error);
-                showStatusMessage("Feil ved lagring av screening.", "error");
+                showStatusMessage("Error saving screening.", "error"); // Translated
             }
         }
 
@@ -1924,7 +1909,7 @@
                                 if(bodyweightInput) bodyweightInput.value = currentPatientDataForApp.bodyweight;
 
                                 displayPatientInfoInCard(currentPatientDataForApp);
-                                if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block'; // Show "Detaljer" title
+                                if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
                                 await displayTestsForPatientFromFirestore(enteredPatientId);
                                 resetScreeningInputFields();
                                 updateGraphsAndTable();
@@ -1938,7 +1923,7 @@
 
 
                             } else {
-                                showStatusMessage(`Pasient ID ikke funnet: ${enteredPatientId}`, "warning");
+                                showStatusMessage(`Patient ID not found: ${enteredPatientId}`, "warning"); // Translated
                             }
                         } catch (error) {
                             console.error("Error fetching patient on main page search:", error);
@@ -1953,7 +1938,7 @@
                 currentPatientDataForApp[key] = value;
                 if(currentPatientDataForApp.patientId) {
                     displayPatientInfoInCard(currentPatientDataForApp);
-                     if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block'; // Ensure "Detaljer" title is shown
+                     if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
                 }
                 if (key === 'bodyweight' || key === 'injuredSide') {
                     updateGraphsAndTable();
@@ -1985,7 +1970,7 @@
                     localStorage.removeItem(localStorageKey);
                 } catch (error) {
                     console.error("Logout error:", error);
-                    showStatusMessage("Feil ved utlogging. Prøv igjen.", "error");
+                    showStatusMessage("Error logging out. Please try again.", "error"); // Translated
                 }
             });
         }
