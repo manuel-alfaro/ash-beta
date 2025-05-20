@@ -145,7 +145,7 @@
             gap: 8px;
             margin-bottom: 15px;
         }
-        .user-details i.fa-circle-nodes { /* Changed icon */
+        .user-details i.fa-circle-nodes {
             font-size: 2.5rem;
             color: var(--app-primary-color);
         }
@@ -291,7 +291,6 @@
             outline: 2px solid var(--app-secondary-color);
         }
 
-        /* --- Modal Styles (Frosted Glass) --- */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -430,9 +429,7 @@
             color: var(--app-primary-color);
             border-color: var(--app-secondary-color);
         }
-        /* --- End Modal Styles --- */
 
-        /* --- Patient Overview Section --- */
         #patient-overview-section {
             display: none;
             flex-direction: row;
@@ -466,12 +463,12 @@
             align-items: center;
             margin-bottom: 15px;
             padding-bottom: 15px;
-            justify-content: flex-start; /* Align items to start */
+            justify-content: flex-start;
         }
         .patient-card-icon {
-            font-size: 3.5rem;
+            font-size: 4rem; /* Increased icon size */
             color: var(--app-primary-color);
-            margin-right: 25px; /* Increased margin */
+            margin-right: 30px; /* Increased margin */
         }
         .patient-card-id-container {
             display: flex;
@@ -501,7 +498,7 @@
             margin-right: 12px;
             width: 22px;
             text-align: center;
-            font-size: 1.2em; /* Slightly larger icons */
+            font-size: 1.2em; /* Increased icon size */
         }
         .patient-card-body .info-item .label {
             color: var(--dark-gray);
@@ -553,7 +550,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 10px 12px;
-            border: 1px solid rgba(40, 84, 132, 0.3); /* Lighter border with alpha */
+            border: 1px solid rgba(40, 84, 132, 0.3);
             background-color: rgba(112, 188, 252, 0.05);
             border-radius: var(--border-radius);
             min-width: 150px;
@@ -597,10 +594,7 @@
             color: white;
             border-color: var(--danger-color-dark);
         }
-        /* End Patient Overview Section Styles */
 
-
-        /* Skjult container for intern datahåndtering, ikke for visning */
         #patient-data-container { display:none !important; }
 
 
@@ -1053,7 +1047,6 @@
             if (user) {
                 currentUser = user;
                 currentUserId = user.uid;
-                console.log("SCREENING PAGE: User is signed in:", currentUserId);
                 if (appLoadingMessage) appLoadingMessage.textContent = `Welcome, loading data...`;
 
                 try {
@@ -1064,12 +1057,10 @@
                         loggedInUserNameSpan.textContent = `${userData.firstName || ''} ${userData.lastName || ''}`.trim() || 'User';
                         loggedInUserEmailDisplaySpan.textContent = currentUser.email || '';
                     } else {
-                        console.warn("User document not found in Firestore for UID:", currentUserId);
                         loggedInUserNameSpan.textContent = 'User';
                         loggedInUserEmailDisplaySpan.textContent = currentUser.email || '';
                     }
                 } catch (error) {
-                    console.error("Error fetching user details from Firestore:", error);
                     loggedInUserNameSpan.textContent = 'User';
                     loggedInUserEmailDisplaySpan.textContent = currentUser.email || '';
                 }
@@ -1081,7 +1072,6 @@
             } else {
                 currentUser = null;
                 currentUserId = null;
-                console.log("SCREENING PAGE: No user signed in. Redirecting to login.");
                 if (appLoadingMessage) appLoadingMessage.textContent = 'Redirecting to login...';
                 localStorage.setItem('redirectToAfterLogin', window.location.pathname + window.location.search);
                 window.location.href = "index.html";
@@ -1089,7 +1079,6 @@
         });
 
         async function initializeAppUI() {
-            console.log("Initializing App UI (Firebase Mode)");
             asymmetryChartDivs.forEach(divId => createEmptyPlot(divId, 'Enter Data', 300, 20));
             normativeChartDivs.forEach(divId => createEmptyPlot(divId, 'Enter Bodyweight', 250, 35));
             loadInputsFromLocalStorage();
@@ -1115,15 +1104,15 @@
             }, duration);
         }
         function hexToRgba(hex, alpha) { hex = hex.replace('#', ''); const r = parseInt(hex.substring(0, 2), 16); const g = parseInt(hex.substring(2, 4), 16); const b = parseInt(hex.substring(4, 6), 16); return `rgba(${r}, ${g}, ${b}, ${alpha})`; }
-        function createEmptyPlot(targetDivId, title = 'Enter Data', height = 300, topMargin = 20) { const targetDiv = document.getElementById(targetDivId); if (!targetDiv) { return; } try { Plotly.react(targetDiv, [{ x: [], y: [], type: 'bar' }], { title: { text: title, font: { family: 'Avenir, sans-serif', size: 16, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim(), weight: 400 } }, height: height, margin: { l: 60, r: 40, b: 40, t: topMargin, pad: 4 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', xaxis: { visible: false }, yaxis: { showgrid: false, zeroline: true, gridcolor: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), showticklabels: false }, font: { family: 'Avenir, sans-serif', size: 12, weight: 400 } }, plotlyConfig); } catch (error) { console.error(`Error creating empty plot in ${targetDivId}:`, error); targetDiv.innerHTML = `<p style="color: red; text-align: center; padding: 20px;">Error displaying chart.</p>`; } }
+        function createEmptyPlot(targetDivId, title = 'Enter Data', height = 300, topMargin = 20) { const targetDiv = document.getElementById(targetDivId); if (!targetDiv) { return; } try { Plotly.react(targetDiv, [{ x: [], y: [], type: 'bar' }], { title: { text: title, font: { family: 'Avenir, sans-serif', size: 16, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim(), weight: 400 } }, height: height, margin: { l: 60, r: 40, b: 40, t: topMargin, pad: 4 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', xaxis: { visible: false }, yaxis: { showgrid: false, zeroline: true, gridcolor: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), showticklabels: false }, font: { family: 'Avenir, sans-serif', size: 12, weight: 400 } }, plotlyConfig); } catch (error) {  targetDiv.innerHTML = `<p style="color: red; text-align: center; padding: 20px;">Error displaying chart.</p>`; } }
         function processInputAndCalculate(position) { const inputs = inputFieldMap[position]; if (!inputs) return null; const nonInjuredMaxForceVal = inputs.nonInjured[0].value; const nonInjuredRfdVal = inputs.nonInjured[1].value; const injuredMaxForceVal = inputs.injured[0].value; const injuredRfdVal = inputs.injured[1].value; if (nonInjuredMaxForceVal === '' && nonInjuredRfdVal === '' && injuredMaxForceVal === '' && injuredRfdVal === '') return null; const nonInjuredMaxForce = parseFloat(nonInjuredMaxForceVal) || 0; const nonInjuredRfd = parseFloat(nonInjuredRfdVal) || 0; const injuredMaxForce = parseFloat(injuredMaxForceVal) || 0; const injuredRfd = parseFloat(injuredRfdVal) || 0; const selectedInjuredSide = currentPatientDataForApp.injuredSide || 'Left'; let leftData = {}; let rightData = {}; if (selectedInjuredSide === 'Left') { leftData = { max_force: injuredMaxForce, rfd: injuredRfd }; rightData = { max_force: nonInjuredMaxForce, rfd: nonInjuredRfd }; } else { leftData = { max_force: nonInjuredMaxForce, rfd: nonInjuredRfd }; rightData = { max_force: injuredMaxForce, rfd: injuredRfd }; } return { left: leftData, right: rightData }; }
         function createAsymmetryChart(positionData, injuredSide, posLabel) { if (!positionData?.left || !positionData?.right) return [{}, false]; const leftDataRaw = positionData.left; const rightDataRaw = positionData.right; const leftPctMaxAt100ms = leftDataRaw.max_force !== 0 ? (leftDataRaw.rfd * 0.1 / leftDataRaw.max_force) * 100 : 0; const rightPctMaxAt100ms = rightDataRaw.max_force !== 0 ? (rightDataRaw.rfd * 0.1 / rightDataRaw.max_force) * 100 : 0; const leftData = [leftDataRaw.max_force, leftDataRaw.rfd, leftPctMaxAt100ms]; const rightData = [rightDataRaw.max_force, rightDataRaw.rfd, rightPctMaxAt100ms]; const baseData = injuredSide === 'Right' ? leftData : rightData; const metricNames = [ 'Max Force (N)', 'RFD 100ms (Ns⁻¹)', '% Max @ 100ms (%)' ]; const barDataRatios = {}; const leftTextsAbsolute = []; const rightTextsAbsolute = []; metricNames.forEach((metricName, index) => { let leftValue = leftData[index]; let rightValue = rightData[index]; let baseValue = baseData[index]; const leftRatio = baseValue !== 0 ? (leftValue / baseValue) * 100 : (leftValue === 0 ? 100 : Infinity); const rightRatio = baseValue !== 0 ? (rightValue / baseValue) * 100 : (rightValue === 0 ? 100 : Infinity); barDataRatios[metricName] = [rightRatio, leftRatio]; const decimals = metricName.includes('% Max @ 100ms') ? 1 : 0; leftTextsAbsolute.push(leftValue.toFixed(decimals)); rightTextsAbsolute.push(rightValue.toFixed(decimals)); }); const plotX = metricNames; const plotYLeft = plotX.map(name => barDataRatios[name][1]); const plotYRight = plotX.map(name => barDataRatios[name][0]); if (plotX.length !== 3 || plotYLeft.length !== 3 || plotYRight.length !== 3) return [{}, false]; const leftColorHex = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim(); const rightColorHex = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim(); const leftColorRgba = hexToRgba(leftColorHex, 0.8); const rightColorRgba = hexToRgba(rightColorHex, 0.8); const thresholdLineColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(); const darkGrayColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(); const whiteColor = getComputedStyle(document.documentElement).getPropertyValue('--white').trim(); const validRatios = plotYLeft.concat(plotYRight).filter(isFinite); const maxYValue = validRatios.length > 0 ? Math.max(110, ...validRatios) : 110; const annotationYTop = maxYValue + 8; const yAxisUpperBound = annotationYTop + 15; const fig = { data: [ { type: 'bar', name: 'Left', x: plotX, y: plotYLeft, marker: { color: leftColorRgba }, text: leftTextsAbsolute, texttemplate: '%{text}', textposition: 'none', hoverinfo: 'x+name', hovertemplate: 'Left: %{y:.0f}%<extra></extra>' }, { type: 'bar', name: 'Right', x: plotX, y: plotYRight, marker: { color: rightColorRgba }, text: rightTextsAbsolute, texttemplate: '%{text}', textposition: 'none', hoverinfo: 'x+name', hovertemplate: 'Right: %{y:.0f}%<extra></extra>' }, { x: [null], y: [null], mode: 'lines', name: '±10% Thresholds', line: { color: thresholdLineColor, width: 1, dash: 'dash' }, hoverinfo: 'none', showlegend: true } ], layout: { height: 300, barmode: 'group', font: { color: darkGrayColor, family: 'Avenir, sans-serif', size: 12, weight: 400 }, yaxis: { title: "Injured Side Asymmetry (%)", titlefont: { size: 13, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, range: [18, yAxisUpperBound], tickmode: 'array', tickvals: [50, 100], showgrid: false, zeroline: false, }, xaxis: { showgrid: false, zeroline: false, showline: false, showticklabels: true, tickangle: 0, tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, automargin: true, fixedrange: true }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', legend: { orientation: "h", yanchor: "bottom", y: -0.30, xanchor: "center", x: 0.5, font: { size: 12, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor } }, margin: { l: 70, r: 30, b: 85, t: 20, pad: 10 }, shapes: [ { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 90, y1: 90, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" }, { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 110, y1: 110, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" } ], annotations: [] } }; let allGreen = true; const metricsNamesForAnnotation = plotX; for (let i = 0; i < metricsNamesForAnnotation.length; i++) { const metricName = metricsNamesForAnnotation[i]; const injuredRatio = injuredSide === 'Right' ? plotYRight[i] : plotYLeft[i]; const leftRatio = plotYLeft[i]; const rightRatio = plotYRight[i]; if (!isFinite(injuredRatio)) { fig.layout.annotations.push({ x: metricName, y: annotationYTop, text: "N/A", showarrow: false, font: { color: 'grey', size: 22, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'bottom' }); allGreen = false; } else { const percentageDiff = injuredRatio - 100; let color; if (percentageDiff >= -10) { color = '#2a9d8f'; } else { allGreen = false; if (percentageDiff >= -15) { color = '#ee9b00'; } else if (percentageDiff >= -20) { color = '#e85d04'; } else { color = '#ae2012'; } } fig.layout.annotations.push({ x: metricName, y: annotationYTop, text: `${percentageDiff.toFixed(0)}%`, showarrow: false, font: { color: color, size: 22, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'bottom' }); } const barTextYPosition = 31; const barTextFontSize = 17; const categoryIndex = i; const numberOfBars = 2; const groupWidth = 0.8; const barWidthFraction = groupWidth / numberOfBars; const leftBarCenter = categoryIndex - (groupWidth / 2) + (barWidthFraction / 2); const rightBarCenter = categoryIndex + (groupWidth / 2) - (barWidthFraction / 2); if (leftRatio > barTextYPosition + (barTextFontSize / 2)) { fig.layout.annotations.push({ x: leftBarCenter, y: barTextYPosition, xref: 'x', yref: 'y', text: leftTextsAbsolute[i], showarrow: false, font: { color: whiteColor, size: barTextFontSize, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'middle' }); } if (rightRatio > barTextYPosition + (barTextFontSize / 2)) { fig.layout.annotations.push({ x: rightBarCenter, y: barTextYPosition, xref: 'x', yref: 'y', text: rightTextsAbsolute[i], showarrow: false, font: { color: whiteColor, size: barTextFontSize, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'middle' }); } } return [fig, allGreen]; }
         function mapNkgToPercentile(nkgValue, positionLabel) { const thresholds = normativeThresholds[positionLabel]; if (!thresholds || typeof nkgValue !== 'number' || !isFinite(nkgValue)) return 0; const pMap = [ { v: 0.5, p: 0 }, { v: thresholds.poor_max, p: percentileZones.poor }, { v: thresholds.average_mid, p: percentileMidpoint }, { v: thresholds.good_min, p: percentileZones.average }, { v: thresholds.excellent_min, p: percentileZones.good }, { v: thresholds.excellent_min * 1.25, p: percentileZones.excellent } ]; const minVal = pMap[0].v; const maxVal = pMap[pMap.length - 1].v; const clampedValue = Math.max(minVal, Math.min(nkgValue, maxVal)); let lowerPoint = pMap[0]; let upperPoint = pMap[pMap.length - 1]; for (let i = 0; i < pMap.length - 1; i++) { if (clampedValue === pMap[i].v) { lowerPoint = upperPoint = pMap[i]; break; } if (clampedValue > pMap[i].v && clampedValue <= pMap[i + 1].v) { lowerPoint = pMap[i]; upperPoint = pMap[i + 1]; break; } } if (clampedValue === upperPoint.v) { lowerPoint = upperPoint; } let percentile = lowerPoint.p; const valueRange = upperPoint.v - lowerPoint.v; const percentileRange = upperPoint.p - lowerPoint.p; if (valueRange > 0) { percentile += ((clampedValue - lowerPoint.v) / valueRange) * percentileRange; } return Math.max(0, Math.min(percentile, 100)); }
         function createNormativeComparisonChart(positionData, bodyweight, positionLabel) { const bwVal = parseFloat(bodyweight); if (isNaN(bwVal) || bwVal <= 0 || !positionData) return {}; const leftNkg = positionData.left.max_force / bwVal; const rightNkg = positionData.right.max_force / bwVal; const thresholds = normativeThresholds[positionLabel]; if (!thresholds) return {}; const leftPercentile = mapNkgToPercentile(leftNkg, positionLabel); const rightPercentile = mapNkgToPercentile(rightNkg, positionLabel); const baseCurveX = []; const baseCurveY = []; const mean = 55; const stdDev = 22; const amplitude = 0.9; for (let i = 0; i <= 100; i += 0.5) { baseCurveX.push(i); const y = amplitude * Math.exp(-Math.pow(i - mean, 2) / (2 * Math.pow(stdDev, 2))); baseCurveY.push(y); } const zoneBoundaries = [0, percentileZones.poor, percentileZones.average, percentileZones.good, percentileZones.excellent]; const traces = []; const zoneColorsList = [normZoneColors.poor, normZoneColors.average, normZoneColors.good, normZoneColors.excellent]; for (let i = 0; i < zoneBoundaries.length - 1; i++) { const x0 = zoneBoundaries[i]; const x1 = zoneBoundaries[i+1]; const zoneFillColor = zoneColorsList[i]; const segmentX = [x0]; const segmentY = [0]; for(let j=0; j < baseCurveX.length; j++) { if (baseCurveX[j] >= x0 && baseCurveX[j] <= x1) { segmentX.push(baseCurveX[j]); segmentY.push(baseCurveY[j]); } } segmentX.push(x1); segmentY.push(0); traces.push({ x: segmentX, y: segmentY, type: 'scatter', mode: 'lines', line: { width: 0 }, fill: 'tozeroy', fillcolor: zoneFillColor, hoverinfo: 'none', name: Object.keys(normativeLabels)[i], showlegend: false }); } traces.push({ x: baseCurveX, y: baseCurveY, type: 'scatter', mode: 'lines', line: { color: '#ffffff', width: 1.5, shape: 'spline' }, hoverinfo: 'none', name: 'Distribution (Visual)', showlegend: false }); const layout = { height: 250, margin: { t: 35, b: 95, l: 30, r: 30 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', xaxis: { title: '', range: [0, 100], showgrid: false, zeroline: false, showticklabels: false }, yaxis: { range: [0, 1.1], showgrid: false, zeroline: false, showticklabels: false, title: '' }, shapes: [], annotations: [], font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() }, showlegend: false }; const thresholdAnnotations = [ { p: percentileZones.poor, val: thresholds.poor_max }, { p: percentileZones.average, val: thresholds.good_min }, { p: percentileZones.good, val: thresholds.excellent_min } ]; thresholdAnnotations.forEach(t => { layout.annotations.push({ xref: 'x', yref: 'paper', x: t.p, y: -0.08, text: `<span class="norm-value">${t.val.toFixed(2)}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', font: { family: 'Avenir, sans-serif', size: 10, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim() } }); }); layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: percentileMidpoint, x1: percentileMidpoint, y0: 0, y1: 1, line: { color: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), width: 1.5, dash: 'dot' }, layer: 'below' }); const avgValueForPos = thresholds.average_mid.toFixed(2); layout.annotations.push({ xref: 'x', yref: 'paper', x: percentileMidpoint, y: -0.08, text: `<span class="value-display">${avgValueForPos}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', font: { family: 'Avenir, sans-serif', size: 10, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), weight: 400 } }); const labelYPosition = 1.10; layout.annotations.push({ xref: 'x', yref: 'paper', x: 15, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.poor}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 50, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.average}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() }, align: 'center' }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 80, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.good}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 95, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.excellent}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); const leftColor = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim(); const rightColor = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim(); const lineY0 = 0.05; const lineY1 = 0.95; layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: leftPercentile, x1: leftPercentile, y0: lineY0, y1: lineY1, line: { color: leftColor, width: 2, dash: 'dash' } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: leftPercentile, y: 0.90, text: 'L', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: leftColor, font: {color: leftColor, size: 14, family: 'Avenir, sans-serif', weight: 400} }); layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: rightPercentile, x1: rightPercentile, y0: lineY0, y1: lineY1, line: { color: rightColor, width: 2, dash: 'dash' } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: rightPercentile, y: 0.90, text: 'R', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: rightColor, font: {color: rightColor, size: 14, family: 'Avenir, sans-serif', weight: 400} }); const combinedNkgText = `<span class='nkg-combined-text'>Left: <span class='left-label'>${leftNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>) &nbsp;&nbsp;|&nbsp;&nbsp; Right: <span class='right-label'>${rightNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>)</span>`; layout.annotations.push({ xref: 'paper', yref: 'paper', x: 0.5, y: -0.30, text: combinedNkgText, showarrow: false, xanchor: 'center', yanchor: 'top', align: 'center', font: { size: 15, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), family: 'Avenir, sans-serif', weight: 400 } }); return { data: traces, layout }; }
-        function updateGraphsAndTable() { const injuredSide = currentPatientDataForApp.injuredSide || (injuredSideRadio ? injuredSideRadio.value : 'Left'); const bodyweightValue = currentPatientDataForApp.bodyweight || (bodyweightInput ? bodyweightInput.value : ''); const bwVal = parseFloat(bodyweightValue); const bodyweightValid = !isNaN(bwVal) && bwVal > 0; if (normativePlaceholder) { normativePlaceholder.style.display = bodyweightValid ? 'none' : 'block'; } normativeChartDivs.forEach(divId => { const container = document.getElementById(divId)?.closest('.normative-graph-container'); if (container) { container.style.display = bodyweightValid ? 'block' : 'none'; } }); const positions = ['I', 'Y', 'T']; positions.forEach((pos, i) => { const asymmetryChartDivId = asymmetryChartDivs[i]; const asymmetryPositionBoxDivId = asymmetryPositionBoxDivs[i]; const asymmetryPositionBoxDiv = document.getElementById(asymmetryPositionBoxDivId); const normativeChartDivId = normativeChartDivs[i]; if (!asymmetryPositionBoxDiv || !document.getElementById(asymmetryChartDivId) || !document.getElementById(normativeChartDivId)) return; const positionData = processInputAndCalculate(pos); if (positionData) { try { const [fig, allGreen] = createAsymmetryChart(positionData, injuredSide, pos); if (fig?.data && fig?.layout) { Plotly.react(asymmetryChartDivId, fig.data, fig.layout, plotlyConfig); if (allGreen) asymmetryPositionBoxDiv.classList.add('green-box'); else asymmetryPositionBoxDiv.classList.remove('green-box'); } else { throw new Error("Generated asymmetry figure invalid."); } } catch (error) { console.error(`Error creating asymmetry chart for ${pos}:`, error); createEmptyPlot(asymmetryChartDivId, 'Error loading asymmetry data', 300, 20); asymmetryPositionBoxDiv.classList.remove('green-box'); } } else { createEmptyPlot(asymmetryChartDivId, 'Enter Data', 300, 20); asymmetryPositionBoxDiv.classList.remove('green-box'); } if (bodyweightValid && positionData) { try { const config = createNormativeComparisonChart(positionData, bodyweightValue, pos); if (config?.data && config?.layout) Plotly.react(normativeChartDivId, config.data, config.layout, plotlyConfig); else throw new Error("Generated normative figure invalid."); } catch (error) { console.error(`Error creating normative chart for ${pos}:`, error); createEmptyPlot(normativeChartDivId, 'Error Loading Data', 250, 35); } } else if (!bodyweightValid) { createEmptyPlot(normativeChartDivId, 'Enter Bodyweight', 250, 35); } else { createEmptyPlot(normativeChartDivId, 'Enter Data', 250, 35); } }); setTimeout(() => window.dispatchEvent(new Event('resize')), 100); }
-        function enterPreviewMode() { document.body.classList.add('pdf-preview-active'); if(previewExitButtonInline) previewExitButtonInline.style.display = 'inline-block'; if(explanationBox) explanationBox.style.display = 'block'; window.dispatchEvent(new Event('resize')); console.log("Entered PDF preview mode"); }
-        function exitPreviewMode() { document.body.classList.remove('pdf-preview-active'); if(previewExitButtonInline) previewExitButtonInline.style.display = 'none'; if(explanationBox) explanationBox.style.display = 'none'; window.dispatchEvent(new Event('resize')); console.log("Exited PDF preview mode"); }
-        function exportTableToCsv() { const fpNr = currentPatientDataForApp.patientId || ''; const age = currentPatientDataForApp.age || ''; const gender = currentPatientDataForApp.gender || ''; const sport = currentPatientDataForApp.sport || ''; const injuryValue = currentPatientDataForApp.injury || ''; const bodyweightValue = currentPatientDataForApp.bodyweight || ''; const injuredSide = currentPatientDataForApp.injuredSide || ''; const date = new Date(); const year = date.getFullYear(); const month = (date.getMonth() + 1).toString().padStart(2, '0'); const day = date.getDate().toString().padStart(2, '0'); const dateString = `${year}-${month}-${day}`; const safeFpNr = fpNr.replace(/[^a-z0-9]/gi, '_') || 'Unknown'; const filename = `ASH_${safeFpNr}_${dateString}.csv`; const headers = [ "Patient ID", "Age", "Gender", "Sport", "Injury", "Bodyweight (kg)", "Injured Side", "Position", "Metric", "Left Value", "Right Value" ]; let csv = [headers.join(',')]; const positions = ['I', 'Y', 'T']; const metricsForCsv = ['Max Force (N)', 'RFD 100ms (N/s)']; positions.forEach(pos => { const positionName = `ASH Test Position ${pos}`; const positionData = processInputAndCalculate(pos); metricsForCsv.forEach(metricDisplay => { let leftVal = ''; let rightVal = ''; let metricIdentifier = metricDisplay; if (metricDisplay === 'Max Force (N)') { if (positionData) { leftVal = positionData.left.max_force; rightVal = positionData.right.max_force; } } else if (metricDisplay === 'RFD 100ms (N/s)') { if (positionData) { leftVal = positionData.left.rfd; rightVal = positionData.right.rfd; } metricIdentifier = 'RFD 100ms (N/s)'; } const rowData = [ `"${fpNr}"`, `"${age}"`, `"${gender}"`, `"${sport}"`, `"${injuryValue}"`, `"${bodyweightValue}"`, `"${injuredSide}"`, `"${positionName}"`, `"${metricIdentifier}"`, `"${leftVal}"`, `"${rightVal}"` ]; csv.push(rowData.join(',')); }); }); const csvString = "\uFEFF" + csv.join('\n'); const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); if (link.download !== undefined) { const url = URL.createObjectURL(blob); link.setAttribute('href', url); link.setAttribute('download', filename); link.style.visibility = 'hidden'; document.body.appendChild(link); link.click(); document.body.removeChild(link); console.log(`CSV export initiated: ${filename}`); showStatusMessage("Data exported to CSV.", "success"); } else { alert("CSV export is not directly supported in this browser. Please try a modern browser."); } }
+        function updateGraphsAndTable() { const injuredSide = currentPatientDataForApp.injuredSide || (injuredSideRadio ? injuredSideRadio.value : 'Left'); const bodyweightValue = currentPatientDataForApp.bodyweight || (bodyweightInput ? bodyweightInput.value : ''); const bwVal = parseFloat(bodyweightValue); const bodyweightValid = !isNaN(bwVal) && bwVal > 0; if (normativePlaceholder) { normativePlaceholder.style.display = bodyweightValid ? 'none' : 'block'; } normativeChartDivs.forEach(divId => { const container = document.getElementById(divId)?.closest('.normative-graph-container'); if (container) { container.style.display = bodyweightValid ? 'block' : 'none'; } }); const positions = ['I', 'Y', 'T']; positions.forEach((pos, i) => { const asymmetryChartDivId = asymmetryChartDivs[i]; const asymmetryPositionBoxDivId = asymmetryPositionBoxDivs[i]; const asymmetryPositionBoxDiv = document.getElementById(asymmetryPositionBoxDivId); const normativeChartDivId = normativeChartDivs[i]; if (!asymmetryPositionBoxDiv || !document.getElementById(asymmetryChartDivId) || !document.getElementById(normativeChartDivId)) return; const positionData = processInputAndCalculate(pos); if (positionData) { try { const [fig, allGreen] = createAsymmetryChart(positionData, injuredSide, pos); if (fig?.data && fig?.layout) { Plotly.react(asymmetryChartDivId, fig.data, fig.layout, plotlyConfig); if (allGreen) asymmetryPositionBoxDiv.classList.add('green-box'); else asymmetryPositionBoxDiv.classList.remove('green-box'); } else { throw new Error("Generated asymmetry figure invalid."); } } catch (error) {  createEmptyPlot(asymmetryChartDivId, 'Error loading asymmetry data', 300, 20); asymmetryPositionBoxDiv.classList.remove('green-box'); } } else { createEmptyPlot(asymmetryChartDivId, 'Enter Data', 300, 20); asymmetryPositionBoxDiv.classList.remove('green-box'); } if (bodyweightValid && positionData) { try { const config = createNormativeComparisonChart(positionData, bodyweightValue, pos); if (config?.data && config?.layout) Plotly.react(normativeChartDivId, config.data, config.layout, plotlyConfig); else throw new Error("Generated normative figure invalid."); } catch (error) {  createEmptyPlot(normativeChartDivId, 'Error Loading Data', 250, 35); } } else if (!bodyweightValid) { createEmptyPlot(normativeChartDivId, 'Enter Bodyweight', 250, 35); } else { createEmptyPlot(normativeChartDivId, 'Enter Data', 250, 35); } }); setTimeout(() => window.dispatchEvent(new Event('resize')), 100); }
+        function enterPreviewMode() { document.body.classList.add('pdf-preview-active'); if(previewExitButtonInline) previewExitButtonInline.style.display = 'inline-block'; if(explanationBox) explanationBox.style.display = 'block'; window.dispatchEvent(new Event('resize')); }
+        function exitPreviewMode() { document.body.classList.remove('pdf-preview-active'); if(previewExitButtonInline) previewExitButtonInline.style.display = 'none'; if(explanationBox) explanationBox.style.display = 'none'; window.dispatchEvent(new Event('resize')); }
+        function exportTableToCsv() { const fpNr = currentPatientDataForApp.patientId || ''; const age = currentPatientDataForApp.age || ''; const gender = currentPatientDataForApp.gender || ''; const sport = currentPatientDataForApp.sport || ''; const injuryValue = currentPatientDataForApp.injury || ''; const bodyweightValue = currentPatientDataForApp.bodyweight || ''; const injuredSide = currentPatientDataForApp.injuredSide || ''; const date = new Date(); const year = date.getFullYear(); const month = (date.getMonth() + 1).toString().padStart(2, '0'); const day = date.getDate().toString().padStart(2, '0'); const dateString = `${year}-${month}-${day}`; const safeFpNr = fpNr.replace(/[^a-z0-9]/gi, '_') || 'Unknown'; const filename = `ASH_${safeFpNr}_${dateString}.csv`; const headers = [ "Patient ID", "Age", "Gender", "Sport", "Injury", "Bodyweight (kg)", "Injured Side", "Position", "Metric", "Left Value", "Right Value" ]; let csv = [headers.join(',')]; const positions = ['I', 'Y', 'T']; const metricsForCsv = ['Max Force (N)', 'RFD 100ms (N/s)']; positions.forEach(pos => { const positionName = `ASH Test Position ${pos}`; const positionData = processInputAndCalculate(pos); metricsForCsv.forEach(metricDisplay => { let leftVal = ''; let rightVal = ''; let metricIdentifier = metricDisplay; if (metricDisplay === 'Max Force (N)') { if (positionData) { leftVal = positionData.left.max_force; rightVal = positionData.right.max_force; } } else if (metricDisplay === 'RFD 100ms (N/s)') { if (positionData) { leftVal = positionData.left.rfd; rightVal = positionData.right.rfd; } metricIdentifier = 'RFD 100ms (N/s)'; } const rowData = [ `"${fpNr}"`, `"${age}"`, `"${gender}"`, `"${sport}"`, `"${injuryValue}"`, `"${bodyweightValue}"`, `"${injuredSide}"`, `"${positionName}"`, `"${metricIdentifier}"`, `"${leftVal}"`, `"${rightVal}"` ]; csv.push(rowData.join(',')); }); }); const csvString = "\uFEFF" + csv.join('\n'); const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); if (link.download !== undefined) { const url = URL.createObjectURL(blob); link.setAttribute('href', url); link.setAttribute('download', filename); link.style.visibility = 'hidden'; document.body.appendChild(link); link.click(); document.body.removeChild(link); showStatusMessage("Data exported to CSV.", "success"); } else { alert("CSV export is not directly supported in this browser. Please try a modern browser."); } }
 
         function resetPatientDataForApp() {
             currentPatientDataForApp = { patientId: null, age: '', gender: '', sport: '', injury: '', injuredSide: 'Left', bodyweight: '', screeningId: null };
@@ -1142,7 +1131,6 @@
         }
 
         function clearAllFields() {
-            console.log("Clearing all fields...");
             resetPatientDataForApp();
             resetScreeningInputFields();
             if(patientOverviewSection) patientOverviewSection.style.display = 'none';
@@ -1172,7 +1160,6 @@
             });
             try {
                 localStorage.setItem(localStorageKey, JSON.stringify(dataToSave));
-                console.log("Inputs saved to localStorage:", localStorageKey);
             } catch (error) {
                 console.error('Error saving inputs to localStorage:', error);
             }
@@ -1182,7 +1169,6 @@
                 const savedDataString = localStorage.getItem(localStorageKey);
                 if (savedDataString) {
                     const savedData = JSON.parse(savedDataString);
-                    console.log('Loading inputs from localStorage:', localStorageKey);
 
                     if (savedData.currentPatient) {
                         currentPatientDataForApp = { ...savedData.currentPatient };
@@ -1277,7 +1263,6 @@
                         tempPatientData = { patientId: patientIdToEdit, age: '', gender: '', sport: '', injury: '', injuredSide: 'Left', bodyweight: '' };
                     }
                 } catch(error) {
-                    console.error("Error fetching patient for modal edit:", error);
                     showStatusMessage("Could not fetch patient data.", "error");
                     tempPatientData = { patientId: patientIdToEdit, age: '', gender: '', sport: '', injury: '', injuredSide: 'Left', bodyweight: '' };
                 }
@@ -1371,7 +1356,6 @@
                     container.appendChild(button);
                 });
             } catch (error) {
-                console.error("Error populating modal patient buttons/datalist:", error);
                 container.textContent = 'Error loading patients.';
             }
         }
@@ -1396,7 +1380,6 @@
                     return;
                 }
             } catch (error) {
-                console.error("Error checking for existing patient ID:", error);
                 showStatusMessage("Error checking patient ID.", "error");
                 return;
             }
@@ -1451,7 +1434,6 @@
                 if (currentPatientForTestsSpan) currentPatientForTestsSpan.textContent = newPatientId;
                 saveInputsToLocalStorage();
             } catch (error) {
-                console.error("Error saving new patient data to Firestore: ", error);
                 showStatusMessage("Error saving patient data.", "error");
             }
         }
@@ -1511,7 +1493,6 @@
                 if (currentPatientForTestsSpan) currentPatientForTestsSpan.textContent = originalPatientId;
                 saveInputsToLocalStorage();
             } catch (error) {
-                console.error("Error updating patient data in Firestore: ", error);
                 showStatusMessage("Error updating patient data.", "error");
             }
         }
@@ -1526,6 +1507,7 @@
             if (displayInjuredSideCard) displayInjuredSideCard.textContent = data.injuredSide || 'N/A';
             if (displayBodyweightCard) displayBodyweightCard.textContent = data.bodyweight ? `${data.bodyweight} kg` : 'N/A';
             patientIdentityCard.style.display = 'block';
+            if (selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'block'; // Ensure test container is also shown
             if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
         }
 
@@ -1545,7 +1527,6 @@
                     if(existingPatientIdsDatalist) existingPatientIdsDatalist.appendChild(option.cloneNode(true));
                 });
             } catch (error) {
-                console.error("Error fetching patient IDs from Firestore: ", error);
                 showStatusMessage("Error loading patient list.", "error");
             }
         }
@@ -1598,7 +1579,6 @@
                     selectedPatientTestsListUL.appendChild(li);
                 });
             } catch (error) {
-                console.error(`Error fetching tests for patient ${patientId}: `, error);
                 selectedPatientTestsListUL.innerHTML = '<li>Error loading tests.</li>';
                 showStatusMessage("Error loading patient tests.", "error");
             }
@@ -1648,7 +1628,6 @@
                     showStatusMessage("Could not find selected test data in Firebase.", "error");
                 }
             } catch (error) {
-                console.error("Error loading screening from Firestore: ", error);
                 showStatusMessage("Error loading test data.", "error");
             }
         }
@@ -1664,7 +1643,6 @@
                 try {
                     const screeningDocRef = doc(db, "users", currentUserId, "patients", patientId, "screenings", screeningDocId);
                     await deleteDoc(screeningDocRef);
-                    console.log("Firestore screening deleted:", screeningDocId);
                     showStatusMessage('Test deleted from Firebase!', 'success');
 
                     if (currentPatientDataForApp.screeningId === screeningDocId && currentPatientDataForApp.patientId === patientId) {
@@ -1675,7 +1653,6 @@
                     }
                     await displayTestsForPatientFromFirestore(patientId);
                 } catch (error) {
-                    console.error("Error deleting screening from Firestore: ", error);
                     showStatusMessage("Error deleting test.", "error");
                 }
             }
@@ -1721,12 +1698,10 @@
             try {
                 const screeningsCollectionRef = collection(db, "users", currentUserId, "patients", patientId, "screenings");
                 const docRef = await addDoc(screeningsCollectionRef, screeningData);
-                console.log("Screening data saved with ID: ", docRef.id);
                 showStatusMessage("Screening saved!", "success");
                 await displayTestsForPatientFromFirestore(patientId);
                 displayPatientInfoInCard(currentPatientDataForApp);
             } catch (error) {
-                console.error("Error saving screening data to Firestore: ", error);
                 showStatusMessage("Error saving screening.", "error");
             }
         }
