@@ -48,7 +48,7 @@
             --graph-box-height: 340px;
             --sidebar-width: 180px;
             --normal-font-weight: 400;
-            --semibold-font-weight: 400;
+            --semibold-font-weight: 400; /* Changed from 600 to 400 based on previous request, can be 600 if needed */
             --bold-font-weight: 700;
             --main-content-margin: 20px;
         }
@@ -237,7 +237,7 @@
         .choice-box:hover span {
             color: white;
         }
-        .choice-box.active-choice { /* This class will be removed after selection */
+        .choice-box.active-choice {
               background-color: var(--app-primary-color);
               color: white;
               border-color: var(--app-primary-color);
@@ -436,56 +436,81 @@
         #patient-overview-section {
             display: none; /* Hidden initially, shown when a patient is active */
             flex-direction: row;
-            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            flex-wrap: wrap;
             gap: 20px;
             margin-bottom: 25px;
-            align-items: flex-start; /* Align items to the top */
+            align-items: stretch; /* Make child elements same height */
         }
+
+        .patient-profile-title { /* Title for the patient card section */
+            width: 100%;
+            font-size: 1.3rem;
+            color: var(--app-primary-color);
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
 
         /* --- Patient Identity Card (NEW STYLES) --- */
         .patient-card {
-            flex: 1; /* Adjust flex-basis as needed */
-            min-width: 300px; /* Minimum width before wrapping */
-            background-color: var(--white);
+            flex: 0 1 320px; /* Grow 0, Shrink 1, Basis 320px - slightly narrower */
+            background-color: var(--light-gray); /* Changed background */
             border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
             padding: 20px;
-            border: 1px solid var(--medium-gray);
+            border: none; /* Removed border */
+            box-shadow: none; /* Removed box-shadow */
+            min-height: 300px; /* Ensure a minimum height */
+            display: flex;
+            flex-direction: column;
         }
         .patient-card-header {
             text-align: center;
             margin-bottom: 15px;
             padding-bottom: 15px;
-            border-bottom: 1px solid var(--medium-gray);
         }
         .patient-card-icon {
-            font-size: 3rem; /* Larger icon */
+            font-size: 3rem;
             color: var(--app-primary-color);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+        }
+        .patient-card-id-label { /* New style for "Patient ID:" text */
+            display: block;
+            font-size: 0.8rem;
+            color: var(--dark-gray);
+            margin-bottom: 2px;
         }
         .patient-card-id {
             display: block;
             font-size: 1.2rem;
             font-weight: var(--bold-font-weight);
             color: var(--app-primary-color);
+            margin-bottom: 10px;
         }
         .patient-card-body .info-item {
             display: flex;
-            justify-content: space-between;
-            padding: 6px 0;
+            align-items: center; /* Align icon and text */
+            padding: 8px 0; /* Increased padding */
             font-size: 0.9rem;
-            border-bottom: 1px dotted var(--light-gray);
+            /* border-bottom: 1px dotted var(--light-gray); Removed dotted line */
         }
         .patient-card-body .info-item:last-child {
             border-bottom: none;
         }
+        .patient-card-body .info-item .info-icon {
+            color: var(--app-secondary-color);
+            margin-right: 10px;
+            width: 20px; /* Fixed width for alignment */
+            text-align: center;
+        }
         .patient-card-body .info-item .label {
             color: var(--dark-gray);
             font-weight: var(--normal-font-weight);
+            margin-right: auto; /* Push value to the right */
         }
         .patient-card-body .info-item .value {
             color: var(--text-color);
-            font-weight: var(--semibold-font-weight);
+            font-weight: var(--bold-font-weight); /* Values in bold */
             text-align: right;
         }
         /* --- End Patient Identity Card Styles --- */
@@ -495,23 +520,24 @@
         #patient-data-container { display:none !important; }
 
         #selected-patient-tests-container {
-            flex: 1.5; /* Adjust flex-basis as needed, give more space to tests */
-            min-width: 300px; /* Minimum width */
-            background-color: var(--white);
+            flex: 1 1 60%; /* Grow 1, Shrink 1, Basis 60% - takes more available space */
+            background-color: var(--light-gray); /* Changed background */
             padding: 20px;
-            box-shadow: var(--box-shadow);
             border-radius: var(--border-radius);
-            border: 1px solid var(--medium-gray);
-            /* display: none; Will be controlled by JS inside #patient-overview-section */
+            border: none; /* Removed border */
+            box-shadow: none; /* Removed box-shadow */
+            min-height: 300px; /* Ensure a minimum height, same as patient-card */
+            display: flex; /* Added for internal alignment */
+            flex-direction: column; /* Added for internal alignment */
         }
 
         #selected-patient-tests-container h3 {
             margin-top: 0;
             margin-bottom: 18px;
-            font-size: 1.2rem;
+            font-size: 1.3rem; /* Match patient profile title */
             color: var(--app-primary-color);
-            border-bottom: 1px solid var(--medium-gray);
             padding-bottom: 10px;
+            border-bottom: 1px solid var(--medium-gray);
             font-weight: var(--normal-font-weight);
         }
 
@@ -522,6 +548,8 @@
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
+            overflow-y: auto; /* Allow scrolling if many tests */
+            flex-grow: 1; /* Allow list to take available space */
         }
 
         #selected-patient-tests-list li {
@@ -704,7 +732,7 @@
             #input-section-container { flex-direction: column; }
             .input-position-box { min-width: unset; }
             #patient-overview-section { flex-direction: column; } /* Stack on smaller screens */
-            .patient-card, #selected-patient-tests-container { width: 100%; min-width: unset; }
+            .patient-card, #selected-patient-tests-container { width: 100%; min-width: unset; flex-basis: auto !important; }
 
 
             body.pdf-preview-active .app-main-content { padding: 15px 30px; }
@@ -824,7 +852,7 @@
             <div class="content-container">
                 <div id="report-content">
                     <h1>Functional Shoulder Screening</h1>
-                    <h2 id="patient-details-title">Patient Details</h2>
+                    <h2 id="patient-details-title">Patient Selection</h2>
 
                     <div id="patient-choice-section">
                         <div class="choice-box" id="new-patient-choice">
@@ -867,22 +895,24 @@
 
                         <div id="patient-overview-section">
                             <div id="patient-identity-card" class="patient-card" style="display: none;">
+                                <h3 class="patient-profile-title">Patient Profile</h3>
                                 <div class="patient-card-header">
                                     <i class="fas fa-address-card patient-card-icon"></i>
+                                    <span class="patient-card-id-label">Patient ID:</span>
                                     <span class="patient-card-id" id="display-patient-id-card"></span>
                                 </div>
                                 <div class="patient-card-body">
-                                    <div class="info-item"><span class="label">Age:</span><span class="value" id="display-age-card"></span></div>
-                                    <div class="info-item"><span class="label">Gender:</span><span class="value" id="display-gender-card"></span></div>
-                                    <div class="info-item"><span class="label">Sport:</span><span class="value" id="display-sport-card"></span></div>
-                                    <div class="info-item"><span class="label">Injury:</span><span class="value" id="display-injury-card"></span></div>
-                                    <div class="info-item"><span class="label">Injured Side:</span><span class="value" id="display-injured-side-card"></span></div>
-                                    <div class="info-item"><span class="label">Bodyweight:</span><span class="value" id="display-bodyweight-card"></span></div>
+                                    <div class="info-item"><i class="fas fa-birthday-cake info-icon"></i><span class="label">Age:</span><span class="value" id="display-age-card"></span></div>
+                                    <div class="info-item"><i class="fas fa-venus-mars info-icon"></i><span class="label">Gender:</span><span class="value" id="display-gender-card"></span></div>
+                                    <div class="info-item"><i class="fas fa-futbol info-icon"></i><span class="label">Sport:</span><span class="value" id="display-sport-card"></span></div>
+                                    <div class="info-item"><i class="fas fa-notes-medical info-icon"></i><span class="label">Injury:</span><span class="value" id="display-injury-card"></span></div>
+                                    <div class="info-item"><i class="fas fa-user-injured info-icon"></i><span class="label">Injured Side:</span><span class="value" id="display-injured-side-card"></span></div>
+                                    <div class="info-item"><i class="fas fa-weight-hanging info-icon"></i><span class="label">Bodyweight:</span><span class="value" id="display-bodyweight-card"></span></div>
                                 </div>
                             </div>
 
                             <div id="selected-patient-tests-container" style="display: none;">
-                                <h3>Saved Tests for Patient: <span id="current-patient-for-tests"></span></h3>
+                                <h3>Saved Tests</h3>
                                 <ul id="selected-patient-tests-list"></ul>
                             </div>
                         </div>
@@ -920,7 +950,7 @@
             apiKey: "AIzaSyDhEihuoWm4c5MSOHrSqkkzca7tn86roq4",
             authDomain: "pwr-analytics.firebaseapp.com",
             projectId: "pwr-analytics",
-            storageBucket: "pwr-analytics.appspot.com", // Standard format, verify in your Firebase console if you use Storage.
+            storageBucket: "pwr-analytics.appspot.com",
             messagingSenderId: "9839468523",
             appId: "1:9839468523:web:1d994de254b2a24d91c3ae",
             measurementId: "G-N35HQ5CMD5"
@@ -962,7 +992,6 @@
         const patientModalOverlay = document.getElementById('patient-modal-overlay');
         const patientModalContent = document.getElementById('patient-modal-content');
 
-        // New Patient Overview Section
         const patientOverviewSection = document.getElementById('patient-overview-section');
         const patientIdentityCard = document.getElementById('patient-identity-card');
         const displayPatientIdCard = document.getElementById('display-patient-id-card');
@@ -1069,7 +1098,7 @@
             await populatePatientIdDatalistFromFirestore();
 
             if (currentPatientDataForApp.patientId) {
-                displayPatientInfoInCard(currentPatientDataForApp); // Use new card display
+                displayPatientInfoInCard(currentPatientDataForApp);
                 await displayTestsForPatientFromFirestore(currentPatientDataForApp.patientId);
                 if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
             } else {
@@ -1127,11 +1156,11 @@
 
             updateGraphsAndTable();
             saveInputsToLocalStorage();
-            showInitialScreenState(); // This will re-show patient choice section
+            showInitialScreenState();
             showStatusMessage("All fields cleared.", "info");
         }
 
-        const localStorageKey = 'screeningAppData_vFirebase_01_EN'; // Added EN for English version
+        const localStorageKey = 'screeningAppData_vFirebase_01_EN';
         function saveInputsToLocalStorage() {
             const dataToSave = {
                 currentPatient: { ...currentPatientDataForApp },
@@ -1188,13 +1217,13 @@
 
         // --- UI Flow Control ---
         function showInitialScreenState() {
-            if(patientDetailsTitle) patientDetailsTitle.style.display = 'block';
+            if(patientDetailsTitle) patientDetailsTitle.style.display = 'block'; // Show "Patient Selection" title
             if(patientChoiceSection) patientChoiceSection.style.display = 'flex';
             if(newPatientChoiceButton) newPatientChoiceButton.classList.remove('active-choice');
             if(existingPatientChoiceButton) existingPatientChoiceButton.classList.remove('active-choice');
 
             if(existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
-            if(patientOverviewSection) patientOverviewSection.style.display = 'none'; // Hide the new overview section
+            if(patientOverviewSection) patientOverviewSection.style.display = 'none';
 
             if(mainScreeningContent) mainScreeningContent.style.display = 'block';
             if(inputSectionContainer) inputSectionContainer.style.display = 'flex';
@@ -1402,7 +1431,7 @@
             try {
                 await setDoc(patientDocRef, patientDataToSave);
                 showStatusMessage(`New patient "${newPatientId}" saved. Ready for screening.`, "success");
-                displayPatientInfoInCard(currentPatientDataForApp); // Use new card display
+                displayPatientInfoInCard(currentPatientDataForApp);
                 await populatePatientIdDatalistFromFirestore();
                 closePatientModal();
 
@@ -1414,15 +1443,15 @@
                 if(injuredSideRadio) injuredSideRadio.value = currentPatientDataForApp.injuredSide;
                 if(bodyweightInput) bodyweightInput.value = currentPatientDataForApp.bodyweight;
 
-                if (newPatientChoiceButton) newPatientChoiceButton.classList.remove('active-choice'); // Reset choice button
-                if (existingPatientChoiceButton) existingPatientChoiceButton.classList.remove('active-choice'); // Reset choice button
+                if (newPatientChoiceButton) newPatientChoiceButton.classList.remove('active-choice');
+                if (existingPatientChoiceButton) existingPatientChoiceButton.classList.remove('active-choice');
                 if (existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
                 if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
 
 
                 resetScreeningInputFields();
                 updateGraphsAndTable();
-                if (selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'block'; // Show tests container (will be empty)
+                if (selectedPatientTestsContainer) selectedPatientTestsContainer.style.display = 'block';
                 if (selectedPatientTestsListUL) selectedPatientTestsListUL.innerHTML = '<li>No tests found for this new patient.</li>';
                 if (currentPatientForTestsSpan) currentPatientForTestsSpan.textContent = newPatientId;
                 saveInputsToLocalStorage();
@@ -1470,12 +1499,12 @@
                 if(injuredSideRadio) injuredSideRadio.value = currentPatientDataForApp.injuredSide;
                 if(bodyweightInput) bodyweightInput.value = currentPatientDataForApp.bodyweight;
 
-                displayPatientInfoInCard(currentPatientDataForApp); // Use new card display
+                displayPatientInfoInCard(currentPatientDataForApp);
                 await displayTestsForPatientFromFirestore(originalPatientId);
                 closePatientModal();
 
-                if (newPatientChoiceButton) newPatientChoiceButton.classList.remove('active-choice'); // Reset choice button
-                if (existingPatientChoiceButton) existingPatientChoiceButton.classList.remove('active-choice'); // Reset choice button
+                if (newPatientChoiceButton) newPatientChoiceButton.classList.remove('active-choice');
+                if (existingPatientChoiceButton) existingPatientChoiceButton.classList.remove('active-choice');
                 if (existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
                 if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
 
@@ -1538,7 +1567,7 @@
 
             currentPatientForTestsSpan.textContent = patientId;
             selectedPatientTestsListUL.innerHTML = '<li>Loading tests...</li>';
-            selectedPatientTestsContainer.style.display = 'block'; // Ensure this is visible as part of overview
+            selectedPatientTestsContainer.style.display = 'block';
             if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
 
 
@@ -1626,7 +1655,7 @@
                     updateGraphsAndTable();
                     saveInputsToLocalStorage();
                     showStatusMessage('Test data loaded from Firebase!', 'success');
-                    displayPatientInfoInCard(currentPatientDataForApp); // Use new card display
+                    displayPatientInfoInCard(currentPatientDataForApp);
                 } else {
                     showStatusMessage("Could not find selected test data in Firebase.", "error");
                 }
@@ -1746,7 +1775,7 @@
                                 if(injuredSideRadio) injuredSideRadio.value = currentPatientDataForApp.injuredSide;
                                 if(bodyweightInput) bodyweightInput.value = currentPatientDataForApp.bodyweight;
 
-                                displayPatientInfoInCard(currentPatientDataForApp); // Use new card display
+                                displayPatientInfoInCard(currentPatientDataForApp);
                                 await displayTestsForPatientFromFirestore(enteredPatientId);
                                 resetScreeningInputFields();
                                 updateGraphsAndTable();
@@ -1774,7 +1803,7 @@
             if (currentPatientDataForApp) {
                 currentPatientDataForApp[key] = value;
                 if(currentPatientDataForApp.patientId) {
-                    displayPatientInfoInCard(currentPatientDataForApp); // Use new card display
+                    displayPatientInfoInCard(currentPatientDataForApp);
                 }
                 if (key === 'bodyweight' || key === 'injuredSide') {
                     updateGraphsAndTable();
