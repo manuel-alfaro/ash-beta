@@ -462,23 +462,23 @@
         .overview-column { /* Wrapper for each card and its external title */
             display: flex;
             flex-direction: column;
-            gap: 0.5em; /* Space between external title and the card itself */
+            gap: 0; /* No gap between external title and its card */
         }
 
         .patient-details-column {
-            flex: 1 1 280px; /* Patient card area */
-            min-width: 260px;
+            flex: 1 1 280px; /* Adjusted flex for patient card area */
+            min-width: 260px; /* Adjusted min-width */
         }
 
         .test-log-column {
-            flex: 2 1 420px; /* Test log area, takes more space */
+            flex: 2 1 400px; /* Test log area, takes more space */
             min-width: 300px;
         }
 
         .section-title-external { /* Common styling for Details and Test Logg titles */
             font-size: 1.5rem; /* Match h2.section-title-main */
             font-weight: var(--normal-font-weight);
-            margin-bottom: 0; /* Remove default h2 margin */
+            margin-bottom: 0.5em; /* Space below external title */
             padding-bottom: 0;
             margin-top: 0; /* Align with top of flex container */
         }
@@ -506,6 +506,7 @@
             margin-bottom: 10px;
             padding-bottom: 5px;
             margin-top:0;
+            border-bottom: 1px solid var(--medium-gray); /* Added border back */
         }
         .patient-card-header {
             display: flex;
@@ -573,11 +574,11 @@
         }
 
         #selected-patient-tests-container .test-log-title-internal { /* Internal title for test log */
-            font-size: 1.5rem; /* Match h2.section-title-main */
+            font-size: 1.3rem; /* Match patient-profile-title-internal */
             color: var(--app-primary-color); /* Dark blue */
-            margin-bottom: 18px;
-            padding-bottom: 0; /* No padding bottom */
-            border-bottom: none; /* Removed border */
+            margin-bottom: 18px; /* Space below title */
+            padding-bottom: 10px; /* Consistent padding */
+            border-bottom: 1px solid var(--medium-gray); /* Consistent border */
             margin-top:0; /* Align with top of container */
             font-weight: var(--normal-font-weight);
         }
@@ -602,7 +603,7 @@
             border: 1px solid rgba(40, 84, 132, 0.3);
             background-color: rgba(112, 188, 252, 0.05);
             border-radius: var(--border-radius);
-            min-width: 150px;
+            min-width: 150px; /* Reset to original for compact buttons */
             box-sizing: border-box;
             text-align: center;
             transition: background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
@@ -998,7 +999,7 @@
 
                         <div id="patient-overview-section">
                             <div class="overview-column patient-details-column">
-                                <h2 class="section-title details-title-external">Details</h2>
+                                <h2 class="section-title-external details-title-external">Details</h2>
                                 <div id="patient-identity-card" class="patient-card" style="display: none;">
                                     <h3 class="patient-profile-title-internal">Patient Profile</h3>
                                     <div class="patient-card-header">
@@ -1019,8 +1020,8 @@
                                 </div>
                             </div>
                             <div class="overview-column test-log-column">
-                                <h2 class="section-title test-log-title-external">Test Logg</h2>
                                 <div id="selected-patient-tests-container" style="display: none;">
+                                     <h3 class="test-log-title-internal">Test Logg</h3>
                                     <ul id="selected-patient-tests-list">
                                     </ul>
                                 </div>
