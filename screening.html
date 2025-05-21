@@ -173,11 +173,11 @@
             color: var(--app-primary-color);
             transition: color 0.3s ease;
             flex-shrink: 0;
-            font-size: 1em; /* Ensure icon size is relative to button font */
-            line-height: 1; /* Helps with vertical alignment */
+            font-size: 1em;
+            line-height: 1;
         }
          .app-sidebar button .button-text, .app-sidebar a > button .button-text {
-            line-height: 1; /* Match icon's line-height for alignment */
+            line-height: 1;
             flex-grow: 1;
         }
 
@@ -819,22 +819,31 @@
             width: 100% !important;
             box-sizing: border-box !important;
         }
-         body.pdf-preview-active .asymmetry-graph-container,
-         body.pdf-preview-active .normative-graph-container {
-            width: 189px !important; /* Approx 5cm */
-            max-width: 189px !important;
+         body.pdf-preview-active .asymmetry-graph-container{
+            width: 378px !important; /* Approx 10cm */
+            max-width: 378px !important;
             height: var(--graph-box-height) !important;
             min-height: var(--graph-box-height) !important;
             margin-bottom: 5mm !important;
             page-break-inside: avoid !important;
-            flex-grow: 0 !important; /* No growing beyond fixed width */
-            flex-shrink: 0 !important; /* No shrinking beyond fixed width */
+            flex-grow: 0 !important;
+            flex-shrink: 0 !important;
+         }
+         body.pdf-preview-active .normative-graph-container {
+            width: 265px !important; /* Approx 7cm */
+            max-width: 265px !important;
+            height: var(--graph-box-height) !important;
+            min-height: var(--graph-box-height) !important;
+            margin-bottom: 5mm !important;
+            page-break-inside: avoid !important;
+            flex-grow: 0 !important;
+            flex-shrink: 0 !important;
          }
         body.pdf-preview-active .position-box,
         body.pdf-preview-active .normative-box {
-            height: 100% !important; /* Fill the container's fixed height */
+            height: 100% !important;
             min-height: 100% !important;
-            width: 100% !important; /* Fill the container's fixed width */
+            width: 100% !important;
             box-sizing: border-box !important;
             display: flex !important;
             flex-direction: column !important;
@@ -889,8 +898,8 @@
             }
             body.pdf-preview-active .asymmetry-graph-container,
             body.pdf-preview-active .normative-graph-container {
-                flex-basis: 100% !important; /* Stack graphs in PDF on smaller viewports */
-                width: 100% !important; /* Ensure they take full width when stacked */
+                flex-basis: 100% !important;
+                width: 100% !important;
                 max-width: 100% !important;
             }
             body.pdf-preview-active .position-box, body.pdf-preview-active .normative-box { height: auto; min-height: unset; }
@@ -986,9 +995,19 @@
             h3 { font-size: 10pt !important; margin-bottom: 3mm !important; color: black !important; font-weight: normal !important; }
             #report-content { padding: 0 !important; }
 
-            .asymmetry-graph-container, .normative-graph-container {
-                width: 189px !important; /* Approx 5cm */
-                max-width: 189px !important;
+            .asymmetry-graph-container {
+                width: 378px !important; /* Approx 10cm */
+                max-width: 378px !important;
+                height: var(--graph-box-height) !important;
+                min-height: var(--graph-box-height) !important;
+                margin-bottom: 5mm !important;
+                page-break-inside: avoid !important;
+                flex-grow: 0 !important;
+                flex-shrink: 0 !important;
+            }
+            .normative-graph-container {
+                width: 265px !important; /* Approx 7cm */
+                max-width: 265px !important;
                 height: var(--graph-box-height) !important;
                 min-height: var(--graph-box-height) !important;
                 margin-bottom: 5mm !important;
@@ -2155,4 +2174,4 @@
 
     </script>
 </body>
-</ht
+</html>
