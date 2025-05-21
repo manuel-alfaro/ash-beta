@@ -560,7 +560,7 @@
             border: 1px solid rgba(40, 84, 132, 0.3);
             background-color: rgba(112, 188, 252, 0.05);
             border-radius: var(--border-radius);
-            min-width: 140px; /* Adjusted min-width */
+            min-width: 140px;
             width: auto;
             box-sizing: border-box;
             text-align: center;
@@ -701,7 +701,8 @@
         body.pdf-preview-active #loggedInUserContainer,
         body.pdf-preview-active .sidebar-buttons,
         body.pdf-preview-active #patient-details-title,
-        body.pdf-preview-active #input-title
+        body.pdf-preview-active #input-title,
+        body.pdf-preview-active #selected-patient-tests-container /* Hide test log for PDF */
         {
             display: none !important;
         }
@@ -711,21 +712,21 @@
         body.pdf-preview-active #results-title,
         body.pdf-preview-active .position-row
         {
-            display: block !important; /* Changed to block for h1, explanation, results-title */
+            display: block !important;
         }
         body.pdf-preview-active .position-row {
-            display: flex !important; /* Keep flex for graph rows */
+            display: flex !important;
         }
 
          body.pdf-preview-active #results-title {
-            margin-top: 10mm !important;
+            margin-top: 5mm !important; /* MODIFIED: Reduced top margin for PDF */
             text-align: center !important;
          }
 
 
         body.pdf-preview-active .app-main-content {
             margin-left: 0 !important;
-            padding: 5mm !important; /* MODIFIED: Reduced padding for PDF */
+            padding: 5mm !important;
             height: auto !important;
             overflow: visible !important;
         }
@@ -734,31 +735,41 @@
         }
 
         body.pdf-preview-active .explanation-box {
-            margin: 0 0 5mm 0 !important; /* MODIFIED: Reduced bottom margin */
+            margin: 0 0 5mm 0 !important;
         }
         body.pdf-preview-active .position-row {
             flex-direction: row !important;
             flex-wrap: wrap !important;
-            gap: 5mm; /* MODIFIED: Adjusted gap for PDF */
+            gap: 5mm;
             page-break-inside: avoid !important;
         }
-         body.pdf-preview-active .asymmetry-graph-container,
+         body.pdf-preview-active .asymmetry-graph-container {
+            flex: 6 1 0% !important; /* MODIFIED: Attempt to match main view proportions */
+            min-width: 200px !important;
+            margin-bottom: 5mm !important;
+         }
          body.pdf-preview-active .normative-graph-container {
-            flex-grow: 1 !important;
-            flex-shrink: 1 !important;
-            flex-basis: calc(50% - 2.5mm) !important; /* Adjusted for 5mm gap */
-            min-width: 180px !important; /* Adjusted min-width for PDF graphs */
-            margin-bottom: 5mm !important; /* Add some bottom margin if they stack */
+            flex: 4 1 0% !important; /* MODIFIED: Attempt to match main view proportions */
+            min-width: 150px !important;
+            margin-bottom: 5mm !important;
          }
         body.pdf-preview-active .position-box,
         body.pdf-preview-active .normative-box {
-            height: var(--graph-box-height) !important; /* Try to maintain height like main view */
+            height: var(--graph-box-height) !important;
             min-height: var(--graph-box-height) !important;
+            width: 100%; /* Ensure boxes fill their flex containers */
+            box-sizing: border-box;
         }
+        /* Ensure plotly plots fill their containers in PDF */
+        body.pdf-preview-active .js-plotly-plot {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
 
         body.pdf-preview-active h1 {
             text-align: center !important;
-            margin-bottom: 5mm !important; /* MODIFIED: Reduced bottom margin */
+            margin-bottom: 5mm !important;
         }
 
 
@@ -769,7 +780,7 @@
             .app-sidebar { padding: 20px 10px; top: 0; height: 100vh; }
             .app-sidebar .button-text { display: none; }
             .app-sidebar button, .app-sidebar a button { justify-content: center; padding: 10px 0; gap: 0; font-size: 0.85rem; }
-            .app-sidebar button i { width: auto; margin: 0; /* Removed fixed width for icon in collapsed */ }
+            .app-sidebar button i { width: auto; margin: 0; }
             .sidebar-social-links { display: none; }
 
             #patient-overview-section {
@@ -799,7 +810,7 @@
             .app-layout { flex-direction: column; min-height: 100vh; }
             .app-sidebar { width: 100%; height: auto; position: relative; top: 0; flex-direction: row; flex-wrap: wrap; justify-content: center; padding: 10px; border-bottom: 1px solid var(--sidebar-border-color); border-right: none; z-index: 5; overflow-y: visible; }
             .sidebar-buttons { flex-direction: row; flex-wrap: wrap; justify-content: center; width: 100%; flex-grow: 0; }
-            .app-sidebar button, .app-sidebar a button { width: auto; flex-grow: 1; max-width: 180px; justify-content: center; font-size: 0.85rem; font-weight: var(--normal-font-weight); padding: 8px 10px; margin: 5px; gap: 8px; }
+            .app-sidebar button, .app-sidebar a button { width: auto; flex-grow: 1; max-width: 180px; justify-content: flex-start; font-size: 0.85rem; font-weight: var(--normal-font-weight); padding: 8px 10px; margin: 5px; gap: 8px; }
             .app-sidebar .button-text { display: inline-block; }
             .app-sidebar button i { width: auto; margin-right: 5px; }
             .sidebar-social-links { display: block; width: 100%; margin-top: 10px; padding-top: 0; border-top: none; text-align: center; }
