@@ -189,7 +189,7 @@
             box-sizing: border-box;
         }
         .content-container {
-            max-width: 1100px; /* MODIFIED: Reverted to 1100px for wider main view */
+            max-width: 1100px; /* Reverted to 1100px for wider main view */
             margin: 0 auto;
         }
         h1, h2, h3 { font-family: 'Avenir', sans-serif; margin-bottom: 0.75em; font-weight: var(--normal-font-weight); }
@@ -556,16 +556,16 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 10px 12px; /* MODIFIED: Reverted padding for a bit more space */
+            padding: 10px 12px;
             border: 1px solid rgba(40, 84, 132, 0.3);
             background-color: rgba(112, 188, 252, 0.05);
             border-radius: var(--border-radius);
-            min-width: 150px; /* MODIFIED: Re-added min-width for consistency */
+            min-width: 140px; /* Adjusted min-width */
+            width: auto;
             box-sizing: border-box;
             text-align: center;
             transition: background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
             cursor: pointer;
-            /* Removed max-width: max-content; and width: auto; to allow min-width to take effect */
         }
 
         #selected-patient-tests-list li:hover {
@@ -586,7 +586,7 @@
             color: var(--app-primary-color);
             font-size: 0.85rem;
             font-weight: var(--semibold-font-weight);
-            margin-bottom: 8px; /* MODIFIED: Reverted margin */
+            margin-bottom: 8px;
         }
 
         #selected-patient-tests-list button.delete-test-btn {
@@ -595,14 +595,13 @@
             color: var(--danger-color-dark);
             border-radius: var(--border-radius);
             cursor: pointer;
-            padding: 4px 7px; /* MODIFIED: Reverted padding */
-            font-size: 0.8rem; /* MODIFIED: Reverted font size */
+            padding: 4px 7px;
+            font-size: 0.8rem;
             transition: all 0.2s ease;
             width: auto;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-top: 0; /* MODIFIED: Removed added margin-top */
         }
         #selected-patient-tests-list button.delete-test-btn:hover {
             background-color: var(--danger-color-dark);
@@ -712,8 +711,12 @@
         body.pdf-preview-active #results-title,
         body.pdf-preview-active .position-row
         {
-            display: block !important;
+            display: block !important; /* Changed to block for h1, explanation, results-title */
         }
+        body.pdf-preview-active .position-row {
+            display: flex !important; /* Keep flex for graph rows */
+        }
+
          body.pdf-preview-active #results-title {
             margin-top: 10mm !important;
             text-align: center !important;
@@ -722,7 +725,7 @@
 
         body.pdf-preview-active .app-main-content {
             margin-left: 0 !important;
-            padding: 10mm !important;
+            padding: 5mm !important; /* MODIFIED: Reduced padding for PDF */
             height: auto !important;
             overflow: visible !important;
         }
@@ -731,29 +734,31 @@
         }
 
         body.pdf-preview-active .explanation-box {
-            margin: 0 0 10mm 0 !important;
+            margin: 0 0 5mm 0 !important; /* MODIFIED: Reduced bottom margin */
         }
         body.pdf-preview-active .position-row {
-            display: flex !important;
             flex-direction: row !important;
             flex-wrap: wrap !important;
+            gap: 5mm; /* MODIFIED: Adjusted gap for PDF */
             page-break-inside: avoid !important;
         }
          body.pdf-preview-active .asymmetry-graph-container,
          body.pdf-preview-active .normative-graph-container {
-            width: 100% !important;
-            flex-basis: 100% !important;
-            margin-bottom: 5mm;
+            flex-grow: 1 !important;
+            flex-shrink: 1 !important;
+            flex-basis: calc(50% - 2.5mm) !important; /* Adjusted for 5mm gap */
+            min-width: 180px !important; /* Adjusted min-width for PDF graphs */
+            margin-bottom: 5mm !important; /* Add some bottom margin if they stack */
          }
         body.pdf-preview-active .position-box,
         body.pdf-preview-active .normative-box {
-            height: auto !important;
-            min-height: var(--graph-box-height);
+            height: var(--graph-box-height) !important; /* Try to maintain height like main view */
+            min-height: var(--graph-box-height) !important;
         }
 
         body.pdf-preview-active h1 {
             text-align: center !important;
-            margin-bottom: 10mm !important;
+            margin-bottom: 5mm !important; /* MODIFIED: Reduced bottom margin */
         }
 
 
@@ -764,7 +769,7 @@
             .app-sidebar { padding: 20px 10px; top: 0; height: 100vh; }
             .app-sidebar .button-text { display: none; }
             .app-sidebar button, .app-sidebar a button { justify-content: center; padding: 10px 0; gap: 0; font-size: 0.85rem; }
-            .app-sidebar button i { width: auto; margin: 0; }
+            .app-sidebar button i { width: auto; margin: 0; /* Removed fixed width for icon in collapsed */ }
             .sidebar-social-links { display: none; }
 
             #patient-overview-section {
@@ -847,23 +852,25 @@
             .sidebar-buttons,
             #patient-details-title,
             #input-title,
-            #patient-overview-section, /* Hide patient details for print */
-            #patient-card-and-log-title, /* Hide "Details" title for print */
-            #selected-patient-tests-container /* Hide test log for print */
+            #patient-overview-section,
+            #patient-card-and-log-title,
+            #selected-patient-tests-container
             {
                 display: none !important;
             }
 
-            /* Elements to SHOW in print */
-            h1, /* Main App Title */
+            h1,
             .explanation-box,
-            #results-title, /* "Results" title above graphs */
-            .position-row /* Contains graphs */
+            #results-title,
+            .position-row
             {
                 display: block !important;
             }
+             .position-row { /* Ensure this is flex for print too */
+                display: flex !important;
+            }
             #results-title {
-                 margin-top: 10mm !important;
+                 margin-top: 5mm !important; /* Reduced margin */
                  text-align: center !important;
             }
 
@@ -877,12 +884,26 @@
             h2 { display: block !important; font-size: 12pt !important; margin-top: 8mm; margin-bottom: 4mm; border: none !important; color: black !important; font-weight: normal !important; }
             h3 { font-size: 10pt !important; margin-bottom: 3mm !important; color: black !important; font-weight: normal !important; }
             #report-content { padding: 0 !important; }
-            .position-row { display: block !important; width: 100% !important; page-break-inside: avoid !important; border: none !important; margin-bottom: 5mm !important; padding: 0 !important;}
-            .asymmetry-graph-container, .normative-graph-container { width: 100% !important; display: block !important; margin-bottom: 5mm; page-break-inside: avoid !important; padding: 0 !important; }
-            .position-box, .normative-box { box-shadow: none !important; border: 1px solid #ccc !important; margin-bottom: 3mm; height: auto !important; min-height: unset !important; padding: 5px !important; page-break-inside: avoid !important; background-color: var(--white) !important; }
+
+            .asymmetry-graph-container, .normative-graph-container {
+                flex-grow: 1 !important;
+                flex-shrink: 1 !important;
+                flex-basis: calc(50% - 2.5mm) !important; /* Ensure side-by-side for print if space */
+                min-width: 180px !important; /* Prevent excessive shrinking */
+                margin-bottom: 5mm !important; /* Spacing if they stack */
+                page-break-inside: avoid !important;
+            }
+            .position-box, .normative-box {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+                height: var(--graph-box-height) !important; /* Maintain height */
+                min-height: var(--graph-box-height) !important;
+                padding: 5px !important;
+                background-color: var(--white) !important;
+            }
             .position-box.green-box { box-shadow: none !important; border: 1px solid #ccc !important; }
             .position-box::after { display: none !important; }
-            .js-plotly-plot { width: 100% !important; height: auto !important; }
+            .js-plotly-plot { width: 100% !important; height: 100% !important; /* Ensure plot fills box */ }
             .plotly .scatterlayer .trace.fill { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             .plotly .annotation text, .plotly .annotation .norm-label, .plotly .annotation .left-label, .plotly .annotation .right-label, .plotly .annotation .value-display, .plotly .annotation .nkg-combined-text span, .plotly .annotation .asymmetry-percent { fill: black !important; color: black !important; font-weight: normal !important; }
             .plotly .annotation .norm-value { font-weight: normal !important; }
@@ -891,8 +912,8 @@
             .plotly .tick text { fill: black !important; font-size: 8pt !important; font-weight: normal !important; }
             .plotly .legend { display: none !important; }
             .plotly .modebar { display: none !important; }
-            #bar-chart-I, #bar-chart-Y, #bar-chart-T { height: 180px !important; }
-            #normative-chart-I, #normative-chart-Y, #normative-chart-T { height: 180px !important; }
+            #bar-chart-I, #bar-chart-Y, #bar-chart-T { height: 100% !important; } /* Fill parent */
+            #normative-chart-I, #normative-chart-Y, #normative-chart-T { height: 100% !important; } /* Fill parent */
         }
     </style>
 </head>
