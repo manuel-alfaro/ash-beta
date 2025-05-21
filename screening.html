@@ -145,7 +145,7 @@
         }
         .sidebar-buttons { display: flex; flex-direction: column; gap: 12px; }
 
-        /* Sidebar Button Styling - Reverted to ensure desired appearance */
+        /* Sidebar Button Styling - Restored */
         .app-sidebar button, .app-sidebar a > button {
             font-family: 'Avenir', sans-serif;
             font-size: 0.9rem;
@@ -163,24 +163,23 @@
             width: 100%;
             text-align: left;
             display: flex;
-            align-items: center; /* Key for vertical alignment */
+            align-items: center;
             gap: 10px;
         }
 
         .app-sidebar button i, .app-sidebar a > button i {
+            width: 20px;
+            text-align: center;
             color: var(--app-primary-color);
             transition: color 0.3s ease;
-            font-size: 1em; /* Icon size relative to button's font-size */
-            line-height: 1; /* Helps align icon with text */
-            width: 20px; /* Consistent width for icon area */
-            text-align: center; /* Center icon within its 20px area */
-            flex-shrink: 0; /* Prevent icon from shrinking */
+            flex-shrink: 0;
+            font-size: 1em; /* Ensure icon size is relative to button font */
+            line-height: 1; /* Helps with vertical alignment */
         }
          .app-sidebar button .button-text, .app-sidebar a > button .button-text {
             line-height: 1; /* Match icon's line-height for alignment */
             flex-grow: 1;
         }
-
 
         .app-sidebar button:not(#logout-button):hover,
         .app-sidebar a > button:not(#logout-button):hover {
@@ -790,7 +789,7 @@
             display: block !important;
         }
         body.pdf-preview-active .position-row {
-            display: flex !important; /* Ensure graphs are in a flex row for PDF */
+            display: flex !important;
         }
 
          body.pdf-preview-active #results-title {
@@ -801,12 +800,12 @@
 
         body.pdf-preview-active .app-main-content {
             margin-left: 0 !important;
-            padding: 5mm !important; /* Narrower margins for PDF */
+            padding: 5mm !important;
             height: auto !important;
             overflow: visible !important;
         }
         body.pdf-preview-active .content-container {
-            max-width: 100% !important; /* Content uses full width within PDF margins */
+            max-width: 100% !important;
         }
 
         body.pdf-preview-active .explanation-box {
@@ -814,31 +813,32 @@
         }
         body.pdf-preview-active .position-row {
             flex-direction: row !important;
-            flex-wrap: nowrap !important; /* MODIFIED: Prevent wrapping in PDF to force side-by-side */
+            flex-wrap: wrap !important; /* Allow wrapping if fixed widths don't fit */
             gap: 5mm !important;
             page-break-inside: avoid !important;
             width: 100% !important;
             box-sizing: border-box !important;
         }
-         body.pdf-preview-active .asymmetry-graph-container {
-            flex: 6 1 0% !important; /* Grow by proportion, can shrink, start from 0 */
-            min-width: 0 !important; /* Allow shrinking if needed with nowrap */
-            margin-bottom: 0 !important; /* No bottom margin when side-by-side */
-         }
+         body.pdf-preview-active .asymmetry-graph-container,
          body.pdf-preview-active .normative-graph-container {
-            flex: 4 1 0% !important; /* Grow by proportion, can shrink, start from 0 */
-            min-width: 0 !important; /* Allow shrinking if needed with nowrap */
-            margin-bottom: 0 !important; /* No bottom margin when side-by-side */
+            width: 189px !important; /* Approx 5cm */
+            max-width: 189px !important;
+            height: var(--graph-box-height) !important;
+            min-height: var(--graph-box-height) !important;
+            margin-bottom: 5mm !important;
+            page-break-inside: avoid !important;
+            flex-grow: 0 !important; /* No growing beyond fixed width */
+            flex-shrink: 0 !important; /* No shrinking beyond fixed width */
          }
         body.pdf-preview-active .position-box,
         body.pdf-preview-active .normative-box {
-            height: var(--graph-box-height) !important;
-            min-height: var(--graph-box-height) !important;
-            width: 100% !important;
+            height: 100% !important; /* Fill the container's fixed height */
+            min-height: 100% !important;
+            width: 100% !important; /* Fill the container's fixed width */
             box-sizing: border-box !important;
             display: flex !important;
             flex-direction: column !important;
-            overflow: hidden !important; /* ADDED: To clip overflowing graph content */
+            overflow: hidden !important;
         }
         body.pdf-preview-active .js-plotly-plot {
             width: 100% !important;
@@ -860,7 +860,7 @@
             .app-sidebar { padding: 20px 10px; top: 0; height: 100vh; }
             .app-sidebar .button-text { display: none; }
             .app-sidebar button, .app-sidebar a > button { justify-content: center; padding: 10px 0; gap: 0; font-size: 0.85rem; }
-            .app-sidebar button i, .app-sidebar a > button i { width: auto; margin: 0; } /* Icon takes auto width in collapsed */
+            .app-sidebar button i, .app-sidebar a > button i { width: auto; margin: 0; }
             .sidebar-social-links { display: none; }
 
             #patient-overview-section {
@@ -885,11 +885,13 @@
             body.pdf-preview-active .app-main-content { padding: 15px 30px; }
             body.pdf-preview-active .position-row {
                 align-items: stretch;
-                flex-wrap: wrap; /* Allow wrapping for PDF on smaller screens */
+                flex-wrap: wrap;
             }
             body.pdf-preview-active .asymmetry-graph-container,
             body.pdf-preview-active .normative-graph-container {
                 flex-basis: 100% !important; /* Stack graphs in PDF on smaller viewports */
+                width: 100% !important; /* Ensure they take full width when stacked */
+                max-width: 100% !important;
             }
             body.pdf-preview-active .position-box, body.pdf-preview-active .normative-box { height: auto; min-height: unset; }
         }
@@ -899,7 +901,7 @@
             .sidebar-buttons { flex-direction: row; flex-wrap: wrap; justify-content: center; width: 100%; flex-grow: 0; }
             .app-sidebar button, .app-sidebar a > button { width: auto; flex-grow: 1; max-width: 180px; justify-content: flex-start; font-size: 0.85rem; font-weight: var(--normal-font-weight); padding: 8px 10px; margin: 5px; gap: 8px; }
             .app-sidebar .button-text { display: inline-block; }
-            .app-sidebar button i, .app-sidebar a > button i { width: auto; margin-right: 5px; } /* Icon with margin when text is visible */
+            .app-sidebar button i, .app-sidebar a > button i { width: auto; margin-right: 5px; }
             .sidebar-social-links { display: block; width: 100%; margin-top: 10px; padding-top: 0; border-top: none; text-align: center; }
             .sidebar-social-links a { margin: 0 10px; font-size: 1.1rem; }
             .app-main-content { margin-left: 0; padding: 20px 15px; height: auto; }
@@ -966,7 +968,7 @@
             }
              .position-row {
                 display: flex !important;
-                flex-wrap: nowrap !important; /* Try to keep side-by-side */
+                flex-wrap: wrap !important; /* Allow wrapping for print if fixed widths don't fit */
             }
             #results-title {
                  margin-top: 5mm !important;
@@ -985,25 +987,30 @@
             #report-content { padding: 0 !important; }
 
             .asymmetry-graph-container, .normative-graph-container {
-                flex-grow: 1 !important;
-                flex-shrink: 1 !important;
-                flex-basis: 0 !important; /* Allow flex-grow to distribute space */
-                min-width: 150px !important; /* Further reduced min-width for print */
+                width: 189px !important; /* Approx 5cm */
+                max-width: 189px !important;
+                height: var(--graph-box-height) !important;
+                min-height: var(--graph-box-height) !important;
                 margin-bottom: 5mm !important;
                 page-break-inside: avoid !important;
+                flex-grow: 0 !important;
+                flex-shrink: 0 !important;
             }
             .position-box, .normative-box {
                 box-shadow: none !important;
                 border: 1px solid #ccc !important;
-                height: var(--graph-box-height) !important;
-                min-height: var(--graph-box-height) !important;
+                height: 100% !important;
+                min-height: 100% !important;
+                width: 100% !important;
                 padding: 5px !important;
                 background-color: var(--white) !important;
-                overflow: hidden !important; /* Clip content if Plotly overflows */
+                overflow: hidden !important;
+                display: flex !important;
+                flex-direction: column !important;
             }
             .position-box.green-box { box-shadow: none !important; border: 1px solid #ccc !important; }
             .position-box::after { display: none !important; }
-            .js-plotly-plot { width: 100% !important; height: 100% !important; }
+            .js-plotly-plot { width: 100% !important; height: 100% !important; flex-grow: 1 !important; }
             .plotly .scatterlayer .trace.fill { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             .plotly .annotation text, .plotly .annotation .norm-label, .plotly .annotation .left-label, .plotly .annotation .right-label, .plotly .annotation .value-display, .plotly .annotation .nkg-combined-text span, .plotly .annotation .asymmetry-percent { fill: black !important; color: black !important; font-weight: normal !important; }
             .plotly .annotation .norm-value { font-weight: normal !important; }
@@ -1344,7 +1351,7 @@
                         } catch (e) { console.warn("Error resizing plot for PDF preview:", divId, e); }
                     }
                 });
-            }, 100); // 100ms delay might be enough
+            }, 150); // Increased delay slightly
         }
 
         function exitPreviewMode() {
@@ -1360,9 +1367,9 @@
                         } catch (e) { console.warn("Error resizing plot on exiting PDF preview:", divId, e); }
                     }
                 });
-            }, 100);
+            }, 150); // Increased delay slightly
         }
-        function exportTableToCsv() { const fpNr = currentPatientDataForApp.patientId || ''; const age = currentPatientDataForApp.age || ''; const gender = currentPatientDataForApp.gender || ''; const sport = currentPatientDataForApp.sport || ''; const injuryValue = currentPatientDataForApp.injury || ''; const bodyweightValue = currentPatientDataForApp.bodyweight || ''; const injuredSide = currentPatientDataForApp.injuredSide || ''; const date = new Date(); const year = date.getFullYear(); const month = (date.getMonth() + 1).toString().padStart(2, '0'); const day = date.getDate().toString().padStart(2, '0'); const dateString = `${year}-${month}-${day}`; const safeFpNr = fpNr.replace(/[^a-z0-9]/gi, '_') || 'Unknown'; const filename = `ASH_${safeFpNr}_${dateString}.csv`; const headers = [ "Patient ID", "Age", "Gender", "Sport", "Injury", "Bodyweight (kg)", "Injured Side", "Position", "Metric", "Left Value", "Right Value" ]; let csv = [headers.join(',')]; const positions = ['I', 'Y', 'T']; const metricsForCsv = ['Max Force (N)', 'RFD 100ms (N/s)']; positions.forEach(pos => { const positionName = `ASH Test Position ${pos}`; const positionData = processInputAndCalculate(pos); metricsForCsv.forEach(metricDisplay => { let leftVal = ''; let rightVal = ''; let metricIdentifier = metricDisplay; if (metricDisplay === 'Max Force (N)') { if (positionData) { leftVal = positionData.left.max_force; rightVal = positionData.right.max_force; } } else if (metricDisplay === 'RFD 100ms (N/s)') { if (positionData) { leftVal = positionData.left.rfd; rightVal = positionData.right.rfd; } metricIdentifier = 'RFD 100ms (N/s)'; } const rowData = [ `"${fpNr}"`, `"${age}"`, `"${gender}"`, `"${sport}"`, `"${injuryValue}"`, `"${bodyweightValue}"`, `"${injuredSide}"`, `"${positionName}"`, `"${metricIdentifier}"`, `"${leftVal}"`, `"${rightVal}"` ]; csv.push(rowData.join(',')); }); }); const csvString = "\uFEFF" + csv.join('\n'); const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); if (link.download !== undefined) { const url = URL.createObjectURL(blob); link.setAttribute('href', url); link.setAttribute('download', filename); link.style.visibility = 'hidden'; document.body.appendChild(link); link.click(); document.body.removeChild(link); showStatusMessage("Data exported to CSV.", "success"); } else { alert("CSV export is not directly supported in this browser. Please try a modern browser."); } } // Translated messages
+        function exportTableToCsv() { const fpNr = currentPatientDataForApp.patientId || ''; const age = currentPatientDataForApp.age || ''; const gender = currentPatientDataForApp.gender || ''; const sport = currentPatientDataForApp.sport || ''; const injuryValue = currentPatientDataForApp.injury || ''; const bodyweightValue = currentPatientDataForApp.bodyweight || ''; const injuredSide = currentPatientDataForApp.injuredSide || ''; const date = new Date(); const year = date.getFullYear(); const month = (date.getMonth() + 1).toString().padStart(2, '0'); const day = date.getDate().toString().padStart(2, '0'); const dateString = `${year}-${month}-${day}`; const safeFpNr = fpNr.replace(/[^a-z0-9]/gi, '_') || 'Unknown'; const filename = `ASH_${safeFpNr}_${dateString}.csv`; const headers = [ "Patient ID", "Age", "Gender", "Sport", "Injury", "Bodyweight (kg)", "Injured Side", "Position", "Metric", "Left Value", "Right Value" ]; let csv = [headers.join(',')]; const positions = ['I', 'Y', 'T']; const metricsForCsv = ['Max Force (N)', 'RFD 100ms (N/s)']; positions.forEach(pos => { const positionName = `ASH Test Position ${pos}`; const positionData = processInputAndCalculate(pos); metricsForCsv.forEach(metricDisplay => { let leftVal = ''; let rightVal = ''; let metricIdentifier = metricDisplay; if (metricDisplay === 'Max Force (N)') { if (positionData) { leftVal = positionData.left.max_force; rightVal = positionData.right.max_force; } } else if (metricDisplay === 'RFD 100ms (N/s)') { if (positionData) { leftVal = positionData.left.rfd; rightVal = positionData.right.rfd; } metricIdentifier = 'RFD 100ms (N/s)'; } const rowData = [ `"${fpNr}"`, `"${age}"`, `"${gender}"`, `"${sport}"`, `"${injuryValue}"`, `"${bodyweightValue}"`, `"${injuredSide}"`, `"${positionName}"`, `"${metricIdentifier}"`, `"${leftVal}"`, `"${rightVal}"` ]; csv.push(rowData.join(',')); }); }); const csvString = "\uFEFF" + csv.join('\n'); const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); if (link.download !== undefined) { const url = URL.createObjectURL(blob); link.setAttribute('href', url); link.setAttribute('download', filename); link.style.visibility = 'hidden'; document.body.appendChild(link); link.click(); document.body.removeChild(link); showStatusMessage("Data exported to CSV.", "success"); } else { alert("CSV export is not directly supported in this browser. Please try a modern browser."); } }
 
         function resetPatientDataForApp() {
             currentPatientDataForApp = { patientId: null, age: '', gender: '', sport: '', injury: '', injuredSide: 'Left', bodyweight: '', screeningId: null };
@@ -1400,7 +1407,7 @@
             updateGraphsAndTable();
             saveInputsToLocalStorage();
             showInitialScreenState();
-            showStatusMessage("All fields cleared.", "info"); // Translated
+            showStatusMessage("All fields cleared.", "info");
         }
 
         const localStorageKey = 'screeningAppData_vFirebase_01_EN';
@@ -1472,7 +1479,7 @@
 
         async function openPatientModal(type, patientIdToEdit = null) {
             if (!currentUserId) {
-                showStatusMessage("You must be logged in.", "error"); // Translated
+                showStatusMessage("You must be logged in.", "error");
                 return;
             }
             patientModalOverlay.style.display = 'flex';
@@ -1516,12 +1523,12 @@
                     if (patientDocSnap.exists()) {
                         tempPatientData = { patientId: patientIdToEdit, ...patientDocSnap.data() };
                     } else {
-                        showStatusMessage(`Patient data for ${patientIdToEdit} not found. Cannot edit.`, "error"); // Translated
+                        showStatusMessage(`Patient data for ${patientIdToEdit} not found. Cannot edit.`, "error");
                         tempPatientData = { patientId: patientIdToEdit, age: '', gender: '', sport: '', injury: '', injuredSide: 'Left', bodyweight: '' };
                     }
                 } catch(error) {
                     console.error("Error fetching patient data for edit:", error);
-                    showStatusMessage("Could not fetch patient data for editing.", "error"); // Translated
+                    showStatusMessage("Could not fetch patient data for editing.", "error");
                     tempPatientData = { patientId: patientIdToEdit, age: '', gender: '', sport: '', injury: '', injuredSide: 'Left', bodyweight: '' };
                 }
                 modalHTML = `
@@ -1595,7 +1602,7 @@
             try {
                 const querySnapshot = await getDocs(patientsCollectionRef);
                 if (querySnapshot.empty) {
-                    container.textContent = 'No existing patients found.'; // Translated
+                    container.textContent = 'No existing patients found.';
                     return;
                 }
                 querySnapshot.forEach((docSnap) => {
@@ -1614,19 +1621,19 @@
                 });
             } catch (error) {
                 console.error("Error populating modal patient list:", error);
-                container.textContent = 'Error loading patients.'; // Translated
+                container.textContent = 'Error loading patients.';
             }
         }
 
 
         async function handleNewPatientConfirm() {
             if (!currentUserId) {
-                showStatusMessage("You must be logged in to add patients.", "error"); // Translated
+                showStatusMessage("You must be logged in to add patients.", "error");
                 return;
             }
             const newPatientId = patientModalContent.querySelector('#modal-fp-nr').value.trim();
             if (!newPatientId) {
-                showStatusMessage("Patient ID is required.", "error"); // Translated
+                showStatusMessage("Patient ID is required.", "error");
                 return;
             }
 
@@ -1634,12 +1641,12 @@
             try {
                 const docSnap = await getDoc(patientDocRef);
                 if (docSnap.exists()) {
-                    showStatusMessage(`Patient ID "${newPatientId}" already exists. Choose a different ID or edit existing.`, "error"); // Translated
+                    showStatusMessage(`Patient ID "${newPatientId}" already exists. Choose a different ID or edit existing.`, "error");
                     return;
                 }
             } catch (error) {
                 console.error("Error checking patient ID existence:", error);
-                showStatusMessage("Error checking patient ID.", "error"); // Translated
+                showStatusMessage("Error checking patient ID.", "error");
                 return;
             }
 
@@ -1667,7 +1674,7 @@
 
             try {
                 await setDoc(patientDocRef, patientDataToSave);
-                showStatusMessage(`New patient "${newPatientId}" saved. Ready for screening.`, "success"); // Translated
+                showStatusMessage(`New patient "${newPatientId}" saved. Ready for screening.`, "success");
                 displayPatientInfoInCard(currentPatientDataForApp);
                 if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
                 await populatePatientIdDatalistFromFirestore();
@@ -1687,13 +1694,13 @@
                 if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
 
 
-                resetScreeningInputFields();
+                resetScreeningInputFields(); // This clears ASH test inputs from page
                 updateGraphsAndTable();
                 await displayTestsForPatientFromFirestore(newPatientId);
-                saveInputsToLocalStorage();
+                saveInputsToLocalStorage(); // This will save new patient data and empty ASH test inputs
             } catch (error) {
                 console.error("Error saving new patient:", error);
-                showStatusMessage("Error saving patient data.", "error"); // Translated
+                showStatusMessage("Error saving patient data.", "error");
             }
         }
 
@@ -1725,7 +1732,7 @@
             try {
                 const patientDocRef = doc(db, "users", currentUserId, "patients", originalPatientId);
                 await updateDoc(patientDocRef, patientDataToUpdateFirestore);
-                showStatusMessage(`Details for patient "${originalPatientId}" updated.`, "success"); // Translated
+                showStatusMessage(`Details for patient "${originalPatientId}" updated.`, "success");
 
                 if(fpNrInput) fpNrInput.value = originalPatientId;
                 if(ageInput) ageInput.value = currentPatientDataForApp.age;
@@ -1739,14 +1746,19 @@
                 if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
                 await displayTestsForPatientFromFirestore(originalPatientId);
 
-                if (currentPatientDataForApp.screeningId) {
+                // If a specific screening was loaded, keep its data and active state.
+                // Otherwise, (if just editing patient details without a specific test loaded),
+                // the ASH inputs should ideally be cleared.
+                if (!currentPatientDataForApp.screeningId) {
+                    resetScreeningInputFields();
+                } else {
+                    // Re-apply active state if a test was loaded
                     const activeLi = selectedPatientTestsListUL.querySelector(`li[data-screening-id="${currentPatientDataForApp.screeningId}"]`);
                     if (activeLi) {
                         activeLi.classList.add('active-test-item');
                     }
-                } else {
-                    resetScreeningInputFields();
                 }
+
 
                 closePatientModal();
 
@@ -1756,10 +1768,10 @@
                 if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
 
                 updateGraphsAndTable();
-                saveInputsToLocalStorage();
+                saveInputsToLocalStorage(); // Save updated patient data and current state of ASH inputs
             } catch (error) {
                 console.error("Error updating patient data:", error);
-                showStatusMessage("Error updating patient data.", "error"); // Translated
+                showStatusMessage("Error updating patient data.", "error");
             }
         }
 
@@ -1785,7 +1797,7 @@
 
             if (idCard) idCard.textContent = data.patientId || 'N/A';
             if (ageCard) ageCard.textContent = data.age || 'N/A';
-            if (genderCard) genderCard.textContent = data.gender || 'N/A'; // Already English in modal
+            if (genderCard) genderCard.textContent = data.gender || 'N/A';
             if (sportCard) sportCard.textContent = data.sport || 'N/A';
             if (injuryCard) injuryCard.textContent = data.injury || 'N/A';
             if (injuredSideCard) injuredSideCard.textContent = data.injuredSide || 'N/A';
@@ -1816,7 +1828,7 @@
                 });
             } catch (error) {
                 console.error("Error populating main patient ID datalist:", error);
-                showStatusMessage("Error loading patient list.", "error"); // Translated
+                showStatusMessage("Error loading patient list.", "error");
             }
         }
 
@@ -1828,7 +1840,7 @@
 
 
             if (!currentUserId || !patientId) {
-                if (localTestsListUL) localTestsListUL.innerHTML = '<li>Select a patient to see tests.</li>'; // Translated
+                if (localTestsListUL) localTestsListUL.innerHTML = '<li>Select a patient to see tests.</li>';
                 if (localTestsContainer) localTestsContainer.style.display = 'flex';
                 if (overviewTitle) overviewTitle.style.display = (document.getElementById('patient-identity-card')?.style.display === 'flex') ? 'block' : 'none';
                 if (localPatientOverviewSection && document.getElementById('patient-identity-card')?.style.display === 'flex') {
@@ -1841,7 +1853,7 @@
                 return;
             }
             overviewTitle.style.display = 'block';
-            localTestsListUL.innerHTML = '<li>Loading tests...</li>'; // Translated
+            localTestsListUL.innerHTML = '<li>Loading tests...</li>';
             localTestsContainer.style.display = 'flex';
             if (localPatientOverviewSection) localPatientOverviewSection.style.display = 'flex';
 
@@ -1853,7 +1865,7 @@
                 const querySnapshot = await getDocs(q);
                 localTestsListUL.innerHTML = '';
                 if (querySnapshot.empty) {
-                    localTestsListUL.innerHTML = '<li>No tests found for this patient.</li>'; // Translated
+                    localTestsListUL.innerHTML = '<li>No tests found for this patient.</li>';
                     return;
                 }
 
@@ -1867,15 +1879,15 @@
                     const dateSpan = document.createElement('span');
                     const screeningTimestampDate = screening.testTimestamp?.toDate();
                     if (screeningTimestampDate instanceof Date && !isNaN(screeningTimestampDate)) {
-                        dateSpan.textContent = screeningTimestampDate.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }); // English locale
+                        dateSpan.textContent = screeningTimestampDate.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
                     } else {
-                        dateSpan.textContent = "Invalid date"; // Translated
+                        dateSpan.textContent = "Invalid date";
                     }
-                    dateSpan.title = "Load this test"; // Translated
+                    dateSpan.title = "Load this test";
 
                     const deleteButton = document.createElement('button');
                     deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
-                    deleteButton.title = "Delete this test"; // Translated
+                    deleteButton.title = "Delete this test";
                     deleteButton.classList.add('delete-test-btn');
                     deleteButton.addEventListener('click', (e) => {
                         e.stopPropagation();
@@ -1886,8 +1898,8 @@
                     localTestsListUL.appendChild(li);
                 });
             } catch (error) {
-                localTestsListUL.innerHTML = '<li>Error loading tests. Check console for details.</li>'; // Translated
-                showStatusMessage("Error loading patient tests.", "error"); // Translated
+                localTestsListUL.innerHTML = '<li>Error loading tests. Check console for details.</li>';
+                showStatusMessage("Error loading patient tests.", "error");
             }
         }
 
@@ -1908,7 +1920,7 @@
                         injury: data.injuryAtScreening,
                         bodyweight: data.bodyweightAtScreening,
                         injuredSide: data.injuredSideAtScreening,
-                        screeningId: screeningDocId
+                        screeningId: screeningDocId // Set the loaded screening ID
                     };
 
                     if(fpNrInput) fpNrInput.value = currentPatientDataForApp.patientId || '';
@@ -1928,8 +1940,8 @@
                     });
 
                     updateGraphsAndTable();
-                    saveInputsToLocalStorage();
-                    showStatusMessage('Test data loaded.', 'success'); // Translated
+                    saveInputsToLocalStorage(); // Save the loaded screening data to localStorage
+                    showStatusMessage('Test data loaded.', 'success');
                     displayPatientInfoInCard(currentPatientDataForApp);
                      if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
 
@@ -1940,43 +1952,43 @@
                     }
 
                 } else {
-                    showStatusMessage("Could not find selected test data.", "error"); // Translated
+                    showStatusMessage("Could not find selected test data.", "error");
                 }
             } catch (error) {
                 console.error("Error loading screening data:", error);
-                showStatusMessage("Error loading test data.", "error"); // Translated
+                showStatusMessage("Error loading test data.", "error");
             }
         }
 
         async function confirmAndDeleteScreeningFromFirestore(patientId, screeningDocId, dateObject) {
             if (!currentUserId) return;
             const formattedDate = dateObject instanceof Date && !isNaN(dateObject)
-                ? dateObject.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }) // English locale
-                : "unknown date"; // Translated
+                ? dateObject.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })
+                : "unknown date";
 
-            if (confirm(`Are you sure you want to delete the test for patient "${patientId}" from ${formattedDate}? This action cannot be undone.`)) { // Translated
-                showStatusMessage("Deleting test...", "info", 1500); // Translated
+            if (confirm(`Are you sure you want to delete the test for patient "${patientId}" from ${formattedDate}? This action cannot be undone.`)) {
+                showStatusMessage("Deleting test...", "info", 1500);
                 try {
                     const screeningDocRef = doc(db, "users", currentUserId, "patients", patientId, "screenings", screeningDocId);
                     await deleteDoc(screeningDocRef);
-                    showStatusMessage('Test deleted.', 'success'); // Translated
+                    showStatusMessage('Test deleted.', 'success');
 
                     if (currentPatientDataForApp.screeningId === screeningDocId && currentPatientDataForApp.patientId === patientId) {
-                        resetScreeningInputFields();
+                        resetScreeningInputFields(); // Clears inputs and currentPatientDataForApp.screeningId
                         updateGraphsAndTable();
-                        saveInputsToLocalStorage();
+                        saveInputsToLocalStorage(); // Save the cleared state
                     }
                     await displayTestsForPatientFromFirestore(patientId);
                 } catch (error) {
                     console.error("Error deleting screening:", error);
-                    showStatusMessage("Error deleting test.", "error"); // Translated
+                    showStatusMessage("Error deleting test.", "error");
                 }
             }
         }
 
         async function saveScreeningToFirestore() {
             if (!currentUserId || !currentPatientDataForApp || !currentPatientDataForApp.patientId) {
-                showStatusMessage("No patient selected or user not logged in. Please select or create a patient first.", "error"); // Translated
+                showStatusMessage("No patient selected or user not logged in. Please select or create a patient first.", "error");
                 openPatientModal('new');
                 return;
             }
@@ -2008,19 +2020,27 @@
             });
 
             if (!dataEnteredForAsh) {
-                showStatusMessage("No ASH test data entered to save.", "warning"); return; // Translated
+                showStatusMessage("No ASH test data entered to save.", "warning"); return;
             }
 
             try {
                 const screeningsCollectionRef = collection(db, "users", currentUserId, "patients", patientId, "screenings");
                 const docRef = await addDoc(screeningsCollectionRef, screeningData);
-                showStatusMessage("Screening saved!", "success"); // Translated
-                await displayTestsForPatientFromFirestore(patientId);
+                currentPatientDataForApp.screeningId = docRef.id; // Set the new screening as active
+                showStatusMessage("Screening saved!", "success");
+                await displayTestsForPatientFromFirestore(patientId); // Refresh test list
+                // Highlight the newly saved test
+                const activeLi = selectedPatientTestsListUL.querySelector(`li[data-screening-id="${docRef.id}"]`);
+                if (activeLi) {
+                    clearActiveTestItemState();
+                    activeLi.classList.add('active-test-item');
+                }
                 displayPatientInfoInCard(currentPatientDataForApp);
                  if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
+                 saveInputsToLocalStorage(); // Save current state including new screeningId
             } catch (error) {
                 console.error("Error saving screening:", error);
-                showStatusMessage("Error saving screening.", "error"); // Translated
+                showStatusMessage("Error saving screening.", "error");
             }
         }
 
@@ -2045,7 +2065,7 @@
                             const patientDocRef = doc(db, "users", currentUserId, "patients", enteredPatientId);
                             const patientDocSnap = await getDoc(patientDocRef);
                             if (patientDocSnap.exists()) {
-                                currentPatientDataForApp = { patientId: enteredPatientId, ...patientDocSnap.data(), screeningId: null };
+                                currentPatientDataForApp = { patientId: enteredPatientId, ...patientDocSnap.data(), screeningId: null }; // Clear screeningId when selecting a patient this way
 
                                 if(fpNrInput) fpNrInput.value = currentPatientDataForApp.patientId;
                                 if(ageInput) ageInput.value = currentPatientDataForApp.age;
@@ -2058,9 +2078,9 @@
                                 displayPatientInfoInCard(currentPatientDataForApp);
                                 if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
                                 await displayTestsForPatientFromFirestore(enteredPatientId);
-                                resetScreeningInputFields();
+                                resetScreeningInputFields(); // Clears ASH inputs and active test state
                                 updateGraphsAndTable();
-                                saveInputsToLocalStorage();
+                                saveInputsToLocalStorage(); // Saves patient data and empty ASH inputs
 
                                 if (newPatientChoiceButton) newPatientChoiceButton.classList.remove('active-choice');
                                 if (existingPatientChoiceButton) existingPatientChoiceButton.classList.remove('active-choice');
@@ -2070,7 +2090,7 @@
 
 
                             } else {
-                                showStatusMessage(`Patient ID not found: ${enteredPatientId}`, "warning"); // Translated
+                                showStatusMessage(`Patient ID not found: ${enteredPatientId}`, "warning");
                             }
                         } catch (error) {
                             console.error("Error fetching patient on main page search:", error);
@@ -2117,7 +2137,7 @@
                     localStorage.removeItem(localStorageKey);
                 } catch (error) {
                     console.error("Logout error:", error);
-                    showStatusMessage("Error logging out. Please try again.", "error"); // Translated
+                    showStatusMessage("Error logging out. Please try again.", "error");
                 }
             });
         }
@@ -2125,7 +2145,7 @@
         window.addEventListener('resize', () => {
             asymmetryChartDivs.concat(normativeChartDivs).forEach(divId => {
                 const gd = document.getElementById(divId);
-                if (gd && gd.classList.contains('js-plotly-plot') && typeof gd.layout !== 'undefined') { // Check if plot has layout
+                if (gd && gd.classList.contains('js-plotly-plot') && typeof gd.layout !== 'undefined') { 
                      try {
                         Plotly.Plots.resize(gd);
                     } catch (e) { /* Ignore resize errors if plot not fully rendered */ }
@@ -2135,4 +2155,4 @@
 
     </script>
 </body>
-</html>
+</ht
