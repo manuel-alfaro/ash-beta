@@ -790,8 +790,8 @@
         }
         body.pdf-preview-active .position-row {
             display: flex !important;
-            flex-wrap: wrap !important; /* Allow wrapping */
-            gap: 5mm !important;
+            flex-wrap: wrap !important; /* Allow wrapping, default for PDF */
+            gap: 10px !important; /* Smaller gap for PDF */
         }
 
          body.pdf-preview-active #results-title {
@@ -821,25 +821,21 @@
         }
         /* PDF Graph Sizing - Reverted to inherit from main view where possible */
          body.pdf-preview-active .asymmetry-graph-container{
-            flex: 6 !important; /* Inherit from main view */
-            min-width: 320px !important; /* Inherit from main view or adjust for PDF */
-            /* width: auto !important; */ /* Removed fixed width */
-            /* max-width: none !important; */
+            flex: 6 !important;
+            min-width: 320px !important; /* Or adjust as needed for PDF if flex alone isn't enough */
             margin-bottom: 5mm !important;
             page-break-inside: avoid !important;
          }
          body.pdf-preview-active .normative-graph-container {
-            flex: 4 !important; /* Inherit from main view */
-            min-width: 260px !important; /* Inherit from main view or adjust for PDF */
-            /* width: auto !important; */ /* Removed fixed width */
-            /* max-width: none !important; */
+            flex: 4 !important;
+            min-width: 260px !important; /* Or adjust as needed for PDF if flex alone isn't enough */
             margin-bottom: 5mm !important;
          }
         body.pdf-preview-active .position-box,
         body.pdf-preview-active .normative-box {
-            height: var(--graph-box-height) !important; /* Inherit height from main view */
+            height: var(--graph-box-height) !important; /* Maintain height from main view */
             min-height: var(--graph-box-height) !important;
-            width: 100% !important;
+            width: 100% !important; /* Fill the flex container */
             box-sizing: border-box !important;
             display: flex !important;
             flex-direction: column !important;
@@ -996,28 +992,26 @@
             h3 { font-size: 10pt !important; margin-bottom: 3mm !important; color: black !important; font-weight: normal !important; }
             #report-content { padding: 0 !important; }
 
-             /* PDF Graph Sizing - Reverted to match main view proportions */
+            /* PDF Graph Sizing - Reverted to match main view proportions */
             .asymmetry-graph-container {
-                flex: 6 !important; /* Match main view */
-                min-width: 0 !important; /* Allow shrinking if needed due to wrap */
-                 /* width: auto !important; Let flexbox decide */
+                flex: 6 !important;
+                min-width: 0 !important; /* Allow flex to control size */
             }
             .normative-graph-container {
-                flex: 4 !important; /* Match main view */
-                min-width: 0 !important; /* Allow shrinking if needed due to wrap */
-                /* width: auto !important; Let flexbox decide */
+                flex: 4 !important;
+                min-width: 0 !important; /* Allow flex to control size */
             }
             .position-box, .normative-box {
                 box-shadow: none !important;
                 border: 1px solid #ccc !important;
-                height: var(--graph-box-height) !important; /* Maintain height from main view */
+                height: var(--graph-box-height) !important;
                 min-height: var(--graph-box-height) !important;
                 padding: 5px !important;
                 background-color: var(--white) !important;
                 overflow: hidden !important;
                 display: flex !important;
                 flex-direction: column !important;
-                width: 100% !important; /* Fill container */
+                width: 100% !important;
             }
             .position-box.green-box { box-shadow: none !important; border: 1px solid #ccc !important; }
             .position-box::after { display: none !important; }
@@ -1590,7 +1584,10 @@
                 }
                 patientModalContent.querySelector('#modal-cancel-search')?.addEventListener('click', closePatientModal);
             } else if (type === 'existing-edit') {
-                patientModalContent.querySelector('#modal-confirm-edit')?.addEventListener('click', () => handleExistingPatientDone(originalPatientId));
+                const capturedIdForEdit = patientIdToEdit; // Explicitly capture for the closure
+                patientModalContent.querySelector('#modal-confirm-edit')?.addEventListener('click', () => {
+                    handleExistingPatientDone(capturedIdForEdit);
+                });
                 patientModalContent.querySelector('#modal-cancel-edit')?.addEventListener('click', closePatientModal);
             }
         }
@@ -1668,7 +1665,7 @@
                 injury: patientModalContent.querySelector('#modal-injury').value,
                 injuredSide: patientModalContent.querySelector('#modal-injured-side').value,
                 bodyweight: patientModalContent.querySelector('#modal-bodyweight').value,
-                screeningId: null // New patient, no screening loaded yet
+                screeningId: null
             };
 
             const patientDataToSave = {
@@ -1704,18 +1701,23 @@
                 if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
 
 
-                resetScreeningInputFields(); // This clears ASH test inputs from page
+                resetScreeningInputFields();
                 updateGraphsAndTable();
                 await displayTestsForPatientFromFirestore(newPatientId);
-                saveInputsToLocalStorage(); // This will save new patient data and empty ASH test inputs
+                saveInputsToLocalStorage();
             } catch (error) {
                 console.error("Error saving new patient:", error);
                 showStatusMessage("Error saving patient data.", "error");
             }
         }
 
-        async function handleExistingPatientDone(originalPatientId) {
-            if (!currentUserId || !originalPatientId) return;
+        async function handleExistingPatientDone(idFromModal) { // Changed param name
+            console.log("handleExistingPatientDone called with ID:", idFromModal); // Debug log
+            if (!currentUserId || !idFromModal) {
+                 console.warn("handleExistingPatientDone: Missing currentUserId or idFromModal.", currentUserId, idFromModal);
+                return;
+            }
+            const originalPatientId = idFromModal; // Use this consistently
 
             const updatedPatientDataFromModal = {
                 patientId: originalPatientId,
@@ -1725,7 +1727,7 @@
                 injury: patientModalContent.querySelector('#modal-injury').value,
                 injuredSide: patientModalContent.querySelector('#modal-injured-side').value,
                 bodyweight: patientModalContent.querySelector('#modal-bodyweight').value,
-                screeningId: null // When "Done" is clicked after editing, clear screeningId
+                screeningId: null
             };
             currentPatientDataForApp = { ...updatedPatientDataFromModal };
 
@@ -1756,7 +1758,7 @@
                 if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
                 await displayTestsForPatientFromFirestore(originalPatientId);
 
-                resetScreeningInputFields(); // Clear ASH inputs as we've selected/edited a patient
+                resetScreeningInputFields();
 
                 closePatientModal();
 
@@ -1766,7 +1768,7 @@
                 if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
 
                 updateGraphsAndTable();
-                saveInputsToLocalStorage(); // Save updated patient data and cleared ASH inputs
+                saveInputsToLocalStorage();
             } catch (error) {
                 console.error("Error updating patient data:", error);
                 showStatusMessage("Error updating patient data.", "error");
