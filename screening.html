@@ -790,8 +790,8 @@
         }
         body.pdf-preview-active .position-row {
             display: flex !important;
-            flex-wrap: wrap !important; /* MODIFIED: Allow wrapping in PDF if fixed widths don't fit */
-            gap: 5mm !important; /* MODIFIED: Consistent gap for PDF */
+            flex-wrap: wrap !important; /* Allow wrapping */
+            gap: 5mm !important;
         }
 
          body.pdf-preview-active #results-title {
@@ -819,33 +819,27 @@
             width: 100% !important;
             box-sizing: border-box !important;
         }
-        /* MODIFIED: PDF Graph Sizing - Graph Containers */
+        /* PDF Graph Sizing - Reverted to inherit from main view where possible */
          body.pdf-preview-active .asymmetry-graph-container{
-            width: 567px !important; /* Approx 15cm (1cm ~ 37.8px at 96dpi) */
-            max-width: 567px !important;
-            height: 189px !important; /* Approx 5cm */
-            min-height: 189px !important;
-            margin-bottom: 5mm !important; /* Added margin for when they stack */
+            flex: 6 !important; /* Inherit from main view */
+            min-width: 320px !important; /* Inherit from main view or adjust for PDF */
+            /* width: auto !important; */ /* Removed fixed width */
+            /* max-width: none !important; */
+            margin-bottom: 5mm !important;
             page-break-inside: avoid !important;
-            flex-grow: 0 !important;
-            flex-shrink: 0 !important;
          }
          body.pdf-preview-active .normative-graph-container {
-            width: 265px !important; /* Approx 7cm */
-            max-width: 265px !important;
-            height: 189px !important; /* Approx 5cm */
-            min-height: 189px !important;
-            margin-bottom: 5mm !important; /* Added margin for when they stack */
-            page-break-inside: avoid !important;
-            flex-grow: 0 !important;
-            flex-shrink: 0 !important;
+            flex: 4 !important; /* Inherit from main view */
+            min-width: 260px !important; /* Inherit from main view or adjust for PDF */
+            /* width: auto !important; */ /* Removed fixed width */
+            /* max-width: none !important; */
+            margin-bottom: 5mm !important;
          }
-        /* MODIFIED: PDF Graph Sizing - Graph Boxes */
         body.pdf-preview-active .position-box,
         body.pdf-preview-active .normative-box {
-            height: 100% !important; /* Fill the container's fixed height */
-            min-height: 100% !important;
-            width: 100% !important; /* Fill the container's fixed width */
+            height: var(--graph-box-height) !important; /* Inherit height from main view */
+            min-height: var(--graph-box-height) !important;
+            width: 100% !important;
             box-sizing: border-box !important;
             display: flex !important;
             flex-direction: column !important;
@@ -1005,15 +999,13 @@
              /* PDF Graph Sizing - Reverted to match main view proportions */
             .asymmetry-graph-container {
                 flex: 6 !important; /* Match main view */
-                min-width: 0 !important; /* Allow shrinking */
-                width: auto !important; /* Let flexbox decide */
-                max-width: none !important;
+                min-width: 0 !important; /* Allow shrinking if needed due to wrap */
+                 /* width: auto !important; Let flexbox decide */
             }
             .normative-graph-container {
                 flex: 4 !important; /* Match main view */
-                min-width: 0 !important; /* Allow shrinking */
-                width: auto !important; /* Let flexbox decide */
-                max-width: none !important;
+                min-width: 0 !important; /* Allow shrinking if needed due to wrap */
+                /* width: auto !important; Let flexbox decide */
             }
             .position-box, .normative-box {
                 box-shadow: none !important;
@@ -1598,7 +1590,7 @@
                 }
                 patientModalContent.querySelector('#modal-cancel-search')?.addEventListener('click', closePatientModal);
             } else if (type === 'existing-edit') {
-                patientModalContent.querySelector('#modal-confirm-edit')?.addEventListener('click', () => handleExistingPatientDone(patientIdToEdit));
+                patientModalContent.querySelector('#modal-confirm-edit')?.addEventListener('click', () => handleExistingPatientDone(originalPatientId));
                 patientModalContent.querySelector('#modal-cancel-edit')?.addEventListener('click', closePatientModal);
             }
         }
