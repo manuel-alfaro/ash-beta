@@ -54,7 +54,7 @@
             --status-info-bg: rgba(250, 204, 21, 0.55);
 
             --base-font-size: 16px;
-            --graph-box-height: 340px;
+            --graph-box-height: 340px; /* Default height */
             --sidebar-width: 180px;
             --normal-font-weight: 400;
             --semibold-font-weight: 400;
@@ -790,6 +790,7 @@
         }
         body.pdf-preview-active .position-row {
             display: flex !important;
+            flex-wrap: nowrap !important; /* Force side-by-side for PDF */
         }
 
          body.pdf-preview-active #results-title {
@@ -813,27 +814,26 @@
         }
         body.pdf-preview-active .position-row {
             flex-direction: row !important;
-            flex-wrap: wrap !important; /* Allow wrapping if fixed widths don't fit */
             gap: 5mm !important;
             page-break-inside: avoid !important;
             width: 100% !important;
             box-sizing: border-box !important;
         }
          body.pdf-preview-active .asymmetry-graph-container{
-            width: 378px !important; /* Approx 10cm */
-            max-width: 378px !important;
-            height: var(--graph-box-height) !important;
-            min-height: var(--graph-box-height) !important;
+            width: 567px !important; /* Approx 15cm */
+            max-width: 567px !important;
+            height: 189px !important; /* Approx 5cm */
+            min-height: 189px !important;
             margin-bottom: 5mm !important;
             page-break-inside: avoid !important;
             flex-grow: 0 !important;
             flex-shrink: 0 !important;
          }
          body.pdf-preview-active .normative-graph-container {
-            width: 265px !important; /* Approx 7cm */
-            max-width: 265px !important;
-            height: var(--graph-box-height) !important;
-            min-height: var(--graph-box-height) !important;
+            width: 189px !important; /* Approx 5cm */
+            max-width: 189px !important;
+            height: 189px !important; /* Approx 5cm */
+            min-height: 189px !important;
             margin-bottom: 5mm !important;
             page-break-inside: avoid !important;
             flex-grow: 0 !important;
@@ -894,13 +894,15 @@
             body.pdf-preview-active .app-main-content { padding: 15px 30px; }
             body.pdf-preview-active .position-row {
                 align-items: stretch;
-                flex-wrap: wrap;
+                flex-wrap: wrap; /* Allow wrapping for PDF on smaller screens */
             }
             body.pdf-preview-active .asymmetry-graph-container,
             body.pdf-preview-active .normative-graph-container {
-                flex-basis: 100% !important;
+                flex-basis: 100% !important; /* Stack graphs in PDF on smaller viewports */
                 width: 100% !important;
                 max-width: 100% !important;
+                height: auto !important; /* Adjust height when stacked */
+                min-height: unset !important;
             }
             body.pdf-preview-active .position-box, body.pdf-preview-active .normative-box { height: auto; min-height: unset; }
         }
@@ -977,7 +979,7 @@
             }
              .position-row {
                 display: flex !important;
-                flex-wrap: wrap !important; /* Allow wrapping for print if fixed widths don't fit */
+                flex-wrap: nowrap !important; /* Try to keep side-by-side */
             }
             #results-title {
                  margin-top: 5mm !important;
@@ -996,20 +998,20 @@
             #report-content { padding: 0 !important; }
 
             .asymmetry-graph-container {
-                width: 378px !important; /* Approx 10cm */
-                max-width: 378px !important;
-                height: var(--graph-box-height) !important;
-                min-height: var(--graph-box-height) !important;
+                width: 567px !important; /* Approx 15cm */
+                max-width: 567px !important;
+                height: 189px !important; /* Approx 5cm */
+                min-height: 189px !important;
                 margin-bottom: 5mm !important;
                 page-break-inside: avoid !important;
                 flex-grow: 0 !important;
                 flex-shrink: 0 !important;
             }
             .normative-graph-container {
-                width: 265px !important; /* Approx 7cm */
-                max-width: 265px !important;
-                height: var(--graph-box-height) !important;
-                min-height: var(--graph-box-height) !important;
+                width: 189px !important; /* Approx 5cm for normative graph width */
+                max-width: 189px !important;
+                height: 189px !important; /* Approx 5cm */
+                min-height: 189px !important;
                 margin-bottom: 5mm !important;
                 page-break-inside: avoid !important;
                 flex-grow: 0 !important;
@@ -1677,7 +1679,7 @@
                 injury: patientModalContent.querySelector('#modal-injury').value,
                 injuredSide: patientModalContent.querySelector('#modal-injured-side').value,
                 bodyweight: patientModalContent.querySelector('#modal-bodyweight').value,
-                screeningId: null
+                screeningId: null // New patient, no screening loaded yet
             };
 
             const patientDataToSave = {
@@ -1734,7 +1736,7 @@
                 injury: patientModalContent.querySelector('#modal-injury').value,
                 injuredSide: patientModalContent.querySelector('#modal-injured-side').value,
                 bodyweight: patientModalContent.querySelector('#modal-bodyweight').value,
-                screeningId: currentPatientDataForApp.screeningId
+                screeningId: null // When "Done" is clicked after editing, assume it's for the patient, not a specific test
             };
             currentPatientDataForApp = { ...updatedPatientDataFromModal };
 
@@ -1765,19 +1767,7 @@
                 if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
                 await displayTestsForPatientFromFirestore(originalPatientId);
 
-                // If a specific screening was loaded, keep its data and active state.
-                // Otherwise, (if just editing patient details without a specific test loaded),
-                // the ASH inputs should ideally be cleared.
-                if (!currentPatientDataForApp.screeningId) {
-                    resetScreeningInputFields();
-                } else {
-                    // Re-apply active state if a test was loaded
-                    const activeLi = selectedPatientTestsListUL.querySelector(`li[data-screening-id="${currentPatientDataForApp.screeningId}"]`);
-                    if (activeLi) {
-                        activeLi.classList.add('active-test-item');
-                    }
-                }
-
+                resetScreeningInputFields(); // Clear ASH inputs as we've selected/edited a patient, not a specific test
 
                 closePatientModal();
 
@@ -1787,7 +1777,7 @@
                 if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
 
                 updateGraphsAndTable();
-                saveInputsToLocalStorage(); // Save updated patient data and current state of ASH inputs
+                saveInputsToLocalStorage(); // Save updated patient data and cleared ASH inputs
             } catch (error) {
                 console.error("Error updating patient data:", error);
                 showStatusMessage("Error updating patient data.", "error");
@@ -2175,3 +2165,4 @@
     </script>
 </body>
 </html>
+
