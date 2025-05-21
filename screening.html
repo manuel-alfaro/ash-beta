@@ -145,7 +145,7 @@
         }
         .sidebar-buttons { display: flex; flex-direction: column; gap: 12px; }
 
-        /* Sidebar Button Styling */
+        /* Sidebar Button Styling - Reverted to ensure desired appearance */
         .app-sidebar button, .app-sidebar a > button {
             font-family: 'Avenir', sans-serif;
             font-size: 0.9rem;
@@ -181,8 +181,9 @@
             flex-grow: 1;
         }
 
+
         .app-sidebar button:not(#logout-button):hover,
-        .app-sidebar a > button:not(#logout-button):hover { /* Ensured a > button for specificity */
+        .app-sidebar a > button:not(#logout-button):hover {
             background-image: linear-gradient(to right, var(--app-button-light-gradient-start), var(--app-button-light-gradient-end));
             color: var(--app-text-on-primary);
             transform: translateY(-1px);
@@ -789,7 +790,7 @@
             display: block !important;
         }
         body.pdf-preview-active .position-row {
-            display: flex !important;
+            display: flex !important; /* Ensure graphs are in a flex row for PDF */
         }
 
          body.pdf-preview-active #results-title {
@@ -800,12 +801,12 @@
 
         body.pdf-preview-active .app-main-content {
             margin-left: 0 !important;
-            padding: 5mm !important;
+            padding: 5mm !important; /* Narrower margins for PDF */
             height: auto !important;
             overflow: visible !important;
         }
         body.pdf-preview-active .content-container {
-            max-width: 100% !important;
+            max-width: 100% !important; /* Content uses full width within PDF margins */
         }
 
         body.pdf-preview-active .explanation-box {
@@ -813,7 +814,7 @@
         }
         body.pdf-preview-active .position-row {
             flex-direction: row !important;
-            flex-wrap: wrap !important;
+            flex-wrap: nowrap !important; /* MODIFIED: Prevent wrapping in PDF to force side-by-side */
             gap: 5mm !important;
             page-break-inside: avoid !important;
             width: 100% !important;
@@ -821,13 +822,13 @@
         }
          body.pdf-preview-active .asymmetry-graph-container {
             flex: 6 1 0% !important; /* Grow by proportion, can shrink, start from 0 */
-            min-width: 180px !important;
-            margin-bottom: 5mm !important;
+            min-width: 0 !important; /* Allow shrinking if needed with nowrap */
+            margin-bottom: 0 !important; /* No bottom margin when side-by-side */
          }
          body.pdf-preview-active .normative-graph-container {
             flex: 4 1 0% !important; /* Grow by proportion, can shrink, start from 0 */
-            min-width: 140px !important;
-            margin-bottom: 5mm !important;
+            min-width: 0 !important; /* Allow shrinking if needed with nowrap */
+            margin-bottom: 0 !important; /* No bottom margin when side-by-side */
          }
         body.pdf-preview-active .position-box,
         body.pdf-preview-active .normative-box {
@@ -837,6 +838,7 @@
             box-sizing: border-box !important;
             display: flex !important;
             flex-direction: column !important;
+            overflow: hidden !important; /* ADDED: To clip overflowing graph content */
         }
         body.pdf-preview-active .js-plotly-plot {
             width: 100% !important;
@@ -881,7 +883,14 @@
 
 
             body.pdf-preview-active .app-main-content { padding: 15px 30px; }
-            body.pdf-preview-active .position-row { align-items: stretch; }
+            body.pdf-preview-active .position-row {
+                align-items: stretch;
+                flex-wrap: wrap; /* Allow wrapping for PDF on smaller screens */
+            }
+            body.pdf-preview-active .asymmetry-graph-container,
+            body.pdf-preview-active .normative-graph-container {
+                flex-basis: 100% !important; /* Stack graphs in PDF on smaller viewports */
+            }
             body.pdf-preview-active .position-box, body.pdf-preview-active .normative-box { height: auto; min-height: unset; }
         }
         @media (max-width: 768px) { /* Small devices (landscape phones, small tablets) */
@@ -955,11 +964,12 @@
             {
                 display: block !important;
             }
-             .position-row { /* Ensure this is flex for print too */
+             .position-row {
                 display: flex !important;
+                flex-wrap: nowrap !important; /* Try to keep side-by-side */
             }
             #results-title {
-                 margin-top: 5mm !important; /* Reduced margin */
+                 margin-top: 5mm !important;
                  text-align: center !important;
             }
 
@@ -977,22 +987,23 @@
             .asymmetry-graph-container, .normative-graph-container {
                 flex-grow: 1 !important;
                 flex-shrink: 1 !important;
-                flex-basis: calc(50% - 2.5mm) !important; /* Ensure side-by-side for print if space */
-                min-width: 180px !important; /* Prevent excessive shrinking */
-                margin-bottom: 5mm !important; /* Spacing if they stack */
+                flex-basis: 0 !important; /* Allow flex-grow to distribute space */
+                min-width: 150px !important; /* Further reduced min-width for print */
+                margin-bottom: 5mm !important;
                 page-break-inside: avoid !important;
             }
             .position-box, .normative-box {
                 box-shadow: none !important;
                 border: 1px solid #ccc !important;
-                height: var(--graph-box-height) !important; /* Maintain height */
+                height: var(--graph-box-height) !important;
                 min-height: var(--graph-box-height) !important;
                 padding: 5px !important;
                 background-color: var(--white) !important;
+                overflow: hidden !important; /* Clip content if Plotly overflows */
             }
             .position-box.green-box { box-shadow: none !important; border: 1px solid #ccc !important; }
             .position-box::after { display: none !important; }
-            .js-plotly-plot { width: 100% !important; height: 100% !important; /* Ensure plot fills box */ }
+            .js-plotly-plot { width: 100% !important; height: 100% !important; }
             .plotly .scatterlayer .trace.fill { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             .plotly .annotation text, .plotly .annotation .norm-label, .plotly .annotation .left-label, .plotly .annotation .right-label, .plotly .annotation .value-display, .plotly .annotation .nkg-combined-text span, .plotly .annotation .asymmetry-percent { fill: black !important; color: black !important; font-weight: normal !important; }
             .plotly .annotation .norm-value { font-weight: normal !important; }
@@ -1001,8 +1012,8 @@
             .plotly .tick text { fill: black !important; font-size: 8pt !important; font-weight: normal !important; }
             .plotly .legend { display: none !important; }
             .plotly .modebar { display: none !important; }
-            #bar-chart-I, #bar-chart-Y, #bar-chart-T { height: 100% !important; } /* Fill parent */
-            #normative-chart-I, #normative-chart-Y, #normative-chart-T { height: 100% !important; } /* Fill parent */
+            #bar-chart-I, #bar-chart-Y, #bar-chart-T { height: 100% !important; }
+            #normative-chart-I, #normative-chart-Y, #normative-chart-T { height: 100% !important; }
         }
     </style>
 </head>
@@ -1213,7 +1224,7 @@
             good: getComputedStyle(document.documentElement).getPropertyValue('--norm-good-bg').trim(),
             excellent: getComputedStyle(document.documentElement).getPropertyValue('--norm-excellent-bg').trim()
         };
-        const normativeLabels = { poor: 'Poor', average: 'Average', good: 'Good', excellent: 'Excellent' }; // Translated
+        const normativeLabels = { poor: 'Poor', average: 'Average', good: 'Good', excellent: 'Excellent' };
         const asymmetryChartDivs = ['bar-chart-I', 'bar-chart-Y', 'bar-chart-T'];
         const asymmetryPositionBoxDivs = ['position-box-I', 'position-box-Y', 'position-box-T'];
         const normativeChartDivs = ['normative-chart-I', 'normative-chart-Y', 'normative-chart-T'];
@@ -1255,7 +1266,7 @@
             if (user) {
                 currentUser = user;
                 currentUserId = user.uid;
-                if (appLoadingMessage) appLoadingMessage.textContent = `Welcome, loading data...`; // Translated
+                if (appLoadingMessage) appLoadingMessage.textContent = `Welcome, loading data...`;
 
                 try {
                     const userDocRef = doc(db, "users", currentUserId);
@@ -1281,15 +1292,15 @@
             } else {
                 currentUser = null;
                 currentUserId = null;
-                if (appLoadingMessage) appLoadingMessage.textContent = 'Redirecting to login...'; // Translated
+                if (appLoadingMessage) appLoadingMessage.textContent = 'Redirecting to login...';
                 localStorage.setItem('redirectToAfterLogin', window.location.pathname + window.location.search);
                 window.location.href = "index.html";
             }
         });
 
         async function initializeAppUI() {
-            asymmetryChartDivs.forEach(divId => createEmptyPlot(divId, 'Enter Data', 300, 20)); // Translated
-            normativeChartDivs.forEach(divId => createEmptyPlot(divId, 'Enter Bodyweight', 250, 35)); // Translated
+            asymmetryChartDivs.forEach(divId => createEmptyPlot(divId, 'Enter Data', 300, 20));
+            normativeChartDivs.forEach(divId => createEmptyPlot(divId, 'Enter Bodyweight', 250, 35));
             loadInputsFromLocalStorage();
             await populatePatientIdDatalistFromFirestore();
 
@@ -1313,7 +1324,7 @@
             }, duration);
         }
         function hexToRgba(hex, alpha) { hex = hex.replace('#', ''); const r = parseInt(hex.substring(0, 2), 16); const g = parseInt(hex.substring(2, 4), 16); const b = parseInt(hex.substring(4, 6), 16); return `rgba(${r}, ${g}, ${b}, ${alpha})`; }
-        function createEmptyPlot(targetDivId, title = 'Enter Data', height = 300, topMargin = 20) { const targetDiv = document.getElementById(targetDivId); if (!targetDiv) { console.error(`Target div '${targetDivId}' not found for empty plot.`); return; } try { Plotly.react(targetDiv, [{ x: [], y: [], type: 'bar' }], { title: { text: title, font: { family: 'Avenir, sans-serif', size: 16, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim(), weight: 400 } }, height: height, margin: { l: 60, r: 40, b: 40, t: topMargin, pad: 4 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', xaxis: { visible: false }, yaxis: { showgrid: false, zeroline: true, gridcolor: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), showticklabels: false }, font: { family: 'Avenir, sans-serif', size: 12, weight: 400 } }, plotlyConfig); } catch (error) { console.error(`Error creating empty plot for '${targetDivId}':`, error); targetDiv.innerHTML = `<p style="color: red; text-align: center; padding: 20px;">Error displaying chart.</p>`; } } // Translated error
+        function createEmptyPlot(targetDivId, title = 'Enter Data', height = 300, topMargin = 20) { const targetDiv = document.getElementById(targetDivId); if (!targetDiv) { console.error(`Target div '${targetDivId}' not found for empty plot.`); return; } try { Plotly.react(targetDiv, [{ x: [], y: [], type: 'bar' }], { title: { text: title, font: { family: 'Avenir, sans-serif', size: 16, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim(), weight: 400 } }, height: height, margin: { l: 60, r: 40, b: 40, t: topMargin, pad: 4 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', xaxis: { visible: false }, yaxis: { showgrid: false, zeroline: true, gridcolor: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), showticklabels: false }, font: { family: 'Avenir, sans-serif', size: 12, weight: 400 } }, plotlyConfig); } catch (error) { console.error(`Error creating empty plot for '${targetDivId}':`, error); targetDiv.innerHTML = `<p style="color: red; text-align: center; padding: 20px;">Error displaying chart.</p>`; } }
         function processInputAndCalculate(position) { const inputs = inputFieldMap[position]; if (!inputs) return null; const nonInjuredMaxForceVal = inputs.nonInjured[0].value; const nonInjuredRfdVal = inputs.nonInjured[1].value; const injuredMaxForceVal = inputs.injured[0].value; const injuredRfdVal = inputs.injured[1].value; if (nonInjuredMaxForceVal === '' && nonInjuredRfdVal === '' && injuredMaxForceVal === '' && injuredRfdVal === '') return null; const nonInjuredMaxForce = parseFloat(nonInjuredMaxForceVal) || 0; const nonInjuredRfd = parseFloat(nonInjuredRfdVal) || 0; const injuredMaxForce = parseFloat(injuredMaxForceVal) || 0; const injuredRfd = parseFloat(injuredRfdVal) || 0; const selectedInjuredSide = currentPatientDataForApp.injuredSide || 'Left'; let leftData = {}; let rightData = {}; if (selectedInjuredSide === 'Left') { leftData = { max_force: injuredMaxForce, rfd: injuredRfd }; rightData = { max_force: nonInjuredMaxForce, rfd: nonInjuredRfd }; } else { leftData = { max_force: nonInjuredMaxForce, rfd: nonInjuredRfd }; rightData = { max_force: injuredMaxForce, rfd: injuredRfd }; } return { left: leftData, right: rightData }; }
         function createAsymmetryChart(positionData, injuredSide, posLabel) { if (!positionData?.left || !positionData?.right) return [{}, false]; const leftDataRaw = positionData.left; const rightDataRaw = positionData.right; const leftPctMaxAt100ms = leftDataRaw.max_force !== 0 ? (leftDataRaw.rfd * 0.1 / leftDataRaw.max_force) * 100 : 0; const rightPctMaxAt100ms = rightDataRaw.max_force !== 0 ? (rightDataRaw.rfd * 0.1 / rightDataRaw.max_force) * 100 : 0; const leftData = [leftDataRaw.max_force, leftDataRaw.rfd, leftPctMaxAt100ms]; const rightData = [rightDataRaw.max_force, rightDataRaw.rfd, rightPctMaxAt100ms]; const baseData = injuredSide === 'Right' ? leftData : rightData; const metricNames = [ 'Max Force (N)', 'RFD 100ms (Ns⁻¹)', '% Max @ 100ms (%)' ]; const barDataRatios = {}; const leftTextsAbsolute = []; const rightTextsAbsolute = []; metricNames.forEach((metricName, index) => { let leftValue = leftData[index]; let rightValue = rightData[index]; let baseValue = baseData[index]; const leftRatio = baseValue !== 0 ? (leftValue / baseValue) * 100 : (leftValue === 0 ? 100 : Infinity); const rightRatio = baseValue !== 0 ? (rightValue / baseValue) * 100 : (rightValue === 0 ? 100 : Infinity); barDataRatios[metricName] = [rightRatio, leftRatio]; const decimals = metricName.includes('% Max @ 100ms') ? 1 : 0; leftTextsAbsolute.push(leftValue.toFixed(decimals)); rightTextsAbsolute.push(rightValue.toFixed(decimals)); }); const plotX = metricNames; const plotYLeft = plotX.map(name => barDataRatios[name][1]); const plotYRight = plotX.map(name => barDataRatios[name][0]); if (plotX.length !== 3 || plotYLeft.length !== 3 || plotYRight.length !== 3) return [{}, false]; const leftColorHex = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim(); const rightColorHex = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim(); const leftColorRgba = hexToRgba(leftColorHex, 0.8); const rightColorRgba = hexToRgba(rightColorHex, 0.8); const thresholdLineColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(); const darkGrayColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(); const whiteColor = getComputedStyle(document.documentElement).getPropertyValue('--white').trim(); const validRatios = plotYLeft.concat(plotYRight).filter(isFinite); const maxYValue = validRatios.length > 0 ? Math.max(110, ...validRatios) : 110; const annotationYTop = maxYValue + 8; const yAxisUpperBound = annotationYTop + 15; const fig = { data: [ { type: 'bar', name: 'Left', x: plotX, y: plotYLeft, marker: { color: leftColorRgba }, text: leftTextsAbsolute, texttemplate: '%{text}', textposition: 'none', hoverinfo: 'x+name', hovertemplate: 'Left: %{y:.0f}%<extra></extra>' }, { type: 'bar', name: 'Right', x: plotX, y: plotYRight, marker: { color: rightColorRgba }, text: rightTextsAbsolute, texttemplate: '%{text}', textposition: 'none', hoverinfo: 'x+name', hovertemplate: 'Right: %{y:.0f}%<extra></extra>' }, { x: [null], y: [null], mode: 'lines', name: '±10% Threshold', line: { color: thresholdLineColor, width: 1, dash: 'dash' }, hoverinfo: 'none', showlegend: true } ], layout: { height: 300, barmode: 'group', font: { color: darkGrayColor, family: 'Avenir, sans-serif', size: 12, weight: 400 }, yaxis: { title: "Injured Side Asymmetry (%)", titlefont: { size: 13, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, range: [18, yAxisUpperBound], tickmode: 'array', tickvals: [50, 100], showgrid: false, zeroline: false, }, xaxis: { showgrid: false, zeroline: false, showline: false, showticklabels: true, tickangle: 0, tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, automargin: true, fixedrange: true }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', legend: { orientation: "h", yanchor: "bottom", y: -0.30, xanchor: "center", x: 0.5, font: { size: 12, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor } }, margin: { l: 70, r: 30, b: 85, t: 20, pad: 10 }, shapes: [ { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 90, y1: 90, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" }, { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 110, y1: 110, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" } ], annotations: [] } }; let allGreen = true; const metricsNamesForAnnotation = plotX; for (let i = 0; i < metricsNamesForAnnotation.length; i++) { const metricName = metricsNamesForAnnotation[i]; const injuredRatio = injuredSide === 'Right' ? plotYRight[i] : plotYLeft[i]; const leftRatio = plotYLeft[i]; const rightRatio = plotYRight[i]; if (!isFinite(injuredRatio)) { fig.layout.annotations.push({ x: metricName, y: annotationYTop, text: "N/A", showarrow: false, font: { color: 'grey', size: 22, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'bottom' }); allGreen = false; } else { const percentageDiff = injuredRatio - 100; let color; if (percentageDiff >= -10) { color = '#2a9d8f'; } else { allGreen = false; if (percentageDiff >= -15) { color = '#ee9b00'; } else if (percentageDiff >= -20) { color = '#e85d04'; } else { color = '#ae2012'; } } fig.layout.annotations.push({ x: metricName, y: annotationYTop, text: `${percentageDiff.toFixed(0)}%`, showarrow: false, font: { color: color, size: 22, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'bottom' }); } const barTextYPosition = 31; const barTextFontSize = 17; const categoryIndex = i; const numberOfBars = 2; const groupWidth = 0.8; const barWidthFraction = groupWidth / numberOfBars; const leftBarCenter = categoryIndex - (groupWidth / 2) + (barWidthFraction / 2); const rightBarCenter = categoryIndex + (groupWidth / 2) - (barWidthFraction / 2); if (leftRatio > barTextYPosition + (barTextFontSize / 2)) { fig.layout.annotations.push({ x: leftBarCenter, y: barTextYPosition, xref: 'x', yref: 'y', text: leftTextsAbsolute[i], showarrow: false, font: { color: whiteColor, size: barTextFontSize, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'middle' }); } if (rightRatio > barTextYPosition + (barTextFontSize / 2)) { fig.layout.annotations.push({ x: rightBarCenter, y: barTextYPosition, xref: 'x', yref: 'y', text: rightTextsAbsolute[i], showarrow: false, font: { color: whiteColor, size: barTextFontSize, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'middle' }); } } return [fig, allGreen]; }
         function mapNkgToPercentile(nkgValue, positionLabel) { const thresholds = normativeThresholds[positionLabel]; if (!thresholds || typeof nkgValue !== 'number' || !isFinite(nkgValue)) return 0; const pMap = [ { v: 0.5, p: 0 }, { v: thresholds.poor_max, p: percentileZones.poor }, { v: thresholds.average_mid, p: percentileMidpoint }, { v: thresholds.good_min, p: percentileZones.average }, { v: thresholds.excellent_min, p: percentileZones.good }, { v: thresholds.excellent_min * 1.25, p: percentileZones.excellent } ]; const minVal = pMap[0].v; const maxVal = pMap[pMap.length - 1].v; const clampedValue = Math.max(minVal, Math.min(nkgValue, maxVal)); let lowerPoint = pMap[0]; let upperPoint = pMap[pMap.length - 1]; for (let i = 0; i < pMap.length - 1; i++) { if (clampedValue === pMap[i].v) { lowerPoint = upperPoint = pMap[i]; break; } if (clampedValue > pMap[i].v && clampedValue <= pMap[i + 1].v) { lowerPoint = pMap[i]; upperPoint = pMap[i + 1]; break; } } if (clampedValue === upperPoint.v) { lowerPoint = upperPoint; } let percentile = lowerPoint.p; const valueRange = upperPoint.v - lowerPoint.v; const percentileRange = upperPoint.p - lowerPoint.p; if (valueRange > 0) { percentile += ((clampedValue - lowerPoint.v) / valueRange) * percentileRange; } return Math.max(0, Math.min(percentile, 100)); }
@@ -2125,5 +2136,3 @@
     </script>
 </body>
 </html>
-
-
