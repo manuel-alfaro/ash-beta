@@ -145,7 +145,7 @@
         }
         .sidebar-buttons { display: flex; flex-direction: column; gap: 12px; }
 
-        /* Sidebar Button Styling - Reverted to ensure desired appearance */
+        /* Sidebar Button Styling */
         .app-sidebar button, .app-sidebar a > button {
             font-family: 'Avenir', sans-serif;
             font-size: 0.9rem;
@@ -163,27 +163,26 @@
             width: 100%;
             text-align: left;
             display: flex;
-            align-items: center;
+            align-items: center; /* Key for vertical alignment */
             gap: 10px;
         }
 
         .app-sidebar button i, .app-sidebar a > button i {
             color: var(--app-primary-color);
             transition: color 0.3s ease;
-            font-size: 1em; /* Icon size relative to button font-size */
-            line-height: 1; /* Helps with vertical alignment */
-            width: 20px; /* Fixed width for icon container for consistent text indent */
-            text-align: center; /* Center icon within its container */
+            font-size: 1em; /* Icon size relative to button's font-size */
+            line-height: 1; /* Helps align icon with text */
+            width: 20px; /* Consistent width for icon area */
+            text-align: center; /* Center icon within its 20px area */
             flex-shrink: 0; /* Prevent icon from shrinking */
         }
          .app-sidebar button .button-text, .app-sidebar a > button .button-text {
-            line-height: 1; /* Consistent line height with icon */
-            flex-grow: 1; /* Allow text to take remaining space */
+            line-height: 1; /* Match icon's line-height for alignment */
+            flex-grow: 1;
         }
 
-
         .app-sidebar button:not(#logout-button):hover,
-        .app-sidebar a > button:not(#logout-button):hover {
+        .app-sidebar a > button:not(#logout-button):hover { /* Ensured a > button for specificity */
             background-image: linear-gradient(to right, var(--app-button-light-gradient-start), var(--app-button-light-gradient-end));
             color: var(--app-text-on-primary);
             transform: translateY(-1px);
@@ -210,10 +209,10 @@
             background-color: var(--app-primary-color);
             color: var(--app-text-on-primary);
         }
-        .app-sidebar button#logout-button i { /* Ensure default icon color for logout is primary */
+        .app-sidebar button#logout-button i {
              color: var(--app-primary-color);
         }
-        .app-sidebar button#logout-button:hover i { /* Icon color change on logout hover */
+        .app-sidebar button#logout-button:hover i {
             color: var(--app-text-on-primary);
         }
         .app-sidebar a { text-decoration: none; display: block; }
@@ -790,7 +789,7 @@
             display: block !important;
         }
         body.pdf-preview-active .position-row {
-            display: flex !important; /* Ensure graphs are in a flex row for PDF */
+            display: flex !important;
         }
 
          body.pdf-preview-active #results-title {
@@ -801,12 +800,12 @@
 
         body.pdf-preview-active .app-main-content {
             margin-left: 0 !important;
-            padding: 5mm !important; /* Narrower margins for PDF */
+            padding: 5mm !important;
             height: auto !important;
             overflow: visible !important;
         }
         body.pdf-preview-active .content-container {
-            max-width: 100% !important; /* Content uses full width within PDF margins */
+            max-width: 100% !important;
         }
 
         body.pdf-preview-active .explanation-box {
@@ -814,21 +813,21 @@
         }
         body.pdf-preview-active .position-row {
             flex-direction: row !important;
-            flex-wrap: wrap !important; /* Allow wrapping if not enough space */
+            flex-wrap: wrap !important;
             gap: 5mm !important;
             page-break-inside: avoid !important;
             width: 100% !important;
             box-sizing: border-box !important;
         }
          body.pdf-preview-active .asymmetry-graph-container {
-            flex: 6 1 200px !important; /* Attempt to maintain ratio, allow shrink/grow, base width */
-            min-width: 180px !important; /* Prevent too small graphs before wrapping */
-            margin-bottom: 5mm !important; /* Space if they stack */
+            flex: 6 1 0% !important; /* Grow by proportion, can shrink, start from 0 */
+            min-width: 180px !important;
+            margin-bottom: 5mm !important;
          }
          body.pdf-preview-active .normative-graph-container {
-            flex: 4 1 150px !important; /* Attempt to maintain ratio, allow shrink/grow, base width */
-            min-width: 140px !important; /* Prevent too small graphs before wrapping */
-            margin-bottom: 5mm !important; /* Space if they stack */
+            flex: 4 1 0% !important; /* Grow by proportion, can shrink, start from 0 */
+            min-width: 140px !important;
+            margin-bottom: 5mm !important;
          }
         body.pdf-preview-active .position-box,
         body.pdf-preview-active .normative-box {
@@ -1320,8 +1319,38 @@
         function mapNkgToPercentile(nkgValue, positionLabel) { const thresholds = normativeThresholds[positionLabel]; if (!thresholds || typeof nkgValue !== 'number' || !isFinite(nkgValue)) return 0; const pMap = [ { v: 0.5, p: 0 }, { v: thresholds.poor_max, p: percentileZones.poor }, { v: thresholds.average_mid, p: percentileMidpoint }, { v: thresholds.good_min, p: percentileZones.average }, { v: thresholds.excellent_min, p: percentileZones.good }, { v: thresholds.excellent_min * 1.25, p: percentileZones.excellent } ]; const minVal = pMap[0].v; const maxVal = pMap[pMap.length - 1].v; const clampedValue = Math.max(minVal, Math.min(nkgValue, maxVal)); let lowerPoint = pMap[0]; let upperPoint = pMap[pMap.length - 1]; for (let i = 0; i < pMap.length - 1; i++) { if (clampedValue === pMap[i].v) { lowerPoint = upperPoint = pMap[i]; break; } if (clampedValue > pMap[i].v && clampedValue <= pMap[i + 1].v) { lowerPoint = pMap[i]; upperPoint = pMap[i + 1]; break; } } if (clampedValue === upperPoint.v) { lowerPoint = upperPoint; } let percentile = lowerPoint.p; const valueRange = upperPoint.v - lowerPoint.v; const percentileRange = upperPoint.p - lowerPoint.p; if (valueRange > 0) { percentile += ((clampedValue - lowerPoint.v) / valueRange) * percentileRange; } return Math.max(0, Math.min(percentile, 100)); }
         function createNormativeComparisonChart(positionData, bodyweight, positionLabel) { const bwVal = parseFloat(bodyweight); if (isNaN(bwVal) || bwVal <= 0 || !positionData) return {}; const leftNkg = positionData.left.max_force / bwVal; const rightNkg = positionData.right.max_force / bwVal; const thresholds = normativeThresholds[positionLabel]; if (!thresholds) return {}; const leftPercentile = mapNkgToPercentile(leftNkg, positionLabel); const rightPercentile = mapNkgToPercentile(rightNkg, positionLabel); const baseCurveX = []; const baseCurveY = []; const mean = 55; const stdDev = 22; const amplitude = 0.9; for (let i = 0; i <= 100; i += 0.5) { baseCurveX.push(i); const y = amplitude * Math.exp(-Math.pow(i - mean, 2) / (2 * Math.pow(stdDev, 2))); baseCurveY.push(y); } const zoneBoundaries = [0, percentileZones.poor, percentileZones.average, percentileZones.good, percentileZones.excellent]; const traces = []; const zoneColorsList = [normZoneColors.poor, normZoneColors.average, normZoneColors.good, normZoneColors.excellent]; for (let i = 0; i < zoneBoundaries.length - 1; i++) { const x0 = zoneBoundaries[i]; const x1 = zoneBoundaries[i+1]; const zoneFillColor = zoneColorsList[i]; const segmentX = [x0]; const segmentY = [0]; for(let j=0; j < baseCurveX.length; j++) { if (baseCurveX[j] >= x0 && baseCurveX[j] <= x1) { segmentX.push(baseCurveX[j]); segmentY.push(baseCurveY[j]); } } segmentX.push(x1); segmentY.push(0); traces.push({ x: segmentX, y: segmentY, type: 'scatter', mode: 'lines', line: { width: 0 }, fill: 'tozeroy', fillcolor: zoneFillColor, hoverinfo: 'none', name: Object.keys(normativeLabels)[i], showlegend: false }); } traces.push({ x: baseCurveX, y: baseCurveY, type: 'scatter', mode: 'lines', line: { color: '#ffffff', width: 1.5, shape: 'spline' }, hoverinfo: 'none', name: 'Distribution (Visual)', showlegend: false }); const layout = { height: 250, margin: { t: 35, b: 95, l: 30, r: 30 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', xaxis: { title: '', range: [0, 100], showgrid: false, zeroline: false, showticklabels: false }, yaxis: { range: [0, 1.1], showgrid: false, zeroline: false, showticklabels: false, title: '' }, shapes: [], annotations: [], font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() }, showlegend: false }; const thresholdAnnotations = [ { p: percentileZones.poor, val: thresholds.poor_max }, { p: percentileZones.average, val: thresholds.good_min }, { p: percentileZones.good, val: thresholds.excellent_min } ]; thresholdAnnotations.forEach(t => { layout.annotations.push({ xref: 'x', yref: 'paper', x: t.p, y: -0.08, text: `<span class="norm-value">${t.val.toFixed(2)}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', font: { family: 'Avenir, sans-serif', size: 10, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim() } }); }); layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: percentileMidpoint, x1: percentileMidpoint, y0: 0, y1: 1, line: { color: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), width: 1.5, dash: 'dot' }, layer: 'below' }); const avgValueForPos = thresholds.average_mid.toFixed(2); layout.annotations.push({ xref: 'x', yref: 'paper', x: percentileMidpoint, y: -0.08, text: `<span class="value-display">${avgValueForPos}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', font: { family: 'Avenir, sans-serif', size: 10, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), weight: 400 } }); const labelYPosition = 1.10; layout.annotations.push({ xref: 'x', yref: 'paper', x: 15, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.poor}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 50, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.average}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() }, align: 'center' }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 80, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.good}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 95, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.excellent}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); const leftColor = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim(); const rightColor = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim(); const lineY0 = 0.05; const lineY1 = 0.95; layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: leftPercentile, x1: leftPercentile, y0: lineY0, y1: lineY1, line: { color: leftColor, width: 2, dash: 'dash' } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: leftPercentile, y: 0.90, text: 'L', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: leftColor, font: {color: leftColor, size: 14, family: 'Avenir, sans-serif', weight: 400} }); layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: rightPercentile, x1: rightPercentile, y0: lineY0, y1: lineY1, line: { color: rightColor, width: 2, dash: 'dash' } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: rightPercentile, y: 0.90, text: 'R', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: rightColor, font: {color: rightColor, size: 14, family: 'Avenir, sans-serif', weight: 400} }); const combinedNkgText = `<span class='nkg-combined-text'>Left: <span class='left-label'>${leftNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>) &nbsp;&nbsp;|&nbsp;&nbsp; Right: <span class='right-label'>${rightNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>)</span>`; layout.annotations.push({ xref: 'paper', yref: 'paper', x: 0.5, y: -0.30, text: combinedNkgText, showarrow: false, xanchor: 'center', yanchor: 'top', align: 'center', font: { size: 15, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), family: 'Avenir, sans-serif', weight: 400 } }); return { data: traces, layout }; }
         function updateGraphsAndTable() { const injuredSide = currentPatientDataForApp.injuredSide || (injuredSideRadio ? injuredSideRadio.value : 'Left'); const bodyweightValue = currentPatientDataForApp.bodyweight || (bodyweightInput ? bodyweightInput.value : ''); const bwVal = parseFloat(bodyweightValue); const bodyweightValid = !isNaN(bwVal) && bwVal > 0; if (normativePlaceholder) { normativePlaceholder.style.display = bodyweightValid ? 'none' : 'block'; } normativeChartDivs.forEach(divId => { const container = document.getElementById(divId)?.closest('.normative-graph-container'); if (container) { container.style.display = bodyweightValid ? 'block' : 'none'; } }); const positions = ['I', 'Y', 'T']; positions.forEach((pos, i) => { const asymmetryChartDivId = asymmetryChartDivs[i]; const asymmetryPositionBoxDivId = asymmetryPositionBoxDivs[i]; const asymmetryPositionBoxDiv = document.getElementById(asymmetryPositionBoxDivId); const normativeChartDivId = normativeChartDivs[i]; if (!asymmetryPositionBoxDiv || !document.getElementById(asymmetryChartDivId) || !document.getElementById(normativeChartDivId)) return; const positionData = processInputAndCalculate(pos); if (positionData) { try { const [fig, allGreen] = createAsymmetryChart(positionData, injuredSide, pos); if (fig?.data && fig?.layout) { Plotly.react(asymmetryChartDivId, fig.data, fig.layout, plotlyConfig); if (allGreen) asymmetryPositionBoxDiv.classList.add('green-box'); else asymmetryPositionBoxDiv.classList.remove('green-box'); } else { throw new Error("Generated asymmetry figure invalid."); } } catch (error) { console.error(`Error creating asymmetry chart for ${pos}:`, error); createEmptyPlot(asymmetryChartDivId, 'Error loading asymmetry data', 300, 20); asymmetryPositionBoxDiv.classList.remove('green-box'); } } else { createEmptyPlot(asymmetryChartDivId, 'Enter Data', 300, 20); asymmetryPositionBoxDiv.classList.remove('green-box'); } if (bodyweightValid && positionData) { try { const config = createNormativeComparisonChart(positionData, bodyweightValue, pos); if (config?.data && config?.layout) Plotly.react(normativeChartDivId, config.data, config.layout, plotlyConfig); else throw new Error("Generated normative figure invalid."); } catch (error) { console.error(`Error creating normative chart for ${pos}:`, error); createEmptyPlot(normativeChartDivId, 'Error Loading Data', 250, 35); } } else if (!bodyweightValid) { createEmptyPlot(normativeChartDivId, 'Enter Bodyweight', 250, 35); } else { createEmptyPlot(normativeChartDivId, 'Enter Data', 250, 35); } }); setTimeout(() => window.dispatchEvent(new Event('resize')), 100); }
-        function enterPreviewMode() { document.body.classList.add('pdf-preview-active'); if(previewExitButtonInline) previewExitButtonInline.style.display = 'inline-block'; if(explanationBox) explanationBox.style.display = 'block'; window.dispatchEvent(new Event('resize')); }
-        function exitPreviewMode() { document.body.classList.remove('pdf-preview-active'); if(previewExitButtonInline) previewExitButtonInline.style.display = 'none'; if(explanationBox) explanationBox.style.display = 'none'; window.dispatchEvent(new Event('resize')); }
+        function enterPreviewMode() {
+            document.body.classList.add('pdf-preview-active');
+            if(previewExitButtonInline) previewExitButtonInline.style.display = 'inline-block';
+            if(explanationBox) explanationBox.style.display = 'block';
+            // Explicitly resize Plotly charts for PDF mode
+            setTimeout(() => { // Delay to allow CSS to apply and containers to resize
+                asymmetryChartDivs.concat(normativeChartDivs).forEach(divId => {
+                    const gd = document.getElementById(divId);
+                    if (gd && gd.classList.contains('js-plotly-plot') && typeof gd.layout !== 'undefined') {
+                        try {
+                            Plotly.Plots.resize(gd);
+                        } catch (e) { console.warn("Error resizing plot for PDF preview:", divId, e); }
+                    }
+                });
+            }, 100); // 100ms delay might be enough
+        }
+
+        function exitPreviewMode() {
+            document.body.classList.remove('pdf-preview-active');
+            if(previewExitButtonInline) previewExitButtonInline.style.display = 'none';
+            if(explanationBox) explanationBox.style.display = 'none';
+             setTimeout(() => { // Delay to allow CSS to apply and containers to resize
+                asymmetryChartDivs.concat(normativeChartDivs).forEach(divId => {
+                    const gd = document.getElementById(divId);
+                     if (gd && gd.classList.contains('js-plotly-plot') && typeof gd.layout !== 'undefined') {
+                         try {
+                            Plotly.Plots.resize(gd);
+                        } catch (e) { console.warn("Error resizing plot on exiting PDF preview:", divId, e); }
+                    }
+                });
+            }, 100);
+        }
         function exportTableToCsv() { const fpNr = currentPatientDataForApp.patientId || ''; const age = currentPatientDataForApp.age || ''; const gender = currentPatientDataForApp.gender || ''; const sport = currentPatientDataForApp.sport || ''; const injuryValue = currentPatientDataForApp.injury || ''; const bodyweightValue = currentPatientDataForApp.bodyweight || ''; const injuredSide = currentPatientDataForApp.injuredSide || ''; const date = new Date(); const year = date.getFullYear(); const month = (date.getMonth() + 1).toString().padStart(2, '0'); const day = date.getDate().toString().padStart(2, '0'); const dateString = `${year}-${month}-${day}`; const safeFpNr = fpNr.replace(/[^a-z0-9]/gi, '_') || 'Unknown'; const filename = `ASH_${safeFpNr}_${dateString}.csv`; const headers = [ "Patient ID", "Age", "Gender", "Sport", "Injury", "Bodyweight (kg)", "Injured Side", "Position", "Metric", "Left Value", "Right Value" ]; let csv = [headers.join(',')]; const positions = ['I', 'Y', 'T']; const metricsForCsv = ['Max Force (N)', 'RFD 100ms (N/s)']; positions.forEach(pos => { const positionName = `ASH Test Position ${pos}`; const positionData = processInputAndCalculate(pos); metricsForCsv.forEach(metricDisplay => { let leftVal = ''; let rightVal = ''; let metricIdentifier = metricDisplay; if (metricDisplay === 'Max Force (N)') { if (positionData) { leftVal = positionData.left.max_force; rightVal = positionData.right.max_force; } } else if (metricDisplay === 'RFD 100ms (N/s)') { if (positionData) { leftVal = positionData.left.rfd; rightVal = positionData.right.rfd; } metricIdentifier = 'RFD 100ms (N/s)'; } const rowData = [ `"${fpNr}"`, `"${age}"`, `"${gender}"`, `"${sport}"`, `"${injuryValue}"`, `"${bodyweightValue}"`, `"${injuredSide}"`, `"${positionName}"`, `"${metricIdentifier}"`, `"${leftVal}"`, `"${rightVal}"` ]; csv.push(rowData.join(',')); }); }); const csvString = "\uFEFF" + csv.join('\n'); const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); if (link.download !== undefined) { const url = URL.createObjectURL(blob); link.setAttribute('href', url); link.setAttribute('download', filename); link.style.visibility = 'hidden'; document.body.appendChild(link); link.click(); document.body.removeChild(link); showStatusMessage("Data exported to CSV.", "success"); } else { alert("CSV export is not directly supported in this browser. Please try a modern browser."); } } // Translated messages
 
         function resetPatientDataForApp() {
@@ -2085,11 +2114,16 @@
         window.addEventListener('resize', () => {
             asymmetryChartDivs.concat(normativeChartDivs).forEach(divId => {
                 const gd = document.getElementById(divId);
-                if (gd && gd.classList.contains('js-plotly-plot')) { try { Plotly.Plots.resize(gd); } catch (e) { /* Ignore resize errors if plot not fully rendered */ } }
+                if (gd && gd.classList.contains('js-plotly-plot') && typeof gd.layout !== 'undefined') { // Check if plot has layout
+                     try {
+                        Plotly.Plots.resize(gd);
+                    } catch (e) { /* Ignore resize errors if plot not fully rendered */ }
+                }
             });
         });
 
     </script>
 </body>
 </html>
+
 
