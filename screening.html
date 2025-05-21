@@ -791,7 +791,7 @@
         body.pdf-preview-active .position-row {
             display: flex !important;
             flex-wrap: nowrap !important; /* Force side-by-side for PDF */
-            gap: 5mm !important; /* Maintain gap for PDF */
+            gap: 5mm !important;
         }
 
          body.pdf-preview-active #results-title {
@@ -819,8 +819,9 @@
             width: 100% !important;
             box-sizing: border-box !important;
         }
+        /* MODIFIED: PDF Graph Sizing - Asymmetry Graph Container */
          body.pdf-preview-active .asymmetry-graph-container{
-            width: 567px !important; /* Approx 15cm (1cm ~ 37.8px) */
+            width: 567px !important; /* Approx 15cm (1cm ~ 37.8px at 96dpi) */
             max-width: 567px !important;
             height: 189px !important; /* Approx 5cm */
             min-height: 189px !important;
@@ -829,6 +830,7 @@
             flex-grow: 0 !important;
             flex-shrink: 0 !important;
          }
+         /* MODIFIED: PDF Graph Sizing - Normative Graph Container */
          body.pdf-preview-active .normative-graph-container {
             width: 265px !important; /* Approx 7cm */
             max-width: 265px !important;
@@ -841,16 +843,16 @@
          }
         body.pdf-preview-active .position-box,
         body.pdf-preview-active .normative-box {
-            height: 100% !important;
+            height: 100% !important; /* Fill the container's fixed height */
             min-height: 100% !important;
-            width: 100% !important;
+            width: 100% !important; /* Fill the container's fixed width */
             box-sizing: border-box !important;
             display: flex !important;
             flex-direction: column !important;
-            overflow: hidden !important;
-            padding: 5px !important; /* Minimal padding for graph box in PDF */
-            border: 1px solid #ccc !important; /* Add border for PDF */
-            background-color: var(--white) !important; /* Ensure white background for PDF */
+            overflow: hidden !important; /* Clip overflowing graph content */
+            padding: 5px !important;
+            border: 1px solid #ccc !important;
+            background-color: var(--white) !important;
         }
         body.pdf-preview-active .js-plotly-plot {
             width: 100% !important;
@@ -982,7 +984,7 @@
             }
              .position-row {
                 display: flex !important;
-                flex-wrap: nowrap !important; /* Try to keep side-by-side */
+                flex-wrap: wrap !important; /* Allow wrapping for print if fixed widths don't fit */
             }
             #results-title {
                  margin-top: 5mm !important;
@@ -1001,9 +1003,9 @@
             #report-content { padding: 0 !important; }
 
             .asymmetry-graph-container {
-                width: 567px !important; /* Approx 15cm (15 * 37.8px/cm) */
+                width: 567px !important; /* Approx 15cm */
                 max-width: 567px !important;
-                height: 189px !important; /* Approx 5cm (5 * 37.8px/cm) */
+                height: 189px !important; /* Approx 5cm */
                 min-height: 189px !important;
                 margin-bottom: 5mm !important;
                 page-break-inside: avoid !important;
@@ -1011,8 +1013,8 @@
                 flex-shrink: 0 !important;
             }
             .normative-graph-container {
-                width: 189px !important; /* Approx 5cm for normative graph width */
-                max-width: 189px !important;
+                width: 265px !important; /* Approx 7cm */
+                max-width: 265px !important;
                 height: 189px !important; /* Approx 5cm */
                 min-height: 189px !important;
                 margin-bottom: 5mm !important;
