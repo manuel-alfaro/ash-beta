@@ -790,7 +790,8 @@
         }
         body.pdf-preview-active .position-row {
             display: flex !important;
-            flex-wrap: nowrap !important; /* MODIFIED: Force side-by-side for PDF */
+            flex-wrap: nowrap !important; /* Force side-by-side for PDF */
+            gap: 5mm !important; /* Maintain gap for PDF */
         }
 
          body.pdf-preview-active #results-title {
@@ -814,40 +815,42 @@
         }
         body.pdf-preview-active .position-row {
             flex-direction: row !important;
-            gap: 5mm !important;
             page-break-inside: avoid !important;
             width: 100% !important;
             box-sizing: border-box !important;
         }
          body.pdf-preview-active .asymmetry-graph-container{
-            width: 567px !important; /* Approx 15cm (15 * 37.8px/cm) */
+            width: 567px !important; /* Approx 15cm (1cm ~ 37.8px) */
             max-width: 567px !important;
-            height: 189px !important; /* Approx 5cm (5 * 37.8px/cm) */
+            height: 189px !important; /* Approx 5cm */
             min-height: 189px !important;
-            margin-bottom: 0 !important; /* Removed bottom margin when side-by-side */
+            margin-bottom: 0 !important;
             page-break-inside: avoid !important;
             flex-grow: 0 !important;
             flex-shrink: 0 !important;
          }
          body.pdf-preview-active .normative-graph-container {
-            width: 265px !important; /* Approx 7cm (7 * 37.8px/cm) */
+            width: 265px !important; /* Approx 7cm */
             max-width: 265px !important;
             height: 189px !important; /* Approx 5cm */
             min-height: 189px !important;
-            margin-bottom: 0 !important; /* Removed bottom margin when side-by-side */
+            margin-bottom: 0 !important;
             page-break-inside: avoid !important;
             flex-grow: 0 !important;
             flex-shrink: 0 !important;
          }
         body.pdf-preview-active .position-box,
         body.pdf-preview-active .normative-box {
-            height: 100% !important; /* Fill the container's fixed height */
+            height: 100% !important;
             min-height: 100% !important;
-            width: 100% !important; /* Fill the container's fixed width */
+            width: 100% !important;
             box-sizing: border-box !important;
             display: flex !important;
             flex-direction: column !important;
-            overflow: hidden !important; /* Clip overflowing graph content */
+            overflow: hidden !important;
+            padding: 5px !important; /* Minimal padding for graph box in PDF */
+            border: 1px solid #ccc !important; /* Add border for PDF */
+            background-color: var(--white) !important; /* Ensure white background for PDF */
         }
         body.pdf-preview-active .js-plotly-plot {
             width: 100% !important;
@@ -894,14 +897,14 @@
             body.pdf-preview-active .app-main-content { padding: 15px 30px; }
             body.pdf-preview-active .position-row {
                 align-items: stretch;
-                flex-wrap: wrap; /* Allow wrapping for PDF on smaller screens */
+                flex-wrap: wrap;
             }
             body.pdf-preview-active .asymmetry-graph-container,
             body.pdf-preview-active .normative-graph-container {
-                flex-basis: 100% !important; /* Stack graphs in PDF on smaller viewports */
+                flex-basis: 100% !important;
                 width: 100% !important;
                 max-width: 100% !important;
-                height: auto !important; /* Adjust height when stacked */
+                height: auto !important;
                 min-height: unset !important;
             }
             body.pdf-preview-active .position-box, body.pdf-preview-active .normative-box { height: auto; min-height: unset; }
