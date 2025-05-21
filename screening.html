@@ -145,6 +145,81 @@
         }
         .sidebar-buttons { display: flex; flex-direction: column; gap: 12px; }
 
+        /* Sidebar Button Styling - Reverted to ensure desired appearance */
+        .app-sidebar button, .app-sidebar a > button {
+            font-family: 'Avenir', sans-serif;
+            font-size: 0.9rem;
+            font-weight: var(--normal-font-weight);
+            padding: 10px 15px;
+            color: var(--app-primary-color);
+            background-color: transparent;
+            background-image: none;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: none;
+            letter-spacing: 0.5px;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .app-sidebar button i, .app-sidebar a > button i {
+            color: var(--app-primary-color);
+            transition: color 0.3s ease;
+            font-size: 1em; /* Icon size relative to button font-size */
+            line-height: 1; /* Helps with vertical alignment */
+            width: 20px; /* Fixed width for icon container for consistent text indent */
+            text-align: center; /* Center icon within its container */
+            flex-shrink: 0; /* Prevent icon from shrinking */
+        }
+         .app-sidebar button .button-text, .app-sidebar a > button .button-text {
+            line-height: 1; /* Consistent line height with icon */
+            flex-grow: 1; /* Allow text to take remaining space */
+        }
+
+
+        .app-sidebar button:not(#logout-button):hover,
+        .app-sidebar a > button:not(#logout-button):hover {
+            background-image: linear-gradient(to right, var(--app-button-light-gradient-start), var(--app-button-light-gradient-end));
+            color: var(--app-text-on-primary);
+            transform: translateY(-1px);
+            border-color: transparent;
+        }
+
+        .app-sidebar button:not(#logout-button):hover i,
+        .app-sidebar a > button:not(#logout-button):hover i {
+            color: var(--app-text-on-primary);
+        }
+
+        .app-sidebar button:active, .app-sidebar a > button:active {
+            transform: translateY(0px);
+        }
+
+        .app-sidebar button#logout-button {
+            margin-top: 10px;
+            background-image: none;
+            background-color: transparent;
+            color: var(--app-primary-color);
+            border: 1px solid var(--app-primary-color);
+        }
+        .app-sidebar button#logout-button:hover {
+            background-color: var(--app-primary-color);
+            color: var(--app-text-on-primary);
+        }
+        .app-sidebar button#logout-button i { /* Ensure default icon color for logout is primary */
+             color: var(--app-primary-color);
+        }
+        .app-sidebar button#logout-button:hover i { /* Icon color change on logout hover */
+            color: var(--app-text-on-primary);
+        }
+        .app-sidebar a { text-decoration: none; display: block; }
+        /* End of Sidebar Button Styling */
+
+
         .sidebar-user-info {
             margin-top: auto;
             padding: 15px 10px;
@@ -189,7 +264,7 @@
             box-sizing: border-box;
         }
         .content-container {
-            max-width: 1100px; /* Reverted to 1100px for wider main view */
+            max-width: 1100px;
             margin: 0 auto;
         }
         h1, h2, h3 { font-family: 'Avenir', sans-serif; margin-bottom: 0.75em; font-weight: var(--normal-font-weight); }
@@ -702,7 +777,7 @@
         body.pdf-preview-active .sidebar-buttons,
         body.pdf-preview-active #patient-details-title,
         body.pdf-preview-active #input-title,
-        body.pdf-preview-active #selected-patient-tests-container /* Hide test log for PDF */
+        body.pdf-preview-active #selected-patient-tests-container
         {
             display: none !important;
         }
@@ -715,23 +790,23 @@
             display: block !important;
         }
         body.pdf-preview-active .position-row {
-            display: flex !important;
+            display: flex !important; /* Ensure graphs are in a flex row for PDF */
         }
 
          body.pdf-preview-active #results-title {
-            margin-top: 5mm !important; /* MODIFIED: Reduced top margin for PDF */
+            margin-top: 5mm !important;
             text-align: center !important;
          }
 
 
         body.pdf-preview-active .app-main-content {
             margin-left: 0 !important;
-            padding: 5mm !important;
+            padding: 5mm !important; /* Narrower margins for PDF */
             height: auto !important;
             overflow: visible !important;
         }
         body.pdf-preview-active .content-container {
-            max-width: 100% !important;
+            max-width: 100% !important; /* Content uses full width within PDF margins */
         }
 
         body.pdf-preview-active .explanation-box {
@@ -739,31 +814,35 @@
         }
         body.pdf-preview-active .position-row {
             flex-direction: row !important;
-            flex-wrap: wrap !important;
-            gap: 5mm;
+            flex-wrap: wrap !important; /* Allow wrapping if not enough space */
+            gap: 5mm !important;
             page-break-inside: avoid !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
         }
          body.pdf-preview-active .asymmetry-graph-container {
-            flex: 6 1 0% !important; /* MODIFIED: Attempt to match main view proportions */
-            min-width: 200px !important;
-            margin-bottom: 5mm !important;
+            flex: 6 1 200px !important; /* Attempt to maintain ratio, allow shrink/grow, base width */
+            min-width: 180px !important; /* Prevent too small graphs before wrapping */
+            margin-bottom: 5mm !important; /* Space if they stack */
          }
          body.pdf-preview-active .normative-graph-container {
-            flex: 4 1 0% !important; /* MODIFIED: Attempt to match main view proportions */
-            min-width: 150px !important;
-            margin-bottom: 5mm !important;
+            flex: 4 1 150px !important; /* Attempt to maintain ratio, allow shrink/grow, base width */
+            min-width: 140px !important; /* Prevent too small graphs before wrapping */
+            margin-bottom: 5mm !important; /* Space if they stack */
          }
         body.pdf-preview-active .position-box,
         body.pdf-preview-active .normative-box {
             height: var(--graph-box-height) !important;
             min-height: var(--graph-box-height) !important;
-            width: 100%; /* Ensure boxes fill their flex containers */
-            box-sizing: border-box;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            display: flex !important;
+            flex-direction: column !important;
         }
-        /* Ensure plotly plots fill their containers in PDF */
         body.pdf-preview-active .js-plotly-plot {
             width: 100% !important;
             height: 100% !important;
+            flex-grow: 1 !important;
         }
 
 
@@ -779,8 +858,8 @@
             .app-main-content { margin-left: calc(var(--sidebar-width) + var(--main-content-margin)); padding: 25px 30px; }
             .app-sidebar { padding: 20px 10px; top: 0; height: 100vh; }
             .app-sidebar .button-text { display: none; }
-            .app-sidebar button, .app-sidebar a button { justify-content: center; padding: 10px 0; gap: 0; font-size: 0.85rem; }
-            .app-sidebar button i { width: auto; margin: 0; }
+            .app-sidebar button, .app-sidebar a > button { justify-content: center; padding: 10px 0; gap: 0; font-size: 0.85rem; }
+            .app-sidebar button i, .app-sidebar a > button i { width: auto; margin: 0; } /* Icon takes auto width in collapsed */
             .sidebar-social-links { display: none; }
 
             #patient-overview-section {
@@ -810,9 +889,9 @@
             .app-layout { flex-direction: column; min-height: 100vh; }
             .app-sidebar { width: 100%; height: auto; position: relative; top: 0; flex-direction: row; flex-wrap: wrap; justify-content: center; padding: 10px; border-bottom: 1px solid var(--sidebar-border-color); border-right: none; z-index: 5; overflow-y: visible; }
             .sidebar-buttons { flex-direction: row; flex-wrap: wrap; justify-content: center; width: 100%; flex-grow: 0; }
-            .app-sidebar button, .app-sidebar a button { width: auto; flex-grow: 1; max-width: 180px; justify-content: flex-start; font-size: 0.85rem; font-weight: var(--normal-font-weight); padding: 8px 10px; margin: 5px; gap: 8px; }
+            .app-sidebar button, .app-sidebar a > button { width: auto; flex-grow: 1; max-width: 180px; justify-content: flex-start; font-size: 0.85rem; font-weight: var(--normal-font-weight); padding: 8px 10px; margin: 5px; gap: 8px; }
             .app-sidebar .button-text { display: inline-block; }
-            .app-sidebar button i { width: auto; margin-right: 5px; }
+            .app-sidebar button i, .app-sidebar a > button i { width: auto; margin-right: 5px; } /* Icon with margin when text is visible */
             .sidebar-social-links { display: block; width: 100%; margin-top: 10px; padding-top: 0; border-top: none; text-align: center; }
             .sidebar-social-links a { margin: 0 10px; font-size: 1.1rem; }
             .app-main-content { margin-left: 0; padding: 20px 15px; height: auto; }
@@ -841,7 +920,7 @@
         @media (max-width: 480px) { /* Extra small devices (phones) */
             h1 { font-size: 1.4rem; font-weight: var(--normal-font-weight);}
             h2 { font-size: 1.1rem; font-weight: var(--normal-font-weight);}
-            .app-sidebar button, .app-sidebar a button { font-size: 0.8rem; padding: 6px 8px; max-width: 150px; font-weight: var(--normal-font-weight);}
+            .app-sidebar button, .app-sidebar a > button { font-size: 0.8rem; padding: 6px 8px; max-width: 150px; font-weight: var(--normal-font-weight);}
         }
 
         /* Print-specific styles */
@@ -2013,3 +2092,4 @@
     </script>
 </body>
 </html>
+
