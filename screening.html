@@ -848,7 +848,7 @@
          body.pdf-preview-active .position-row {
             display: flex !important;
             flex-wrap: wrap !important; 
-            gap: 10px !important; 
+            gap: 20px !important; 
         }
 
          body.pdf-preview-active #results-title {
@@ -901,6 +901,8 @@
             display: flex !important;
             flex-direction: column !important;
             width: 100% !important;
+            box-sizing: border-box !important; /* <-- LEGG TIL DENNE LINJEN */
+        
         }
         body.pdf-preview-active .position-box.green-box {
              box-shadow: 0 0 15px 5px var(--success-shadow-color) !important; 
