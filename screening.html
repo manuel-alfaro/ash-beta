@@ -477,8 +477,8 @@
             gap: 10px;
             margin-top: 15px;
             margin-bottom: 20px;
-            max-height: 200px;
-            overflow-y: auto;
+            height: 150px; /* Fixed height for the button container */
+            overflow-y: auto; /* Enable scrolling if content exceeds height */
             padding: 5px;
             border: none;
             border-radius: var(--border-radius);
@@ -554,7 +554,7 @@
         }
         .patient-profile-title-internal .action-buttons {
             display: flex;
-            gap: 5px; /* Space between edit and delete buttons */
+            gap: 15px; /* Increased space between edit and delete buttons */
         }
         .edit-profile-button, .delete-patient-btn {
             background-color: transparent; /* Changed to transparent */
@@ -578,10 +578,10 @@
             color: inherit; /* Inherit color from button */
         }
         .delete-patient-btn {
-            color: var(--danger-color-dark); /* Red color for delete button */
+            color: var(--app-primary-color); /* Changed to blue color for delete button */
         }
         .delete-patient-btn:hover {
-            color: #b91c1c; /* Darker red on hover */
+            color: var(--app-secondary-color); /* Darker blue on hover */
         }
 
         .patient-card-header {
@@ -1571,10 +1571,7 @@
             confirmationModalMessage.textContent = message;
             confirmationModalOverlay.style.display = 'flex';
 
-            // Remove previous listeners to prevent multiple calls
-            confirmationConfirmBtn.removeEventListener('click', handleConfirmClick);
-            confirmationCancelBtn.removeEventListener('click', handleCancelClick);
-
+            // Define handlers before attaching
             const handleConfirmClick = () => {
                 onConfirmCallback();
                 confirmationModalOverlay.style.display = 'none';
@@ -1587,6 +1584,10 @@
                 confirmationConfirmBtn.removeEventListener('click', handleConfirmClick);
                 confirmationCancelBtn.removeEventListener('click', handleCancelClick);
             };
+
+            // Remove previous listeners to prevent multiple calls
+            confirmationConfirmBtn.removeEventListener('click', handleConfirmClick);
+            confirmationCancelBtn.removeEventListener('click', handleCancelClick);
 
             confirmationConfirmBtn.addEventListener('click', handleConfirmClick);
             confirmationCancelBtn.addEventListener('click', handleCancelClick);
@@ -1622,13 +1623,7 @@
                 modalHTML = `
                     <h3>Select Existing Patient</h3>
                     <div class="modal-form-item">
-                        <label for="modal-browse-patient-select">Browse Patients:</label>
-                        <select id="modal-browse-patient-select">
-                            <option value="">-- Select Patient ID --</option>
-                        </select>
-                    </div>
-                    <div class="modal-form-item">
-                        <label for="modal-search-fp-nr">Filter Patient IDs:</label>
+                        <label for="modal-search-fp-nr">Select Patient:</label>
                         <input type="text" id="modal-search-fp-nr">
                     </div>
                     <div class="modal-patient-id-buttons" id="modal-patient-id-button-container">
@@ -1691,23 +1686,9 @@
                 patientModalContent.querySelector('#modal-confirm-new')?.addEventListener('click', handleNewPatientConfirm);
                 patientModalContent.querySelector('#modal-cancel-new')?.addEventListener('click', closePatientModal);
             } else if (type === 'existing-search') {
-                await populateModalPatientSelectors(); // Populate both select and initial buttons
-                const modalBrowseSelect = patientModalContent.querySelector('#modal-browse-patient-select');
+                await populateModalPatientButtons(); // Populate initial buttons
                 const modalSearchInput = patientModalContent.querySelector('#modal-search-fp-nr');
                 
-                if (modalBrowseSelect) {
-                    modalBrowseSelect.addEventListener('change', (e) => {
-                        const selectedId = e.target.value;
-                        if (selectedId) {
-                            modalSearchInput.value = selectedId;
-                            filterModalPatientButtons(selectedId);
-                        } else {
-                            modalSearchInput.value = '';
-                            filterModalPatientButtons('');
-                        }
-                    });
-                }
-
                 if (modalSearchInput) {
                     modalSearchInput.addEventListener('input', (e) => {
                         filterModalPatientButtons(e.target.value.trim());
@@ -1728,15 +1709,12 @@
             patientModalContent.innerHTML = '';
         }
 
-        async function populateModalPatientSelectors() {
-            const browseSelect = document.getElementById('modal-browse-patient-select');
+        async function populateModalPatientButtons() {
             const container = document.getElementById('modal-patient-id-button-container');
 
-            if (!container || !browseSelect || !currentUserId) return;
+            if (!container || !currentUserId) return;
 
-            // Clear existing options and buttons
-            browseSelect.innerHTML = '<option value="">-- Select Patient ID --</option>';
-            container.innerHTML = '';
+            container.innerHTML = ''; // Clear existing buttons
 
             if (allPatientIds.length === 0) { // Fetch only if not already fetched
                 const patientsCollectionRef = collection(db, "users", currentUserId, "patients");
@@ -1752,14 +1730,6 @@
                     return;
                 }
             }
-
-            // Populate the select dropdown
-            allPatientIds.forEach(patientId => {
-                const option = document.createElement('option');
-                option.value = patientId;
-                option.textContent = patientId;
-                browseSelect.appendChild(option);
-            });
 
             // Initially populate buttons with all IDs
             filterModalPatientButtons(''); // Show all buttons initially
@@ -2091,7 +2061,7 @@
                     deleteButton.addEventListener('click', (e) => {
                         e.stopPropagation();
                         showConfirmationModal(
-                            `Are you sure you want to delete the test for patient "${patientId}" from ${formattedDate}? This action cannot be undone.`,
+                            `Are you sure you want to delete the test for patient "${patientId}" from ${dateSpan.textContent}? This action cannot be undone.`,
                             async () => {
                                 await deleteScreeningFromFirestore(patientId, screeningDocId, screeningTimestampDate || new Date());
                             }
