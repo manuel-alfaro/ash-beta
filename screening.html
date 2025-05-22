@@ -815,7 +815,7 @@
 
         /* PDF Preview / Print Mode Active */
         body.pdf-preview-active {
-            --graph-box-height: 220px !important; /* Significantly reduced height for PDF */
+            --graph-box-height: 340px !important; /* Matched to main view box height */
         }
         body.pdf-preview-active .app-sidebar,
         body.pdf-preview-active #patient-choice-section,
@@ -859,7 +859,7 @@
 
         body.pdf-preview-active .app-main-content {
             margin-left: 0 !important;
-            padding: 5mm 50mm !important;
+            padding: 5mm 65mm !important; /* MODIFIED: Was 50mm, changed to 65mm for narrower content */
             height: auto !important;
             overflow: visible !important;
             box-shadow: none !important; 
@@ -905,7 +905,7 @@
         body.pdf-preview-active .position-box.green-box {
              box-shadow: 0 0 15px 5px var(--success-shadow-color) !important; 
         }
-        
+        /* body.pdf-preview-active .position-box::after { display: none !important; } */ 
 
 
         .js-plotly-plot { width: 100% !important; height: 100% !important; flex-grow: 1 !important; }
@@ -1186,9 +1186,9 @@
         };
 
         const percentileZones = {
-            poor: 30,      
-            average: 70,   
-            good: 90,      
+            poor: 30,   
+            average: 70,  
+            good: 90,    
             excellent: 100 
         };
         const percentileMidpoint = 50; 
@@ -1367,7 +1367,7 @@
             const yAxisUpperBound = annotationYTop + 15;
 
             const isPdfPreview = document.body.classList.contains('pdf-preview-active');
-            const plotHeight = isPdfPreview ? 180 : 300; // Adjusted PDF plot height
+            const plotHeight = isPdfPreview ? 260 : 300; // Adjusted PDF height
 
             const fig = {
                 data: [
@@ -1444,9 +1444,9 @@
 
             const pMap = [
                 { v: 0, p: 0 }, 
-                { v: thresholds.poor_max, p: percentileZones.poor },         
-                { v: thresholds.average_mid, p: percentileMidpoint },       
-                { v: thresholds.good_min, p: percentileZones.average },     
+                { v: thresholds.poor_max, p: percentileZones.poor },        
+                { v: thresholds.average_mid, p: percentileMidpoint },      
+                { v: thresholds.good_min, p: percentileZones.average },    
                 { v: thresholds.excellent_min, p: percentileZones.good },   
                 { v: thresholds.excellent_min * 1.25, p: percentileZones.excellent } 
             ];
@@ -1530,7 +1530,7 @@
             traces.push({ x: baseCurveX, y: baseCurveY, type: 'scatter', mode: 'lines', line: { color: '#ffffff', width: 1.5, shape: 'spline' }, hoverinfo: 'none', name: 'Distribution (Visual)', showlegend: false });
             
             const isPdfPreview = document.body.classList.contains('pdf-preview-active');
-            const plotHeight = isPdfPreview ? 180 : 250; // Adjusted PDF plot height
+            const plotHeight = isPdfPreview ? 260 : 250; // Adjusted PDF height
 
             const layout = {
                 height: plotHeight,
