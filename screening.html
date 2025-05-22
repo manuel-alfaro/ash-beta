@@ -210,7 +210,7 @@
             color: var(--app-text-on-primary);
         }
         .app-sidebar button#logout-button i {
-             color: var(--app-primary-color);
+            color: var(--app-primary-color);
         }
         .app-sidebar button#logout-button:hover i {
             color: var(--app-text-on-primary);
@@ -319,20 +319,6 @@
         .choice-box.active-choice i,
         .choice-box.active-choice span {
             color: white;
-        }
-
-        .choice-box i {
-            font-size: 2.2rem;
-            color: var(--app-primary-color);
-            margin-bottom: 10px;
-            display: block;
-            transition: color 0.2s ease;
-        }
-        .choice-box span {
-            font-size: 1rem;
-            color: var(--text-color);
-            font-weight: var(--semibold-font-weight);
-            transition: color 0.2s ease;
         }
 
         #existing-patient-search-container {
@@ -496,6 +482,10 @@
             border-radius: var(--border-radius);
             cursor: pointer;
             transition: all 0.2s ease;
+            flex-basis: 150px; /* Added for better wrapping */
+            flex-grow: 1; /* Allow to grow but prefer 150px */
+            max-width: 180px; /* Max width for individual buttons */
+            text-align: center;
         }
         .modal-patient-id-button:hover {
             background-color: var(--app-secondary-color);
@@ -548,7 +538,33 @@
             padding-bottom: 5px;
             margin-top:0;
             border-bottom: 1px solid var(--medium-gray);
+            position: relative; /* ADDED: To contain the absolutely positioned edit button */
         }
+        .edit-profile-button {
+            position: absolute;
+            top: 0; /* Adjust as needed */
+            right: 0; /* Adjust as needed */
+            background-color: var(--app-primary-color);
+            color: var(--app-text-on-primary);
+            border: none;
+            padding: 6px 12px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: var(--subtle-shadow);
+        }
+        .edit-profile-button:hover {
+            background-color: var(--app-secondary-color);
+            color: var(--app-primary-color);
+        }
+        .edit-profile-button i {
+            color: inherit; /* Inherit color from button */
+        }
+
         .patient-card-header {
             display: flex;
             align-items: center;
@@ -789,7 +805,7 @@
         {
             display: block !important;
         }
-        body.pdf-preview-active .position-row {
+         body.pdf-preview-active .position-row {
             display: flex !important;
             flex-wrap: wrap !important; /* Allow wrapping */
             gap: 10px !important; /* Keep a small gap */
@@ -798,7 +814,7 @@
          body.pdf-preview-active #results-title {
             margin-top: 5mm !important;
             text-align: center !important;
-         }
+           }
 
 
         body.pdf-preview-active .app-main-content {
@@ -806,6 +822,8 @@
             padding: 5mm 50mm !important;
             height: auto !important;
             overflow: visible !important;
+            box-shadow: none !important; /* Ensure no box-shadow in print */
+            border: none !important; /* Ensure no border in print */
         }
         body.pdf-preview-active .content-container {
             max-width: 100% !important;
@@ -826,12 +844,12 @@
             min-width: 0 !important; /* Allow flex to control size, will be overridden by flex-basis if needed */
             margin-bottom: 5mm !important;
             page-break-inside: avoid !important;
-         }
+           }
          body.pdf-preview-active .normative-graph-container {
             flex: 4 !important; /* Inherit from main view */
             min-width: 0 !important; /* Allow flex to control size */
             margin-bottom: 5mm !important;
-         }
+           }
         body.pdf-preview-active .position-box,
         body.pdf-preview-active .normative-box {
             height: var(--graph-box-height) !important; /* Maintain height from main view */
@@ -978,8 +996,8 @@
                 flex-wrap: wrap !important; /* Allow wrapping for print if fixed widths don't fit */
             }
             #results-title {
-                 margin-top: 5mm !important;
-                 text-align: center !important;
+                margin-top: 5mm !important;
+                text-align: center !important;
             }
 
 
@@ -1092,7 +1110,11 @@
                         <div id="patient-overview-section">
                             <div class="overview-column patient-details-column">
                                 <div id="patient-identity-card" class="patient-card" style="display: none;">
-                                    <h3 class="patient-profile-title-internal">Patient Profile</h3>
+                                    <h3 class="patient-profile-title-internal">Patient Profile
+                                        <button id="edit-patient-profile-btn" class="edit-profile-button">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                    </h3>
                                     <div class="patient-card-header">
                                         <i class="fas fa-address-card patient-card-icon"></i>
                                         <div class="patient-card-id-container">
@@ -1112,7 +1134,7 @@
                             </div>
                             <div class="overview-column test-log-column">
                                 <div id="selected-patient-tests-container" style="display: none;">
-                                     <h3 class="test-log-title-internal">Test Log</h3>
+                                       <h3 class="test-log-title-internal">Test Log</h3>
                                     <ul id="selected-patient-tests-list">
                                     </ul>
                                 </div>
@@ -1134,25 +1156,25 @@
                         <div class="position-row"> <div class="asymmetry-graph-container"> <div id="position-box-T" class="position-box"> <h3 class="position-title">Position T - Asymmetry</h3> <div id="bar-chart-T" class="js-plotly-plot"></div> </div> </div> <div class="normative-graph-container"> <div id="normative-chart-container-T" class="normative-box"> <h3 class="normative-title">Position T - Normative Comparison</h3> <div id="normative-chart-T" class="js-plotly-plot"></div> </div> </div> </div>
                         <div id="normative-placeholder" style="display: none;"> Enter bodyweight to see normative comparisons. </div>
                         <div id="bottom-area"></div>
-                         <div id="patient-data-container" style="display:none;">
-                            <div id="patient-id-and-secondary-controls">
-                                    <div class="patient-id-standalone-item">
-                                        <label for="fp-nr-input">Patient ID (Internal):</label>
-                                        <input id="fp-nr-input" type="text">
-                                        <datalist id="existing-patient-ids"></datalist>
+                           <div id="patient-data-container" style="display:none;">
+                               <div id="patient-id-and-secondary-controls">
+                                        <div class="patient-id-standalone-item">
+                                            <label for="fp-nr-input">Patient ID (Internal):</label>
+                                            <input id="fp-nr-input" type="text">
+                                            <datalist id="existing-patient-ids"></datalist>
+                                        </div>
+                                        <div id="patient-data-secondary-controls">
+                                            <div class="control-item"><label class="control-label" for="injured-side-radio">Injured Side:</label><select id="injured-side-radio"><option value="Left">Left</option><option value="Right">Right</option></select></div>
+                                            <div class="control-item"><label class="control-label" for="bodyweight-input">Bodyweight (kg):</label><input id="bodyweight-input" type="number"></div>
+                                        </div>
                                     </div>
-                                    <div id="patient-data-secondary-controls">
-                                        <div class="control-item"><label class="control-label" for="injured-side-radio">Injured Side:</label><select id="injured-side-radio"><option value="Left">Left</option><option value="Right">Right</option></select></div>
-                                        <div class="control-item"><label class="control-label" for="bodyweight-input">Bodyweight (kg):</label><input id="bodyweight-input" type="number"></div>
+                                    <div id="patient-data-grid">
+                                        <div class="patient-data-item"><label for="age-input">Age:</label><input id="age-input" type="number"></div>
+                                        <div class="patient-data-item"><label for="gender-select">Gender:</label><select id="gender-select"><option value="">Select...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option><option value="Prefer not to say">Prefer not to say</option></select></div>
+                                        <div class="patient-data-item"><label for="sport-input">Sport:</label><input id="sport-input" type="text"></div>
+                                        <div class="patient-data-item"><label for="injury-input">Injury (Optional):</label><input id="injury-input" type="text"></div>
                                     </div>
-                                </div>
-                                <div id="patient-data-grid">
-                                    <div class="patient-data-item"><label for="age-input">Age:</label><input id="age-input" type="number"></div>
-                                    <div class="patient-data-item"><label for="gender-select">Gender:</label><select id="gender-select"><option value="">Select...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option><option value="Prefer not to say">Prefer not to say</option></select></div>
-                                    <div class="patient-data-item"><label for="sport-input">Sport:</label><input id="sport-input" type="text"></div>
-                                    <div class="patient-data-item"><label for="injury-input">Injury (Optional):</label><input id="injury-input" type="text"></div>
-                                </div>
-                        </div>
+                           </div>
                     </div>
                 </div>
             </div>
@@ -1226,6 +1248,8 @@
         const displayBodyweightCard = document.getElementById('display-bodyweight-card');
         const selectedPatientTestsContainer = document.getElementById('selected-patient-tests-container');
         const selectedPatientTestsListUL = document.getElementById('selected-patient-tests-list');
+        const editPatientProfileButton = document.getElementById('edit-patient-profile-btn');
+
 
         const plotlyConfig = { responsive: true, displaylogo: false, modeBarButtonsToRemove: ['sendDataToCloud', 'lasso2d', 'select2d', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'toggleSpikelines'] };
         const normativeThresholds = { I: { poor_max: 1.0, average_mid: 1.5, good_min: 2.0, excellent_min: 2.5 }, Y: { poor_max: 0.8, average_mid: 1.2, good_min: 1.6, excellent_min: 2.0 }, T: { poor_max: 1.2, average_mid: 1.8, good_min: 2.4, excellent_min: 3.0 } };
@@ -1320,7 +1344,11 @@
             if (currentPatientDataForApp.patientId) {
                 displayPatientInfoInCard(currentPatientDataForApp);
                 await displayTestsForPatientFromFirestore(currentPatientDataForApp.patientId);
-                 if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
+                if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
+                // Hide choice sections if a patient is already loaded on init
+                if (patientChoiceSection) patientChoiceSection.style.display = 'none';
+                if (existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
+                if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
             } else {
                 showInitialScreenState();
             }
@@ -1584,7 +1612,7 @@
                         const options = Array.from(patientModalContent.querySelector('#modal-existing-patient-ids-list').options);
                         const matchedOption = options.find(opt => opt.value === searchVal);
                         if (matchedOption) {
-                            openPatientModal('existing-edit', searchVal);
+                            loadAndDisplayPatient(searchVal); // Changed: Directly load patient
                         }
                     });
                 }
@@ -1628,7 +1656,7 @@
                     button.textContent = patientId;
                     button.classList.add('modal-patient-id-button');
                     button.addEventListener('click', () => {
-                        openPatientModal('existing-edit', patientId);
+                        loadAndDisplayPatient(patientId); // Changed: Directly load patient
                     });
                     container.appendChild(button);
                 });
@@ -1675,7 +1703,7 @@
             };
 
             const patientDataToSave = {
-                age: currentPatientDataForApp.age || null,
+                age: currentPatientDataForApp.age ? parseInt(currentPatientDataForApp.age) : null,
                 gender: currentPatientDataForApp.gender || null,
                 sport: currentPatientDataForApp.sport || null,
                 injury: currentPatientDataForApp.injury || null,
@@ -1720,7 +1748,7 @@
         async function handleExistingPatientDone(patientIdToUpdate) {
             console.log("handleExistingPatientDone called with ID:", patientIdToUpdate);
             if (!currentUserId || !patientIdToUpdate) {
-                 console.warn("handleExistingPatientDone: Missing currentUserId or patientIdToUpdate.", currentUserId, patientIdToUpdate);
+                console.warn("handleExistingPatientDone: Missing currentUserId or patientIdToUpdate.", currentUserId, patientIdToUpdate);
                 return;
             }
 
@@ -1737,7 +1765,7 @@
             currentPatientDataForApp = { ...updatedPatientDataFromModal };
 
             const patientDataToUpdateFirestore = {
-                age: updatedPatientDataFromModal.age || null,
+                age: updatedPatientDataFromModal.age ? parseInt(updatedPatientDataFromModal.age) : null,
                 gender: updatedPatientDataFromModal.gender || null,
                 sport: updatedPatientDataFromModal.sport || null,
                 injury: updatedPatientDataFromModal.injury || null,
@@ -2049,6 +2077,50 @@
             }
         }
 
+        // New function to load and display patient data directly
+        async function loadAndDisplayPatient(patientId) {
+            if (!currentUserId || !patientId) {
+                showStatusMessage("Invalid patient ID or not logged in.", "error");
+                return;
+            }
+            try {
+                const patientDocRef = doc(db, "users", currentUserId, "patients", patientId);
+                const patientDocSnap = await getDoc(patientDocRef);
+                if (patientDocSnap.exists()) {
+                    currentPatientDataForApp = { patientId: patientId, ...patientDocSnap.data(), screeningId: null }; // Clear screeningId
+
+                    // Update main patient info fields
+                    if(fpNrInput) fpNrInput.value = currentPatientDataForApp.patientId;
+                    if(ageInput) ageInput.value = currentPatientDataForApp.age;
+                    if(genderSelect) genderSelect.value = currentPatientDataForApp.gender;
+                    if(sportInput) sportInput.value = currentPatientDataForApp.sport;
+                    if(injuryInput) injuryInput.value = currentPatientDataForApp.injury;
+                    if(injuredSideRadio) injuredSideRadio.value = currentPatientDataForApp.injuredSide;
+                    if(bodyweightInput) bodyweightInput.value = currentPatientDataForApp.bodyweight;
+
+                    displayPatientInfoInCard(currentPatientDataForApp);
+                    if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
+                    await displayTestsForPatientFromFirestore(patientId);
+                    resetScreeningInputFields(); // Clears ASH inputs and active test state
+                    updateGraphsAndTable();
+                    saveInputsToLocalStorage(); // Saves patient data and empty ASH inputs
+
+                    // Hide patient choice section and search container
+                    if (patientChoiceSection) patientChoiceSection.style.display = 'none';
+                    if (existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
+                    if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
+                    showStatusMessage(`Patient "${patientId}" loaded successfully.`, "success");
+                    closePatientModal(); // Close the patient search modal
+                } else {
+                    showStatusMessage(`Patient data for ${patientId} not found.`, "error");
+                }
+            } catch (error) {
+                console.error("Error loading patient data:", error);
+                showStatusMessage("Error loading patient data.", "error");
+            }
+        }
+
+
         if (newPatientChoiceButton) {
             newPatientChoiceButton.addEventListener('click', () => {
                 openPatientModal('new');
@@ -2090,6 +2162,7 @@
                                 if (newPatientChoiceButton) newPatientChoiceButton.classList.remove('active-choice');
                                 if (existingPatientChoiceButton) existingPatientChoiceButton.classList.remove('active-choice');
                                 if (existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
+                                if (patientChoiceSection) patientChoiceSection.style.display = 'none'; // Added: Hide patient choice section
                                 fpNrInputSearch.value = '';
                                 if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
 
@@ -2101,6 +2174,17 @@
                             console.error("Error fetching patient on main page search:", error);
                         }
                     }
+                }
+            });
+        }
+
+        // Event listener for the new Edit Patient Profile button
+        if (editPatientProfileButton) {
+            editPatientProfileButton.addEventListener('click', () => {
+                if (currentPatientDataForApp.patientId) {
+                    openPatientModal('existing-edit', currentPatientDataForApp.patientId);
+                } else {
+                    showStatusMessage("No patient selected to edit.", "info");
                 }
             });
         }
