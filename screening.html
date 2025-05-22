@@ -27,10 +27,10 @@
             --medium-gray: #dee2e6;
             --dark-gray: #495057;
             --text-color: #212529;
-            --success-color: #16a34a; /* Original green */
-            --success-border-color: #15803d; /* Original darker green */
-            --success-shadow-color: rgba(22, 163, 74, 0.45); /* Original shadow for green */
-            --success-gradient-start-color: rgba(22, 163, 74, 1); /* Original gradient start for green */
+            --success-color: #2a9d8f; /* Consistent green for success */
+            --success-border-color: #217e72; /* Darker shade of #2a9d8f */
+            --success-shadow-color: rgba(42, 157, 143, 0.45); /* Shadow for #2a9d8f */
+            --success-gradient-start-color: rgba(42, 157, 143, 1); /* Gradient start for #2a9d8f */
             --warning-color: #facc15;
             --danger-color-dark: #dc2626;
             --white: #ffffff;
@@ -1356,7 +1356,7 @@
                     const percentageDiff = injuredRatio - 100;
                     let color;
                     if (percentageDiff >= -10) {
-                        color = '#2a9d8f'; // Reverted to original green
+                        color = '#2a9d8f'; // Original green
                     } else {
                         allGreen = false;
                         if (percentageDiff >= -15) {
