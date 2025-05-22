@@ -29,8 +29,11 @@
             --text-color: #212529;
             --success-color: #2a9d8f; /* Consistent green for success */
             --success-border-color: #217e72; /* Darker shade of #2a9d8f */
-            --success-shadow-color: rgba(42, 157, 143, 0.45); /* Shadow for #2a9d8f */
-            --success-gradient-start-color: rgba(42, 157, 143, 1); /* Gradient start for #2a9d8f */
+            
+            /* Updated for fade effect as per request */
+            --success-shadow-color: rgba(22, 163, 74, 0.45); 
+            --success-gradient-start-color: rgba(22, 163, 74, 1); 
+
             --warning-color: #facc15;
             --danger-color-dark: #dc2626;
             --white: #ffffff;
@@ -39,14 +42,14 @@
             --sidebar-border-color: var(--medium-gray);
             --header-border-color: var(--medium-gray);
             --subtle-shadow: 0 1px 3px rgba(0,0,0,0.07);
-            --left-line-color: #ff7f0e;
-            --right-line-color: #1f77b4;
+            --left-line-color: #ff7f0e; /* Orange */
+            --right-line-color: #1f77b4; /* Blue */
 
-            /* Normative Background Colors with More Alpha */
-            --norm-poor-bg: rgba(220, 38, 38, 0.3);
-            --norm-average-bg: rgba(250, 204, 21, 0.3);
-            --norm-good-bg: rgba(74, 222, 128, 0.3);
-            --norm-excellent-bg: rgba(22, 163, 74, 0.3);
+            /* Normative Background Colors with 50% Alpha as per request */
+            --norm-poor-bg: rgba(252, 165, 165, 0.5);
+            --norm-average-bg: rgba(252, 211, 77, 0.5);
+            --norm-good-bg: rgba(167, 243, 208, 0.5);
+            --norm-excellent-bg: rgba(52, 211, 153, 0.5);
 
             /* Status Message Background Colors with Alpha for Frosted Glass Effect */
             --status-success-bg: rgba(74, 222, 128, 0.55);
@@ -554,41 +557,41 @@
             padding-bottom: 5px;
             margin-top:0;
             border-bottom: 1px solid var(--medium-gray);
-            position: relative; /* ADDED: To contain the absolutely positioned edit button */
-            display: flex; /* Use flex to align title and buttons */
-            justify-content: space-between; /* Space out title and buttons */
-            align-items: center; /* Vertically align items */
+            position: relative; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
         }
         .patient-profile-title-internal .action-buttons {
             display: flex;
-            gap: 20px; /* Increased space between edit and delete buttons */
+            gap: 20px; 
         }
         .edit-profile-button, .delete-patient-btn {
-            background-color: transparent; /* Changed to transparent */
-            color: var(--app-primary-color); /* Changed to primary color */
+            background-color: transparent; 
+            color: var(--app-primary-color); 
             border: none;
-            padding: 0; /* Removed padding */
+            padding: 0; 
             border-radius: var(--border-radius);
             cursor: pointer;
-            font-size: 1.2rem; /* Increased font size for icon */
-            transition: color 0.2s ease; /* Transition for color */
+            font-size: 1.2rem; 
+            transition: color 0.2s ease; 
             display: flex;
             align-items: center;
-            gap: 0; /* Removed gap */
-            box-shadow: none; /* Removed box-shadow */
+            gap: 0; 
+            box-shadow: none; 
         }
         .edit-profile-button:hover {
-            background-color: transparent; /* Keep transparent */
-            color: var(--app-secondary-color); /* Hover color */
+            background-color: transparent; 
+            color: var(--app-secondary-color); 
         }
         .edit-profile-button i {
-            color: inherit; /* Inherit color from button */
+            color: inherit; 
         }
         .delete-patient-btn {
-            color: var(--app-primary-color); /* Changed to blue color for delete button */
+            color: var(--app-primary-color); 
         }
         .delete-patient-btn:hover {
-            color: var(--app-secondary-color); /* Darker blue on hover */
+            color: var(--app-secondary-color); 
         }
 
         .patient-card-header {
@@ -632,7 +635,7 @@
             width: 22px;
             text-align: center;
             font-size: 1.2em;
-            line-height: 1; /* Ensure icon is vertically centered */
+            line-height: 1; 
         }
         .patient-card-body .info-item .label {
             color: var(--dark-gray);
@@ -786,10 +789,23 @@
             overflow: hidden;
         }
         .position-box.green-box {
-            box-shadow: 0 0 15px 5px var(--success-shadow-color);
-            border-color: var(--success-border-color);
+            box-shadow: 0 0 15px 5px var(--success-shadow-color); /* Updated shadow color */
+            border-color: var(--success-border-color); 
         }
-        .position-box::after { content: ''; position: absolute; top: -100px; right: -100px; width: 500px; height: 500px; background-image: radial-gradient(circle at top right, var(--success-gradient-start-color) 0%, rgba(from var(--light-gray) r g b / 0) 65% ); opacity: 0; pointer-events: none; z-index: 0; border-radius: 50%; transition: opacity 0.3s ease; }
+        .position-box::after { 
+            content: ''; 
+            position: absolute; 
+            top: -100px; 
+            right: -100px; 
+            width: 500px; 
+            height: 500px; 
+            background-image: radial-gradient(circle at top right, var(--success-gradient-start-color) 0%, rgba(248, 249, 250, 0) 65% ); /* Fades to transparent --light-gray */
+            opacity: 0; 
+            pointer-events: none; 
+            z-index: 0; 
+            border-radius: 50%; 
+            transition: opacity 0.3s ease; 
+        }
         .position-box.green-box::after { opacity: 0.85; }
         .js-plotly-plot { flex-grow: 1; position: relative; z-index: 1; }
         #normative-placeholder { text-align: center; color: var(--dark-gray); font-style: italic; padding: 20px; background-color: var(--box-background-color); border-radius: var(--border-radius); margin-top: 1em;}
@@ -805,7 +821,7 @@
 
         /* PDF Preview / Print Mode Active */
         body.pdf-preview-active {
-            --graph-box-height: 340px !important; /* Set to 340px for PDF as requested */
+            --graph-box-height: 340px !important; 
         }
         body.pdf-preview-active .app-sidebar,
         body.pdf-preview-active #patient-choice-section,
@@ -837,8 +853,8 @@
         }
          body.pdf-preview-active .position-row {
             display: flex !important;
-            flex-wrap: wrap !important; /* Allow wrapping */
-            gap: 10px !important; /* Keep a small gap */
+            flex-wrap: wrap !important; 
+            gap: 10px !important; 
         }
 
          body.pdf-preview-active #results-title {
@@ -852,8 +868,8 @@
             padding: 5mm 50mm !important;
             height: auto !important;
             overflow: visible !important;
-            box-shadow: none !important; /* Ensure no box-shadow in print */
-            border: none !important; /* Ensure no border in print */
+            box-shadow: none !important; 
+            border: none !important; 
         }
         body.pdf-preview-active .content-container {
             max-width: 100% !important;
@@ -868,24 +884,23 @@
             width: 100% !important;
             box-sizing: border-box !important;
         }
-        /* PDF Graph Sizing - Reverted to inherit from main view proportions */
          body.pdf-preview-active .asymmetry-graph-container{
-            flex: 6 !important; /* Inherit from main view */
-            min-width: 0 !important; /* Allow flex to control size, will be overridden by flex-basis if needed */
+            flex: 6 !important; 
+            min-width: 0 !important; 
             margin-bottom: 5mm !important;
             page-break-inside: avoid !important;
            }
          body.pdf-preview-active .normative-graph-container {
-            flex: 4 !important; /* Inherit from main view */
-            min-width: 0 !important; /* Allow flex to control size */
+            flex: 4 !important; 
+            min-width: 0 !important; 
             margin-bottom: 5mm !important;
            }
         body.pdf-preview-active .position-box,
         body.pdf-preview-active .normative-box {
             box-shadow: none !important;
             border: 1px solid #ccc !important;
-            height: var(--graph-box-height) !important; /* Use CSS variable for PDF as well */
-            min-height: var(--graph-box-height) !important; /* Use CSS variable for PDF as well */
+            height: var(--graph-box-height) !important; 
+            min-height: var(--graph-box-height) !important; 
             padding: 5px !important;
             background-color: var(--white) !important;
             overflow: hidden !important;
@@ -893,7 +908,6 @@
             flex-direction: column !important;
             width: 100% !important;
         }
-        /* Removed separate height for normative-box in PDF, as --graph-box-height will handle it */
         body.pdf-preview-active .position-box.green-box { box-shadow: none !important; border: 1px solid #ccc !important; }
         .position-box::after { display: none !important; }
         .js-plotly-plot { width: 100% !important; height: 100% !important; flex-grow: 1 !important; }
@@ -932,7 +946,8 @@
 
     <div class="app-layout">
         <aside class="app-sidebar">
-            <div class="sidebar-logo-placeholder"><i class="fas fa-bars"></i></div> <div class="sidebar-buttons">
+            <div class="sidebar-logo-placeholder"><i class="fas fa-bars"></i></div>
+            <div class="sidebar-buttons">
                 <a href="assets/analysis.html" id="analysis-link-button"><button type="button" id="view-analysis-button"><i class="fas fa-history"></i> <span class="button-text">Patient History</span></button></a>
                 <button id="pdf-preview-button"><i class="fas fa-file-pdf"></i><span class="button-text">PDF Preview</span></button>
                 <button id="export-excel-button"><i class="fas fa-file-excel"></i><span class="button-text">Export Data</span></button>
@@ -948,7 +963,8 @@
             <div class="sidebar-social-links">
                 <a href="https://www.instagram.com/alphatekofficial" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
                 <a href="https://www.alphatek.no" target="_blank" title="Website"><i class="fas fa-globe"></i></a>
-                <a href="#" title="Info/Help"><i class="fas fa-circle-info"></i></a> </div>
+                <a href="#" title="Info/Help"><i class="fas fa-circle-info"></i></a>
+            </div>
         </aside>
         <main class="app-main-content">
             <button id="preview-exit-button-inline"><i class="fas fa-times-circle"></i> Exit Preview</button>
@@ -1014,7 +1030,7 @@
                                 <div id="selected-patient-tests-container" style="display: none;">
                                         <h3 class="test-log-title-internal">Test Log</h3>
                                     <ul id="selected-patient-tests-list">
-                                    </ul>
+                                        </ul>
                                 </div>
                             </div>
                         </div>
@@ -1034,24 +1050,24 @@
                         <div class="position-row"> <div class="asymmetry-graph-container"> <div id="position-box-T" class="position-box"> <h3 class="position-title">Position T - Asymmetry</h3> <div id="bar-chart-T" class="js-plotly-plot"></div> </div> </div> <div class="normative-graph-container"> <div id="normative-chart-container-T" class="normative-box"> <h3 class="normative-title">Position T - Normative Comparison</h3> <div id="normative-chart-T" class="js-plotly-plot"></div> </div> </div> </div>
                         <div id="normative-placeholder" style="display: none;"> Enter bodyweight to see normative comparisons. </div>
                         <div id="bottom-area"></div>
-                           <div id="patient-data-container" style="display:none;">
-                               <div id="patient-id-and-secondary-controls">
-                                       <div class="patient-id-standalone-item">
-                                           <label for="fp-nr-input">Patient ID (Internal):</label>
-                                           <input id="fp-nr-input" type="text">
-                                       </div>
-                                       <div id="patient-data-secondary-controls">
-                                           <div class="control-item"><label class="control-label" for="injured-side-radio">Injured Side:</label><select id="injured-side-radio"><option value="Left">Left</option><option value="Right">Right</option></select></div>
-                                           <div class="control-item"><label class="control-label" for="bodyweight-input">Bodyweight (kg):</label><input id="bodyweight-input" type="number"></div>
-                                       </div>
-                                   </div>
-                                   <div id="patient-data-grid">
-                                       <div class="patient-data-item"><label for="age-input">Age:</label><input id="age-input" type="number"></div>
-                                       <div class="patient-data-item"><label for="gender-select">Gender:</label><select id="gender-select"><option value="">Select...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option><option value="Prefer not to say">Prefer not to say</option></select></div>
-                                       <div class="patient-data-item"><label for="sport-input">Sport:</label><input id="sport-input" type="text"></div>
-                                       <div class="patient-data-item"><label for="injury-input">Injury (Optional):</label><input id="injury-input" type="text"></div>
-                                   </div>
-                           </div>
+                            <div id="patient-data-container" style="display:none;">
+                                <div id="patient-id-and-secondary-controls">
+                                    <div class="patient-id-standalone-item">
+                                        <label for="fp-nr-input">Patient ID (Internal):</label>
+                                        <input id="fp-nr-input" type="text">
+                                    </div>
+                                    <div id="patient-data-secondary-controls">
+                                        <div class="control-item"><label class="control-label" for="injured-side-radio">Injured Side:</label><select id="injured-side-radio"><option value="Left">Left</option><option value="Right">Right</option></select></div>
+                                        <div class="control-item"><label class="control-label" for="bodyweight-input">Bodyweight (kg):</label><input id="bodyweight-input" type="number"></div>
+                                    </div>
+                                </div>
+                                <div id="patient-data-grid">
+                                    <div class="patient-data-item"><label for="age-input">Age:</label><input id="age-input" type="number"></div>
+                                    <div class="patient-data-item"><label for="gender-select">Gender:</label><select id="gender-select"><option value="">Select...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option><option value="Prefer not to say">Prefer not to say</option></select></div>
+                                    <div class="patient-data-item"><label for="sport-input">Sport:</label><input id="sport-input" type="text"></div>
+                                    <div class="patient-data-item"><label for="injury-input">Injury (Optional):</label><input id="injury-input" type="text"></div>
+                                </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1126,7 +1142,7 @@
         const selectedPatientTestsContainer = document.getElementById('selected-patient-tests-container');
         const selectedPatientTestsListUL = document.getElementById('selected-patient-tests-list');
         const editPatientProfileButton = document.getElementById('edit-patient-profile-btn');
-        const deletePatientProfileButton = document.getElementById('delete-patient-profile-btn'); // New delete button
+        const deletePatientProfileButton = document.getElementById('delete-patient-profile-btn'); 
 
         // Confirmation Modal Elements
         const confirmationModalOverlay = document.getElementById('confirmation-modal-overlay');
@@ -1137,9 +1153,21 @@
 
 
         const plotlyConfig = { responsive: true, displaylogo: false, modeBarButtonsToRemove: ['sendDataToCloud', 'lasso2d', 'select2d', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'toggleSpikelines'] };
-        const normativeThresholds = { I: { poor_max: 1.0, average_mid: 1.5, good_min: 2.0, excellent_min: 2.5 }, Y: { poor_max: 0.8, average_mid: 1.2, good_min: 1.6, excellent_min: 2.0 }, T: { poor_max: 1.2, average_mid: 1.8, good_min: 2.4, excellent_min: 3.0 } };
-        const percentileZones = { poor: 25, average: 75, good: 90, excellent: 100 };
-        const percentileMidpoint = 50;
+        
+        const normativeThresholds = {
+            I: { poor_max: 1.47, average_mid: 1.65, good_min: 1.85, excellent_min: 2.1 },
+            Y: { poor_max: 1.25, average_mid: 1.4, good_min: 1.6, excellent_min: 1.76 },
+            T: { poor_max: 1.15, average_mid: 1.25, good_min: 1.4, excellent_min: 1.58 }
+        };
+
+        const percentileZones = {
+            poor: 30,      
+            average: 70,   
+            good: 90,      
+            excellent: 100 
+        };
+        const percentileMidpoint = 50; 
+
         const normZoneColors = {
             poor: getComputedStyle(document.documentElement).getPropertyValue('--norm-poor-bg').trim(),
             average: getComputedStyle(document.documentElement).getPropertyValue('--norm-average-bg').trim(),
@@ -1147,6 +1175,7 @@
             excellent: getComputedStyle(document.documentElement).getPropertyValue('--norm-excellent-bg').trim()
         };
         const normativeLabels = { poor: 'Poor', average: 'Average', good: 'Good', excellent: 'Excellent' };
+        
         const asymmetryChartDivs = ['bar-chart-I', 'bar-chart-Y', 'bar-chart-T'];
         const asymmetryPositionBoxDivs = ['position-box-I', 'position-box-Y', 'position-box-T'];
         const normativeChartDivs = ['normative-chart-I', 'normative-chart-Y', 'normative-chart-T'];
@@ -1179,10 +1208,7 @@
             'T': { nonInjured: [document.getElementById('non-injured-max-force-t'), document.getElementById('non-injured-rfd-t')], injured: [document.getElementById('injured-max-force-t'), document.getElementById('injured-rfd-t')] }
         };
         const allNumberInputs = Array.from(document.querySelectorAll('#input-section-container input[type="number"]'));
-        // The datalist for fp-nr-input-search is removed from HTML, so this variable is no longer needed.
-        // const existingPatientIdsDatalist = document.getElementById('existing-patient-ids');
-
-        // Array to store all patient IDs for modal filtering
+        
         let allPatientIds = [];
 
         onAuthStateChanged(auth, async (user) => {
@@ -1220,12 +1246,12 @@
                 currentUserId = null;
                 if (appLoadingMessage) appLoadingMessage.textContent = 'Redirecting to login...';
                 localStorage.setItem('redirectToAfterLogin', window.location.pathname + window.location.search);
-                window.location.href = "index.html";
+                // Corrected the URL to be an absolute path using window.location.origin
+                window.location.href = window.location.origin + "/index.html"; 
             }
         });
 
         async function initializeAppUI() {
-            // Restore original heights for main view plots
             createEmptyPlot('bar-chart-I', 'Enter Data', 300, 20);
             createEmptyPlot('bar-chart-Y', 'Enter Data', 300, 20);
             createEmptyPlot('bar-chart-T', 'Enter Data', 300, 20);
@@ -1233,14 +1259,11 @@
             createEmptyPlot('normative-chart-Y', 'Enter Bodyweight', 250, 35);
             createEmptyPlot('normative-chart-T', 'Enter Bodyweight', 250, 35);
             loadInputsFromLocalStorage();
-            // populatePatientIdDatalistFromFirestore() is no longer needed for the main search input.
-            // It will be implicitly handled by populateModalPatientButtons when the modal opens.
-
+            
             if (currentPatientDataForApp.patientId) {
                 displayPatientInfoInCard(currentPatientDataForApp);
                 await displayTestsForPatientFromFirestore(currentPatientDataForApp.patientId);
                 if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
-                // Ensure patient choice section remains visible
                 if (patientChoiceSection) patientChoiceSection.style.display = 'flex';
                 if (existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
                 if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
@@ -1260,14 +1283,14 @@
             }, duration);
         }
         function hexToRgba(hex, alpha) { hex = hex.replace('#', ''); const r = parseInt(hex.substring(0, 2), 16); const g = parseInt(hex.substring(2, 4), 16); const b = parseInt(hex.substring(4, 6), 16); return `rgba(${r}, ${g}, ${b}, ${alpha})`; }
-        // Updated createEmptyPlot to use specific heights
+        
         function createEmptyPlot(targetDivId, title = 'Enter Data', height, topMargin = 20) {
             const targetDiv = document.getElementById(targetDivId);
             if (!targetDiv) { console.error(`Target div '${targetDivId}' not found for empty plot.`); return; }
             try {
                 Plotly.react(targetDiv, [{ x: [], y: [], type: 'bar' }], {
                     title: { text: title, font: { family: 'Avenir, sans-serif', size: 16, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim(), weight: 400 } },
-                    height: height, // Use passed height
+                    height: height, 
                     margin: { l: 60, r: 40, b: 40, t: topMargin, pad: 4 },
                     paper_bgcolor: 'rgba(0,0,0,0)',
                     plot_bgcolor: 'rgba(0,0,0,0)',
@@ -1277,8 +1300,8 @@
                 }, plotlyConfig);
             } catch (error) { console.error(`Error creating empty plot for '${targetDivId}':`, error); targetDiv.innerHTML = `<p style="color: red; text-align: center; padding: 20px;">Error displaying chart.</p>`; }
         }
-        function processInputAndCalculate(position) { const inputs = inputFieldMap[position]; if (!inputs) return null; const nonInjuredMaxForceVal = inputs.nonInjured[0].value; const nonInjuredRfdVal = inputs.nonInjured[1].value; const injuredMaxForceVal = inputs.injured[0].value; const injuredRfdVal = inputs.injured[1].value; if (nonInjuredMaxForceVal === '' && nonInjuredRfdVal === '' && injuredMaxForceVal === '' && injuredRfdVal === '') return null; const nonInjuredMaxForce = parseFloat(nonInjuredMaxForceVal) || 0; const nonInjuredRfd = parseFloat(nonInjuredRfdVal) || 0; const injuredMaxForce = parseFloat(injuredMaxForceVal) || 0; const injuredRfd = parseFloat(injuredRfdVal) || 0; const selectedInjuredSide = currentPatientDataForApp.injuredSide || 'Left'; let leftData = {}; let rightData = {}; if (selectedInjuredSide === 'Left') { leftData = { max_force: injuredMaxForce, rfd: injuredRfd }; rightData = { max_force: nonInjuredMaxForce, rfd: nonInjuredRfd }; } else { leftData = { max_force: nonInjuredMaxForce, rfd: injuredRfd }; rightData = { max_force: injuredMaxForce, rfd: nonInjuredRfd }; } return { left: leftData, right: rightData }; }
-        // Updated createAsymmetryChart to use specific height
+        function processInputAndCalculate(position) { const inputs = inputFieldMap[position]; if (!inputs) return null; const nonInjuredMaxForceVal = inputs.nonInjured[0].value; const nonInjuredRfdVal = inputs.nonInjured[1].value; const injuredMaxForceVal = inputs.injured[0].value; const injuredRfdVal = inputs.injured[1].value; if (nonInjuredMaxForceVal === '' && nonInjuredRfdVal === '' && injuredMaxForceVal === '' && injuredRfdVal === '') return null; const nonInjuredMaxForce = parseFloat(nonInjuredMaxForceVal) || 0; const nonInjuredRfd = parseFloat(nonInjuredRfdVal) || 0; const injuredMaxForce = parseFloat(injuredMaxForceVal) || 0; const injuredRfd = parseFloat(injuredRfdVal) || 0; const selectedInjuredSide = currentPatientDataForApp.injuredSide || 'Left'; let leftData = {}; let rightData = {}; if (selectedInjuredSide === 'Left') { leftData = { max_force: injuredMaxForce, rfd: injuredRfd }; rightData = { max_force: nonInjuredMaxForce, rfd: nonInjuredRfd }; } else { leftData = { max_force: nonInjuredMaxForce, rfd: nonInjuredRfd }; rightData = { max_force: injuredMaxForce, rfd: injuredRfd }; } return { left: leftData, right: rightData }; }
+        
         function createAsymmetryChart(positionData, injuredSide, posLabel) {
             if (!positionData?.left || !positionData?.right) return [{}, false];
             const leftDataRaw = positionData.left;
@@ -1320,25 +1343,27 @@
             const yAxisUpperBound = annotationYTop + 15;
 
             const isPdfPreview = document.body.classList.contains('pdf-preview-active');
-            const plotHeight = isPdfPreview ? 340 : 300; // Dynamic height for Plotly layout
+            const plotHeight = isPdfPreview ? 340 : 300;
 
             const fig = {
                 data: [
                     { type: 'bar', name: 'Left', x: plotX, y: plotYLeft, marker: { color: leftColorRgba }, text: leftTextsAbsolute, texttemplate: '%{text}', textposition: 'none', hoverinfo: 'x+name', hovertemplate: 'Left: %{y:.0f}%<extra></extra>' },
                     { type: 'bar', name: 'Right', x: plotX, y: plotYRight, marker: { color: rightColorRgba }, text: rightTextsAbsolute, texttemplate: '%{text}', textposition: 'none', hoverinfo: 'x+name', hovertemplate: 'Right: %{y:.0f}%<extra></extra>' },
-                    { x: [null], y: [null], mode: 'lines', name: '±10% Threshold', line: { color: thresholdLineColor, width: 1, dash: 'dash' }, hoverinfo: 'none', showlegend: true }
+                    { x: [null], y: [null], mode: 'lines', name: '90% Threshold', line: { color: thresholdLineColor, width: 1, dash: 'dash' }, hoverinfo: 'none', showlegend: true } 
                 ],
                 layout: {
-                    height: plotHeight, // Use dynamic height
+                    height: plotHeight,
                     barmode: 'group',
                     font: { color: darkGrayColor, family: 'Avenir, sans-serif', size: 12, weight: 400 },
-                    yaxis: { title: "Injured Side Asymmetry (%)", titlefont: { size: 13, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, range: [18, yAxisUpperBound], tickmode: 'array', tickvals: [50, 100], showgrid: false, zeroline: false, },
+                    yaxis: { title: "Injured Side Asymmetry (%)", titlefont: { size: 13, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, range: [18, yAxisUpperBound], tickmode: 'array', tickvals: [50, 90, 100], showgrid: false, zeroline: false, }, 
                     xaxis: { showgrid: false, zeroline: false, showline: false, showticklabels: true, tickangle: 0, tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, automargin: true, fixedrange: true },
                     paper_bgcolor: 'rgba(0,0,0,0)',
                     plot_bgcolor: 'rgba(0,0,0,0)',
                     legend: { orientation: "h", yanchor: "bottom", y: -0.30, xanchor: "center", x: 0.5, font: { size: 12, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor } },
                     margin: { l: 70, r: 30, b: 85, t: 20, pad: 10 },
-                    shapes: [ { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 90, y1: 90, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" }, { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 110, y1: 110, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" } ],
+                    shapes: [ 
+                        { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 90, y1: 90, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" }, 
+                    ],
                     annotations: []
                 }
             };
@@ -1356,17 +1381,19 @@
                     const percentageDiff = injuredRatio - 100;
                     let color;
                     if (percentageDiff >= -10) {
-                        color = '#2a9d8f'; // Original green
+                        color = 'rgb(42, 157, 143)'; 
+                    } else if (percentageDiff >= -15) {
+                        color = 'rgb(238, 155, 0)'; 
+                    } else if (percentageDiff >= -20) {
+                        color = 'rgb(232, 93, 4)';  
                     } else {
-                        allGreen = false;
-                        if (percentageDiff >= -15) {
-                            color = '#ee9b00';
-                        } else if (percentageDiff >= -20) {
-                            color = '#e85d04';
-                        } else {
-                            color = '#ae2012';
-                        }
+                        color = 'rgb(174, 32, 18)'; 
                     }
+                    
+                    if (percentageDiff < -10) { 
+                        allGreen = false;
+                    }
+
                     fig.layout.annotations.push({ x: metricName, y: annotationYTop, text: `${percentageDiff.toFixed(0)}%`, showarrow: false, font: { color: color, size: 22, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'bottom' });
                 }
                 const barTextYPosition = 31;
@@ -1386,8 +1413,54 @@
             }
             return [fig, allGreen];
         }
-        function mapNkgToPercentile(nkgValue, positionLabel) { const thresholds = normativeThresholds[positionLabel]; if (!thresholds || typeof nkgValue !== 'number' || !isFinite(nkgValue)) return 0; const pMap = [ { v: 0.5, p: 0 }, { v: thresholds.poor_max, p: percentileZones.poor }, { v: thresholds.average_mid, p: percentileMidpoint }, { v: thresholds.good_min, p: percentileZones.average }, { v: thresholds.excellent_min, p: percentileZones.good }, { v: thresholds.excellent_min * 1.25, p: percentileZones.excellent } ]; const minVal = pMap[0].v; const maxVal = pMap[pMap.length - 1].v; const clampedValue = Math.max(minVal, Math.min(nkgValue, maxVal)); let lowerPoint = pMap[0]; let upperPoint = pMap[pMap.length - 1]; for (let i = 0; i < pMap.length - 1; i++) { if (clampedValue === pMap[i].v) { lowerPoint = upperPoint = pMap[i]; break; } if (clampedValue > pMap[i].v && clampedValue <= pMap[i + 1].v) { lowerPoint = pMap[i]; upperPoint = pMap[i + 1]; break; } } if (clampedValue === upperPoint.v) { lowerPoint = upperPoint; } let percentile = lowerPoint.p; const valueRange = upperPoint.v - lowerPoint.v; const percentileRange = upperPoint.p - lowerPoint.p; if (valueRange > 0) { percentile += ((clampedValue - lowerPoint.v) / valueRange) * percentileRange; } return Math.max(0, Math.min(percentile, 100)); }
-        // Updated createNormativeComparisonChart to use specific height
+
+        function mapNkgToPercentile(nkgValue, positionLabel) {
+            const thresholds = normativeThresholds[positionLabel];
+            if (!thresholds || typeof nkgValue !== 'number' || !isFinite(nkgValue)) return 0;
+
+            const pMap = [
+                { v: 0, p: 0 }, 
+                { v: thresholds.poor_max, p: percentileZones.poor },         
+                { v: thresholds.average_mid, p: percentileMidpoint },       
+                { v: thresholds.good_min, p: percentileZones.average },     
+                { v: thresholds.excellent_min, p: percentileZones.good },   
+                { v: thresholds.excellent_min * 1.25, p: percentileZones.excellent } 
+            ];
+            pMap.sort((a, b) => a.v - b.v);
+
+
+            const minVal = pMap[0].v;
+            const maxVal = pMap[pMap.length - 1].v;
+            const clampedValue = Math.max(minVal, Math.min(nkgValue, maxVal));
+
+            let lowerPoint = pMap[0];
+            let upperPoint = pMap[pMap.length - 1];
+
+            for (let i = 0; i < pMap.length - 1; i++) {
+                if (clampedValue >= pMap[i].v && clampedValue <= pMap[i + 1].v) {
+                    lowerPoint = pMap[i];
+                    upperPoint = pMap[i + 1];
+                    break;
+                }
+            }
+             if (clampedValue === upperPoint.v) { 
+                return upperPoint.p;
+            }
+            if (clampedValue === lowerPoint.v) { 
+                return lowerPoint.p;
+            }
+
+
+            let percentile = lowerPoint.p;
+            const valueRange = upperPoint.v - lowerPoint.v;
+            const percentileRange = upperPoint.p - lowerPoint.p;
+
+            if (valueRange > 0) {
+                percentile += ((clampedValue - lowerPoint.v) / valueRange) * percentileRange;
+            }
+            return Math.max(0, Math.min(percentile, 100));
+        }
+        
         function createNormativeComparisonChart(positionData, bodyweight, positionLabel) {
             const bwVal = parseFloat(bodyweight);
             if (isNaN(bwVal) || bwVal <= 0 || !positionData) return {};
@@ -1395,21 +1468,25 @@
             const rightNkg = positionData.right.max_force / bwVal;
             const thresholds = normativeThresholds[positionLabel];
             if (!thresholds) return {};
+            
             const leftPercentile = mapNkgToPercentile(leftNkg, positionLabel);
             const rightPercentile = mapNkgToPercentile(rightNkg, positionLabel);
+            
             const baseCurveX = [];
             const baseCurveY = [];
-            const mean = 55;
-            const stdDev = 22;
-            const amplitude = 0.9;
-            for (let i = 0; i <= 100; i += 0.5) {
+            const mean = 55; 
+            const stdDev = 22; 
+            const amplitude = 0.9; 
+            for (let i = 0; i <= 100; i += 0.5) { 
                 baseCurveX.push(i);
                 const y = amplitude * Math.exp(-Math.pow(i - mean, 2) / (2 * Math.pow(stdDev, 2)));
                 baseCurveY.push(y);
             }
+
             const zoneBoundaries = [0, percentileZones.poor, percentileZones.average, percentileZones.good, percentileZones.excellent];
             const traces = [];
             const zoneColorsList = [normZoneColors.poor, normZoneColors.average, normZoneColors.good, normZoneColors.excellent];
+            
             for (let i = 0; i < zoneBoundaries.length - 1; i++) {
                 const x0 = zoneBoundaries[i];
                 const x1 = zoneBoundaries[i+1];
@@ -1429,11 +1506,11 @@
             traces.push({ x: baseCurveX, y: baseCurveY, type: 'scatter', mode: 'lines', line: { color: '#ffffff', width: 1.5, shape: 'spline' }, hoverinfo: 'none', name: 'Distribution (Visual)', showlegend: false });
             
             const isPdfPreview = document.body.classList.contains('pdf-preview-active');
-            const plotHeight = isPdfPreview ? 340 : 250; // Dynamic height for Plotly layout
+            const plotHeight = isPdfPreview ? 340 : 250;
 
             const layout = {
-                height: plotHeight, // Fixed height for normative plots
-                margin: { t: 35, b: 95, l: 30, r: 30 },
+                height: plotHeight,
+                margin: { t: 35, b: 95, l: 30, r: 30 }, 
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)',
                 xaxis: { title: '', range: [0, 100], showgrid: false, zeroline: false, showticklabels: false },
@@ -1443,22 +1520,24 @@
                 font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() },
                 showlegend: false
             };
-            const thresholdAnnotations = [
-                { p: percentileZones.poor, val: thresholds.poor_max },
-                { p: percentileZones.average, val: thresholds.good_min },
-                { p: percentileZones.good, val: thresholds.excellent_min }
-            ];
-            thresholdAnnotations.forEach(t => {
-                layout.annotations.push({ xref: 'x', yref: 'paper', x: t.p, y: -0.08, text: `<span class="norm-value">${t.val.toFixed(2)}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', font: { family: 'Avenir, sans-serif', size: 10, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim() } });
-            });
+
+            const nkgAnnotationY = -0.08; 
+            const nkgAnnotationFont = { family: 'Avenir, sans-serif', size: 10, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim() };
+
+            layout.annotations.push({ xref: 'x', yref: 'paper', x: percentileZones.poor, y: nkgAnnotationY, text: `<span class="norm-value">${thresholds.poor_max.toFixed(2)}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', font: nkgAnnotationFont }); 
+            layout.annotations.push({ xref: 'x', yref: 'paper', x: percentileZones.average, y: nkgAnnotationY, text: `<span class="norm-value">${thresholds.good_min.toFixed(2)}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', font: nkgAnnotationFont }); 
+            layout.annotations.push({ xref: 'x', yref: 'paper', x: percentileZones.good, y: nkgAnnotationY, text: `<span class="norm-value">${thresholds.excellent_min.toFixed(2)}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', font: nkgAnnotationFont }); 
+            
             layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: percentileMidpoint, x1: percentileMidpoint, y0: 0, y1: 1, line: { color: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), width: 1.5, dash: 'dot' }, layer: 'below' });
-            const avgValueForPos = thresholds.average_mid.toFixed(2);
-            layout.annotations.push({ xref: 'x', yref: 'paper', x: percentileMidpoint, y: -0.30, text: `<span class="value-display">${avgValueForPos}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', align: 'center', font: { family: 'Avenir, sans-serif', size: 10, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), weight: 400 } });
-            const labelYPosition = 1.10;
-            layout.annotations.push({ xref: 'x', yref: 'paper', x: 15, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.poor}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } });
-            layout.annotations.push({ xref: 'x', yref: 'paper', x: 50, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.average}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() }, align: 'center' });
-            layout.annotations.push({ xref: 'x', yref: 'paper', x: 80, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.good}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } });
-            layout.annotations.push({ xref: 'x', yref: 'paper', x: 95, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.excellent}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } });
+            layout.annotations.push({ xref: 'x', yref: 'paper', x: percentileMidpoint, y: nkgAnnotationY, text: `<span class="value-display">${thresholds.average_mid.toFixed(2)}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', align: 'center', font: { family: 'Avenir, sans-serif', size: 10, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), weight: 400 } });
+            
+            const labelYPosition = 1.08; 
+            const labelFont = { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() };
+            layout.annotations.push({ xref: 'x', yref: 'paper', x: zoneBoundaries[0] + (zoneBoundaries[1] - zoneBoundaries[0])/2, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.poor}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: labelFont });
+            layout.annotations.push({ xref: 'x', yref: 'paper', x: zoneBoundaries[1] + (zoneBoundaries[2] - zoneBoundaries[1])/2, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.average}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: labelFont });
+            layout.annotations.push({ xref: 'x', yref: 'paper', x: zoneBoundaries[2] + (zoneBoundaries[3] - zoneBoundaries[2])/2, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.good}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: labelFont });
+            layout.annotations.push({ xref: 'x', yref: 'paper', x: zoneBoundaries[3] + (zoneBoundaries[4] - zoneBoundaries[3])/2, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.excellent}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: labelFont });
+
             const leftColor = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim();
             const rightColor = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim();
             const lineY0 = 0.05;
@@ -1467,8 +1546,10 @@
             layout.annotations.push({ xref: 'x', yref: 'paper', x: leftPercentile, y: 0.90, text: 'L', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: leftColor, font: {color: leftColor, size: 14, family: 'Avenir, sans-serif', weight: 400} });
             layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: rightPercentile, x1: rightPercentile, y0: lineY0, y1: lineY1, line: { color: rightColor, width: 2, dash: 'dash' } });
             layout.annotations.push({ xref: 'x', yref: 'paper', x: rightPercentile, y: 0.90, text: 'R', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: rightColor, font: {color: rightColor, size: 14, family: 'Avenir, sans-serif', weight: 400} });
+            
             const combinedNkgText = `<span class='nkg-combined-text'>Left: <span class='left-label'>${leftNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>) &nbsp;&nbsp;|&nbsp;&nbsp; Right: <span class='right-label'>${rightNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>)</span>`;
-            layout.annotations.push({ xref: 'paper', yref: 'paper', x: 0.5, y: -0.30, text: combinedNkgText, showarrow: false, xanchor: 'center', yanchor: 'top', align: 'center', font: { size: 15, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), family: 'Avenir, sans-serif', weight: 400 } });
+            layout.annotations.push({ xref: 'paper', yref: 'paper', x: 0.5, y: -0.35, text: combinedNkgText, showarrow: false, xanchor: 'center', yanchor: 'top', align: 'center', font: { size: 15, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), family: 'Avenir, sans-serif', weight: 400 } });
+            
             return { data: traces, layout };
         }
         function updateGraphsAndTable() {
@@ -1653,7 +1734,6 @@
             confirmationModalMessage.textContent = message;
             confirmationModalOverlay.style.display = 'flex';
 
-            // Define handlers before attaching
             const handleConfirmClick = () => {
                 onConfirmCallback();
                 confirmationModalOverlay.style.display = 'none';
@@ -1667,7 +1747,6 @@
                 confirmationCancelBtn.removeEventListener('click', handleCancelClick);
             };
 
-            // Remove previous listeners to prevent multiple calls
             confirmationConfirmBtn.removeEventListener('click', handleConfirmClick);
             confirmationCancelBtn.removeEventListener('click', handleCancelClick);
 
@@ -1709,7 +1788,7 @@
                         <input type="text" id="modal-search-fp-nr" autocomplete="off">
                     </div>
                     <div class="modal-patient-id-buttons" id="modal-patient-id-button-container">
-                    </div>
+                        </div>
                     <div class="modal-actions">
                         <button type="button" class="modal-cancel-button" id="modal-cancel-search">Cancel</button>
                     </div>`;
@@ -1749,7 +1828,6 @@
                 const genderModalSelect = patientModalContent.querySelector('#modal-gender');
                 const injuredSideModalSelect = patientModalContent.querySelector('#modal-injured-side');
 
-                // Clear existing options before adding new ones to prevent duplicates
                 if(genderModalSelect) genderModalSelect.innerHTML = '';
                 if(injuredSideModalSelect) injuredSideModalSelect.innerHTML = '';
 
@@ -1768,7 +1846,7 @@
                 patientModalContent.querySelector('#modal-confirm-new')?.addEventListener('click', handleNewPatientConfirm);
                 patientModalContent.querySelector('#modal-cancel-new')?.addEventListener('click', closePatientModal);
             } else if (type === 'existing-search') {
-                await populateModalPatientButtons(); // Populate initial buttons
+                await populateModalPatientButtons(); 
                 const modalSearchInput = patientModalContent.querySelector('#modal-search-fp-nr');
                 
                 if (modalSearchInput) {
@@ -1796,31 +1874,29 @@
 
             if (!container || !currentUserId) return;
 
-            container.innerHTML = ''; // Clear existing buttons
+            container.innerHTML = ''; 
 
-            if (allPatientIds.length === 0) { // Fetch only if not already fetched
+            if (allPatientIds.length === 0) { 
                 const patientsCollectionRef = collection(db, "users", currentUserId, "patients");
                 try {
                     const querySnapshot = await getDocs(patientsCollectionRef);
                     querySnapshot.forEach((docSnap) => {
                         allPatientIds.push(docSnap.id);
                     });
-                    allPatientIds.sort(); // Sort alphabetically
+                    allPatientIds.sort(); 
                 } catch (error) {
                     console.error("Error fetching patient IDs for modal:", error);
                     container.textContent = 'Error loading patients.';
                     return;
                 }
             }
-
-            // Initially populate buttons with all IDs
-            filterModalPatientButtons(''); // Show all buttons initially
+            filterModalPatientButtons(''); 
         }
 
         function filterModalPatientButtons(filterText) {
             const container = document.getElementById('modal-patient-id-button-container');
             if (!container) return;
-            container.innerHTML = ''; // Clear current buttons
+            container.innerHTML = ''; 
 
             const filteredIds = allPatientIds.filter(id =>
                 id.toLowerCase().includes(filterText.toLowerCase())
@@ -1894,9 +1970,8 @@
                 showStatusMessage(`New patient "${newPatientId}" saved. Ready for screening.`, "success");
                 displayPatientInfoInCard(currentPatientDataForApp);
                 if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
-                allPatientIds.push(newPatientId); // Add new patient to the in-memory list
-                allPatientIds.sort(); // Keep sorted
-                // No need to call populatePatientIdDatalistFromFirestore() here as the datalist is removed.
+                allPatientIds.push(newPatientId); 
+                allPatientIds.sort(); 
                 closePatientModal();
 
                 if(fpNrInput) fpNrInput.value = currentPatientDataForApp.patientId;
@@ -1938,7 +2013,7 @@
                 injury: patientModalContent.querySelector('#modal-injury').value,
                 injuredSide: patientModalContent.querySelector('#modal-injured-side').value,
                 bodyweight: patientModalContent.querySelector('#modal-bodyweight').value,
-                screeningId: null // Clear screeningId as we are confirming patient details, not a specific test
+                screeningId: null 
             };
             currentPatientDataForApp = { ...updatedPatientDataFromModal };
 
@@ -1969,7 +2044,7 @@
                 if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
                 await displayTestsForPatientFromFirestore(patientIdToUpdate);
 
-                resetScreeningInputFields(); // Clear ASH inputs
+                resetScreeningInputFields(); 
 
                 closePatientModal();
 
@@ -1995,7 +2070,6 @@
             showStatusMessage(`Deleting patient "${patientId}" and all their data...`, "info", 5000);
 
             try {
-                // 1. Delete all screenings for the patient
                 const screeningsRef = collection(db, "users", currentUserId, "patients", patientId, "screenings");
                 const q = query(screeningsRef);
                 const querySnapshot = await getDocs(q);
@@ -2007,20 +2081,13 @@
                 await Promise.all(deletePromises);
                 console.log(`Deleted ${deletePromises.length} screenings for patient ${patientId}.`);
 
-                // 2. Delete the patient document itself
                 const patientDocRef = doc(db, "users", currentUserId, "patients", patientId);
                 await deleteDoc(patientDocRef);
 
                 showStatusMessage(`Patient "${patientId}" and all data deleted successfully.`, "success");
-
-                // Update in-memory patient IDs
                 allPatientIds = allPatientIds.filter(id => id !== patientId);
-
-                // Reset UI and global state
-                clearAllFields(); // This will reset currentPatientDataForApp, inputs, and hide sections
-                // populatePatientIdDatalistFromFirestore() is no longer needed for the main search input.
-                // It will be implicitly handled by populateModalPatientButtons when the modal opens.
-                showInitialScreenState(); // Ensure the initial patient selection screen is shown
+                clearAllFields(); 
+                showInitialScreenState(); 
             } catch (error) {
                 console.error("Error deleting patient and screenings:", error);
                 showStatusMessage(`Error deleting patient "${patientId}".`, "error");
@@ -2060,28 +2127,17 @@
             overview.style.display = 'flex';
             overviewTitle.style.display = 'block';
         }
-
-        // This function is now only used to populate the 'allPatientIds' array,
-        // which is then used by the modal's filter and buttons.
-        // The main page search input no longer uses a datalist.
+        
         async function populatePatientIdDatalistFromFirestore() {
             if (!currentUserId) return;
             const patientsCollectionRef = collection(db, "users", currentUserId, "patients");
-            // const localExistingPatientIdsDatalist = document.getElementById('existing-patient-ids'); // This element is removed
-
-            // if(localExistingPatientIdsDatalist) localExistingPatientIdsDatalist.innerHTML = ''; // No longer needed
-
+            
             try {
                 const querySnapshot = await getDocs(patientsCollectionRef);
                 const patientIds = new Set();
                 querySnapshot.forEach((docSnap) => patientIds.add(docSnap.id));
-
-                // Update the global allPatientIds array
                 allPatientIds = Array.from(patientIds);
                 allPatientIds.sort();
-
-                // The options were previously added to the datalist here, which is now removed.
-                // The modal's patient buttons will be populated from allPatientIds when the modal opens.
             } catch (error) {
                 console.error("Error populating patient ID list from Firestore:", error);
                 showStatusMessage("Error loading patient list.", "error");
@@ -2181,7 +2237,7 @@
                         injury: data.injuryAtScreening,
                         bodyweight: data.bodyweightAtScreening,
                         injuredSide: data.injuredSideAtScreening,
-                        screeningId: screeningDocId // Set the loaded screening ID
+                        screeningId: screeningDocId 
                     };
 
                     if(fpNrInput) fpNrInput.value = currentPatientDataForApp.patientId || '';
@@ -2201,7 +2257,7 @@
                     });
 
                     updateGraphsAndTable();
-                    saveInputsToLocalStorage(); // Save the loaded screening data to localStorage
+                    saveInputsToLocalStorage(); 
                     showStatusMessage('Test data loaded.', 'success');
                     displayPatientInfoInCard(currentPatientDataForApp);
                      if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
@@ -2234,9 +2290,9 @@
                 showStatusMessage('Test deleted.', 'success');
 
                 if (currentPatientDataForApp.screeningId === screeningDocId && currentPatientDataForApp.patientId === patientId) {
-                    resetScreeningInputFields(); // Clears inputs and currentPatientDataForApp.screeningId
+                    resetScreeningInputFields(); 
                     updateGraphsAndTable();
-                    saveInputsToLocalStorage(); // Save the cleared state
+                    saveInputsToLocalStorage(); 
                 }
                 await displayTestsForPatientFromFirestore(patientId);
             } catch (error) {
@@ -2285,10 +2341,9 @@
             try {
                 const screeningsCollectionRef = collection(db, "users", currentUserId, "patients", patientId, "screenings");
                 const docRef = await addDoc(screeningsCollectionRef, screeningData);
-                currentPatientDataForApp.screeningId = docRef.id; // Set the new screening as active
+                currentPatientDataForApp.screeningId = docRef.id; 
                 showStatusMessage("Screening saved!", "success");
-                await displayTestsForPatientFromFirestore(patientId); // Refresh test list
-                // Highlight the newly saved test
+                await displayTestsForPatientFromFirestore(patientId); 
                 const activeLi = selectedPatientTestsListUL.querySelector(`li[data-screening-id="${docRef.id}"]`);
                 if (activeLi) {
                     clearActiveTestItemState();
@@ -2296,14 +2351,13 @@
                 }
                 displayPatientInfoInCard(currentPatientDataForApp);
                  if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
-                 saveInputsToLocalStorage(); // Save current state including new screeningId
+                 saveInputsToLocalStorage(); 
             } catch (error) {
                 console.error("Error saving screening:", error);
                 showStatusMessage("Error saving screening.", "error");
             }
         }
-
-        // New function to load and display patient data directly
+        
         async function loadAndDisplayPatient(patientId) {
             if (!currentUserId || !patientId) {
                 showStatusMessage("Invalid patient ID or not logged in.", "error");
@@ -2313,9 +2367,8 @@
                 const patientDocRef = doc(db, "users", currentUserId, "patients", patientId);
                 const patientDocSnap = await getDoc(patientDocRef);
                 if (patientDocSnap.exists()) {
-                    currentPatientDataForApp = { patientId: patientId, ...patientDocSnap.data(), screeningId: null }; // Clear screeningId when selecting a patient this way
+                    currentPatientDataForApp = { patientId: patientId, ...patientDocSnap.data(), screeningId: null }; 
 
-                    // Update main patient info fields
                     if(fpNrInput) fpNrInput.value = currentPatientDataForApp.patientId;
                     if(ageInput) ageInput.value = currentPatientDataForApp.age;
                     if(genderSelect) genderSelect.value = currentPatientDataForApp.gender;
@@ -2327,14 +2380,13 @@
                     displayPatientInfoInCard(currentPatientDataForApp);
                     if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
                     await displayTestsForPatientFromFirestore(patientId);
-                    resetScreeningInputFields(); // Clears ASH inputs and active test state
+                    resetScreeningInputFields(); 
                     updateGraphsAndTable();
-                    saveInputsToLocalStorage(); // Saves patient data and empty ASH inputs
+                    saveInputsToLocalStorage(); 
 
-                    // Do NOT hide patient choice section and search container
                     if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
                     showStatusMessage(`Patient "${patientId}" loaded successfully.`, "success");
-                    closePatientModal(); // Close the patient search modal
+                    closePatientModal(); 
                 } else {
                     showStatusMessage(`Patient data for ${patientId} not found.`, "error");
                 }
@@ -2356,22 +2408,16 @@
             });
         }
         if (fpNrInputSearch) {
-            // Removed focus listener for datalist as it's no longer used.
-            // fpNrInputSearch.addEventListener('focus', populatePatientIdDatalistFromFirestore);
             fpNrInputSearch.addEventListener('input', async (e) => {
                 const enteredPatientId = e.target.value.trim();
-                // We no longer rely on datalist options directly for checking existence on main page input.
-                // We will attempt to fetch from Firestore if an ID is entered.
-
+                
                 if (enteredPatientId && currentUserId) {
                     try {
                         const patientDocRef = doc(db, "users", currentUserId, "patients", enteredPatientId);
                         const patientDocSnap = await getDoc(patientDocRef);
                         if (patientDocSnap.exists()) {
-                            // Only update patient metadata and display card, do NOT load a specific screening
                             currentPatientDataForApp = { patientId: enteredPatientId, ...patientDocSnap.data(), screeningId: null };
 
-                            // Update main patient info fields
                             if(fpNrInput) fpNrInput.value = currentPatientDataForApp.patientId;
                             if(ageInput) ageInput.value = currentPatientDataForApp.age;
                             if(genderSelect) genderSelect.value = currentPatientDataForApp.gender;
@@ -2383,29 +2429,26 @@
                             displayPatientInfoInCard(currentPatientDataForApp);
                             if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
                             await displayTestsForPatientFromFirestore(enteredPatientId);
-                            resetScreeningInputFields(); // Clears ASH inputs and active test state
+                            resetScreeningInputFields(); 
                             updateGraphsAndTable();
-                            saveInputsToLocalStorage(); // Saves patient data and empty ASH inputs
+                            saveInputsToLocalStorage(); 
 
                             if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
                             showStatusMessage(`Patient "${enteredPatientId}" data displayed. Select a test from the log.`, "info");
                         } else {
-                            // If patient ID is typed but not found (e.g., deleted recently)
                             showStatusMessage(`Patient ID not found: ${enteredPatientId}`, "warning");
-                            clearAllFields(); // Clear UI if ID is not valid
+                            clearAllFields(); 
                         }
                     } catch (error) {
                         console.error("Error fetching patient on main page search:", error);
                         showStatusMessage("Error loading patient data.", "error");
                     }
                 } else if (!enteredPatientId) {
-                    // If input is cleared, clear patient data and UI
                     clearAllFields();
                 }
             });
         }
-
-        // Event listener for the new Edit Patient Profile button
+        
         if (editPatientProfileButton) {
             editPatientProfileButton.addEventListener('click', () => {
                 if (currentPatientDataForApp.patientId) {
@@ -2415,8 +2458,7 @@
                 }
             });
         }
-
-        // Event listener for the new Delete Patient Profile button
+        
         if (deletePatientProfileButton) {
             deletePatientProfileButton.addEventListener('click', () => {
                 if (currentPatientDataForApp.patientId) {
@@ -2458,7 +2500,7 @@
         });
         if (pdfPreviewButton) pdfPreviewButton.addEventListener('click', enterPreviewMode);
         if (exportExcelButton) exportExcelButton.addEventListener('click', exportTableToCsv);
-        if (previewExitButtonInline) previewExitButtonInline.addEventListener('click', exitPreviewMode); /* Corrected typo here */
+        if (previewExitButtonInline) previewExitButtonInline.addEventListener('click', exitPreviewMode); 
         if (clearAllButton) clearAllButton.addEventListener('click', clearAllFields);
         if(saveDataButton) saveDataButton.addEventListener('click', saveScreeningToFirestore);
 
@@ -2480,7 +2522,7 @@
                 if (gd && gd.classList.contains('js-plotly-plot') && typeof gd.layout !== 'undefined') { 
                      try {
                         Plotly.Plots.resize(gd);
-                    } catch (e) { /* Ignore resize errors if plot not fully rendered */ }
+                     } catch (e) { /* Ignore resize errors if plot not fully rendered */ }
                 }
             });
         });
