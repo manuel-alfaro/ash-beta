@@ -57,7 +57,7 @@
             --graph-box-height: 340px; /* Default height */
             --sidebar-width: 180px;
             --normal-font-weight: 400;
-            --semibold-font-weight: 400;
+            --semibold-font-weight: 400; /* Changed from 600 to 400 as per Avenir's typical weights if semibold isn't distinct */
             --bold-font-weight: 700;
             --main-content-margin: 20px;
         }
@@ -77,11 +77,11 @@
             font-synthesis: none;
         }
         .app-layout {
-            display: none;
+            display: none; /* Initially hidden, shown by JS after auth check */
             flex-direction: row;
             width: 100%;
             min-height: 100vh;
-            margin-top: 0;
+            margin-top: 0; /* Ensure no top margin for the layout itself */
         }
         .loading-message {
             display: flex;
@@ -91,10 +91,10 @@
             font-size: 1.2em;
             color: var(--app-primary-color);
             text-align: center;
-            position: fixed;
+            position: fixed; /* Fixed position to cover the whole screen */
             top: 0; left: 0; width: 100%;
-            background-color: var(--light-gray);
-            z-index: 2000;
+            background-color: var(--light-gray); /* Same as body background */
+            z-index: 2000; /* High z-index to be on top */
         }
         .status-message {
             height: auto;
@@ -105,14 +105,14 @@
             left: 50%;
             transform: translateX(-50%);
             width: auto;
-            display: none;
+            display: none; /* Initially hidden */
             font-size: 0.95rem;
             position: fixed;
-            z-index: 2000;
+            z-index: 2000; /* Ensure it's above other content */
             -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.1); /* Subtle border for the glass effect */
         }
         .status-message.success { background-color: var(--status-success-bg); color: var(--text-color); }
         .status-message.error { background-color: var(--status-error-bg); color: var(--text-color); }
@@ -126,21 +126,21 @@
             padding: 20px 15px;
             display: flex;
             flex-direction: column;
-            position: fixed;
+            position: fixed; /* Fixed position for the sidebar */
             top: 0;
             left: 0;
-            height: 100vh;
-            overflow-y: auto;
-            z-index: 100;
-            border-right: none;
+            height: 100vh; /* Full viewport height */
+            overflow-y: auto; /* Scroll if content exceeds height */
+            z-index: 100; /* Ensure sidebar is above main content scrollbar but below modals */
+            border-right: none; /* Removed border, using background color for separation */
         }
         .sidebar-logo-placeholder {
            display: flex;
            align-items: center;
            justify-content: center;
-           height: 50px;
-           margin-bottom: 30px;
-           font-size: 1.8rem;
+           height: 50px; /* Adjust as needed */
+           margin-bottom: 30px; /* Space below logo */
+           font-size: 1.8rem; /* Example icon size */
            color: var(--app-primary-color);
         }
         .sidebar-buttons { display: flex; flex-direction: column; gap: 12px; }
@@ -152,132 +152,132 @@
             font-weight: var(--normal-font-weight);
             padding: 10px 15px;
             color: var(--app-primary-color);
-            background-color: transparent;
-            background-image: none;
-            border: none;
+            background-color: transparent; /* Clear background */
+            background-image: none; /* Remove any gradients by default */
+            border: none; /* No border by default */
             border-radius: var(--border-radius);
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: none;
+            box-shadow: none; /* No shadow by default */
             letter-spacing: 0.5px;
-            width: 100%;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            width: 100%; /* Full width of sidebar padding */
+            text-align: left; /* Align text to the left */
+            display: flex; /* For icon and text alignment */
+            align-items: center; /* Vertically center icon and text */
+            gap: 10px; /* Space between icon and text */
         }
 
         .app-sidebar button i, .app-sidebar a > button i {
-            width: 20px;
-            text-align: center;
-            color: var(--app-primary-color);
+            width: 20px; /* Fixed width for icon container */
+            text-align: center; /* Center icon */
+            color: var(--app-primary-color); /* Icon color matches text */
             transition: color 0.3s ease;
-            flex-shrink: 0;
-            font-size: 1em;
-            line-height: 1;
+            flex-shrink: 0; /* Prevent icon from shrinking */
+            font-size: 1em; /* Icon size relative to button font size */
+            line-height: 1; /* Ensure icon is vertically centered if it has extra space */
         }
          .app-sidebar button .button-text, .app-sidebar a > button .button-text {
-            line-height: 1;
-            flex-grow: 1;
+            line-height: 1; /* Ensure text is vertically aligned */
+            flex-grow: 1; /* Allow text to take remaining space */
         }
 
         .app-sidebar button:not(#logout-button):hover,
         .app-sidebar a > button:not(#logout-button):hover {
             background-image: linear-gradient(to right, var(--app-button-light-gradient-start), var(--app-button-light-gradient-end));
-            color: var(--app-text-on-primary);
-            transform: translateY(-1px);
-            border-color: transparent;
+            color: var(--app-text-on-primary); /* Text color on hover */
+            transform: translateY(-1px); /* Subtle lift effect */
+            border-color: transparent; /* Ensure no border on hover if one was added for specific states */
         }
 
         .app-sidebar button:not(#logout-button):hover i,
         .app-sidebar a > button:not(#logout-button):hover i {
-            color: var(--app-text-on-primary);
+            color: var(--app-text-on-primary); /* Icon color changes with text on hover */
         }
 
         .app-sidebar button:active, .app-sidebar a > button:active {
-            transform: translateY(0px);
+            transform: translateY(0px); /* Reset lift on active */
         }
 
         .app-sidebar button#logout-button {
-            margin-top: 10px;
-            background-image: none;
+            margin-top: 10px; /* Space above logout button */
+            background-image: none; /* Override general hover if needed */
             background-color: transparent;
             color: var(--app-primary-color);
-            border: 1px solid var(--app-primary-color);
+            border: 1px solid var(--app-primary-color); /* Distinct border for logout */
         }
         .app-sidebar button#logout-button:hover {
             background-color: var(--app-primary-color);
             color: var(--app-text-on-primary);
         }
         .app-sidebar button#logout-button i {
-            color: var(--app-primary-color);
+             color: var(--app-primary-color); /* Initial icon color for logout */
         }
         .app-sidebar button#logout-button:hover i {
-            color: var(--app-text-on-primary);
+            color: var(--app-text-on-primary); /* Icon color on logout hover */
         }
         .app-sidebar a { text-decoration: none; display: block; }
         /* End of Sidebar Button Styling */
 
 
         .sidebar-user-info {
-            margin-top: auto;
-            padding: 15px 10px;
+            margin-top: auto; /* Pushes this section to the bottom */
+            padding: 15px 10px; /* Padding around user info */
             text-align: center;
-            border-top: 1px solid var(--medium-gray);
+            border-top: 1px solid var(--medium-gray); /* Separator line */
         }
         .user-details {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 15px;
+            gap: 8px; /* Space between name and email */
+            margin-bottom: 15px; /* Space before logout button */
         }
         #loggedInUserName {
             font-weight: var(--semibold-font-weight);
             font-size: 0.95rem;
             color: var(--app-primary-color);
-            overflow-wrap: break-word;
+            overflow-wrap: break-word; /* Break long names */
             word-break: break-all;
         }
         #loggedInUserEmailDisplay {
             font-size: 0.75rem;
             color: var(--dark-gray);
-            overflow-wrap: break-word;
+            overflow-wrap: break-word; /* Break long emails */
             word-break: break-all;
         }
 
         .sidebar-social-links {
-            padding-top: 10px;
-            margin-bottom: 25px;
+            padding-top: 10px; /* Space above social links */
+            margin-bottom: 25px; /* Ensures some space at the very bottom */
             text-align: center;
         }
         .sidebar-social-links a { color: var(--app-primary-color); margin: 0 20px; font-size: 1.5rem; text-decoration: none; transition: color 0.2s ease; }
         .sidebar-social-links a:hover { color: var(--app-secondary-color); }
         .app-main-content {
             flex-grow: 1;
-            margin-left: calc(var(--sidebar-width) + var(--main-content-margin));
-            padding: 30px 40px;
-            background-color: var(--white);
-            overflow-y: auto;
-            height: 100vh;
-            box-sizing: border-box;
+            margin-left: calc(var(--sidebar-width) + var(--main-content-margin)); /* Accommodate fixed sidebar and margin */
+            padding: 30px 40px; /* Generous padding */
+            background-color: var(--white); /* Contrasting background for content */
+            overflow-y: auto; /* Allow scrolling for main content if it exceeds viewport height */
+            height: 100vh; /* Make it scrollable within its own area */
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
         }
         .content-container {
-            max-width: 1100px;
-            margin: 0 auto;
+            max-width: 1100px; /* Max width for content readability */
+            margin: 0 auto; /* Center the content container */
         }
         h1, h2, h3 { font-family: 'Avenir', sans-serif; margin-bottom: 0.75em; font-weight: var(--normal-font-weight); }
         h1 { text-align: left; font-size: 2.0rem; margin-top: 0; margin-bottom: 1em; color: var(--app-primary-color); font-weight: var(--normal-font-weight); }
         h2.section-title-main {
-            font-size: 1.5rem;
-            padding-bottom: 0.4em;
-            margin-top: 1.8em;
+            font-size: 1.5rem; /* Slightly smaller than h1 */
+            padding-bottom: 0.4em; /* Space for the border */
+            margin-top: 1.8em; /* Space above section titles */
             color: var(--app-secondary-color);
             font-weight: var(--normal-font-weight);
         }
         h3.position-title, h3.normative-title { font-size: 1.15rem; color: var(--app-primary-color); margin-bottom: 0.3em; font-weight: var(--normal-font-weight); }
         h3.normative-title { text-align: center;}
-        #report-content { background-color: var(--white); padding: 15px 0; }
+        #report-content { background-color: var(--white); padding: 15px 0; } /* Ensure report content itself doesn't have conflicting background */
 
         #patient-choice-container {
             background-color: var(--box-background-color);
@@ -287,42 +287,56 @@
         }
         #patient-choice-section {
             display: flex;
-            justify-content: center;
+            justify-content: center; /* Center the choice boxes */
             align-items: center;
-            gap: 30px;
+            gap: 30px; /* Space between choice boxes */
         }
         .choice-box {
-            background-color: transparent;
+            background-color: transparent; /* Start transparent */
             border: 1px solid var(--medium-gray);
             border-radius: var(--border-radius);
             padding: 20px 25px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s ease;
-            min-width: 180px;
-            box-shadow: none;
+            min-width: 180px; /* Ensure boxes have a decent size */
+            box-shadow: none; /* No shadow initially */
         }
         .choice-box:hover {
-            background-color: rgba(40, 84, 132, 0.8);
-            border-color: transparent;
+            background-color: rgba(40, 84, 132, 0.8); /* Darker blue on hover, from light gradient */
+            border-color: transparent; /* Hide border when background appears */
         }
         .choice-box:hover i,
         .choice-box:hover span {
-            color: white;
+            color: white; /* Text and icon become white on hover */
         }
         .choice-box.active-choice {
-            background-color: var(--app-primary-color);
+            background-color: var(--app-primary-color); /* Primary color when active */
             color: white;
-            border-color: var(--app-primary-color);
-            box-shadow: var(--subtle-shadow);
+            border-color: var(--app-primary-color); /* Border matches background */
+            box-shadow: var(--subtle-shadow); /* Add a subtle shadow when active */
         }
         .choice-box.active-choice i,
         .choice-box.active-choice span {
-            color: white;
+            color: white; /* Ensure icon and text are white when active */
+        }
+
+        .choice-box i {
+            font-size: 2.2rem;
+            color: var(--app-primary-color); /* Icon color matches primary theme */
+            margin-bottom: 10px;
+            display: block; /* Ensure icon is on its own line */
+            transition: color 0.2s ease;
+        }
+        .choice-box span {
+            font-size: 1rem;
+            color: var(--text-color); /* Default text color */
+            font-weight: var(--semibold-font-weight);
+            transition: color 0.2s ease;
         }
 
         #existing-patient-search-container {
-            display: none;
+            display: none; /* Hidden by default */
             margin-bottom: 25px;
             padding: 20px;
             background-color: var(--box-background-color);
@@ -342,12 +356,12 @@
             border-radius: var(--border-radius);
             background-color: var(--white);
             color: var(--text-color);
-            width: 100%;
+            width: 100%; /* Full width of its container */
             box-sizing: border-box;
         }
         #existing-patient-search-container input[type="text"]:focus {
-            border-color: var(--app-primary-color);
-            outline: 2px solid var(--app-secondary-color);
+            border-color: var(--app-primary-color); /* Highlight border on focus */
+            outline: 2px solid var(--app-secondary-color); /* Custom outline */
         }
 
         .modal-overlay {
@@ -356,40 +370,40 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.4);
-            -webkit-backdrop-filter: blur(8px);
+            background-color: rgba(0,0,0,0.4); /* Semi-transparent black */
+            -webkit-backdrop-filter: blur(8px); /* Frosted glass effect for supporting browsers */
             backdrop-filter: blur(8px);
-            display: none;
+            display: none; /* Hidden by default */
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 1000; /* High z-index to be on top */
         }
         .modal-content {
-            background-color: rgba(255, 255, 255, 0.1);
-            -webkit-backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.1); /* More transparent white for the modal body */
+            -webkit-backdrop-filter: blur(10px); /* Slightly more blur for the modal content itself */
             backdrop-filter: blur(10px);
             padding: 30px 40px;
-            border-radius: 0.75rem;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            border-radius: 0.75rem; /* Softer radius */
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); /* Tailwind-like shadow */
             width: auto;
-            max-width: 650px;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            border: none;
-            color: var(--white);
+            max-width: 650px; /* Max width for the modal */
+            max-height: 90vh; /* Max height to prevent overflow on small screens */
+            overflow-y: auto; /* Scroll if content exceeds max height */
+            position: relative; /* For potential absolute positioning of child elements like a close button */
+            border: none; /* No border for the modal content itself */
+            color: var(--white); /* Text color inside modal */
         }
         .modal-content h3 {
             margin-top: 0;
             margin-bottom: 25px;
-            color: var(--white);
+            color: var(--white); /* White title */
             text-align: center;
             font-size: 1.6rem;
-            font-weight: 300;
+            font-weight: 300; /* Lighter font weight for title */
         }
         .modal-form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Responsive grid */
             gap: 20px;
             margin-bottom: 25px;
         }
@@ -400,41 +414,41 @@
         .modal-form-item label {
             margin-bottom: 6px;
             font-size: 0.85rem;
-            color: rgba(255,255,255,0.8);
+            color: rgba(255,255,255,0.8); /* Lighter label color */
             font-weight: 300;
         }
         .modal-form-item input,
         .modal-form-item select {
             padding: 10px 12px;
-            border: none;
+            border: none; /* No border for inputs */
             border-radius: var(--border-radius);
             font-size: 0.95rem;
             width: 100%;
             box-sizing: border-box;
-            background-color: rgba(255,255,255,0.1);
-            color: var(--white);
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+            background-color: rgba(255,255,255,0.1); /* Slightly transparent white background */
+            color: var(--white); /* White text for input */
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); /* Subtle inner shadow */
         }
         .modal-form-item select option {
-            color: var(--text-color);
-            background-color: var(--white);
+            color: var(--text-color); /* Standard text color for dropdown options */
+            background-color: var(--white); /* White background for options */
         }
-        .modal-form-item select {
+        .modal-form-item select { /* Ensure select text is white if not overridden by option */
             color: var(--white);
         }
-        .modal-form-item select option[value=""] {
+        .modal-form-item select option[value=""] { /* Style for placeholder option */
             color: rgba(255,255,255,0.6);
         }
         .modal-form-item input:focus,
         .modal-form-item select:focus {
-            border-color: var(--app-secondary-color);
-            background-color: rgba(255,255,255,0.15);
+            border-color: var(--app-secondary-color); /* Should not be visible due to no border */
+            background-color: rgba(255,255,255,0.15); /* Slightly less transparent on focus */
             outline: none;
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1), 0 0 0 2px rgba(112, 188, 252, 0.4);
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1), 0 0 0 2px rgba(112, 188, 252, 0.4); /* Focus ring */
         }
         .modal-actions {
             display: flex;
-            justify-content: flex-end;
+            justify-content: flex-end; /* Align buttons to the right */
             gap: 15px;
             margin-top: 30px;
         }
@@ -456,10 +470,10 @@
         .modal-cancel-button {
             background-color: transparent;
             color: var(--white);
-            border: 1px solid rgba(255,255,255,0.5);
+            border: 1px solid rgba(255,255,255,0.5); /* Subtle border for cancel */
         }
         .modal-cancel-button:hover {
-            background-color: rgba(255,255,255,0.1);
+            background-color: rgba(255,255,255,0.1); /* Slight highlight on hover */
             border-color: var(--white);
         }
         .modal-patient-id-buttons {
@@ -468,10 +482,10 @@
             gap: 10px;
             margin-top: 15px;
             margin-bottom: 20px;
-            max-height: 200px;
+            max-height: 200px; /* Limit height and allow scroll */
             overflow-y: auto;
-            padding: 5px;
-            border: none;
+            padding: 5px; /* Padding around the button area */
+            border: none; /* No border for the container itself */
             border-radius: var(--border-radius);
         }
         .modal-patient-id-button {
@@ -482,39 +496,35 @@
             border-radius: var(--border-radius);
             cursor: pointer;
             transition: all 0.2s ease;
-            flex-basis: 150px; /* Added for better wrapping */
-            flex-grow: 1; /* Allow to grow but prefer 150px */
-            max-width: 180px; /* Max width for individual buttons */
-            text-align: center;
         }
         .modal-patient-id-button:hover {
             background-color: var(--app-secondary-color);
-            color: var(--app-primary-color);
+            color: var(--app-primary-color); /* Darker text on light blue hover */
             border-color: var(--app-secondary-color);
         }
 
         #patient-overview-section {
-            display: none;
-            flex-direction: row;
-            flex-wrap: wrap;
-            gap: 20px;
+            display: none; /* Initially hidden */
+            flex-direction: row; /* Default to row for wider screens */
+            flex-wrap: wrap; /* Allow wrapping on smaller screens or if content overflows */
+            gap: 20px; /* Space between columns/cards */
             margin-bottom: 25px;
-            align-items: stretch;
+            align-items: stretch; /* Make columns of equal height if they are in a row */
         }
 
         .overview-column {
             display: flex;
             flex-direction: column;
-            gap: 0;
+            gap: 0; /* No gap between items within a column if they are stacked directly */
         }
 
         .patient-details-column {
-            flex: 1 1 280px;
-            min-width: 260px;
+            flex: 1 1 280px; /* Flex properties for responsiveness */
+            min-width: 260px; /* Minimum width before wrapping or shrinking too much */
         }
 
         .test-log-column {
-            flex: 2 1 400px;
+            flex: 2 1 400px; /* Test log can take more space */
             min-width: 300px;
         }
 
@@ -522,65 +532,52 @@
             background-color: var(--box-background-color);
             border-radius: var(--border-radius);
             padding: 20px;
-            border: none;
-            box-shadow: none;
-            min-height: 320px;
+            border: none; /* Remove individual border, rely on parent or box-shadow */
+            box-shadow: none; /* Remove individual shadow, rely on parent or subtle effects */
+            min-height: 320px; /* Minimum height for visual consistency */
             display: flex;
-            flex-direction: column;
-            width: 100%;
-            height: 100%;
+            flex-direction: column; /* Stack content vertically */
+            width: 100%; /* Take full width of its column */
+            height: 100%; /* Try to take full height of its column (works with align-items: stretch on parent) */
             box-sizing: border-box;
         }
-         .patient-profile-title-internal {
+        .patient-profile-title-internal {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             font-size: 1.3rem;
             color: var(--app-primary-color);
-            margin-bottom: 10px;
-            padding-bottom: 5px;
+            margin-bottom: 10px; /* Space below title */
+            padding-bottom: 5px; /* Space for border */
             margin-top:0;
-            border-bottom: 1px solid var(--medium-gray);
-            position: relative; /* ADDED: To contain the absolutely positioned edit button */
+            border-bottom: 1px solid var(--medium-gray); /* Separator line */
         }
-        .edit-profile-button {
-            position: absolute;
-            top: 0; /* Adjust as needed */
-            right: 0; /* Adjust as needed */
-            background-color: var(--app-primary-color);
-            color: var(--app-text-on-primary);
-            border: none;
-            padding: 6px 12px;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: background-color 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            box-shadow: var(--subtle-shadow);
-        }
-        .edit-profile-button:hover {
-            background-color: var(--app-secondary-color);
+        .patient-card-edit-icon {
+            font-size: 0.9rem;
             color: var(--app-primary-color);
+            cursor: pointer;
+            padding: 5px; /* Clickable area */
+            transition: color 0.2s ease;
         }
-        .edit-profile-button i {
-            color: inherit; /* Inherit color from button */
+        .patient-card-edit-icon:hover {
+            color: var(--app-secondary-color);
         }
-
         .patient-card-header {
             display: flex;
-            align-items: center;
+            align-items: center; /* Vertically align icon and ID */
             margin-bottom: 15px;
-            padding-bottom: 15px;
-            justify-content: flex-start;
+            padding-bottom: 15px; /* Space before body content */
+            justify-content: flex-start; /* Align to the left */
         }
         .patient-card-icon {
-            font-size: 6rem;
+            font-size: 6rem; /* Large icon */
             color: var(--app-primary-color);
-            margin-right: 50px;
+            margin-right: 50px; /* More space between icon and ID */
         }
         .patient-card-id-container {
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
+            align-items: flex-start; /* Align label and ID to the left */
         }
         .patient-card-id-label {
             display: block;
@@ -590,40 +587,40 @@
         }
         .patient-card-id {
             display: block;
-            font-size: 1.8rem;
+            font-size: 1.8rem; /* Prominent patient ID */
             font-weight: var(--bold-font-weight);
             color: var(--app-primary-color);
         }
         .patient-card-body .info-item {
             display: flex;
-            align-items: center;
-            padding: 10px 0;
+            align-items: center; /* Align icon with text */
+            padding: 10px 0; /* Vertical padding for each item */
             font-size: 0.95rem;
         }
         .patient-card-body .info-item .info-icon {
-            color: var(--app-secondary-color);
+            color: var(--app-secondary-color); /* Use secondary color for icons */
             margin-right: 12px;
-            width: 22px;
+            width: 22px; /* Consistent icon width */
             text-align: center;
-            font-size: 1.2em;
+            font-size: 1.2em; /* Slightly larger icons */
         }
         .patient-card-body .info-item .label {
-            color: var(--dark-gray);
+            color: var(--dark-gray); /* Softer color for labels */
             font-weight: var(--normal-font-weight);
-            margin-right: auto;
+            margin-right: auto; /* Push value to the right */
         }
         .patient-card-body .info-item .value {
-            color: var(--text-color);
-            font-weight: var(--bold-font-weight);
-            text-align: right;
+            color: var(--text-color); /* Standard text color for values */
+            font-weight: var(--bold-font-weight); /* Make values stand out */
+            text-align: right; /* Align values to the right */
         }
 
         #selected-patient-tests-container .test-log-title-internal {
             font-size: 1.3rem;
             color: var(--app-primary-color);
-            margin-bottom: 18px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--medium-gray);
+            margin-bottom: 18px; /* More space below title */
+            padding-bottom: 10px; /* Space for border */
+            border-bottom: 1px solid var(--medium-gray); /* Separator line */
             margin-top:0;
             font-weight: var(--normal-font-weight);
         }
@@ -633,25 +630,25 @@
             padding: 0;
             margin: 0;
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            overflow-y: auto;
-            flex-grow: 1;
-            justify-content: flex-start;
-            align-content: flex-start;
+            flex-wrap: wrap; /* Allow items to wrap */
+            gap: 10px; /* Space between test items */
+            overflow-y: auto; /* Scroll if many tests */
+            flex-grow: 1; /* Allow list to take available vertical space */
+            justify-content: flex-start; /* Align items to the start */
+            align-content: flex-start; /* Align wrapped lines to the start */
         }
 
         #selected-patient-tests-list li {
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            flex-direction: column; /* Stack date and button */
+            justify-content: center; /* Center content vertically */
+            align-items: center; /* Center content horizontally */
             padding: 10px 12px;
-            border: 1px solid rgba(40, 84, 132, 0.3);
-            background-color: rgba(112, 188, 252, 0.05);
+            border: 1px solid rgba(40, 84, 132, 0.3); /* Subtle primary color border */
+            background-color: rgba(112, 188, 252, 0.05); /* Very light secondary background */
             border-radius: var(--border-radius);
-            min-width: 140px;
-            width: auto;
+            min-width: 140px; /* Minimum width for each test item */
+            width: auto; /* Adjust to content */
             box-sizing: border-box;
             text-align: center;
             transition: background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
@@ -659,16 +656,16 @@
         }
 
         #selected-patient-tests-list li:hover {
-            background-color: rgba(112, 188, 252, 0.3);
-            border-color: rgba(40, 84, 132, 0.6);
+            background-color: rgba(112, 188, 252, 0.3); /* Lighter blue on hover */
+            border-color: rgba(40, 84, 132, 0.6); /* Darker border on hover */
             box-shadow: var(--subtle-shadow);
         }
 
         #selected-patient-tests-list li.active-test-item,
         #selected-patient-tests-list li.active-test-item:hover {
-            background-color: rgba(112, 188, 252, 0.3);
-            border-color: var(--app-primary-color);
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.05);
+            background-color: rgba(112, 188, 252, 0.3); /* Consistent active state */
+            border-color: var(--app-primary-color); /* Stronger border for active */
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.05); /* Inner shadow for active */
         }
 
 
@@ -676,19 +673,19 @@
             color: var(--app-primary-color);
             font-size: 0.85rem;
             font-weight: var(--semibold-font-weight);
-            margin-bottom: 8px;
+            margin-bottom: 8px; /* Space between date and delete button */
         }
 
         #selected-patient-tests-list button.delete-test-btn {
             background-color: transparent;
-            border: 1px solid transparent;
+            border: 1px solid transparent; /* No border initially */
             color: var(--danger-color-dark);
             border-radius: var(--border-radius);
             cursor: pointer;
-            padding: 4px 7px;
+            padding: 4px 7px; /* Small padding */
             font-size: 0.8rem;
             transition: all 0.2s ease;
-            width: auto;
+            width: auto; /* Fit content */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -696,10 +693,10 @@
         #selected-patient-tests-list button.delete-test-btn:hover {
             background-color: var(--danger-color-dark);
             color: white;
-            border-color: var(--danger-color-dark);
+            border-color: var(--danger-color-dark); /* Show border matching background on hover */
         }
 
-        #patient-data-container { display:none !important; }
+        #patient-data-container { display:none !important; } /* This seems intentionally hidden, keeping it */
 
 
         #save-data-button-container { margin-top: 20px; margin-bottom: 20px; text-align: center; }
@@ -708,22 +705,22 @@
             background-color: transparent;
             color: var(--app-primary-color);
             border: 1px solid var(--app-primary-color);
-            padding: 10px 25px;
+            padding: 10px 25px; /* Good padding for a main action button */
             font-size: 1rem;
             border-radius: var(--border-radius);
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: none;
+            box-shadow: none; /* No shadow by default */
         }
         #save-data-button-main:hover {
             background-color: var(--app-primary-color);
             color: var(--app-text-on-primary);
         }
         #save-data-button-main i {
-            color: var(--app-primary-color);
+            color: var(--app-primary-color); /* Match button text color */
         }
         #save-data-button-main:hover i {
-            color: var(--app-text-on-primary);
+            color: var(--app-text-on-primary); /* Match button text color on hover */
         }
 
 
@@ -745,22 +742,22 @@
         .normative-graph-container { flex: 4; min-width: 260px; }
 
         .position-box, .normative-box {
-            border: none;
-            padding: 10px 20px 15px 20px;
+            border: none; /* Cleaner look, rely on background and shadow */
+            padding: 10px 20px 15px 20px; /* Adjusted padding */
             border-radius: var(--border-radius);
-            background-color: var(--box-background-color);
-            box-shadow: var(--subtle-shadow);
-            margin-bottom: 0;
+            background-color: var(--box-background-color); /* Use the box background color */
+            box-shadow: var(--subtle-shadow); /* Use a subtle shadow */
+            margin-bottom: 0; /* Gap handled by .position-row */
             transition: box-shadow 0.3s ease, opacity 0.3s ease;
             display: flex;
-            flex-direction: column;
-            height: var(--graph-box-height);
-            position: relative;
-            overflow: hidden;
+            flex-direction: column; /* Stack title and plot vertically */
+            height: var(--graph-box-height); /* Use variable for height */
+            position: relative; /* For pseudo-elements if any */
+            overflow: hidden; /* Prevent content from spilling */
         }
         .position-box.green-box {
-            box-shadow: 0 0 15px 5px var(--success-shadow-color);
-            border-color: var(--success-border-color);
+            box-shadow: 0 0 15px 5px var(--success-shadow-color); /* More prominent shadow for green box */
+            border-color: var(--success-border-color); /* If border is used, match success color */
         }
         .position-box::after { content: ''; position: absolute; top: -100px; right: -100px; width: 500px; height: 500px; background-image: radial-gradient(circle at top right, var(--success-gradient-start-color) 0%, rgba(from var(--light-gray) r g b / 0) 65% ); opacity: 0; pointer-events: none; z-index: 0; border-radius: 50%; transition: opacity 0.3s ease; }
         .position-box.green-box::after { opacity: 0.85; }
@@ -778,8 +775,8 @@
 
         /* PDF Preview / Print Mode Active */
         body.pdf-preview-active .app-sidebar,
-        body.pdf-preview-active #patient-choice-section,
         body.pdf-preview-active #patient-choice-container,
+        body.pdf-preview-active #patient-choice-section,
         body.pdf-preview-active #existing-patient-search-container,
         body.pdf-preview-active #patient-data-secondary-controls,
         body.pdf-preview-active #patient-data-container,
@@ -805,25 +802,21 @@
         {
             display: block !important;
         }
-         body.pdf-preview-active .position-row {
+        body.pdf-preview-active .position-row {
             display: flex !important;
-            flex-wrap: wrap !important; /* Allow wrapping */
-            gap: 10px !important; /* Keep a small gap */
+            flex-wrap: nowrap !important;
         }
 
          body.pdf-preview-active #results-title {
-            margin-top: 5mm !important;
-            text-align: center !important;
-           }
-
+             margin-top: 5mm !important;
+             text-align: center !important;
+        }
 
         body.pdf-preview-active .app-main-content {
             margin-left: 0 !important;
-            padding: 5mm 50mm !important;
+            padding: 5mm 50mm !important; /* User confirmed 50mm */
             height: auto !important;
             overflow: visible !important;
-            box-shadow: none !important; /* Ensure no box-shadow in print */
-            border: none !important; /* Ensure no border in print */
         }
         body.pdf-preview-active .content-container {
             max-width: 100% !important;
@@ -834,27 +827,36 @@
         }
         body.pdf-preview-active .position-row {
             flex-direction: row !important;
+            gap: 5mm !important;
             page-break-inside: avoid !important;
             width: 100% !important;
             box-sizing: border-box !important;
         }
-        /* PDF Graph Sizing - Reverted to inherit from main view where possible */
          body.pdf-preview-active .asymmetry-graph-container{
-            flex: 6 !important; /* Inherit from main view */
-            min-width: 0 !important; /* Allow flex to control size, will be overridden by flex-basis if needed */
+            width: 408px !important;
+            max-width: 408px !important;
+            height: 189px !important;
+            min-height: 189px !important;
             margin-bottom: 5mm !important;
             page-break-inside: avoid !important;
-           }
+            flex-grow: 0 !important;
+            flex-shrink: 0 !important;
+         }
          body.pdf-preview-active .normative-graph-container {
-            flex: 4 !important; /* Inherit from main view */
-            min-width: 0 !important; /* Allow flex to control size */
+            width: 272px !important;
+            max-width: 272px !important;
+            height: 189px !important;
+            min-height: 189px !important;
             margin-bottom: 5mm !important;
-           }
+            page-break-inside: avoid !important;
+            flex-grow: 0 !important;
+            flex-shrink: 0 !important;
+         }
         body.pdf-preview-active .position-box,
         body.pdf-preview-active .normative-box {
-            height: var(--graph-box-height) !important; /* Maintain height from main view */
-            min-height: var(--graph-box-height) !important;
-            width: 100% !important; /* Fill the flex container */
+            height: 100% !important;
+            min-height: 100% !important;
+            width: 100% !important;
             box-sizing: border-box !important;
             display: flex !important;
             flex-direction: column !important;
@@ -890,32 +892,32 @@
                 flex-direction: column;
             }
              .overview-column {
-                min-width: 100%;
+                min-width: 100%; /* Stack columns */
                 flex-basis: auto;
             }
             .patient-details-column, .test-log-column {
-                min-width: unset;
+                min-width: unset; /* Reset min-width when stacked */
             }
 
 
             .position-row { flex-direction: column; align-items: stretch; }
             .asymmetry-graph-container, .normative-graph-container { flex: none; width: 100%; min-width: unset; }
-            .position-box, .normative-box { height: auto; min-height: unset; }
+            .position-box, .normative-box { height: auto; min-height: unset; } /* Allow height to adjust to content */
             #input-section-container { flex-direction: column; }
             .input-position-box { min-width: unset; }
 
 
-            body.pdf-preview-active .app-main-content { padding: 15px 30px; }
+            body.pdf-preview-active .app-main-content { padding: 15px 30px; } /* Adjust padding for PDF on medium screens */
             body.pdf-preview-active .position-row {
                 align-items: stretch;
-                flex-wrap: wrap;
+                flex-wrap: wrap; /* Allow wrapping for PDF on smaller screens if still too wide */
             }
             body.pdf-preview-active .asymmetry-graph-container,
             body.pdf-preview-active .normative-graph-container {
-                flex-basis: 100% !important;
+                flex-basis: 100% !important; /* Stack graphs in PDF on smaller viewports */
                 width: 100% !important;
                 max-width: 100% !important;
-                height: auto !important;
+                height: auto !important; /* Adjust height when stacked */
                 min-height: unset !important;
             }
             body.pdf-preview-active .position-box, body.pdf-preview-active .normative-box { height: auto; min-height: unset; }
@@ -940,17 +942,17 @@
                 flex-direction: column;
             }
             .overview-column {
-                 width: 100%;
-                 flex-basis: auto !important;
+                 width: 100%; /* Ensure columns take full width when stacked */
+                 flex-basis: auto !important; /* Override flex-basis */
             }
             .patient-details-column, .test-log-column {
                 min-width: unset;
-                flex-grow: 0;
+                flex-grow: 0; /* Prevent growing when stacked */
             }
 
             .input-row { flex-direction: column; align-items: flex-start; gap: 5px; } .input-row label { flex-basis: auto; width: 100%; text-align: left; margin-bottom: 3px;} .input-row .input-wrapper { flex-basis: auto; width: 100%; justify-content: flex-start; } .input-row input { width: auto; font-size: 1.2rem; font-weight: var(--normal-font-weight); } .input-row input::placeholder { font-size: 0.8rem; font-weight: var(--normal-font-weight);} .unit-text { margin-left: 8px; } .position-box, .normative-box { padding: 10px; margin-bottom: 0;}
             #preview-exit-button-inline { top: 10px; right: 10px; font-size: 0.8rem; padding: 6px 10px; }
-            body.pdf-preview-active .app-main-content { padding: 10px 15px; }
+            body.pdf-preview-active .app-main-content { padding: 10px 15px; } /* Adjust padding for PDF on small screens */
         }
         @media (max-width: 480px) { /* Extra small devices (phones) */
             h1 { font-size: 1.4rem; font-weight: var(--normal-font-weight);}
@@ -962,6 +964,7 @@
         @media print {
             body { background-color: white !important; color: black !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; font-size: 9pt !important; padding: 0 !important; display: block !important; font-weight: normal !important;}
             .app-sidebar,
+            #patient-choice-container,
             #patient-choice-section,
             #existing-patient-search-container,
             #patient-data-secondary-controls,
@@ -993,16 +996,16 @@
             }
              .position-row {
                 display: flex !important;
-                flex-wrap: wrap !important; /* Allow wrapping for print if fixed widths don't fit */
+                flex-wrap: nowrap !important; /* Try to keep side-by-side */
             }
-            #results-title {
-                margin-top: 5mm !important;
-                text-align: center !important;
+             #results-title {
+                 margin-top: 5mm !important;
+                 text-align: center !important;
             }
 
 
             .app-layout { display: block !important; }
-            .app-main-content { margin: 0 !important; padding: 5mm !important; width: 100% !important; max-width: 100% !important; box-shadow: none !important; border: none !important; height: auto !important; overflow: visible !important; }
+            .app-main-content { margin: 0 !important; padding: 5mm 50mm !important; /* User confirmed 50mm for print */ width: 100% !important; max-width: 100% !important; box-shadow: none !important; border: none !important; height: auto !important; overflow: visible !important; }
             .content-container { margin: 0 !important; padding: 0 !important; max-width: 100% !important; }
 
             .explanation-box { margin: 0 0 5mm 0 !important; border-left-color: black !important; padding: 10px !important; font-size: 8pt !important; }
@@ -1011,26 +1014,42 @@
             h3 { font-size: 10pt !important; margin-bottom: 3mm !important; color: black !important; font-weight: normal !important; }
             #report-content { padding: 0 !important; }
 
-            /* PDF Graph Sizing - Reverted to match main view proportions */
+            .position-row {
+                gap: 5mm !important; /* Gap between graph containers */
+                page-break-inside: avoid !important;
+            }
+
             .asymmetry-graph-container {
-                flex: 6 !important;
-                min-width: 0 !important; /* Allow flex to control size */
+                width: 408px !important;
+                max-width: 408px !important;
+                height: 189px !important;
+                min-height: 189px !important;
+                margin-bottom: 5mm !important;
+                page-break-inside: avoid !important;
+                flex-grow: 0 !important;
+                flex-shrink: 0 !important;
             }
             .normative-graph-container {
-                flex: 4 !important;
-                min-width: 0 !important; /* Allow flex to control size */
+                width: 272px !important;
+                max-width: 272px !important;
+                height: 189px !important;
+                min-height: 189px !important;
+                margin-bottom: 5mm !important;
+                page-break-inside: avoid !important;
+                flex-grow: 0 !important;
+                flex-shrink: 0 !important;
             }
             .position-box, .normative-box {
                 box-shadow: none !important;
                 border: 1px solid #ccc !important;
-                height: var(--graph-box-height) !important;
-                min-height: var(--graph-box-height) !important;
+                height: 100% !important;
+                min-height: 100% !important;
+                width: 100% !important;
                 padding: 5px !important;
                 background-color: var(--white) !important;
                 overflow: hidden !important;
                 display: flex !important;
                 flex-direction: column !important;
-                width: 100% !important;
             }
             .position-box.green-box { box-shadow: none !important; border: 1px solid #ccc !important; }
             .position-box::after { display: none !important; }
@@ -1110,10 +1129,9 @@
                         <div id="patient-overview-section">
                             <div class="overview-column patient-details-column">
                                 <div id="patient-identity-card" class="patient-card" style="display: none;">
-                                    <h3 class="patient-profile-title-internal">Patient Profile
-                                        <button id="edit-patient-profile-btn" class="edit-profile-button">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </button>
+                                    <h3 class="patient-profile-title-internal">
+                                        <span>Patient Profile</span>
+                                        <i class="fas fa-pencil-alt patient-card-edit-icon" title="Edit Patient Details"></i>
                                     </h3>
                                     <div class="patient-card-header">
                                         <i class="fas fa-address-card patient-card-icon"></i>
@@ -1134,9 +1152,9 @@
                             </div>
                             <div class="overview-column test-log-column">
                                 <div id="selected-patient-tests-container" style="display: none;">
-                                       <h3 class="test-log-title-internal">Test Log</h3>
+                                     <h3 class="test-log-title-internal">Test Log</h3>
                                     <ul id="selected-patient-tests-list">
-                                    </ul>
+                                        </ul>
                                 </div>
                             </div>
                         </div>
@@ -1156,25 +1174,25 @@
                         <div class="position-row"> <div class="asymmetry-graph-container"> <div id="position-box-T" class="position-box"> <h3 class="position-title">Position T - Asymmetry</h3> <div id="bar-chart-T" class="js-plotly-plot"></div> </div> </div> <div class="normative-graph-container"> <div id="normative-chart-container-T" class="normative-box"> <h3 class="normative-title">Position T - Normative Comparison</h3> <div id="normative-chart-T" class="js-plotly-plot"></div> </div> </div> </div>
                         <div id="normative-placeholder" style="display: none;"> Enter bodyweight to see normative comparisons. </div>
                         <div id="bottom-area"></div>
-                           <div id="patient-data-container" style="display:none;">
-                               <div id="patient-id-and-secondary-controls">
-                                        <div class="patient-id-standalone-item">
-                                            <label for="fp-nr-input">Patient ID (Internal):</label>
-                                            <input id="fp-nr-input" type="text">
-                                            <datalist id="existing-patient-ids"></datalist>
-                                        </div>
-                                        <div id="patient-data-secondary-controls">
-                                            <div class="control-item"><label class="control-label" for="injured-side-radio">Injured Side:</label><select id="injured-side-radio"><option value="Left">Left</option><option value="Right">Right</option></select></div>
-                                            <div class="control-item"><label class="control-label" for="bodyweight-input">Bodyweight (kg):</label><input id="bodyweight-input" type="number"></div>
-                                        </div>
-                                    </div>
-                                    <div id="patient-data-grid">
-                                        <div class="patient-data-item"><label for="age-input">Age:</label><input id="age-input" type="number"></div>
-                                        <div class="patient-data-item"><label for="gender-select">Gender:</label><select id="gender-select"><option value="">Select...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option><option value="Prefer not to say">Prefer not to say</option></select></div>
-                                        <div class="patient-data-item"><label for="sport-input">Sport:</label><input id="sport-input" type="text"></div>
-                                        <div class="patient-data-item"><label for="injury-input">Injury (Optional):</label><input id="injury-input" type="text"></div>
-                                    </div>
-                           </div>
+                         <div id="patient-data-container" style="display:none;">
+                             <div id="patient-id-and-secondary-controls">
+                                 <div class="patient-id-standalone-item">
+                                     <label for="fp-nr-input">Patient ID (Internal):</label>
+                                     <input id="fp-nr-input" type="text">
+                                     <datalist id="existing-patient-ids"></datalist>
+                                 </div>
+                                 <div id="patient-data-secondary-controls">
+                                     <div class="control-item"><label class="control-label" for="injured-side-radio">Injured Side:</label><select id="injured-side-radio"><option value="Left">Left</option><option value="Right">Right</option></select></div>
+                                     <div class="control-item"><label class="control-label" for="bodyweight-input">Bodyweight (kg):</label><input id="bodyweight-input" type="number"></div>
+                                 </div>
+                             </div>
+                             <div id="patient-data-grid">
+                                 <div class="patient-data-item"><label for="age-input">Age:</label><input id="age-input" type="number"></div>
+                                 <div class="patient-data-item"><label for="gender-select">Gender:</label><select id="gender-select"><option value="">Select...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option><option value="Prefer not to say">Prefer not to say</option></select></div>
+                                 <div class="patient-data-item"><label for="sport-input">Sport:</label><input id="sport-input" type="text"></div>
+                                 <div class="patient-data-item"><label for="injury-input">Injury (Optional):</label><input id="injury-input" type="text"></div>
+                             </div>
+                         </div>
                     </div>
                 </div>
             </div>
@@ -1248,8 +1266,6 @@
         const displayBodyweightCard = document.getElementById('display-bodyweight-card');
         const selectedPatientTestsContainer = document.getElementById('selected-patient-tests-container');
         const selectedPatientTestsListUL = document.getElementById('selected-patient-tests-list');
-        const editPatientProfileButton = document.getElementById('edit-patient-profile-btn');
-
 
         const plotlyConfig = { responsive: true, displaylogo: false, modeBarButtonsToRemove: ['sendDataToCloud', 'lasso2d', 'select2d', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'toggleSpikelines'] };
         const normativeThresholds = { I: { poor_max: 1.0, average_mid: 1.5, good_min: 2.0, excellent_min: 2.5 }, Y: { poor_max: 0.8, average_mid: 1.2, good_min: 1.6, excellent_min: 2.0 }, T: { poor_max: 1.2, average_mid: 1.8, good_min: 2.4, excellent_min: 3.0 } };
@@ -1322,7 +1338,7 @@
                     loggedInUserEmailDisplaySpan.textContent = currentUser.email || '';
                 }
 
-                await initializeAppUI();
+                await initializeAppUI(); // Initialize UI elements and listeners
                 if (appLoadingMessage) appLoadingMessage.style.display = 'none';
                 if (appLayout) appLayout.style.display = 'flex';
 
@@ -1331,7 +1347,7 @@
                 currentUserId = null;
                 if (appLoadingMessage) appLoadingMessage.textContent = 'Redirecting to login...';
                 localStorage.setItem('redirectToAfterLogin', window.location.pathname + window.location.search);
-                window.location.href = "index.html";
+                window.location.href = "index.html"; // Or your login page
             }
         });
 
@@ -1344,15 +1360,23 @@
             if (currentPatientDataForApp.patientId) {
                 displayPatientInfoInCard(currentPatientDataForApp);
                 await displayTestsForPatientFromFirestore(currentPatientDataForApp.patientId);
-                if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
-                // Hide choice sections if a patient is already loaded on init
-                if (patientChoiceSection) patientChoiceSection.style.display = 'none';
-                if (existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
-                if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
+                 if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
             } else {
                 showInitialScreenState();
             }
             updateGraphsAndTable();
+
+            // Add event listener for the patient card edit icon
+            const patientCardEditIcon = document.querySelector('#patient-identity-card .patient-card-edit-icon');
+            if (patientCardEditIcon) {
+                patientCardEditIcon.addEventListener('click', () => {
+                    if (currentPatientDataForApp && currentPatientDataForApp.patientId) {
+                        openPatientModal('existing-edit', currentPatientDataForApp.patientId);
+                    } else {
+                        showStatusMessage("No patient selected to edit.", "warning");
+                    }
+                });
+            }
         }
 
         function showStatusMessage(message, type = 'info', duration = 3000) {
@@ -1585,10 +1609,8 @@
                 const genderModalSelect = patientModalContent.querySelector('#modal-gender');
                 const injuredSideModalSelect = patientModalContent.querySelector('#modal-injured-side');
 
-                // Clear existing options before adding new ones to prevent duplicates
                 if(genderModalSelect) genderModalSelect.innerHTML = '';
                 if(injuredSideModalSelect) injuredSideModalSelect.innerHTML = '';
-
 
                 if (genderModalSelect) {
                     ['', 'Male', 'Female', 'Other'].forEach(val => genderModalSelect.add(new Option(val === '' ? 'Select...' : val, val)));
@@ -1604,23 +1626,23 @@
                 patientModalContent.querySelector('#modal-confirm-new')?.addEventListener('click', handleNewPatientConfirm);
                 patientModalContent.querySelector('#modal-cancel-new')?.addEventListener('click', closePatientModal);
             } else if (type === 'existing-search') {
-                await populateModalPatientIdButtonsAndDatalist();
+                await populateModalPatientIdButtonsAndDatalist(); // This now sets up buttons to call loadSelectedPatientAndCloseModal
                 const modalSearchInput = patientModalContent.querySelector('#modal-search-fp-nr');
                 if (modalSearchInput) {
-                    modalSearchInput.addEventListener('input', (e) => {
+                    modalSearchInput.addEventListener('input', async (e) => {
                         const searchVal = e.target.value.trim();
                         const options = Array.from(patientModalContent.querySelector('#modal-existing-patient-ids-list').options);
                         const matchedOption = options.find(opt => opt.value === searchVal);
                         if (matchedOption) {
-                            loadAndDisplayPatient(searchVal); // Changed: Directly load patient
+                            await loadSelectedPatientAndCloseModal(searchVal); // Changed from openPatientModal
                         }
                     });
                 }
                 patientModalContent.querySelector('#modal-cancel-search')?.addEventListener('click', closePatientModal);
             } else if (type === 'existing-edit') {
-                const capturedIdForEdit = patientIdToEdit;
+                const capturedIdForEdit = patientIdToEdit; // Capture patientIdToEdit
                 patientModalContent.querySelector('#modal-confirm-edit')?.addEventListener('click', () => {
-                    handleExistingPatientDone(capturedIdForEdit);
+                    handleExistingPatientDone(capturedIdForEdit); // Use captured ID
                 });
                 patientModalContent.querySelector('#modal-cancel-edit')?.addEventListener('click', closePatientModal);
             }
@@ -1655,8 +1677,8 @@
                     const button = document.createElement('button');
                     button.textContent = patientId;
                     button.classList.add('modal-patient-id-button');
-                    button.addEventListener('click', () => {
-                        loadAndDisplayPatient(patientId); // Changed: Directly load patient
+                    button.addEventListener('click', async () => { // Changed to call loadSelectedPatientAndCloseModal
+                        await loadSelectedPatientAndCloseModal(patientId);
                     });
                     container.appendChild(button);
                 });
@@ -1703,7 +1725,7 @@
             };
 
             const patientDataToSave = {
-                age: currentPatientDataForApp.age ? parseInt(currentPatientDataForApp.age) : null,
+                age: currentPatientDataForApp.age || null,
                 gender: currentPatientDataForApp.gender || null,
                 sport: currentPatientDataForApp.sport || null,
                 injury: currentPatientDataForApp.injury || null,
@@ -1746,9 +1768,7 @@
         }
 
         async function handleExistingPatientDone(patientIdToUpdate) {
-            console.log("handleExistingPatientDone called with ID:", patientIdToUpdate);
             if (!currentUserId || !patientIdToUpdate) {
-                console.warn("handleExistingPatientDone: Missing currentUserId or patientIdToUpdate.", currentUserId, patientIdToUpdate);
                 return;
             }
 
@@ -1760,12 +1780,12 @@
                 injury: patientModalContent.querySelector('#modal-injury').value,
                 injuredSide: patientModalContent.querySelector('#modal-injured-side').value,
                 bodyweight: patientModalContent.querySelector('#modal-bodyweight').value,
-                screeningId: null // Clear screeningId as we are confirming patient details, not a specific test
+                screeningId: currentPatientDataForApp.screeningId // Preserve currently loaded screeningId
             };
             currentPatientDataForApp = { ...updatedPatientDataFromModal };
 
             const patientDataToUpdateFirestore = {
-                age: updatedPatientDataFromModal.age ? parseInt(updatedPatientDataFromModal.age) : null,
+                age: updatedPatientDataFromModal.age || null,
                 gender: updatedPatientDataFromModal.gender || null,
                 sport: updatedPatientDataFromModal.sport || null,
                 injury: updatedPatientDataFromModal.injury || null,
@@ -1789,24 +1809,64 @@
 
                 displayPatientInfoInCard(currentPatientDataForApp);
                 if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
-                await displayTestsForPatientFromFirestore(patientIdToUpdate);
-
-                resetScreeningInputFields(); // Clear ASH inputs
+                // Test list is already displayed, no need to refresh unless patient ID changed (which it doesn't here)
+                // Screening inputs should remain as they are if a test was loaded
 
                 closePatientModal();
 
-                if (newPatientChoiceButton) newPatientChoiceButton.classList.remove('active-choice');
-                if (existingPatientChoiceButton) existingPatientChoiceButton.classList.remove('active-choice');
-                if (existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
                 if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
 
-                updateGraphsAndTable();
+                updateGraphsAndTable(); // Update graphs with potentially new bodyweight/injured side
                 saveInputsToLocalStorage();
             } catch (error) {
                 console.error("Error updating patient data:", error);
                 showStatusMessage("Error updating patient data.", "error");
             }
         }
+
+        async function loadSelectedPatientAndCloseModal(patientId) {
+             if (!currentUserId || !patientId) return;
+            try {
+                const patientDocRef = doc(db, "users", currentUserId, "patients", patientId);
+                const patientDocSnap = await getDoc(patientDocRef);
+
+                if (patientDocSnap.exists()) {
+                    currentPatientDataForApp = { patientId: patientId, ...patientDocSnap.data(), screeningId: null }; // Reset screeningId
+
+                    // Update main page hidden inputs with general patient data
+                    if(fpNrInput) fpNrInput.value = currentPatientDataForApp.patientId;
+                    if(ageInput) ageInput.value = currentPatientDataForApp.age || '';
+                    if(genderSelect) genderSelect.value = currentPatientDataForApp.gender || '';
+                    if(sportInput) sportInput.value = currentPatientDataForApp.sport || '';
+                    if(injuryInput) injuryInput.value = currentPatientDataForApp.injury || '';
+                    if(injuredSideRadio) injuredSideRadio.value = currentPatientDataForApp.injuredSide || 'Left';
+                    if(bodyweightInput) bodyweightInput.value = currentPatientDataForApp.bodyweight || '';
+
+                    displayPatientInfoInCard(currentPatientDataForApp); // Display general patient info
+                    if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
+                    await displayTestsForPatientFromFirestore(patientId); // Load and display list of tests
+                    resetScreeningInputFields(); // Clear ASH test inputs for a new screening
+                    updateGraphsAndTable(); // Update graphs (will be empty for ASH data)
+                    saveInputsToLocalStorage(); // Save this new state
+                    closePatientModal(); // Close the selection modal
+
+                    // Adjust UI visibility
+                    if (newPatientChoiceButton) newPatientChoiceButton.classList.remove('active-choice');
+                    if (existingPatientChoiceButton) existingPatientChoiceButton.classList.remove('active-choice');
+                    if (existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
+                    if (fpNrInputSearch) fpNrInputSearch.value = '';
+                    if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
+                    showStatusMessage(`Patient ${patientId} loaded. Ready for new screening.`, "success");
+
+                } else {
+                    showStatusMessage(`Patient data for ${patientId} not found.`, "error");
+                }
+            } catch (error) {
+                console.error("Error loading selected patient:", error);
+                showStatusMessage("Error loading patient data.", "error");
+            }
+        }
+
 
         function displayPatientInfoInCard(data) {
             const card = document.getElementById('patient-identity-card');
@@ -1953,7 +2013,7 @@
                         injury: data.injuryAtScreening,
                         bodyweight: data.bodyweightAtScreening,
                         injuredSide: data.injuredSideAtScreening,
-                        screeningId: screeningDocId // Set the loaded screening ID
+                        screeningId: screeningDocId
                     };
 
                     if(fpNrInput) fpNrInput.value = currentPatientDataForApp.patientId || '';
@@ -1973,7 +2033,7 @@
                     });
 
                     updateGraphsAndTable();
-                    saveInputsToLocalStorage(); // Save the loaded screening data to localStorage
+                    saveInputsToLocalStorage();
                     showStatusMessage('Test data loaded.', 'success');
                     displayPatientInfoInCard(currentPatientDataForApp);
                      if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
@@ -2007,9 +2067,9 @@
                     showStatusMessage('Test deleted.', 'success');
 
                     if (currentPatientDataForApp.screeningId === screeningDocId && currentPatientDataForApp.patientId === patientId) {
-                        resetScreeningInputFields(); // Clears inputs and currentPatientDataForApp.screeningId
+                        resetScreeningInputFields();
                         updateGraphsAndTable();
-                        saveInputsToLocalStorage(); // Save the cleared state
+                        saveInputsToLocalStorage();
                     }
                     await displayTestsForPatientFromFirestore(patientId);
                 } catch (error) {
@@ -2059,10 +2119,9 @@
             try {
                 const screeningsCollectionRef = collection(db, "users", currentUserId, "patients", patientId, "screenings");
                 const docRef = await addDoc(screeningsCollectionRef, screeningData);
-                currentPatientDataForApp.screeningId = docRef.id; // Set the new screening as active
+                currentPatientDataForApp.screeningId = docRef.id;
                 showStatusMessage("Screening saved!", "success");
-                await displayTestsForPatientFromFirestore(patientId); // Refresh test list
-                // Highlight the newly saved test
+                await displayTestsForPatientFromFirestore(patientId);
                 const activeLi = selectedPatientTestsListUL.querySelector(`li[data-screening-id="${docRef.id}"]`);
                 if (activeLi) {
                     clearActiveTestItemState();
@@ -2070,56 +2129,12 @@
                 }
                 displayPatientInfoInCard(currentPatientDataForApp);
                  if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
-                 saveInputsToLocalStorage(); // Save current state including new screeningId
+                 saveInputsToLocalStorage();
             } catch (error) {
                 console.error("Error saving screening:", error);
                 showStatusMessage("Error saving screening.", "error");
             }
         }
-
-        // New function to load and display patient data directly
-        async function loadAndDisplayPatient(patientId) {
-            if (!currentUserId || !patientId) {
-                showStatusMessage("Invalid patient ID or not logged in.", "error");
-                return;
-            }
-            try {
-                const patientDocRef = doc(db, "users", currentUserId, "patients", patientId);
-                const patientDocSnap = await getDoc(patientDocRef);
-                if (patientDocSnap.exists()) {
-                    currentPatientDataForApp = { patientId: patientId, ...patientDocSnap.data(), screeningId: null }; // Clear screeningId
-
-                    // Update main patient info fields
-                    if(fpNrInput) fpNrInput.value = currentPatientDataForApp.patientId;
-                    if(ageInput) ageInput.value = currentPatientDataForApp.age;
-                    if(genderSelect) genderSelect.value = currentPatientDataForApp.gender;
-                    if(sportInput) sportInput.value = currentPatientDataForApp.sport;
-                    if(injuryInput) injuryInput.value = currentPatientDataForApp.injury;
-                    if(injuredSideRadio) injuredSideRadio.value = currentPatientDataForApp.injuredSide;
-                    if(bodyweightInput) bodyweightInput.value = currentPatientDataForApp.bodyweight;
-
-                    displayPatientInfoInCard(currentPatientDataForApp);
-                    if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
-                    await displayTestsForPatientFromFirestore(patientId);
-                    resetScreeningInputFields(); // Clears ASH inputs and active test state
-                    updateGraphsAndTable();
-                    saveInputsToLocalStorage(); // Saves patient data and empty ASH inputs
-
-                    // Hide patient choice section and search container
-                    if (patientChoiceSection) patientChoiceSection.style.display = 'none';
-                    if (existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
-                    if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
-                    showStatusMessage(`Patient "${patientId}" loaded successfully.`, "success");
-                    closePatientModal(); // Close the patient search modal
-                } else {
-                    showStatusMessage(`Patient data for ${patientId} not found.`, "error");
-                }
-            } catch (error) {
-                console.error("Error loading patient data:", error);
-                showStatusMessage("Error loading patient data.", "error");
-            }
-        }
-
 
         if (newPatientChoiceButton) {
             newPatientChoiceButton.addEventListener('click', () => {
@@ -2138,53 +2153,8 @@
                 if (enteredPatientId && currentUserId) {
                     const options = Array.from(existingPatientIdsDatalist.options).map(opt => opt.value);
                     if (options.includes(enteredPatientId)) {
-                        try {
-                            const patientDocRef = doc(db, "users", currentUserId, "patients", enteredPatientId);
-                            const patientDocSnap = await getDoc(patientDocRef);
-                            if (patientDocSnap.exists()) {
-                                currentPatientDataForApp = { patientId: enteredPatientId, ...patientDocSnap.data(), screeningId: null }; // Clear screeningId when selecting a patient this way
-
-                                if(fpNrInput) fpNrInput.value = currentPatientDataForApp.patientId;
-                                if(ageInput) ageInput.value = currentPatientDataForApp.age;
-                                if(genderSelect) genderSelect.value = currentPatientDataForApp.gender;
-                                if(sportInput) sportInput.value = currentPatientDataForApp.sport;
-                                if(injuryInput) injuryInput.value = currentPatientDataForApp.injury;
-                                if(injuredSideRadio) injuredSideRadio.value = currentPatientDataForApp.injuredSide;
-                                if(bodyweightInput) bodyweightInput.value = currentPatientDataForApp.bodyweight;
-
-                                displayPatientInfoInCard(currentPatientDataForApp);
-                                if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
-                                await displayTestsForPatientFromFirestore(enteredPatientId);
-                                resetScreeningInputFields(); // Clears ASH inputs and active test state
-                                updateGraphsAndTable();
-                                saveInputsToLocalStorage(); // Saves patient data and empty ASH inputs
-
-                                if (newPatientChoiceButton) newPatientChoiceButton.classList.remove('active-choice');
-                                if (existingPatientChoiceButton) existingPatientChoiceButton.classList.remove('active-choice');
-                                if (existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
-                                if (patientChoiceSection) patientChoiceSection.style.display = 'none'; // Added: Hide patient choice section
-                                fpNrInputSearch.value = '';
-                                if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
-
-
-                            } else {
-                                showStatusMessage(`Patient ID not found: ${enteredPatientId}`, "warning");
-                            }
-                        } catch (error) {
-                            console.error("Error fetching patient on main page search:", error);
-                        }
+                       await loadSelectedPatientAndCloseModal(enteredPatientId); // Use the direct load function
                     }
-                }
-            });
-        }
-
-        // Event listener for the new Edit Patient Profile button
-        if (editPatientProfileButton) {
-            editPatientProfileButton.addEventListener('click', () => {
-                if (currentPatientDataForApp.patientId) {
-                    openPatientModal('existing-edit', currentPatientDataForApp.patientId);
-                } else {
-                    showStatusMessage("No patient selected to edit.", "info");
                 }
             });
         }
@@ -2234,7 +2204,7 @@
         window.addEventListener('resize', () => {
             asymmetryChartDivs.concat(normativeChartDivs).forEach(divId => {
                 const gd = document.getElementById(divId);
-                if (gd && gd.classList.contains('js-plotly-plot') && typeof gd.layout !== 'undefined') { 
+                if (gd && gd.classList.contains('js-plotly-plot') && typeof gd.layout !== 'undefined') {
                      try {
                         Plotly.Plots.resize(gd);
                     } catch (e) { /* Ignore resize errors if plot not fully rendered */ }
