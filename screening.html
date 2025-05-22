@@ -815,7 +815,7 @@
 
         /* PDF Preview / Print Mode Active */
         body.pdf-preview-active {
-            --graph-box-height: 340px !important; /* Matched to main view box height */
+            --graph-box-height: 220px !important; /* Significantly reduced height for PDF */
         }
         body.pdf-preview-active .app-sidebar,
         body.pdf-preview-active #patient-choice-section,
@@ -905,7 +905,7 @@
         body.pdf-preview-active .position-box.green-box {
              box-shadow: 0 0 15px 5px var(--success-shadow-color) !important; 
         }
-        /* body.pdf-preview-active .position-box::after { display: none !important; } */ 
+        
 
 
         .js-plotly-plot { width: 100% !important; height: 100% !important; flex-grow: 1 !important; }
@@ -1367,7 +1367,7 @@
             const yAxisUpperBound = annotationYTop + 15;
 
             const isPdfPreview = document.body.classList.contains('pdf-preview-active');
-            const plotHeight = isPdfPreview ? 260 : 300; // Adjusted PDF height
+            const plotHeight = isPdfPreview ? 180 : 300; // Adjusted PDF plot height
 
             const fig = {
                 data: [
@@ -1530,7 +1530,7 @@
             traces.push({ x: baseCurveX, y: baseCurveY, type: 'scatter', mode: 'lines', line: { color: '#ffffff', width: 1.5, shape: 'spline' }, hoverinfo: 'none', name: 'Distribution (Visual)', showlegend: false });
             
             const isPdfPreview = document.body.classList.contains('pdf-preview-active');
-            const plotHeight = isPdfPreview ? 260 : 250; // Adjusted PDF height
+            const plotHeight = isPdfPreview ? 180 : 250; // Adjusted PDF plot height
 
             const layout = {
                 height: plotHeight,
