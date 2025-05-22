@@ -548,11 +548,15 @@
             margin-top:0;
             border-bottom: 1px solid var(--medium-gray);
             position: relative; /* ADDED: To contain the absolutely positioned edit button */
+            display: flex; /* Use flex to align title and buttons */
+            justify-content: space-between; /* Space out title and buttons */
+            align-items: center; /* Vertically align items */
         }
-        .edit-profile-button {
-            position: absolute;
-            top: 0; /* Adjust as needed */
-            right: 0; /* Adjust as needed */
+        .patient-profile-title-internal .action-buttons {
+            display: flex;
+            gap: 5px; /* Space between edit and delete buttons */
+        }
+        .edit-profile-button, .delete-patient-btn {
             background-color: transparent; /* Changed to transparent */
             color: var(--app-primary-color); /* Changed to primary color */
             border: none;
@@ -572,6 +576,12 @@
         }
         .edit-profile-button i {
             color: inherit; /* Inherit color from button */
+        }
+        .delete-patient-btn {
+            color: var(--danger-color-dark); /* Red color for delete button */
+        }
+        .delete-patient-btn:hover {
+            color: #b91c1c; /* Darker red on hover */
         }
 
         .patient-card-header {
@@ -615,6 +625,7 @@
             width: 22px;
             text-align: center;
             font-size: 1.2em;
+            line-height: 1; /* Ensure icon is vertically centered */
         }
         .patient-card-body .info-item .label {
             color: var(--dark-gray);
@@ -952,8 +963,8 @@
                 flex-direction: column;
             }
             .overview-column {
-                 width: 100%;
-                 flex-basis: auto !important;
+                width: 100%;
+                flex-basis: auto !important;
             }
             .patient-details-column, .test-log-column {
                 min-width: unset;
@@ -1066,6 +1077,17 @@
     <div id="appLoadingMessage" class="loading-message">Loading Application...</div>
     <div id="appStatusMessage" class="status-message"></div>
 
+    <div id="confirmation-modal-overlay" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="confirmation-modal-title">Confirm Action</h3>
+            <p id="confirmation-modal-message" style="color: white; margin-bottom: 30px; text-align: center; font-size: 1.1rem;"></p>
+            <div class="modal-actions">
+                <button type="button" class="modal-cancel-button" id="confirmation-cancel-btn">Cancel</button>
+                <button type="button" class="modal-confirm-button" id="confirmation-confirm-btn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
     <div id="patient-modal-overlay" class="modal-overlay">
         <div class="modal-content" id="patient-modal-content">
             </div>
@@ -1115,6 +1137,7 @@
                     <div id="existing-patient-search-container" style="display: none;">
                         <label for="fp-nr-input-search">Search Patient ID:</label>
                         <input id="fp-nr-input-search" type="text" list="existing-patient-ids">
+                        <datalist id="existing-patient-ids"></datalist>
                         </div>
 
                     <div id="main-screening-content">
@@ -1125,8 +1148,14 @@
                             <div class="overview-column patient-details-column">
                                 <div id="patient-identity-card" class="patient-card" style="display: none;">
                                     <h3 class="patient-profile-title-internal">Patient Profile
-                                        <button id="edit-patient-profile-btn" class="edit-profile-button">
-                                            <i class="fas fa-edit"></i> </button>
+                                        <div class="action-buttons">
+                                            <button id="edit-patient-profile-btn" class="edit-profile-button">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button id="delete-patient-profile-btn" class="edit-profile-button delete-patient-btn">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
                                     </h3>
                                     <div class="patient-card-header">
                                         <i class="fas fa-address-card patient-card-icon"></i>
@@ -1147,7 +1176,7 @@
                             </div>
                             <div class="overview-column test-log-column">
                                 <div id="selected-patient-tests-container" style="display: none;">
-                                       <h3 class="test-log-title-internal">Test Log</h3>
+                                        <h3 class="test-log-title-internal">Test Log</h3>
                                     <ul id="selected-patient-tests-list">
                                     </ul>
                                 </div>
@@ -1171,22 +1200,22 @@
                         <div id="bottom-area"></div>
                            <div id="patient-data-container" style="display:none;">
                                <div id="patient-id-and-secondary-controls">
-                                        <div class="patient-id-standalone-item">
-                                            <label for="fp-nr-input">Patient ID (Internal):</label>
-                                            <input id="fp-nr-input" type="text">
-                                            <datalist id="existing-patient-ids"></datalist>
-                                        </div>
-                                        <div id="patient-data-secondary-controls">
-                                            <div class="control-item"><label class="control-label" for="injured-side-radio">Injured Side:</label><select id="injured-side-radio"><option value="Left">Left</option><option value="Right">Right</option></select></div>
-                                            <div class="control-item"><label class="control-label" for="bodyweight-input">Bodyweight (kg):</label><input id="bodyweight-input" type="number"></div>
-                                        </div>
-                                    </div>
-                                    <div id="patient-data-grid">
-                                        <div class="patient-data-item"><label for="age-input">Age:</label><input id="age-input" type="number"></div>
-                                        <div class="patient-data-item"><label for="gender-select">Gender:</label><select id="gender-select"><option value="">Select...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option><option value="Prefer not to say">Prefer not to say</option></select></div>
-                                        <div class="patient-data-item"><label for="sport-input">Sport:</label><input id="sport-input" type="text"></div>
-                                        <div class="patient-data-item"><label for="injury-input">Injury (Optional):</label><input id="injury-input" type="text"></div>
-                                    </div>
+                                       <div class="patient-id-standalone-item">
+                                           <label for="fp-nr-input">Patient ID (Internal):</label>
+                                           <input id="fp-nr-input" type="text">
+                                           <datalist id="existing-patient-ids"></datalist>
+                                       </div>
+                                       <div id="patient-data-secondary-controls">
+                                           <div class="control-item"><label class="control-label" for="injured-side-radio">Injured Side:</label><select id="injured-side-radio"><option value="Left">Left</option><option value="Right">Right</option></select></div>
+                                           <div class="control-item"><label class="control-label" for="bodyweight-input">Bodyweight (kg):</label><input id="bodyweight-input" type="number"></div>
+                                       </div>
+                                   </div>
+                                   <div id="patient-data-grid">
+                                       <div class="patient-data-item"><label for="age-input">Age:</label><input id="age-input" type="number"></div>
+                                       <div class="patient-data-item"><label for="gender-select">Gender:</label><select id="gender-select"><option value="">Select...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option><option value="Prefer not to say">Prefer not to say</option></select></div>
+                                       <div class="patient-data-item"><label for="sport-input">Sport:</label><input id="sport-input" type="text"></div>
+                                       <div class="patient-data-item"><label for="injury-input">Injury (Optional):</label><input id="injury-input" type="text"></div>
+                                   </div>
                            </div>
                     </div>
                 </div>
@@ -1262,6 +1291,14 @@
         const selectedPatientTestsContainer = document.getElementById('selected-patient-tests-container');
         const selectedPatientTestsListUL = document.getElementById('selected-patient-tests-list');
         const editPatientProfileButton = document.getElementById('edit-patient-profile-btn');
+        const deletePatientProfileButton = document.getElementById('delete-patient-profile-btn'); // New delete button
+
+        // Confirmation Modal Elements
+        const confirmationModalOverlay = document.getElementById('confirmation-modal-overlay');
+        const confirmationModalTitle = document.getElementById('confirmation-modal-title');
+        const confirmationModalMessage = document.getElementById('confirmation-modal-message');
+        const confirmationCancelBtn = document.getElementById('confirmation-cancel-btn');
+        const confirmationConfirmBtn = document.getElementById('confirmation-confirm-btn');
 
 
         const plotlyConfig = { responsive: true, displaylogo: false, modeBarButtonsToRemove: ['sendDataToCloud', 'lasso2d', 'select2d', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'toggleSpikelines'] };
@@ -1309,6 +1346,12 @@
         const allNumberInputs = Array.from(document.querySelectorAll('#input-section-container input[type="number"]'));
         const existingPatientIdsDatalist = document.getElementById('existing-patient-ids');
 
+        // Get the graph box height from CSS for consistent plotting
+        const graphBoxHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--graph-box-height').trim());
+
+        // Array to store all patient IDs for modal filtering
+        let allPatientIds = [];
+
         onAuthStateChanged(auth, async (user) => {
             if (appLoadingMessage) appLoadingMessage.style.display = 'flex';
             if (appLayout) appLayout.style.display = 'none';
@@ -1350,10 +1393,10 @@
 
         async function initializeAppUI() {
             // Restore original heights for main view plots
-            asymmetryChartDivs.forEach(divId => createEmptyPlot(divId, 'Enter Data', 300, 20)); // Height 300px
-            normativeChartDivs.forEach(divId => createEmptyPlot(divId, 'Enter Bodyweight', 250, 35)); // Height 250px
+            asymmetryChartDivs.forEach(divId => createEmptyPlot(divId, 'Enter Data', graphBoxHeight, 20));
+            normativeChartDivs.forEach(divId => createEmptyPlot(divId, 'Enter Bodyweight', graphBoxHeight, 35));
             loadInputsFromLocalStorage();
-            await populatePatientIdDatalistFromFirestore();
+            await populatePatientIdDatalistFromFirestore(); // For the main page search input
 
             if (currentPatientDataForApp.patientId) {
                 displayPatientInfoInCard(currentPatientDataForApp);
@@ -1379,12 +1422,12 @@
             }, duration);
         }
         function hexToRgba(hex, alpha) { hex = hex.replace('#', ''); const r = parseInt(hex.substring(0, 2), 16); const g = parseInt(hex.substring(2, 4), 16); const b = parseInt(hex.substring(4, 6), 16); return `rgba(${r}, ${g}, ${b}, ${alpha})`; }
-        function createEmptyPlot(targetDivId, title = 'Enter Data', height = 300, topMargin = 20) { const targetDiv = document.getElementById(targetDivId); if (!targetDiv) { console.error(`Target div '${targetDivId}' not found for empty plot.`); return; } try { Plotly.react(targetDiv, [{ x: [], y: [], type: 'bar' }], { title: { text: title, font: { family: 'Avenir, sans-serif', size: 16, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim(), weight: 400 } }, height: height, margin: { l: 60, r: 40, b: 40, t: topMargin, pad: 4 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', xaxis: { visible: false }, yaxis: { showgrid: false, zeroline: true, gridcolor: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), showticklabels: false }, font: { family: 'Avenir, sans-serif', size: 12, weight: 400 } }, plotlyConfig); } catch (error) { console.error(`Error creating empty plot for '${targetDivId}':`, error); targetDiv.innerHTML = `<p style="color: red; text-align: center; padding: 20px;">Error displaying chart.</p>`; } }
-        function processInputAndCalculate(position) { const inputs = inputFieldMap[position]; if (!inputs) return null; const nonInjuredMaxForceVal = inputs.nonInjured[0].value; const nonInjuredRfdVal = inputs.nonInjured[1].value; const injuredMaxForceVal = inputs.injured[0].value; const injuredRfdVal = inputs.injured[1].value; if (nonInjuredMaxForceVal === '' && nonInjuredRfdVal === '' && injuredMaxForceVal === '' && injuredRfdVal === '') return null; const nonInjuredMaxForce = parseFloat(nonInjuredMaxForceVal) || 0; const nonInjuredRfd = parseFloat(nonInjuredRfdVal) || 0; const injuredMaxForce = parseFloat(injuredMaxForceVal) || 0; const injuredRfd = parseFloat(injuredRfdVal) || 0; const selectedInjuredSide = currentPatientDataForApp.injuredSide || 'Left'; let leftData = {}; let rightData = {}; if (selectedInjuredSide === 'Left') { leftData = { max_force: injuredMaxForce, rfd: injuredRfd }; rightData = { max_force: nonInjuredMaxForce, rfd: nonInjuredRfd }; } else { leftData = { max_force: nonInjuredMaxForce, rfd: nonInjuredRfd }; rightData = { max_force: injuredMaxForce, rfd: injuredRfd }; } return { left: leftData, right: rightData }; }
-        function createAsymmetryChart(positionData, injuredSide, posLabel) { if (!positionData?.left || !positionData?.right) return [{}, false]; const leftDataRaw = positionData.left; const rightDataRaw = positionData.right; const leftPctMaxAt100ms = leftDataRaw.max_force !== 0 ? (leftDataRaw.rfd * 0.1 / leftDataRaw.max_force) * 100 : 0; const rightPctMaxAt100ms = rightDataRaw.max_force !== 0 ? (rightDataRaw.rfd * 0.1 / rightDataRaw.max_force) * 100 : 0; const leftData = [leftDataRaw.max_force, leftDataRaw.rfd, leftPctMaxAt100ms]; const rightData = [rightDataRaw.max_force, rightDataRaw.rfd, rightPctMaxAt100ms]; const baseData = injuredSide === 'Right' ? leftData : rightData; const metricNames = [ 'Max Force (N)', 'RFD 100ms (Ns⁻¹)', '% Max @ 100ms (%)' ]; const barDataRatios = {}; const leftTextsAbsolute = []; const rightTextsAbsolute = []; metricNames.forEach((metricName, index) => { let leftValue = leftData[index]; let rightValue = rightData[index]; let baseValue = baseData[index]; const leftRatio = baseValue !== 0 ? (leftValue / baseValue) * 100 : (leftValue === 0 ? 100 : Infinity); const rightRatio = baseValue !== 0 ? (rightValue / baseValue) * 100 : (rightValue === 0 ? 100 : Infinity); barDataRatios[metricName] = [rightRatio, leftRatio]; const decimals = metricName.includes('% Max @ 100ms') ? 1 : 0; leftTextsAbsolute.push(leftValue.toFixed(decimals)); rightTextsAbsolute.push(rightValue.toFixed(decimals)); }); const plotX = metricNames; const plotYLeft = plotX.map(name => barDataRatios[name][1]); const plotYRight = plotX.map(name => barDataRatios[name][0]); if (plotX.length !== 3 || plotYLeft.length !== 3 || plotYRight.length !== 3) return [{}, false]; const leftColorHex = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim(); const rightColorHex = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim(); const leftColorRgba = hexToRgba(leftColorHex, 0.8); const rightColorRgba = hexToRgba(rightColorHex, 0.8); const thresholdLineColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(); const darkGrayColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(); const whiteColor = getComputedStyle(document.documentElement).getPropertyValue('--white').trim(); const validRatios = plotYLeft.concat(plotYRight).filter(isFinite); const maxYValue = validRatios.length > 0 ? Math.max(110, ...validRatios) : 110; const annotationYTop = maxYValue + 8; const yAxisUpperBound = annotationYTop + 15; const fig = { data: [ { type: 'bar', name: 'Left', x: plotX, y: plotYLeft, marker: { color: leftColorRgba }, text: leftTextsAbsolute, texttemplate: '%{text}', textposition: 'none', hoverinfo: 'x+name', hovertemplate: 'Left: %{y:.0f}%<extra></extra>' }, { type: 'bar', name: 'Right', x: plotX, y: plotYRight, marker: { color: rightColorRgba }, text: rightTextsAbsolute, texttemplate: '%{text}', textposition: 'none', hoverinfo: 'x+name', hovertemplate: 'Right: %{y:.0f}%<extra></extra>' }, { x: [null], y: [null], mode: 'lines', name: '±10% Threshold', line: { color: thresholdLineColor, width: 1, dash: 'dash' }, hoverinfo: 'none', showlegend: true } ], layout: { height: 300, barmode: 'group', font: { color: darkGrayColor, family: 'Avenir, sans-serif', size: 12, weight: 400 }, yaxis: { title: "Injured Side Asymmetry (%)", titlefont: { size: 13, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, range: [18, yAxisUpperBound], tickmode: 'array', tickvals: [50, 100], showgrid: false, zeroline: false, }, xaxis: { showgrid: false, zeroline: false, showline: false, showticklabels: true, tickangle: 0, tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, automargin: true, fixedrange: true }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', legend: { orientation: "h", yanchor: "bottom", y: -0.30, xanchor: "center", x: 0.5, font: { size: 12, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor } }, margin: { l: 70, r: 30, b: 85, t: 20, pad: 10 }, shapes: [ { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 90, y1: 90, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" }, { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 110, y1: 110, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" } ], annotations: [] } }; let allGreen = true; const metricsNamesForAnnotation = plotX; for (let i = 0; i < metricsNamesForAnnotation.length; i++) { const metricName = metricsNamesForAnnotation[i]; const injuredRatio = injuredSide === 'Right' ? plotYRight[i] : plotYLeft[i]; const leftRatio = plotYLeft[i]; const rightRatio = plotYRight[i]; if (!isFinite(injuredRatio)) { fig.layout.annotations.push({ x: metricName, y: annotationYTop, text: "N/A", showarrow: false, font: { color: 'grey', size: 22, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'bottom' }); allGreen = false; } else { const percentageDiff = injuredRatio - 100; let color; if (percentageDiff >= -10) { color = '#2a9d8f'; } else { allGreen = false; if (percentageDiff >= -15) { color = '#ee9b00'; } else if (percentageDiff >= -20) { color = '#e85d04'; } else { color = '#ae2012'; } } fig.layout.annotations.push({ x: metricName, y: annotationYTop, text: `${percentageDiff.toFixed(0)}%`, showarrow: false, font: { color: color, size: 22, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'bottom' }); } const barTextYPosition = 31; const barTextFontSize = 17; const categoryIndex = i; const numberOfBars = 2; const groupWidth = 0.8; const barWidthFraction = groupWidth / numberOfBars; const leftBarCenter = categoryIndex - (groupWidth / 2) + (barWidthFraction / 2); const rightBarCenter = categoryIndex + (groupWidth / 2) - (barWidthFraction / 2); if (leftRatio > barTextYPosition + (barTextFontSize / 2)) { fig.layout.annotations.push({ x: leftBarCenter, y: barTextYPosition, xref: 'x', yref: 'y', text: leftTextsAbsolute[i], showarrow: false, font: { color: whiteColor, size: barTextFontSize, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'middle' }); } if (rightRatio > barTextYPosition + (barTextFontSize / 2)) { fig.layout.annotations.push({ x: rightBarCenter, y: barTextYPosition, xref: 'x', yref: 'y', text: rightTextsAbsolute[i], showarrow: false, font: { color: whiteColor, size: barTextFontSize, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'middle' }); } } return [fig, allGreen]; }
+        function createEmptyPlot(targetDivId, title = 'Enter Data', height = graphBoxHeight, topMargin = 20) { const targetDiv = document.getElementById(targetDivId); if (!targetDiv) { console.error(`Target div '${targetDivId}' not found for empty plot.`); return; } try { Plotly.react(targetDiv, [{ x: [], y: [], type: 'bar' }], { title: { text: title, font: { family: 'Avenir, sans-serif', size: 16, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim(), weight: 400 } }, height: height, margin: { l: 60, r: 40, b: 40, t: topMargin, pad: 4 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', xaxis: { visible: false }, yaxis: { showgrid: false, zeroline: true, gridcolor: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), showticklabels: false }, font: { family: 'Avenir, sans-serif', size: 12, weight: 400 } }, plotlyConfig); } catch (error) { console.error(`Error creating empty plot for '${targetDivId}':`, error); targetDiv.innerHTML = `<p style="color: red; text-align: center; padding: 20px;">Error displaying chart.</p>`; } }
+        function processInputAndCalculate(position) { const inputs = inputFieldMap[position]; if (!inputs) return null; const nonInjuredMaxForceVal = inputs.nonInjured[0].value; const nonInjuredRfdVal = inputs.nonInjured[1].value; const injuredMaxForceVal = inputs.injured[0].value; const injuredRfdVal = inputs.injured[1].value; if (nonInjuredMaxForceVal === '' && nonInjuredRfdVal === '' && injuredMaxForceVal === '' && injuredRfdVal === '') return null; const nonInjuredMaxForce = parseFloat(nonInjuredMaxForceVal) || 0; const nonInjuredRfd = parseFloat(nonInjuredRfdVal) || 0; const injuredMaxForce = parseFloat(injuredMaxForceVal) || 0; const injuredRfd = parseFloat(injuredRfdVal) || 0; const selectedInjuredSide = currentPatientDataForApp.injuredSide || 'Left'; let leftData = {}; let rightData = {}; if (selectedInjuredSide === 'Left') { leftData = { max_force: injuredMaxForce, rfd: injuredRfd }; rightData = { max_force: nonInjuredMaxForce, rfd: nonInjuredRfd }; } else { leftData = { max_force: nonInjuredMaxForce, rfd: injuredRfd }; rightData = { max_force: injuredMaxForce, rfd: nonInjuredRfd }; } return { left: leftData, right: rightData }; }
+        function createAsymmetryChart(positionData, injuredSide, posLabel) { if (!positionData?.left || !positionData?.right) return [{}, false]; const leftDataRaw = positionData.left; const rightDataRaw = positionData.right; const leftPctMaxAt100ms = leftDataRaw.max_force !== 0 ? (leftDataRaw.rfd * 0.1 / leftDataRaw.max_force) * 100 : 0; const rightPctMaxAt100ms = rightDataRaw.max_force !== 0 ? (rightDataRaw.rfd * 0.1 / rightDataRaw.max_force) * 100 : 0; const leftData = [leftDataRaw.max_force, leftDataRaw.rfd, leftPctMaxAt100ms]; const rightData = [rightDataRaw.max_force, rightDataRaw.rfd, rightPctMaxAt100ms]; const baseData = injuredSide === 'Right' ? leftData : rightData; const metricNames = [ 'Max Force (N)', 'RFD 100ms (Ns⁻¹)', '% Max @ 100ms (%)' ]; const barDataRatios = {}; const leftTextsAbsolute = []; const rightTextsAbsolute = []; metricNames.forEach((metricName, index) => { let leftValue = leftData[index]; let rightValue = rightData[index]; let baseValue = baseData[index]; const leftRatio = baseValue !== 0 ? (leftValue / baseValue) * 100 : (leftValue === 0 ? 100 : Infinity); const rightRatio = baseValue !== 0 ? (rightValue / baseValue) * 100 : (rightValue === 0 ? 100 : Infinity); barDataRatios[metricName] = [rightRatio, leftRatio]; const decimals = metricName.includes('% Max @ 100ms') ? 1 : 0; leftTextsAbsolute.push(leftValue.toFixed(decimals)); rightTextsAbsolute.push(rightValue.toFixed(decimals)); }); const plotX = metricNames; const plotYLeft = plotX.map(name => barDataRatios[name][1]); const plotYRight = plotX.map(name => barDataRatios[name][0]); if (plotX.length !== 3 || plotYLeft.length !== 3 || plotYRight.length !== 3) return [{}, false]; const leftColorHex = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim(); const rightColorHex = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim(); const leftColorRgba = hexToRgba(leftColorHex, 0.8); const rightColorRgba = hexToRgba(rightColorHex, 0.8); const thresholdLineColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(); const darkGrayColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(); const whiteColor = getComputedStyle(document.documentElement).getPropertyValue('--white').trim(); const validRatios = plotYLeft.concat(plotYRight).filter(isFinite); const maxYValue = validRatios.length > 0 ? Math.max(110, ...validRatios) : 110; const annotationYTop = maxYValue + 8; const yAxisUpperBound = annotationYTop + 15; const fig = { data: [ { type: 'bar', name: 'Left', x: plotX, y: plotYLeft, marker: { color: leftColorRgba }, text: leftTextsAbsolute, texttemplate: '%{text}', textposition: 'none', hoverinfo: 'x+name', hovertemplate: 'Left: %{y:.0f}%<extra></extra>' }, { type: 'bar', name: 'Right', x: plotX, y: plotYRight, marker: { color: rightColorRgba }, text: rightTextsAbsolute, texttemplate: '%{text}', textposition: 'none', hoverinfo: 'x+name', hovertemplate: 'Right: %{y:.0f}%<extra></extra>' }, { x: [null], y: [null], mode: 'lines', name: '±10% Threshold', line: { color: thresholdLineColor, width: 1, dash: 'dash' }, hoverinfo: 'none', showlegend: true } ], layout: { height: graphBoxHeight, barmode: 'group', font: { color: darkGrayColor, family: 'Avenir, sans-serif', size: 12, weight: 400 }, yaxis: { title: "Injured Side Asymmetry (%)", titlefont: { size: 13, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, range: [18, yAxisUpperBound], tickmode: 'array', tickvals: [50, 100], showgrid: false, zeroline: false, }, xaxis: { showgrid: false, zeroline: false, showline: false, showticklabels: true, tickangle: 0, tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, automargin: true, fixedrange: true }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', legend: { orientation: "h", yanchor: "bottom", y: -0.30, xanchor: "center", x: 0.5, font: { size: 12, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor } }, margin: { l: 70, r: 30, b: 85, t: 20, pad: 10 }, shapes: [ { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 90, y1: 90, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" }, { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 110, y1: 110, line: { color: thresholdLineColor, width: 1, dash: "dash" }, layer: "below" } ], annotations: [] } }; let allGreen = true; const metricsNamesForAnnotation = plotX; for (let i = 0; i < metricsNamesForAnnotation.length; i++) { const metricName = metricsNamesForAnnotation[i]; const injuredRatio = injuredSide === 'Right' ? plotYRight[i] : plotYLeft[i]; const leftRatio = plotYLeft[i]; const rightRatio = plotYRight[i]; if (!isFinite(injuredRatio)) { fig.layout.annotations.push({ x: metricName, y: annotationYTop, text: "N/A", showarrow: false, font: { color: 'grey', size: 22, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'bottom' }); allGreen = false; } else { const percentageDiff = injuredRatio - 100; let color; if (percentageDiff >= -10) { color = '#2a9d8f'; } else { allGreen = false; if (percentageDiff >= -15) { color = '#ee9b00'; } else if (percentageDiff >= -20) { color = '#e85d04'; } else { color = '#ae2012'; } } fig.layout.annotations.push({ x: metricName, y: annotationYTop, text: `${percentageDiff.toFixed(0)}%`, showarrow: false, font: { color: color, size: 22, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'bottom' }); } const barTextYPosition = 31; const barTextFontSize = 17; const categoryIndex = i; const numberOfBars = 2; const groupWidth = 0.8; const barWidthFraction = groupWidth / numberOfBars; const leftBarCenter = categoryIndex - (groupWidth / 2) + (barWidthFraction / 2); const rightBarCenter = categoryIndex + (groupWidth / 2) - (barWidthFraction / 2); if (leftRatio > barTextYPosition + (barTextFontSize / 2)) { fig.layout.annotations.push({ x: leftBarCenter, y: barTextYPosition, xref: 'x', yref: 'y', text: leftTextsAbsolute[i], showarrow: false, font: { color: whiteColor, size: barTextFontSize, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'middle' }); } if (rightRatio > barTextYPosition + (barTextFontSize / 2)) { fig.layout.annotations.push({ x: rightBarCenter, y: barTextYPosition, xref: 'x', yref: 'y', text: rightTextsAbsolute[i], showarrow: false, font: { color: whiteColor, size: barTextFontSize, family: 'Avenir, sans-serif', weight: 400 }, xanchor: 'center', yanchor: 'middle' }); } } return [fig, allGreen]; }
         function mapNkgToPercentile(nkgValue, positionLabel) { const thresholds = normativeThresholds[positionLabel]; if (!thresholds || typeof nkgValue !== 'number' || !isFinite(nkgValue)) return 0; const pMap = [ { v: 0.5, p: 0 }, { v: thresholds.poor_max, p: percentileZones.poor }, { v: thresholds.average_mid, p: percentileMidpoint }, { v: thresholds.good_min, p: percentileZones.average }, { v: thresholds.excellent_min, p: percentileZones.good }, { v: thresholds.excellent_min * 1.25, p: percentileZones.excellent } ]; const minVal = pMap[0].v; const maxVal = pMap[pMap.length - 1].v; const clampedValue = Math.max(minVal, Math.min(nkgValue, maxVal)); let lowerPoint = pMap[0]; let upperPoint = pMap[pMap.length - 1]; for (let i = 0; i < pMap.length - 1; i++) { if (clampedValue === pMap[i].v) { lowerPoint = upperPoint = pMap[i]; break; } if (clampedValue > pMap[i].v && clampedValue <= pMap[i + 1].v) { lowerPoint = pMap[i]; upperPoint = pMap[i + 1]; break; } } if (clampedValue === upperPoint.v) { lowerPoint = upperPoint; } let percentile = lowerPoint.p; const valueRange = upperPoint.v - lowerPoint.v; const percentileRange = upperPoint.p - lowerPoint.p; if (valueRange > 0) { percentile += ((clampedValue - lowerPoint.v) / valueRange) * percentileRange; } return Math.max(0, Math.min(percentile, 100)); }
-        function createNormativeComparisonChart(positionData, bodyweight, positionLabel) { const bwVal = parseFloat(bodyweight); if (isNaN(bwVal) || bwVal <= 0 || !positionData) return {}; const leftNkg = positionData.left.max_force / bwVal; const rightNkg = positionData.right.max_force / bwVal; const thresholds = normativeThresholds[positionLabel]; if (!thresholds) return {}; const leftPercentile = mapNkgToPercentile(leftNkg, positionLabel); const rightPercentile = mapNkgToPercentile(rightNkg, positionLabel); const baseCurveX = []; const baseCurveY = []; const mean = 55; const stdDev = 22; const amplitude = 0.9; for (let i = 0; i <= 100; i += 0.5) { baseCurveX.push(i); const y = amplitude * Math.exp(-Math.pow(i - mean, 2) / (2 * Math.pow(stdDev, 2))); baseCurveY.push(y); } const zoneBoundaries = [0, percentileZones.poor, percentileZones.average, percentileZones.good, percentileZones.excellent]; const traces = []; const zoneColorsList = [normZoneColors.poor, normZoneColors.average, normZoneColors.good, normZoneColors.excellent]; for (let i = 0; i < zoneBoundaries.length - 1; i++) { const x0 = zoneBoundaries[i]; const x1 = zoneBoundaries[i+1]; const zoneFillColor = zoneColorsList[i]; const segmentX = [x0]; const segmentY = [0]; for(let j=0; j < baseCurveX.length; j++) { if (baseCurveX[j] >= x0 && baseCurveX[j] <= x1) { segmentX.push(baseCurveX[j]); segmentY.push(baseCurveY[j]); } } segmentX.push(x1); segmentY.push(0); traces.push({ x: segmentX, y: segmentY, type: 'scatter', mode: 'lines', line: { width: 0 }, fill: 'tozeroy', fillcolor: zoneFillColor, hoverinfo: 'none', name: Object.keys(normativeLabels)[i], showlegend: false }); } traces.push({ x: baseCurveX, y: baseCurveY, type: 'scatter', mode: 'lines', line: { color: '#ffffff', width: 1.5, shape: 'spline' }, hoverinfo: 'none', name: 'Distribution (Visual)', showlegend: false }); const layout = { height: 250, margin: { t: 35, b: 95, l: 30, r: 30 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', xaxis: { title: '', range: [0, 100], showgrid: false, zeroline: false, showticklabels: false }, yaxis: { range: [0, 1.1], showgrid: false, zeroline: false, showticklabels: false, title: '' }, shapes: [], annotations: [], font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() }, showlegend: false }; const thresholdAnnotations = [ { p: percentileZones.poor, val: thresholds.poor_max }, { p: percentileZones.average, val: thresholds.good_min }, { p: percentileZones.good, val: thresholds.excellent_min } ]; thresholdAnnotations.forEach(t => { layout.annotations.push({ xref: 'x', yref: 'paper', x: t.p, y: -0.08, text: `<span class="norm-value">${t.val.toFixed(2)}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', font: { family: 'Avenir, sans-serif', size: 10, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim() } }); }); layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: percentileMidpoint, x1: percentileMidpoint, y0: 0, y1: 1, line: { color: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), width: 1.5, dash: 'dot' }, layer: 'below' }); const avgValueForPos = thresholds.average_mid.toFixed(2); layout.annotations.push({ xref: 'x', yref: 'paper', x: percentileMidpoint, y: -0.08, text: `<span class="value-display">${avgValueForPos}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', font: { family: 'Avenir, sans-serif', size: 10, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), weight: 400 } }); const labelYPosition = 1.10; layout.annotations.push({ xref: 'x', yref: 'paper', x: 15, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.poor}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 50, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.average}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() }, align: 'center' }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 80, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.good}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 95, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.excellent}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); const leftColor = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim(); const rightColor = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim(); const lineY0 = 0.05; const lineY1 = 0.95; layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: leftPercentile, x1: leftPercentile, y0: lineY0, y1: lineY1, line: { color: leftColor, width: 2, dash: 'dash' } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: leftPercentile, y: 0.90, text: 'L', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: leftColor, font: {color: leftColor, size: 14, family: 'Avenir, sans-serif', weight: 400} }); layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: rightPercentile, x1: rightPercentile, y0: lineY0, y1: lineY1, line: { color: rightColor, width: 2, dash: 'dash' } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: rightPercentile, y: 0.90, text: 'R', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: rightColor, font: {color: rightColor, size: 14, family: 'Avenir, sans-serif', weight: 400} }); const combinedNkgText = `<span class='nkg-combined-text'>Left: <span class='left-label'>${leftNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>) &nbsp;&nbsp;|&nbsp;&nbsp; Right: <span class='right-label'>${rightNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>)</span>`; layout.annotations.push({ xref: 'paper', yref: 'paper', x: 0.5, y: -0.30, text: combinedNkgText, showarrow: false, xanchor: 'center', yanchor: 'top', align: 'center', font: { size: 15, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), family: 'Avenir, sans-serif', weight: 400 } }); return { data: traces, layout }; }
-        function updateGraphsAndTable() { const injuredSide = currentPatientDataForApp.injuredSide || (injuredSideRadio ? injuredSideRadio.value : 'Left'); const bodyweightValue = currentPatientDataForApp.bodyweight || (bodyweightInput ? bodyweightInput.value : ''); const bwVal = parseFloat(bodyweightValue); const bodyweightValid = !isNaN(bwVal) && bwVal > 0; if (normativePlaceholder) { normativePlaceholder.style.display = bodyweightValid ? 'none' : 'block'; } normativeChartDivs.forEach(divId => { const container = document.getElementById(divId)?.closest('.normative-graph-container'); if (container) { container.style.display = bodyweightValid ? 'block' : 'none'; } }); const positions = ['I', 'Y', 'T']; positions.forEach((pos, i) => { const asymmetryChartDivId = asymmetryChartDivs[i]; const asymmetryPositionBoxDivId = asymmetryPositionBoxDivs[i]; const asymmetryPositionBoxDiv = document.getElementById(asymmetryPositionBoxDivId); const normativeChartDivId = normativeChartDivs[i]; if (!asymmetryPositionBoxDiv || !document.getElementById(asymmetryChartDivId) || !document.getElementById(normativeChartDivId)) return; const positionData = processInputAndCalculate(pos); if (positionData) { try { const [fig, allGreen] = createAsymmetryChart(positionData, injuredSide, pos); if (fig?.data && fig?.layout) { Plotly.react(asymmetryChartDivId, fig.data, fig.layout, plotlyConfig); if (allGreen) asymmetryPositionBoxDiv.classList.add('green-box'); else asymmetryPositionBoxDiv.classList.remove('green-box'); } else { throw new Error("Generated asymmetry figure invalid."); } } catch (error) { console.error(`Error creating asymmetry chart for ${pos}:`, error); createEmptyPlot(asymmetryChartDivId, 'Error loading asymmetry data', 300, 20); asymmetryPositionBoxDiv.classList.remove('green-box'); } } else { createEmptyPlot(asymmetryChartDivId, 'Enter Data', 300, 20); asymmetryPositionBoxDiv.classList.remove('green-box'); } if (bodyweightValid && positionData) { try { const config = createNormativeComparisonChart(positionData, bodyweightValue, pos); if (config?.data && config?.layout) Plotly.react(normativeChartDivId, config.data, config.layout, plotlyConfig); else throw new Error("Generated normative figure invalid."); } catch (error) { console.error(`Error creating normative chart for ${pos}:`, error); createEmptyPlot(normativeChartDivId, 'Error Loading Data', 250, 35); } } else if (!bodyweightValid) { createEmptyPlot(normativeChartDivId, 'Enter Bodyweight', 250, 35); } else { createEmptyPlot(normativeChartDivId, 'Enter Data', 250, 35); } }); setTimeout(() => window.dispatchEvent(new Event('resize')), 100); }
+        function createNormativeComparisonChart(positionData, bodyweight, positionLabel) { const bwVal = parseFloat(bodyweight); if (isNaN(bwVal) || bwVal <= 0 || !positionData) return {}; const leftNkg = positionData.left.max_force / bwVal; const rightNkg = positionData.right.max_force / bwVal; const thresholds = normativeThresholds[positionLabel]; if (!thresholds) return {}; const leftPercentile = mapNkgToPercentile(leftNkg, positionLabel); const rightPercentile = mapNkgToPercentile(rightNkg, positionLabel); const baseCurveX = []; const baseCurveY = []; const mean = 55; const stdDev = 22; const amplitude = 0.9; for (let i = 0; i <= 100; i += 0.5) { baseCurveX.push(i); const y = amplitude * Math.exp(-Math.pow(i - mean, 2) / (2 * Math.pow(stdDev, 2))); baseCurveY.push(y); } const zoneBoundaries = [0, percentileZones.poor, percentileZones.average, percentileZones.good, percentileZones.excellent]; const traces = []; const zoneColorsList = [normZoneColors.poor, normZoneColors.average, normZoneColors.good, normZoneColors.excellent]; for (let i = 0; i < zoneBoundaries.length - 1; i++) { const x0 = zoneBoundaries[i]; const x1 = zoneBoundaries[i+1]; const zoneFillColor = zoneColorsList[i]; const segmentX = [x0]; const segmentY = [0]; for(let j=0; j < baseCurveX.length; j++) { if (baseCurveX[j] >= x0 && baseCurveX[j] <= x1) { segmentX.push(baseCurveX[j]); segmentY.push(baseCurveY[j]); } } segmentX.push(x1); segmentY.push(0); traces.push({ x: segmentX, y: segmentY, type: 'scatter', mode: 'lines', line: { width: 0 }, fill: 'tozeroy', fillcolor: zoneFillColor, hoverinfo: 'none', name: Object.keys(normativeLabels)[i], showlegend: false }); } traces.push({ x: baseCurveX, y: baseCurveY, type: 'scatter', mode: 'lines', line: { color: '#ffffff', width: 1.5, shape: 'spline' }, hoverinfo: 'none', name: 'Distribution (Visual)', showlegend: false }); const layout = { height: graphBoxHeight, margin: { t: 35, b: 95, l: 30, r: 30 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', xaxis: { title: '', range: [0, 100], showgrid: false, zeroline: false, showticklabels: false }, yaxis: { range: [0, 1.1], showgrid: false, zeroline: false, showticklabels: false, title: '' }, shapes: [], annotations: [], font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() }, showlegend: false }; const thresholdAnnotations = [ { p: percentileZones.poor, val: thresholds.poor_max }, { p: percentileZones.average, val: thresholds.good_min }, { p: percentileZones.good, val: thresholds.excellent_min } ]; thresholdAnnotations.forEach(t => { layout.annotations.push({ xref: 'x', yref: 'paper', x: t.p, y: -0.08, text: `<span class="norm-value">${t.val.toFixed(2)}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', font: { family: 'Avenir, sans-serif', size: 10, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--app-primary-color').trim() } }); }); layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: percentileMidpoint, x1: percentileMidpoint, y0: 0, y1: 1, line: { color: getComputedStyle(document.documentElement).getPropertyValue('--medium-gray').trim(), width: 1.5, dash: 'dot' }, layer: 'below' }); const avgValueForPos = thresholds.average_mid.toFixed(2); layout.annotations.push({ xref: 'x', yref: 'paper', x: percentileMidpoint, y: -0.30, text: `<span class="value-display">${avgValueForPos}</span>`, showarrow: false, xanchor: 'center', yanchor: 'top', font: { family: 'Avenir, sans-serif', size: 10, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), weight: 400 } }); const labelYPosition = 1.10; layout.annotations.push({ xref: 'x', yref: 'paper', x: 15, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.poor}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 50, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.average}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() }, align: 'center' }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 80, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.good}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: 95, y: labelYPosition, text: `<span class="norm-label">${normativeLabels.excellent}</span>`, showarrow: false, xanchor: 'center', yanchor: 'bottom', font: { family: 'Avenir, sans-serif', size: 11, weight: 400, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim() } }); const leftColor = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim(); const rightColor = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim(); const lineY0 = 0.05; const lineY1 = 0.95; layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: leftPercentile, x1: leftPercentile, y0: lineY0, y1: lineY1, line: { color: leftColor, width: 2, dash: 'dash' } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: leftPercentile, y: 0.90, text: 'L', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: leftColor, font: {color: leftColor, size: 14, family: 'Avenir, sans-serif', weight: 400} }); layout.shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: rightPercentile, x1: rightPercentile, y0: lineY0, y1: lineY1, line: { color: rightColor, width: 2, dash: 'dash' } }); layout.annotations.push({ xref: 'x', yref: 'paper', x: rightPercentile, y: 0.90, text: 'R', showarrow: true, ax: 0, ay: -15, arrowhead: 0, arrowwidth: 1, arrowcolor: rightColor, font: {color: rightColor, size: 14, family: 'Avenir, sans-serif', weight: 400} }); const combinedNkgText = `<span class='nkg-combined-text'>Left: <span class='left-label'>${leftNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>) &nbsp;&nbsp;|&nbsp;&nbsp; Right: <span class='right-label'>${rightNkg.toFixed(2)}</span> (Nkg<sup>-1</sup>)</span>`; layout.annotations.push({ xref: 'paper', yref: 'paper', x: 0.5, y: -0.30, text: combinedNkgText, showarrow: false, xanchor: 'center', yanchor: 'top', align: 'center', font: { size: 15, color: getComputedStyle(document.documentElement).getPropertyValue('--dark-gray').trim(), family: 'Avenir, sans-serif', weight: 400 } }); return { data: traces, layout }; }
+        function updateGraphsAndTable() { const injuredSide = currentPatientDataForApp.injuredSide || (injuredSideRadio ? injuredSideRadio.value : 'Left'); const bodyweightValue = currentPatientDataForApp.bodyweight || (bodyweightInput ? bodyweightInput.value : ''); const bwVal = parseFloat(bodyweightValue); const bodyweightValid = !isNaN(bwVal) && bwVal > 0; if (normativePlaceholder) { normativePlaceholder.style.display = bodyweightValid ? 'none' : 'block'; } normativeChartDivs.forEach(divId => { const container = document.getElementById(divId)?.closest('.normative-graph-container'); if (container) { container.style.display = bodyweightValid ? 'block' : 'none'; } }); const positions = ['I', 'Y', 'T']; positions.forEach((pos, i) => { const asymmetryChartDivId = asymmetryChartDivs[i]; const asymmetryPositionBoxDivId = asymmetryPositionBoxDivs[i]; const asymmetryPositionBoxDiv = document.getElementById(asymmetryPositionBoxDivId); const normativeChartDivId = normativeChartDivs[i]; if (!asymmetryPositionBoxDiv || !document.getElementById(asymmetryChartDivId) || !document.getElementById(normativeChartDivId)) return; const positionData = processInputAndCalculate(pos); if (positionData) { try { const [fig, allGreen] = createAsymmetryChart(positionData, injuredSide, pos); if (fig?.data && fig?.layout) { Plotly.react(asymmetryChartDivId, fig.data, fig.layout, plotlyConfig); if (allGreen) asymmetryPositionBoxDiv.classList.add('green-box'); else asymmetryPositionBoxDiv.classList.remove('green-box'); } else { throw new Error("Generated asymmetry figure invalid."); } } catch (error) { console.error(`Error creating asymmetry chart for ${pos}:`, error); createEmptyPlot(asymmetryChartDivId, 'Error loading asymmetry data', graphBoxHeight, 20); asymmetryPositionBoxDiv.classList.remove('green-box'); } } else { createEmptyPlot(asymmetryChartDivId, 'Enter Data', graphBoxHeight, 20); asymmetryPositionBoxDiv.classList.remove('green-box'); } if (bodyweightValid && positionData) { try { const config = createNormativeComparisonChart(positionData, bodyweightValue, pos); if (config?.data && config?.layout) Plotly.react(normativeChartDivId, config.data, config.layout, plotlyConfig); else throw new Error("Generated normative figure invalid."); } catch (error) { console.error(`Error creating normative chart for ${pos}:`, error); createEmptyPlot(normativeChartDivId, 'Error Loading Data', graphBoxHeight, 35); } } else if (!bodyweightValid) { createEmptyPlot(normativeChartDivId, 'Enter Bodyweight', graphBoxHeight, 35); } else { createEmptyPlot(normativeChartDivId, 'Enter Data', graphBoxHeight, 35); } }); setTimeout(() => window.dispatchEvent(new Event('resize')), 100); }
         function enterPreviewMode() {
             document.body.classList.add('pdf-preview-active');
             if(previewExitButtonInline) previewExitButtonInline.style.display = 'inline-block';
@@ -1408,10 +1451,10 @@
              setTimeout(() => {
                 asymmetryChartDivs.concat(normativeChartDivs).forEach(divId => {
                     const gd = document.getElementById(divId);
-                     if (gd && gd.classList.contains('js-plotly-plot') && typeof gd.layout !== 'undefined') {
+                     if (gd && gd.classList.contains('js-plotly-plot') && typeof gd.layout !== 'undefined') { 
                          try {
                             Plotly.Plots.resize(gd);
-                        } catch (e) { /* Ignore resize errors if plot not fully rendered */ }
+                         } catch (e) { /* Ignore resize errors if plot not fully rendered */ }
                     }
                 });
             }, 150);
@@ -1524,6 +1567,31 @@
             if(saveDataButtonContainer) saveDataButtonContainer.style.display = 'block';
         }
 
+        function showConfirmationModal(message, onConfirmCallback) {
+            confirmationModalMessage.textContent = message;
+            confirmationModalOverlay.style.display = 'flex';
+
+            // Remove previous listeners to prevent multiple calls
+            confirmationConfirmBtn.removeEventListener('click', handleConfirmClick);
+            confirmationCancelBtn.removeEventListener('click', handleCancelClick);
+
+            const handleConfirmClick = () => {
+                onConfirmCallback();
+                confirmationModalOverlay.style.display = 'none';
+                confirmationConfirmBtn.removeEventListener('click', handleConfirmClick);
+                confirmationCancelBtn.removeEventListener('click', handleCancelClick);
+            };
+
+            const handleCancelClick = () => {
+                confirmationModalOverlay.style.display = 'none';
+                confirmationConfirmBtn.removeEventListener('click', handleConfirmClick);
+                confirmationCancelBtn.removeEventListener('click', handleCancelClick);
+            };
+
+            confirmationConfirmBtn.addEventListener('click', handleConfirmClick);
+            confirmationCancelBtn.addEventListener('click', handleCancelClick);
+        }
+
         async function openPatientModal(type, patientIdToEdit = null) {
             if (!currentUserId) {
                 showStatusMessage("You must be logged in.", "error");
@@ -1554,12 +1622,17 @@
                 modalHTML = `
                     <h3>Select Existing Patient</h3>
                     <div class="modal-form-item">
-                        <label for="modal-search-fp-nr">Search Patient ID:</label>
-                        <input type="text" id="modal-search-fp-nr" list="modal-existing-patient-ids-list">
-                        <datalist id="modal-existing-patient-ids-list"></datalist>
+                        <label for="modal-browse-patient-select">Browse Patients:</label>
+                        <select id="modal-browse-patient-select">
+                            <option value="">-- Select Patient ID --</option>
+                        </select>
+                    </div>
+                    <div class="modal-form-item">
+                        <label for="modal-search-fp-nr">Filter Patient IDs:</label>
+                        <input type="text" id="modal-search-fp-nr">
                     </div>
                     <div class="modal-patient-id-buttons" id="modal-patient-id-button-container">
-                        </div>
+                    </div>
                     <div class="modal-actions">
                         <button type="button" class="modal-cancel-button" id="modal-cancel-search">Cancel</button>
                     </div>`;
@@ -1618,16 +1691,26 @@
                 patientModalContent.querySelector('#modal-confirm-new')?.addEventListener('click', handleNewPatientConfirm);
                 patientModalContent.querySelector('#modal-cancel-new')?.addEventListener('click', closePatientModal);
             } else if (type === 'existing-search') {
-                await populateModalPatientIdButtonsAndDatalist();
+                await populateModalPatientSelectors(); // Populate both select and initial buttons
+                const modalBrowseSelect = patientModalContent.querySelector('#modal-browse-patient-select');
                 const modalSearchInput = patientModalContent.querySelector('#modal-search-fp-nr');
+                
+                if (modalBrowseSelect) {
+                    modalBrowseSelect.addEventListener('change', (e) => {
+                        const selectedId = e.target.value;
+                        if (selectedId) {
+                            modalSearchInput.value = selectedId;
+                            filterModalPatientButtons(selectedId);
+                        } else {
+                            modalSearchInput.value = '';
+                            filterModalPatientButtons('');
+                        }
+                    });
+                }
+
                 if (modalSearchInput) {
                     modalSearchInput.addEventListener('input', (e) => {
-                        const searchVal = e.target.value.trim();
-                        const options = Array.from(patientModalContent.querySelector('#modal-existing-patient-ids-list').options);
-                        const matchedOption = options.find(opt => opt.value === searchVal);
-                        if (matchedOption) {
-                            loadAndDisplayPatient(searchVal); // Changed: Directly load patient
-                        }
+                        filterModalPatientButtons(e.target.value.trim());
                     });
                 }
                 patientModalContent.querySelector('#modal-cancel-search')?.addEventListener('click', closePatientModal);
@@ -1645,39 +1728,66 @@
             patientModalContent.innerHTML = '';
         }
 
-        async function populateModalPatientIdButtonsAndDatalist() {
+        async function populateModalPatientSelectors() {
+            const browseSelect = document.getElementById('modal-browse-patient-select');
             const container = document.getElementById('modal-patient-id-button-container');
-            const datalist = document.getElementById('modal-existing-patient-ids-list');
-            if (!container || !datalist || !currentUserId) return;
 
+            if (!container || !browseSelect || !currentUserId) return;
+
+            // Clear existing options and buttons
+            browseSelect.innerHTML = '<option value="">-- Select Patient ID --</option>';
             container.innerHTML = '';
-            datalist.innerHTML = '';
 
-            const patientsCollectionRef = collection(db, "users", currentUserId, "patients");
-            try {
-                const querySnapshot = await getDocs(patientsCollectionRef);
-                if (querySnapshot.empty) {
-                    container.textContent = 'No existing patients found.';
+            if (allPatientIds.length === 0) { // Fetch only if not already fetched
+                const patientsCollectionRef = collection(db, "users", currentUserId, "patients");
+                try {
+                    const querySnapshot = await getDocs(patientsCollectionRef);
+                    querySnapshot.forEach((docSnap) => {
+                        allPatientIds.push(docSnap.id);
+                    });
+                    allPatientIds.sort(); // Sort alphabetically
+                } catch (error) {
+                    console.error("Error fetching patient IDs for modal:", error);
+                    container.textContent = 'Error loading patients.';
                     return;
                 }
-                querySnapshot.forEach((docSnap) => {
-                    const patientId = docSnap.id;
-                    const option = document.createElement('option');
-                    option.value = patientId;
-                    datalist.appendChild(option);
-
-                    const button = document.createElement('button');
-                    button.textContent = patientId;
-                    button.classList.add('modal-patient-id-button');
-                    button.addEventListener('click', () => {
-                        loadAndDisplayPatient(patientId); // Changed: Directly load patient
-                    });
-                    container.appendChild(button);
-                });
-            } catch (error) {
-                console.error("Error populating modal patient list:", error);
-                container.textContent = 'Error loading patients.';
             }
+
+            // Populate the select dropdown
+            allPatientIds.forEach(patientId => {
+                const option = document.createElement('option');
+                option.value = patientId;
+                option.textContent = patientId;
+                browseSelect.appendChild(option);
+            });
+
+            // Initially populate buttons with all IDs
+            filterModalPatientButtons(''); // Show all buttons initially
+        }
+
+        function filterModalPatientButtons(filterText) {
+            const container = document.getElementById('modal-patient-id-button-container');
+            if (!container) return;
+            container.innerHTML = ''; // Clear current buttons
+
+            const filteredIds = allPatientIds.filter(id =>
+                id.toLowerCase().includes(filterText.toLowerCase())
+            );
+
+            if (filteredIds.length === 0) {
+                container.textContent = 'No matching patients found.';
+                return;
+            }
+
+            filteredIds.forEach((patientId) => {
+                const button = document.createElement('button');
+                button.textContent = patientId;
+                button.classList.add('modal-patient-id-button');
+                button.addEventListener('click', () => {
+                    loadAndDisplayPatient(patientId);
+                });
+                container.appendChild(button);
+            });
         }
 
 
@@ -1732,7 +1842,9 @@
                 showStatusMessage(`New patient "${newPatientId}" saved. Ready for screening.`, "success");
                 displayPatientInfoInCard(currentPatientDataForApp);
                 if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
-                await populatePatientIdDatalistFromFirestore();
+                allPatientIds.push(newPatientId); // Add new patient to the in-memory list
+                allPatientIds.sort(); // Keep sorted
+                await populatePatientIdDatalistFromFirestore(); // Refresh main datalist
                 closePatientModal();
 
                 if(fpNrInput) fpNrInput.value = newPatientId;
@@ -1819,6 +1931,46 @@
             } catch (error) {
                 console.error("Error updating patient data:", error);
                 showStatusMessage("Error updating patient data.", "error");
+            }
+        }
+
+        async function deletePatientAndScreenings(patientId) {
+            if (!currentUserId || !patientId) {
+                showStatusMessage("Error: Cannot delete patient. Missing user or patient ID.", "error");
+                return;
+            }
+
+            showStatusMessage(`Deleting patient "${patientId}" and all their data...`, "info", 5000);
+
+            try {
+                // 1. Delete all screenings for the patient
+                const screeningsRef = collection(db, "users", currentUserId, "patients", patientId, "screenings");
+                const q = query(screeningsRef);
+                const querySnapshot = await getDocs(q);
+
+                const deletePromises = [];
+                querySnapshot.forEach((docSnap) => {
+                    deletePromises.push(deleteDoc(doc(db, "users", currentUserId, "patients", patientId, "screenings", docSnap.id)));
+                });
+                await Promise.all(deletePromises);
+                console.log(`Deleted ${deletePromises.length} screenings for patient ${patientId}.`);
+
+                // 2. Delete the patient document itself
+                const patientDocRef = doc(db, "users", currentUserId, "patients", patientId);
+                await deleteDoc(patientDocRef);
+
+                showStatusMessage(`Patient "${patientId}" and all data deleted successfully.`, "success");
+
+                // Update in-memory patient IDs
+                allPatientIds = allPatientIds.filter(id => id !== patientId);
+
+                // Reset UI and global state
+                clearAllFields(); // This will reset currentPatientDataForApp, inputs, and hide sections
+                await populatePatientIdDatalistFromFirestore(); // Refresh the main datalist
+                showInitialScreenState(); // Ensure the initial patient selection screen is shown
+            } catch (error) {
+                console.error("Error deleting patient and screenings:", error);
+                showStatusMessage(`Error deleting patient "${patientId}".`, "error");
             }
         }
 
@@ -1938,7 +2090,12 @@
                     deleteButton.classList.add('delete-test-btn');
                     deleteButton.addEventListener('click', (e) => {
                         e.stopPropagation();
-                        confirmAndDeleteScreeningFromFirestore(patientId, screeningDocId, screeningTimestampDate || new Date());
+                        showConfirmationModal(
+                            `Are you sure you want to delete the test for patient "${patientId}" from ${formattedDate}? This action cannot be undone.`,
+                            async () => {
+                                await deleteScreeningFromFirestore(patientId, screeningDocId, screeningTimestampDate || new Date());
+                            }
+                        );
                     });
                     li.appendChild(dateSpan);
                     li.appendChild(deleteButton);
@@ -2007,29 +2164,27 @@
             }
         }
 
-        async function confirmAndDeleteScreeningFromFirestore(patientId, screeningDocId, dateObject) {
+        async function deleteScreeningFromFirestore(patientId, screeningDocId, dateObject) {
             if (!currentUserId) return;
             const formattedDate = dateObject instanceof Date && !isNaN(dateObject)
                 ? dateObject.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })
                 : "unknown date";
 
-            if (confirm(`Are you sure you want to delete the test for patient "${patientId}" from ${formattedDate}? This action cannot be undone.`)) {
-                showStatusMessage("Deleting test...", "info", 1500);
-                try {
-                    const screeningDocRef = doc(db, "users", currentUserId, "patients", patientId, "screenings", screeningDocId);
-                    await deleteDoc(screeningDocRef);
-                    showStatusMessage('Test deleted.', 'success');
+            showStatusMessage("Deleting test...", "info", 1500);
+            try {
+                const screeningDocRef = doc(db, "users", currentUserId, "patients", patientId, "screenings", screeningDocId);
+                await deleteDoc(screeningDocRef);
+                showStatusMessage('Test deleted.', 'success');
 
-                    if (currentPatientDataForApp.screeningId === screeningDocId && currentPatientDataForApp.patientId === patientId) {
-                        resetScreeningInputFields(); // Clears inputs and currentPatientDataForApp.screeningId
-                        updateGraphsAndTable();
-                        saveInputsToLocalStorage(); // Save the cleared state
-                    }
-                    await displayTestsForPatientFromFirestore(patientId);
-                } catch (error) {
-                    console.error("Error deleting screening:", error);
-                    showStatusMessage("Error deleting test.", "error");
+                if (currentPatientDataForApp.screeningId === screeningDocId && currentPatientDataForApp.patientId === patientId) {
+                    resetScreeningInputFields(); // Clears inputs and currentPatientDataForApp.screeningId
+                    updateGraphsAndTable();
+                    saveInputsToLocalStorage(); // Save the cleared state
                 }
+                await displayTestsForPatientFromFirestore(patientId);
+            } catch (error) {
+                console.error("Error deleting screening:", error);
+                showStatusMessage("Error deleting test.", "error");
             }
         }
 
@@ -2120,8 +2275,6 @@
                     saveInputsToLocalStorage(); // Saves patient data and empty ASH inputs
 
                     // Do NOT hide patient choice section and search container
-                    // if (patientChoiceSection) patientChoiceSection.style.display = 'none'; // Reverted
-                    // if (existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none'; // Reverted
                     if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
                     showStatusMessage(`Patient "${patientId}" loaded successfully.`, "success");
                     closePatientModal(); // Close the patient search modal
@@ -2149,43 +2302,46 @@
             fpNrInputSearch.addEventListener('focus', populatePatientIdDatalistFromFirestore);
             fpNrInputSearch.addEventListener('input', async (e) => {
                 const enteredPatientId = e.target.value.trim();
-                if (enteredPatientId && currentUserId) {
-                    const options = Array.from(existingPatientIdsDatalist.options).map(opt => opt.value);
-                    if (options.includes(enteredPatientId)) {
-                        try {
-                            const patientDocRef = doc(db, "users", currentUserId, "patients", enteredPatientId);
-                            const patientDocSnap = await getDoc(patientDocRef);
-                            if (patientDocSnap.exists()) {
-                                currentPatientDataForApp = { patientId: enteredPatientId, ...patientDocSnap.data(), screeningId: null }; // Clear screeningId when selecting a patient this way
+                const options = Array.from(existingPatientIdsDatalist.options).map(opt => opt.value);
 
-                                if(fpNrInput) fpNrInput.value = currentPatientDataForApp.patientId;
-                                if(ageInput) ageInput.value = currentPatientDataForApp.age;
-                                if(genderSelect) genderSelect.value = currentPatientDataForApp.gender;
-                                if(sportInput) sportInput.value = currentPatientDataForApp.sport;
-                                if(injuryInput) injuryInput.value = currentPatientDataForApp.injury;
-                                if(injuredSideRadio) injuredSideRadio.value = currentPatientDataForApp.injuredSide;
-                                if(bodyweightInput) bodyweightInput.value = currentPatientDataForApp.bodyweight;
+                if (enteredPatientId && currentUserId && options.includes(enteredPatientId)) {
+                    try {
+                        const patientDocRef = doc(db, "users", currentUserId, "patients", enteredPatientId);
+                        const patientDocSnap = await getDoc(patientDocRef);
+                        if (patientDocSnap.exists()) {
+                            // Only update patient metadata and display card, do NOT load a specific screening
+                            currentPatientDataForApp = { patientId: enteredPatientId, ...patientDocSnap.data(), screeningId: null };
 
-                                displayPatientInfoInCard(currentPatientDataForApp);
-                                if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
-                                await displayTestsForPatientFromFirestore(enteredPatientId);
-                                resetScreeningInputFields(); // Clears ASH inputs and active test state
-                                updateGraphsAndTable();
-                                saveInputsToLocalStorage(); // Saves patient data and empty ASH inputs
+                            // Update main patient info fields
+                            if(fpNrInput) fpNrInput.value = currentPatientDataForApp.patientId;
+                            if(ageInput) ageInput.value = currentPatientDataForApp.age;
+                            if(genderSelect) genderSelect.value = currentPatientDataForApp.gender;
+                            if(sportInput) sportInput.value = currentPatientDataForApp.sport;
+                            if(injuryInput) injuryInput.value = currentPatientDataForApp.injury;
+                            if(injuredSideRadio) injuredSideRadio.value = currentPatientDataForApp.injuredSide;
+                            if(bodyweightInput) bodyweightInput.value = currentPatientDataForApp.bodyweight;
 
-                                // Do NOT hide patient choice section and search container
-                                // if (patientChoiceSection) patientChoiceSection.style.display = 'none'; // Reverted
-                                // if (existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none'; // Reverted
-                                if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
+                            displayPatientInfoInCard(currentPatientDataForApp);
+                            if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
+                            await displayTestsForPatientFromFirestore(enteredPatientId);
+                            resetScreeningInputFields(); // Clears ASH inputs and active test state
+                            updateGraphsAndTable();
+                            saveInputsToLocalStorage(); // Saves patient data and empty ASH inputs
 
-
-                            } else {
-                                showStatusMessage(`Patient ID not found: ${enteredPatientId}`, "warning");
-                            }
-                        } catch (error) {
-                            console.error("Error fetching patient on main page search:", error);
+                            if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
+                            showStatusMessage(`Patient "${enteredPatientId}" data displayed. Select a test from the log.`, "info");
+                        } else {
+                            // If patient ID is typed but not found (e.g., deleted recently)
+                            showStatusMessage(`Patient ID not found: ${enteredPatientId}`, "warning");
+                            clearAllFields(); // Clear UI if ID is not valid
                         }
+                    } catch (error) {
+                        console.error("Error fetching patient on main page search:", error);
+                        showStatusMessage("Error loading patient data.", "error");
                     }
+                } else if (!enteredPatientId) {
+                    // If input is cleared, clear patient data and UI
+                    clearAllFields();
                 }
             });
         }
@@ -2197,6 +2353,22 @@
                     openPatientModal('existing-edit', currentPatientDataForApp.patientId);
                 } else {
                     showStatusMessage("No patient selected to edit.", "info");
+                }
+            });
+        }
+
+        // Event listener for the new Delete Patient Profile button
+        if (deletePatientProfileButton) {
+            deletePatientProfileButton.addEventListener('click', () => {
+                if (currentPatientDataForApp.patientId) {
+                    showConfirmationModal(
+                        `Are you sure you want to delete patient "${currentPatientDataForApp.patientId}" and all their associated test data? This action cannot be undone.`,
+                        async () => {
+                            await deletePatientAndScreenings(currentPatientDataForApp.patientId);
+                        }
+                    );
+                } else {
+                    showStatusMessage("No patient selected to delete.", "info");
                 }
             });
         }
