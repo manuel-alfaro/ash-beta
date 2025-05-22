@@ -54,7 +54,7 @@
             --status-info-bg: rgba(250, 204, 21, 0.55);
 
             --base-font-size: 16px;
-            /* Removed --graph-box-height as individual plot heights are now set directly */
+            --graph-box-height: 340px; /* Default height for graph containers */
             --sidebar-width: 180px;
             --normal-font-weight: 400;
             --semibold-font-weight: 400;
@@ -478,7 +478,7 @@
             margin-top: 15px;
             margin-bottom: 20px;
             height: 150px; /* Fixed height for the button container */
-            width: 570px; /* Fixed width for the button container */
+            width: 640px; /* Adjusted width for the button container to fit 4 buttons */
             overflow-y: auto; /* Enable scrolling if content exceeds height */
             padding: 5px;
             border: none;
@@ -781,7 +781,7 @@
             transition: box-shadow 0.3s ease, opacity 0.3s ease;
             display: flex;
             flex-direction: column;
-            /* Removed --graph-box-height usage here */
+            height: var(--graph-box-height); /* Use CSS variable for height */
             position: relative;
             overflow: hidden;
         }
@@ -805,7 +805,7 @@
 
         /* PDF Preview / Print Mode Active */
         body.pdf-preview-active {
-            /* Removed --graph-box-height override here */
+            --graph-box-height: 340px !important; /* Set to 340px for PDF as requested */
         }
         body.pdf-preview-active .app-sidebar,
         body.pdf-preview-active #patient-choice-section,
@@ -884,9 +884,8 @@
         body.pdf-preview-active .normative-box {
             box-shadow: none !important;
             border: 1px solid #ccc !important;
-            /* Explicitly set heights for PDF to match main view */
-            height: 300px !important; /* For asymmetry plots */
-            min-height: 300px !important; /* For asymmetry plots */
+            height: var(--graph-box-height) !important; /* Use CSS variable for PDF as well */
+            min-height: var(--graph-box-height) !important; /* Use CSS variable for PDF as well */
             padding: 5px !important;
             background-color: var(--white) !important;
             overflow: hidden !important;
@@ -894,10 +893,7 @@
             flex-direction: column !important;
             width: 100% !important;
         }
-        body.pdf-preview-active .normative-box {
-            height: 250px !important; /* For normative plots */
-            min-height: 250px !important; /* For normative plots */
-        }
+        /* Removed separate height for normative-box in PDF, as --graph-box-height will handle it */
         body.pdf-preview-active .position-box.green-box { box-shadow: none !important; border: 1px solid #ccc !important; }
         .position-box::after { display: none !important; }
         .js-plotly-plot { width: 100% !important; height: 100% !important; flex-grow: 1 !important; }
@@ -1185,10 +1181,6 @@
         const allNumberInputs = Array.from(document.querySelectorAll('#input-section-container input[type="number"]'));
         // The datalist for fp-nr-input-search is removed from HTML, so this variable is no longer needed.
         // const existingPatientIdsDatalist = document.getElementById('existing-patient-ids');
-
-        // Get the graph box height from CSS for consistent plotting
-        // Removed --graph-box-height as individual plot heights are now set directly
-        // const graphBoxHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--graph-box-height').trim());
 
         // Array to store all patient IDs for modal filtering
         let allPatientIds = [];
@@ -1957,7 +1949,7 @@
                 await updateDoc(patientDocRef, patientDataToUpdateFirestore);
                 showStatusMessage(`Details for patient "${patientIdToUpdate}" updated.`, "success");
 
-                if(fpNrInput) fpNrInput.value = patientIdToUpdate;
+                if(fpNrInput) fpNrInput.value = currentPatientDataForApp.patientId;
                 if(ageInput) ageInput.value = currentPatientDataForApp.age;
                 if(genderSelect) genderSelect.value = currentPatientDataForApp.gender;
                 if(sportInput) sportInput.value = currentPatientDataForApp.sport;
