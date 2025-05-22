@@ -487,14 +487,19 @@
             background-color: rgba(255,255,255,0.1);
             border: 1px solid rgba(255,255,255,0.2);
             color: var(--white);
-            padding: 8px 12px;
+            padding: 8px 12px; /* Keep padding for internal spacing */
             border-radius: var(--border-radius);
             cursor: pointer;
             transition: all 0.2s ease;
-            flex-basis: 150px; /* Added for better wrapping */
-            flex-grow: 1; /* Allow to grow but prefer 150px */
-            max-width: 180px; /* Max width for individual buttons */
+            width: 150px; /* Fixed width */
+            height: 40px; /* Fixed height */
+            flex-shrink: 0; /* Prevent shrinking */
+            flex-grow: 0; /* Prevent growing */
             text-align: center;
+            box-sizing: border-box; /* Include padding and border in width/height */
+            display: flex; /* Use flex to center text vertically */
+            justify-content: center;
+            align-items: center;
         }
         .modal-patient-id-button:hover {
             background-color: var(--app-secondary-color);
@@ -554,7 +559,7 @@
         }
         .patient-profile-title-internal .action-buttons {
             display: flex;
-            gap: 15px; /* Increased space between edit and delete buttons */
+            gap: 20px; /* Increased space between edit and delete buttons */
         }
         .edit-profile-button, .delete-patient-btn {
             background-color: transparent; /* Changed to transparent */
@@ -875,201 +880,30 @@
            }
         body.pdf-preview-active .position-box,
         body.pdf-preview-active .normative-box {
-            height: var(--graph-box-height) !important; /* Maintain height from main view */
+            box-shadow: none !important;
+            border: 1px solid #ccc !important;
+            height: var(--graph-box-height) !important;
             min-height: var(--graph-box-height) !important;
-            width: 100% !important; /* Fill the flex container */
-            box-sizing: border-box !important;
+            padding: 5px !important;
+            background-color: var(--white) !important;
+            overflow: hidden !important;
             display: flex !important;
             flex-direction: column !important;
-            overflow: hidden !important;
-            padding: 5px !important;
-            border: 1px solid #ccc !important;
-            background-color: var(--white) !important;
-        }
-        body.pdf-preview-active .js-plotly-plot {
             width: 100% !important;
-            height: 100% !important;
-            flex-grow: 1 !important;
         }
-
-
-        body.pdf-preview-active h1 {
-            text-align: center !important;
-            margin-bottom: 5mm !important;
-        }
-
-
-        /* Responsive Adjustments */
-        @media (max-width: 992px) { /* Medium devices (tablets) */
-            :root { --sidebar-width: 70px; }
-            .app-main-content { margin-left: calc(var(--sidebar-width) + var(--main-content-margin)); padding: 25px 30px; }
-            .app-sidebar { padding: 20px 10px; top: 0; height: 100vh; }
-            .app-sidebar .button-text { display: none; }
-            .app-sidebar button, .app-sidebar a > button { justify-content: center; padding: 10px 0; gap: 0; font-size: 0.85rem; }
-            .app-sidebar button i, .app-sidebar a > button i { width: auto; margin: 0; }
-            .sidebar-social-links { display: none; }
-
-            #patient-overview-section {
-                flex-direction: column;
-            }
-             .overview-column {
-                min-width: 100%;
-                flex-basis: auto;
-            }
-            .patient-details-column, .test-log-column {
-                min-width: unset;
-            }
-
-
-            .position-row { flex-direction: column; align-items: stretch; }
-            .asymmetry-graph-container, .normative-graph-container { flex: none; width: 100%; min-width: unset; }
-            .position-box, .normative-box { height: auto; min-height: unset; }
-            #input-section-container { flex-direction: column; }
-            .input-position-box { min-width: unset; }
-
-
-            body.pdf-preview-active .app-main-content { padding: 15px 30px; }
-            body.pdf-preview-active .position-row {
-                align-items: stretch;
-                flex-wrap: wrap;
-            }
-            body.pdf-preview-active .asymmetry-graph-container,
-            body.pdf-preview-active .normative-graph-container {
-                flex-basis: 100% !important;
-                width: 100% !important;
-                max-width: 100% !important;
-                height: auto !important;
-                min-height: unset !important;
-            }
-            body.pdf-preview-active .position-box, body.pdf-preview-active .normative-box { height: auto; min-height: unset; }
-        }
-        @media (max-width: 768px) { /* Small devices (landscape phones, small tablets) */
-            .app-layout { flex-direction: column; min-height: 100vh; }
-            .app-sidebar { width: 100%; height: auto; position: relative; top: 0; flex-direction: row; flex-wrap: wrap; justify-content: center; padding: 10px; border-bottom: 1px solid var(--sidebar-border-color); border-right: none; z-index: 5; overflow-y: visible; }
-            .sidebar-buttons { flex-direction: row; flex-wrap: wrap; justify-content: center; width: 100%; flex-grow: 0; }
-            .app-sidebar button, .app-sidebar a > button { width: auto; flex-grow: 1; max-width: 180px; justify-content: flex-start; font-size: 0.85rem; font-weight: var(--normal-font-weight); padding: 8px 10px; margin: 5px; gap: 8px; }
-            .app-sidebar .button-text { display: inline-block; }
-            .app-sidebar button i, .app-sidebar a > button i { width: auto; margin-right: 5px; }
-            .sidebar-social-links { display: block; width: 100%; margin-top: 10px; padding-top: 0; border-top: none; text-align: center; }
-            .sidebar-social-links a { margin: 0 10px; font-size: 1.1rem; }
-            .app-main-content { margin-left: 0; padding: 20px 15px; height: auto; }
-            h1 { font-size: 1.6rem; font-weight: var(--normal-font-weight);}
-            h2 { font-size: 1.3rem; font-weight: var(--normal-font-weight);}
-            h3.position-title, h3.normative-title { font-size: 1.0rem; font-weight: var(--normal-font-weight);}
-            #patient-choice-section { flex-direction: column; gap: 15px; padding: 20px 0;}
-            .choice-box { min-width: 250px; }
-
-            #patient-overview-section {
-                flex-direction: column;
-            }
-            .overview-column {
-                width: 100%;
-                flex-basis: auto !important;
-            }
-            .patient-details-column, .test-log-column {
-                min-width: unset;
-                flex-grow: 0;
-            }
-
-            .input-row { flex-direction: column; align-items: flex-start; gap: 5px; } .input-row label { flex-basis: auto; width: 100%; text-align: left; margin-bottom: 3px;} .input-row .input-wrapper { flex-basis: auto; width: 100%; justify-content: flex-start; } .input-row input { width: auto; font-size: 1.2rem; font-weight: var(--normal-font-weight); } .input-row input::placeholder { font-size: 0.8rem; font-weight: var(--normal-font-weight);} .unit-text { margin-left: 8px; } .position-box, .normative-box { padding: 10px; margin-bottom: 0;}
-            #preview-exit-button-inline { top: 10px; right: 10px; font-size: 0.8rem; padding: 6px 10px; }
-            body.pdf-preview-active .app-main-content { padding: 10px 15px; }
-        }
-        @media (max-width: 480px) { /* Extra small devices (phones) */
-            h1 { font-size: 1.4rem; font-weight: var(--normal-font-weight);}
-            h2 { font-size: 1.1rem; font-weight: var(--normal-font-weight);}
-            .app-sidebar button, .app-sidebar a > button { font-size: 0.8rem; padding: 6px 8px; max-width: 150px; font-weight: var(--normal-font-weight);}
-        }
-
-        /* Print-specific styles */
-        @media print {
-            --graph-box-height: 340px !important; /* Set to 340px for Print as requested */
-            body { background-color: white !important; color: black !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; font-size: 9pt !important; padding: 0 !important; display: block !important; font-weight: normal !important;}
-            .app-sidebar,
-            #patient-choice-section,
-            #patient-choice-container,
-            #existing-patient-search-container,
-            #patient-data-secondary-controls,
-            #patient-data-container,
-            #input-section-container,
-            #save-data-button-container,
-            #canvas-container,
-            #bottom-area,
-            .print-instruction,
-            #preview-exit-button-inline,
-            .sidebar-social-links,
-            #loggedInUserContainer,
-            .sidebar-buttons,
-            #patient-details-title,
-            #input-title,
-            #patient-overview-section,
-            #patient-card-and-log-title,
-            #selected-patient-tests-container
-            {
-                display: none !important;
-            }
-
-            h1,
-            .explanation-box,
-            #results-title,
-            .position-row
-            {
-                display: block !important;
-            }
-             .position-row {
-                display: flex !important;
-                flex-wrap: wrap !important; /* Allow wrapping for print if fixed widths don't fit */
-            }
-            #results-title {
-                margin-top: 5mm !important;
-                text-align: center !important;
-            }
-
-
-            .app-layout { display: block !important; }
-            .app-main-content { margin: 0 !important; padding: 5mm !important; width: 100% !important; max-width: 100% !important; box-shadow: none !important; border: none !important; height: auto !important; overflow: visible !important; }
-            .content-container { margin: 0 !important; padding: 0 !important; max-width: 100% !important; }
-
-            .explanation-box { margin: 0 0 5mm 0 !important; border-left-color: black !important; padding: 10px !important; font-size: 8pt !important; }
-            h1 { font-size: 16pt !important; margin-bottom: 5mm !important; text-align: center !important; color: black !important; font-weight: normal !important; }
-            h2 { display: block !important; font-size: 12pt !important; margin-top: 8mm; margin-bottom: 4mm; border: none !important; color: black !important; font-weight: normal !important; }
-            h3 { font-size: 10pt !important; margin-bottom: 3mm !important; color: black !important; font-weight: normal !important; }
-            #report-content { padding: 0 !important; }
-
-            /* PDF Graph Sizing - Reverted to match main view proportions */
-            .asymmetry-graph-container {
-                flex: 6 !important;
-                min-width: 0 !important; /* Allow flex to control size */
-            }
-            .normative-graph-container {
-                flex: 4 !important;
-                min-width: 0 !important; /* Allow flex to control size */
-            }
-            .position-box, .normative-box {
-                box-shadow: none !important;
-                border: 1px solid #ccc !important;
-                height: var(--graph-box-height) !important;
-                min-height: var(--graph-box-height) !important;
-                padding: 5px !important;
-                background-color: var(--white) !important;
-                overflow: hidden !important;
-                display: flex !important;
-                flex-direction: column !important;
-                width: 100% !important;
-            }
-            .position-box.green-box { box-shadow: none !important; border: 1px solid #ccc !important; }
-            .position-box::after { display: none !important; }
-            .js-plotly-plot { width: 100% !important; height: 100% !important; flex-grow: 1 !important; }
-            .plotly .scatterlayer .trace.fill { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-            .plotly .annotation text, .plotly .annotation .norm-label, .plotly .annotation .left-label, .plotly .annotation .right-label, .plotly .annotation .value-display, .plotly .annotation .nkg-combined-text span, .plotly .annotation .asymmetry-percent { fill: black !important; color: black !important; font-weight: normal !important; }
-            .plotly .annotation .norm-value { font-weight: normal !important; }
-            .plotly .gtitle { fill: black !important; font-weight: normal !important; }
-            .plotly .axistitle { fill: black !important; font-size: 9pt !important; font-weight: normal !important; }
-            .plotly .tick text { fill: black !important; font-size: 8pt !important; font-weight: normal !important; }
-            .plotly .legend { display: none !important; }
-            .plotly .modebar { display: none !important; }
-            #bar-chart-I, #bar-chart-Y, #bar-chart-T { height: 100% !important; }
-            #normative-chart-I, #normative-chart-Y, #normative-chart-T { height: 100% !important; }
+        body.pdf-preview-active .position-box.green-box { box-shadow: none !important; border: 1px solid #ccc !important; }
+        .position-box::after { display: none !important; }
+        .js-plotly-plot { width: 100% !important; height: 100% !important; flex-grow: 1 !important; }
+        .plotly .scatterlayer .trace.fill { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        .plotly .annotation text, .plotly .annotation .norm-label, .plotly .annotation .left-label, .plotly .annotation .right-label, .plotly .annotation .value-display, .plotly .annotation .nkg-combined-text span, .plotly .annotation .asymmetry-percent { fill: black !important; color: black !important; font-weight: normal !important; }
+        .plotly .annotation .norm-value { font-weight: normal !important; }
+        .plotly .gtitle { fill: black !important; font-weight: normal !important; }
+        .plotly .axistitle { fill: black !important; font-size: 9pt !important; font-weight: normal !important; }
+        .plotly .tick text { fill: black !important; font-size: 8pt !important; font-weight: normal !important; }
+        .plotly .legend { display: none !important; }
+        .plotly .modebar { display: none !important; }
+        #bar-chart-I, #bar-chart-Y, #bar-chart-T { height: 100% !important; }
+        #normative-chart-I, #normative-chart-Y, #normative-chart-T { height: 100% !important; }
         }
     </style>
 </head>
@@ -1136,8 +970,7 @@
 
                     <div id="existing-patient-search-container" style="display: none;">
                         <label for="fp-nr-input-search">Search Patient ID:</label>
-                        <input id="fp-nr-input-search" type="text" list="existing-patient-ids">
-                        <datalist id="existing-patient-ids"></datalist>
+                        <input id="fp-nr-input-search" type="text">
                         </div>
 
                     <div id="main-screening-content">
@@ -1203,7 +1036,6 @@
                                        <div class="patient-id-standalone-item">
                                            <label for="fp-nr-input">Patient ID (Internal):</label>
                                            <input id="fp-nr-input" type="text">
-                                           <datalist id="existing-patient-ids"></datalist>
                                        </div>
                                        <div id="patient-data-secondary-controls">
                                            <div class="control-item"><label class="control-label" for="injured-side-radio">Injured Side:</label><select id="injured-side-radio"><option value="Left">Left</option><option value="Right">Right</option></select></div>
@@ -1344,7 +1176,8 @@
             'T': { nonInjured: [document.getElementById('non-injured-max-force-t'), document.getElementById('non-injured-rfd-t')], injured: [document.getElementById('injured-max-force-t'), document.getElementById('injured-rfd-t')] }
         };
         const allNumberInputs = Array.from(document.querySelectorAll('#input-section-container input[type="number"]'));
-        const existingPatientIdsDatalist = document.getElementById('existing-patient-ids');
+        // The datalist for fp-nr-input-search is removed from HTML, so this variable is no longer needed.
+        // const existingPatientIdsDatalist = document.getElementById('existing-patient-ids');
 
         // Get the graph box height from CSS for consistent plotting
         const graphBoxHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--graph-box-height').trim());
@@ -1396,7 +1229,8 @@
             asymmetryChartDivs.forEach(divId => createEmptyPlot(divId, 'Enter Data', graphBoxHeight, 20));
             normativeChartDivs.forEach(divId => createEmptyPlot(divId, 'Enter Bodyweight', graphBoxHeight, 35));
             loadInputsFromLocalStorage();
-            await populatePatientIdDatalistFromFirestore(); // For the main page search input
+            // populatePatientIdDatalistFromFirestore() is no longer needed for the main search input.
+            // It will be implicitly handled by populateModalPatientButtons when the modal opens.
 
             if (currentPatientDataForApp.patientId) {
                 displayPatientInfoInCard(currentPatientDataForApp);
@@ -1814,7 +1648,7 @@
                 if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
                 allPatientIds.push(newPatientId); // Add new patient to the in-memory list
                 allPatientIds.sort(); // Keep sorted
-                await populatePatientIdDatalistFromFirestore(); // Refresh main datalist
+                // No need to call populatePatientIdDatalistFromFirestore() here as the datalist is removed.
                 closePatientModal();
 
                 if(fpNrInput) fpNrInput.value = newPatientId;
@@ -1936,7 +1770,8 @@
 
                 // Reset UI and global state
                 clearAllFields(); // This will reset currentPatientDataForApp, inputs, and hide sections
-                await populatePatientIdDatalistFromFirestore(); // Refresh the main datalist
+                // populatePatientIdDatalistFromFirestore() is no longer needed for the main search input.
+                // It will be implicitly handled by populateModalPatientButtons when the modal opens.
                 showInitialScreenState(); // Ensure the initial patient selection screen is shown
             } catch (error) {
                 console.error("Error deleting patient and screenings:", error);
@@ -1978,25 +1813,29 @@
             overviewTitle.style.display = 'block';
         }
 
+        // This function is now only used to populate the 'allPatientIds' array,
+        // which is then used by the modal's filter and buttons.
+        // The main page search input no longer uses a datalist.
         async function populatePatientIdDatalistFromFirestore() {
             if (!currentUserId) return;
             const patientsCollectionRef = collection(db, "users", currentUserId, "patients");
-            const localExistingPatientIdsDatalist = document.getElementById('existing-patient-ids');
+            // const localExistingPatientIdsDatalist = document.getElementById('existing-patient-ids'); // This element is removed
 
-            if(localExistingPatientIdsDatalist) localExistingPatientIdsDatalist.innerHTML = '';
+            // if(localExistingPatientIdsDatalist) localExistingPatientIdsDatalist.innerHTML = ''; // No longer needed
 
             try {
                 const querySnapshot = await getDocs(patientsCollectionRef);
                 const patientIds = new Set();
                 querySnapshot.forEach((docSnap) => patientIds.add(docSnap.id));
 
-                patientIds.forEach(id => {
-                    const option = document.createElement('option');
-                    option.value = id;
-                    if(localExistingPatientIdsDatalist) localExistingPatientIdsDatalist.appendChild(option.cloneNode(true));
-                });
+                // Update the global allPatientIds array
+                allPatientIds = Array.from(patientIds);
+                allPatientIds.sort();
+
+                // The options were previously added to the datalist here, which is now removed.
+                // The modal's patient buttons will be populated from allPatientIds when the modal opens.
             } catch (error) {
-                console.error("Error populating main patient ID datalist:", error);
+                console.error("Error populating patient ID list from Firestore:", error);
                 showStatusMessage("Error loading patient list.", "error");
             }
         }
@@ -2269,12 +2108,14 @@
             });
         }
         if (fpNrInputSearch) {
-            fpNrInputSearch.addEventListener('focus', populatePatientIdDatalistFromFirestore);
+            // Removed focus listener for datalist as it's no longer used.
+            // fpNrInputSearch.addEventListener('focus', populatePatientIdDatalistFromFirestore);
             fpNrInputSearch.addEventListener('input', async (e) => {
                 const enteredPatientId = e.target.value.trim();
-                const options = Array.from(existingPatientIdsDatalist.options).map(opt => opt.value);
+                // We no longer rely on datalist options directly for checking existence on main page input.
+                // We will attempt to fetch from Firestore if an ID is entered.
 
-                if (enteredPatientId && currentUserId && options.includes(enteredPatientId)) {
+                if (enteredPatientId && currentUserId) {
                     try {
                         const patientDocRef = doc(db, "users", currentUserId, "patients", enteredPatientId);
                         const patientDocSnap = await getDoc(patientDocRef);
