@@ -27,10 +27,10 @@
             --medium-gray: #dee2e6;
             --dark-gray: #495057;
             --text-color: #212529;
-            --success-color: #16a34a;
-            --success-border-color: #15803d;
-            --success-shadow-color: rgba(22, 163, 74, 0.45);
-            --success-gradient-start-color: rgba(22, 163, 74, 1);
+            --success-color: #4CAF50; /* Brighter green */
+            --success-border-color: #388E3C; /* Darker shade of new green */
+            --success-shadow-color: rgba(76, 175, 80, 0.45); /* Shadow for new green */
+            --success-gradient-start-color: rgba(76, 175, 80, 1); /* Gradient start for new green */
             --warning-color: #facc15;
             --danger-color-dark: #dc2626;
             --white: #ffffff;
@@ -1318,6 +1318,10 @@
             const maxYValue = validRatios.length > 0 ? Math.max(110, ...validRatios) : 110;
             const annotationYTop = maxYValue + 8;
             const yAxisUpperBound = annotationYTop + 15;
+
+            const isPdfPreview = document.body.classList.contains('pdf-preview-active');
+            const plotHeight = isPdfPreview ? 340 : 300; // Dynamic height for Plotly layout
+
             const fig = {
                 data: [
                     { type: 'bar', name: 'Left', x: plotX, y: plotYLeft, marker: { color: leftColorRgba }, text: leftTextsAbsolute, texttemplate: '%{text}', textposition: 'none', hoverinfo: 'x+name', hovertemplate: 'Left: %{y:.0f}%<extra></extra>' },
@@ -1325,7 +1329,7 @@
                     { x: [null], y: [null], mode: 'lines', name: '±10% Threshold', line: { color: thresholdLineColor, width: 1, dash: 'dash' }, hoverinfo: 'none', showlegend: true }
                 ],
                 layout: {
-                    height: 300, // Fixed height for asymmetry plots
+                    height: plotHeight, // Use dynamic height
                     barmode: 'group',
                     font: { color: darkGrayColor, family: 'Avenir, sans-serif', size: 12, weight: 400 },
                     yaxis: { title: "Injured Side Asymmetry (%)", titlefont: { size: 13, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, tickfont: { size: 11, family: 'Avenir, sans-serif', weight: 400, color: darkGrayColor }, range: [18, yAxisUpperBound], tickmode: 'array', tickvals: [50, 100], showgrid: false, zeroline: false, },
@@ -1352,7 +1356,7 @@
                     const percentageDiff = injuredRatio - 100;
                     let color;
                     if (percentageDiff >= -10) {
-                        color = '#2a9d8f';
+                        color = '#4CAF50'; // Updated to new success green
                     } else {
                         allGreen = false;
                         if (percentageDiff >= -15) {
@@ -1423,8 +1427,12 @@
                 traces.push({ x: segmentX, y: segmentY, type: 'scatter', mode: 'lines', line: { width: 0 }, fill: 'tozeroy', fillcolor: zoneFillColor, hoverinfo: 'none', name: Object.keys(normativeLabels)[i], showlegend: false });
             }
             traces.push({ x: baseCurveX, y: baseCurveY, type: 'scatter', mode: 'lines', line: { color: '#ffffff', width: 1.5, shape: 'spline' }, hoverinfo: 'none', name: 'Distribution (Visual)', showlegend: false });
+            
+            const isPdfPreview = document.body.classList.contains('pdf-preview-active');
+            const plotHeight = isPdfPreview ? 340 : 250; // Dynamic height for Plotly layout
+
             const layout = {
-                height: 250, // Fixed height for normative plots
+                height: plotHeight, // Fixed height for normative plots
                 margin: { t: 35, b: 95, l: 30, r: 30 },
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)',
