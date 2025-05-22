@@ -27,10 +27,10 @@
             --medium-gray: #dee2e6;
             --dark-gray: #495057;
             --text-color: #212529;
-            --success-color: #4CAF50; /* Brighter green */
-            --success-border-color: #388E3C; /* Darker shade of new green */
-            --success-shadow-color: rgba(76, 175, 80, 0.45); /* Shadow for new green */
-            --success-gradient-start-color: rgba(76, 175, 80, 1); /* Gradient start for new green */
+            --success-color: #16a34a; /* Original green */
+            --success-border-color: #15803d; /* Original darker green */
+            --success-shadow-color: rgba(22, 163, 74, 0.45); /* Original shadow for green */
+            --success-gradient-start-color: rgba(22, 163, 74, 1); /* Original gradient start for green */
             --warning-color: #facc15;
             --danger-color-dark: #dc2626;
             --white: #ffffff;
@@ -1356,7 +1356,7 @@
                     const percentageDiff = injuredRatio - 100;
                     let color;
                     if (percentageDiff >= -10) {
-                        color = '#4CAF50'; // Updated to new success green
+                        color = '#2a9d8f'; // Reverted to original green
                     } else {
                         allGreen = false;
                         if (percentageDiff >= -15) {
@@ -1899,7 +1899,7 @@
                 // No need to call populatePatientIdDatalistFromFirestore() here as the datalist is removed.
                 closePatientModal();
 
-                if(fpNrInput) fpNrInput.value = newPatientId;
+                if(fpNrInput) fpNrInput.value = currentPatientDataForApp.patientId;
                 if(ageInput) ageInput.value = currentPatientDataForApp.age;
                 if(genderSelect) genderSelect.value = currentPatientDataForApp.gender;
                 if(sportInput) sportInput.value = currentPatientDataForApp.sport;
