@@ -478,10 +478,12 @@
             margin-top: 15px;
             margin-bottom: 20px;
             height: 150px; /* Fixed height for the button container */
+            width: 100%; /* Fixed width for the button container */
             overflow-y: auto; /* Enable scrolling if content exceeds height */
             padding: 5px;
             border: none;
             border-radius: var(--border-radius);
+            align-content: flex-start; /* Pack rows to the top */
         }
         .modal-patient-id-button {
             background-color: rgba(255,255,255,0.1);
@@ -970,7 +972,7 @@
 
                     <div id="existing-patient-search-container" style="display: none;">
                         <label for="fp-nr-input-search">Search Patient ID:</label>
-                        <input id="fp-nr-input-search" type="text">
+                        <input id="fp-nr-input-search" type="text" autocomplete="off">
                         </div>
 
                     <div id="main-screening-content">
@@ -1441,7 +1443,7 @@
                 modalHTML = `
                     <h3>Register New Patient</h3>
                     <div class="modal-form-grid">
-                        <div class="modal-form-item"><label for="modal-fp-nr">Patient ID:</label><input type="text" id="modal-fp-nr" value="${tempPatientData.patientId}"></div>
+                        <div class="modal-form-item"><label for="modal-fp-nr">Patient ID:</label><input type="text" id="modal-fp-nr" value="${tempPatientData.patientId}" autocomplete="off"></div>
                         <div class="modal-form-item"><label for="modal-injured-side">Injured Side:</label><select id="modal-injured-side"></select></div>
                         <div class="modal-form-item"><label for="modal-bodyweight">Bodyweight (kg):</label><input type="number" id="modal-bodyweight" value="${tempPatientData.bodyweight}"></div>
                         <div class="modal-form-item"><label for="modal-age">Age:</label><input type="number" id="modal-age" value="${tempPatientData.age}"></div>
@@ -1458,7 +1460,7 @@
                     <h3>Select Existing Patient</h3>
                     <div class="modal-form-item">
                         <label for="modal-search-fp-nr">Select Patient:</label>
-                        <input type="text" id="modal-search-fp-nr">
+                        <input type="text" id="modal-search-fp-nr" autocomplete="off">
                     </div>
                     <div class="modal-patient-id-buttons" id="modal-patient-id-button-container">
                     </div>
