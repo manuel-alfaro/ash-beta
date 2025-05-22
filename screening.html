@@ -544,22 +544,22 @@
             position: absolute;
             top: 0; /* Adjust as needed */
             right: 0; /* Adjust as needed */
-            background-color: transparent; /* Changed to transparent */
-            color: var(--app-primary-color); /* Changed to primary color */
+            background-color: var(--app-primary-color);
+            color: var(--app-text-on-primary);
             border: none;
-            padding: 0; /* Removed padding */
+            padding: 6px 12px;
             border-radius: var(--border-radius);
             cursor: pointer;
-            font-size: 1.2rem; /* Increased font size for icon */
-            transition: color 0.2s ease; /* Transition for color */
+            font-size: 0.85rem;
+            transition: background-color 0.2s ease;
             display: flex;
             align-items: center;
-            gap: 0; /* Removed gap */
-            box-shadow: none; /* Removed box-shadow */
+            gap: 5px;
+            box-shadow: var(--subtle-shadow);
         }
         .edit-profile-button:hover {
-            background-color: transparent; /* Keep transparent */
-            color: var(--app-secondary-color); /* Hover color */
+            background-color: var(--app-secondary-color);
+            color: var(--app-primary-color);
         }
         .edit-profile-button i {
             color: inherit; /* Inherit color from button */
@@ -877,7 +877,7 @@
 
 
         /* Responsive Adjustments */
-        @media (max-width: 992px) { /* Medium devices (tables) */
+        @media (max-width: 992px) { /* Medium devices (tablets) */
             :root { --sidebar-width: 70px; }
             .app-main-content { margin-left: calc(var(--sidebar-width) + var(--main-content-margin)); padding: 25px 30px; }
             .app-sidebar { padding: 20px 10px; top: 0; height: 100vh; }
@@ -1112,7 +1112,8 @@
                                 <div id="patient-identity-card" class="patient-card" style="display: none;">
                                     <h3 class="patient-profile-title-internal">Patient Profile
                                         <button id="edit-patient-profile-btn" class="edit-profile-button">
-                                            <i class="fas fa-edit"></i> </button>
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
                                     </h3>
                                     <div class="patient-card-header">
                                         <i class="fas fa-address-card patient-card-icon"></i>
@@ -1344,8 +1345,8 @@
                 displayPatientInfoInCard(currentPatientDataForApp);
                 await displayTestsForPatientFromFirestore(currentPatientDataForApp.patientId);
                 if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
-                // Keep choice sections visible on init if a patient is loaded, as per user request
-                if (patientChoiceSection) patientChoiceSection.style.display = 'flex'; // REVERTED: Keep visible
+                // Hide choice sections if a patient is already loaded on init
+                if (patientChoiceSection) patientChoiceSection.style.display = 'none';
                 if (existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
                 if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
             } else {
@@ -1728,12 +1729,10 @@
                 if(injuredSideRadio) injuredSideRadio.value = currentPatientDataForApp.injuredSide;
                 if(bodyweightInput) bodyweightInput.value = currentPatientDataForApp.bodyweight;
 
-                // Keep patient choice buttons visible after new patient creation
                 if (newPatientChoiceButton) newPatientChoiceButton.classList.remove('active-choice');
                 if (existingPatientChoiceButton) existingPatientChoiceButton.classList.remove('active-choice');
                 if (existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
                 if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
-                if (patientChoiceSection) patientChoiceSection.style.display = 'flex'; // REVERTED: Keep visible
 
 
                 resetScreeningInputFields();
@@ -1796,12 +1795,10 @@
 
                 closePatientModal();
 
-                // Keep patient choice buttons visible after editing
                 if (newPatientChoiceButton) newPatientChoiceButton.classList.remove('active-choice');
                 if (existingPatientChoiceButton) existingPatientChoiceButton.classList.remove('active-choice');
                 if (existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
                 if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
-                if (patientChoiceSection) patientChoiceSection.style.display = 'flex'; // REVERTED: Keep visible
 
                 updateGraphsAndTable();
                 saveInputsToLocalStorage();
@@ -2108,8 +2105,8 @@
                     updateGraphsAndTable();
                     saveInputsToLocalStorage(); // Saves patient data and empty ASH inputs
 
-                    // Keep patient choice section visible
-                    if (patientChoiceSection) patientChoiceSection.style.display = 'flex'; // REVERTED: Keep visible
+                    // Hide patient choice section and search container
+                    if (patientChoiceSection) patientChoiceSection.style.display = 'none';
                     if (existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
                     if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
                     showStatusMessage(`Patient "${patientId}" loaded successfully.`, "success");
@@ -2162,11 +2159,10 @@
                                 updateGraphsAndTable();
                                 saveInputsToLocalStorage(); // Saves patient data and empty ASH inputs
 
-                                // Keep patient choice section visible
                                 if (newPatientChoiceButton) newPatientChoiceButton.classList.remove('active-choice');
                                 if (existingPatientChoiceButton) existingPatientChoiceButton.classList.remove('active-choice');
                                 if (existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
-                                if (patientChoiceSection) patientChoiceSection.style.display = 'flex'; // REVERTED: Keep visible
+                                if (patientChoiceSection) patientChoiceSection.style.display = 'none'; // Added: Hide patient choice section
                                 fpNrInputSearch.value = '';
                                 if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
 
