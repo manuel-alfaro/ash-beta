@@ -790,8 +790,8 @@
         }
         body.pdf-preview-active .position-row {
             display: flex !important;
-            flex-wrap: wrap !important; /* Allow wrapping, default for PDF */
-            gap: 10px !important; /* Smaller gap for PDF */
+            flex-wrap: wrap !important; /* MODIFIED: Allow wrapping in PDF if fixed widths don't fit */
+            gap: 10px !important;
         }
 
          body.pdf-preview-active #results-title {
@@ -821,14 +821,14 @@
         }
         /* PDF Graph Sizing - Reverted to inherit from main view where possible */
          body.pdf-preview-active .asymmetry-graph-container{
-            flex: 6 !important;
-            min-width: 320px !important; /* Or adjust as needed for PDF if flex alone isn't enough */
+            flex: 6 !important; /* Inherit from main view */
+            min-width: 0 !important; /* Allow flex to control size, will be overridden by flex-basis if needed */
             margin-bottom: 5mm !important;
             page-break-inside: avoid !important;
          }
          body.pdf-preview-active .normative-graph-container {
-            flex: 4 !important;
-            min-width: 260px !important; /* Or adjust as needed for PDF if flex alone isn't enough */
+            flex: 4 !important; /* Inherit from main view */
+            min-width: 0 !important; /* Allow flex to control size */
             margin-bottom: 5mm !important;
          }
         body.pdf-preview-active .position-box,
@@ -1285,15 +1285,15 @@
                     const userDocSnap = await getDoc(userDocRef);
                     if (userDocSnap.exists()) {
                         const userData = userDocSnap.data();
-                        loggedInUserNameSpan.textContent = `Hi! ${userData.firstName || 'User'}`;
+                        loggedInUserNameSpan.textContent = `Hi ${userData.firstName || 'User'}!`; // Exclamation mark after name
                         loggedInUserEmailDisplaySpan.textContent = currentUser.email || '';
                     } else {
-                        loggedInUserNameSpan.textContent = 'Hi! User';
+                        loggedInUserNameSpan.textContent = 'Hi User!'; // Exclamation mark after name
                         loggedInUserEmailDisplaySpan.textContent = currentUser.email || '';
                     }
                 } catch (error) {
                     console.error("Error fetching user data:", error);
-                    loggedInUserNameSpan.textContent = 'Hi! User';
+                    loggedInUserNameSpan.textContent = 'Hi User!';
                     loggedInUserEmailDisplaySpan.textContent = currentUser.email || '';
                 }
 
@@ -1496,10 +1496,10 @@
                     <h3>Register New Patient</h3>
                     <div class="modal-form-grid">
                         <div class="modal-form-item"><label for="modal-fp-nr">Patient ID:</label><input type="text" id="modal-fp-nr" value="${tempPatientData.patientId}"></div>
-                        <div class="modal-form-item"><label for="modal-injured-side">Injured Side:</label><select id="modal-injured-side"><option value="Left">Left</option><option value="Right">Right</option></select></div>
+                        <div class="modal-form-item"><label for="modal-injured-side">Injured Side:</label><select id="modal-injured-side"></select></div>
                         <div class="modal-form-item"><label for="modal-bodyweight">Bodyweight (kg):</label><input type="number" id="modal-bodyweight" value="${tempPatientData.bodyweight}"></div>
                         <div class="modal-form-item"><label for="modal-age">Age:</label><input type="number" id="modal-age" value="${tempPatientData.age}"></div>
-                        <div class="modal-form-item"><label for="modal-gender">Gender:</label><select id="modal-gender"><option value="">Select...</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select></div>
+                        <div class="modal-form-item"><label for="modal-gender">Gender:</label><select id="modal-gender"></select></div>
                         <div class="modal-form-item"><label for="modal-sport">Sport:</label><input type="text" id="modal-sport" value="${tempPatientData.sport}"></div>
                         <div class="modal-form-item full-width" style="grid-column: 1 / -1;"><label for="modal-injury">Injury (Optional):</label><input type="text" id="modal-injury" value="${tempPatientData.injury}"></div>
                     </div>
@@ -1556,6 +1556,11 @@
                 const genderModalSelect = patientModalContent.querySelector('#modal-gender');
                 const injuredSideModalSelect = patientModalContent.querySelector('#modal-injured-side');
 
+                // Clear existing options before adding new ones to prevent duplicates
+                if(genderModalSelect) genderModalSelect.innerHTML = '';
+                if(injuredSideModalSelect) injuredSideModalSelect.innerHTML = '';
+
+
                 if (genderModalSelect) {
                     ['', 'Male', 'Female', 'Other'].forEach(val => genderModalSelect.add(new Option(val === '' ? 'Select...' : val, val)));
                     genderModalSelect.value = tempPatientData.gender || '';
@@ -1584,8 +1589,9 @@
                 }
                 patientModalContent.querySelector('#modal-cancel-search')?.addEventListener('click', closePatientModal);
             } else if (type === 'existing-edit') {
-                const capturedIdForEdit = patientIdToEdit; // Explicitly capture for the closure
+                const capturedIdForEdit = patientIdToEdit;
                 patientModalContent.querySelector('#modal-confirm-edit')?.addEventListener('click', () => {
+                    console.log("Confirm Edit Clicked. ID to pass:", capturedIdForEdit); // Debug log
                     handleExistingPatientDone(capturedIdForEdit);
                 });
                 patientModalContent.querySelector('#modal-cancel-edit')?.addEventListener('click', closePatientModal);
@@ -1711,23 +1717,22 @@
             }
         }
 
-        async function handleExistingPatientDone(idFromModal) { // Changed param name
-            console.log("handleExistingPatientDone called with ID:", idFromModal); // Debug log
-            if (!currentUserId || !idFromModal) {
-                 console.warn("handleExistingPatientDone: Missing currentUserId or idFromModal.", currentUserId, idFromModal);
+        async function handleExistingPatientDone(patientIdToUpdate) { // Parameter name changed for clarity
+            console.log("handleExistingPatientDone called with ID:", patientIdToUpdate);
+            if (!currentUserId || !patientIdToUpdate) {
+                 console.warn("handleExistingPatientDone: Missing currentUserId or patientIdToUpdate.", currentUserId, patientIdToUpdate);
                 return;
             }
-            const originalPatientId = idFromModal; // Use this consistently
 
             const updatedPatientDataFromModal = {
-                patientId: originalPatientId,
+                patientId: patientIdToUpdate,
                 age: patientModalContent.querySelector('#modal-age').value,
                 gender: patientModalContent.querySelector('#modal-gender').value,
                 sport: patientModalContent.querySelector('#modal-sport').value,
                 injury: patientModalContent.querySelector('#modal-injury').value,
                 injuredSide: patientModalContent.querySelector('#modal-injured-side').value,
                 bodyweight: patientModalContent.querySelector('#modal-bodyweight').value,
-                screeningId: null
+                screeningId: null // Clear screeningId as we are confirming patient details, not a specific test
             };
             currentPatientDataForApp = { ...updatedPatientDataFromModal };
 
@@ -1742,11 +1747,11 @@
             };
 
             try {
-                const patientDocRef = doc(db, "users", currentUserId, "patients", originalPatientId);
+                const patientDocRef = doc(db, "users", currentUserId, "patients", patientIdToUpdate);
                 await updateDoc(patientDocRef, patientDataToUpdateFirestore);
-                showStatusMessage(`Details for patient "${originalPatientId}" updated.`, "success");
+                showStatusMessage(`Details for patient "${patientIdToUpdate}" updated.`, "success");
 
-                if(fpNrInput) fpNrInput.value = originalPatientId;
+                if(fpNrInput) fpNrInput.value = patientIdToUpdate;
                 if(ageInput) ageInput.value = currentPatientDataForApp.age;
                 if(genderSelect) genderSelect.value = currentPatientDataForApp.gender;
                 if(sportInput) sportInput.value = currentPatientDataForApp.sport;
@@ -1756,9 +1761,9 @@
 
                 displayPatientInfoInCard(currentPatientDataForApp);
                 if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
-                await displayTestsForPatientFromFirestore(originalPatientId);
+                await displayTestsForPatientFromFirestore(patientIdToUpdate);
 
-                resetScreeningInputFields();
+                resetScreeningInputFields(); // Clear ASH inputs
 
                 closePatientModal();
 
