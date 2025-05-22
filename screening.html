@@ -30,7 +30,6 @@
             --success-color: #2a9d8f; /* Consistent green for success */
             --success-border-color: #217e72; /* Darker shade of #2a9d8f */
             
-            /* Updated for fade effect as per request */
             --success-shadow-color: rgba(22, 163, 74, 0.45); 
             --success-gradient-start-color: rgba(22, 163, 74, 1); 
 
@@ -45,19 +44,17 @@
             --left-line-color: #ff7f0e; /* Orange */
             --right-line-color: #1f77b4; /* Blue */
 
-            /* Normative Background Colors with 50% Alpha as per request */
             --norm-poor-bg: rgba(252, 165, 165, 0.5);
             --norm-average-bg: rgba(252, 211, 77, 0.5);
             --norm-good-bg: rgba(167, 243, 208, 0.5);
             --norm-excellent-bg: rgba(52, 211, 153, 0.5);
 
-            /* Status Message Background Colors with Alpha for Frosted Glass Effect */
             --status-success-bg: rgba(74, 222, 128, 0.55);
             --status-error-bg: rgba(220, 38, 38, 0.55);
             --status-info-bg: rgba(250, 204, 21, 0.55);
 
             --base-font-size: 16px;
-            --graph-box-height: 340px; /* Default height for graph containers */
+            --graph-box-height: 340px; 
             --sidebar-width: 180px;
             --normal-font-weight: 400;
             --semibold-font-weight: 400;
@@ -148,7 +145,6 @@
         }
         .sidebar-buttons { display: flex; flex-direction: column; gap: 12px; }
 
-        /* Sidebar Button Styling - Restored */
         .app-sidebar button, .app-sidebar a > button {
             font-family: 'Avenir', sans-serif;
             font-size: 0.9rem;
@@ -214,7 +210,6 @@
             color: var(--app-text-on-primary);
         }
         .app-sidebar a { text-decoration: none; display: block; }
-        /* End of Sidebar Button Styling */
 
 
         .sidebar-user-info {
@@ -480,29 +475,29 @@
             gap: 10px;
             margin-top: 15px;
             margin-bottom: 20px;
-            height: 150px; /* Fixed height for the button container */
-            width: 640px; /* Adjusted width for the button container to fit 4 buttons */
-            overflow-y: auto; /* Enable scrolling if content exceeds height */
+            height: 150px; 
+            width: 640px; 
+            overflow-y: auto; 
             padding: 5px;
             border: none;
             border-radius: var(--border-radius);
-            align-content: flex-start; /* Pack rows to the top */
+            align-content: flex-start; 
         }
         .modal-patient-id-button {
             background-color: rgba(255,255,255,0.1);
             border: 1px solid rgba(255,255,255,0.2);
             color: var(--white);
-            padding: 8px 12px; /* Keep padding for internal spacing */
+            padding: 8px 12px; 
             border-radius: var(--border-radius);
             cursor: pointer;
             transition: all 0.2s ease;
-            width: 150px; /* Fixed width */
-            height: 40px; /* Fixed height */
-            flex-shrink: 0; /* Prevent shrinking */
-            flex-grow: 0; /* Prevent growing */
+            width: 150px; 
+            height: 40px; 
+            flex-shrink: 0; 
+            flex-grow: 0; 
             text-align: center;
-            box-sizing: border-box; /* Include padding and border in width/height */
-            display: flex; /* Use flex to center text vertically */
+            box-sizing: border-box; 
+            display: flex; 
             justify-content: center;
             align-items: center;
         }
@@ -784,13 +779,12 @@
             transition: box-shadow 0.3s ease, opacity 0.3s ease;
             display: flex;
             flex-direction: column;
-            height: var(--graph-box-height); /* Use CSS variable for height */
+            height: var(--graph-box-height); 
             position: relative;
             overflow: hidden;
         }
         .position-box.green-box {
-            box-shadow: 0 0 15px 5px var(--success-shadow-color); /* Updated shadow color */
-            border-color: var(--success-border-color); 
+            box-shadow: 0 0 15px 5px var(--success-shadow-color); 
         }
         .position-box::after { 
             content: ''; 
@@ -799,7 +793,7 @@
             right: -100px; 
             width: 500px; 
             height: 500px; 
-            background-image: radial-gradient(circle at top right, var(--success-gradient-start-color) 0%, rgba(248, 249, 250, 0) 65% ); /* Fades to transparent --light-gray */
+            background-image: radial-gradient(circle at top right, var(--success-gradient-start-color) 0%, rgba(248, 249, 250, 0) 65% ); 
             opacity: 0; 
             pointer-events: none; 
             z-index: 0; 
@@ -897,51 +891,67 @@
            }
         body.pdf-preview-active .position-box,
         body.pdf-preview-active .normative-box {
-            box-shadow: none !important;
-            border: 1px solid #ccc !important;
+            background-color: var(--box-background-color) !important; 
+            box-shadow: var(--subtle-shadow) !important; 
+            border: none !important; 
             height: var(--graph-box-height) !important; 
             min-height: var(--graph-box-height) !important; 
-            padding: 5px !important;
-            background-color: var(--white) !important;
+            padding: 10px 20px 15px 20px !important; /* Match main view padding */
             overflow: hidden !important;
             display: flex !important;
             flex-direction: column !important;
             width: 100% !important;
         }
-        body.pdf-preview-active .position-box.green-box { box-shadow: none !important; border: 1px solid #ccc !important; }
-        .position-box::after { display: none !important; }
+        body.pdf-preview-active .position-box.green-box {
+             box-shadow: 0 0 15px 5px var(--success-shadow-color) !important; /* Apply green shadow in PDF */
+        }
+        /* Removed rule that hid ::after in PDF, so fade effect can show */
+        /* body.pdf-preview-active .position-box::after { display: none !important; } */
+
         .js-plotly-plot { width: 100% !important; height: 100% !important; flex-grow: 1 !important; }
         .plotly .scatterlayer .trace.fill { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         
-        /* MODIFIED CSS for Plotly Annotations */
-        /* Specific classed annotations that should remain black (or their specific styles) */
+        /* Main View Plotly Annotation Styling */
         .plotly .annotation .norm-label, 
         .plotly .annotation .left-label, 
         .plotly .annotation .right-label, 
         .plotly .annotation .value-display, 
-        .plotly .annotation .nkg-combined-text span, 
-        .plotly .annotation .asymmetry-percent { 
+        .plotly .annotation .nkg-combined-text span,
+        .plotly .annotation .asymmetry-percent { /* Though .asymmetry-percent is not used by JS for dynamic values */
             fill: black !important; 
-            color: black !important; /* Fallback if not SVG text */
+            color: black !important; 
             font-weight: normal !important; 
         }
-
-        /* General SVG text within annotations - allow JS to set fill/color for percentageDiff */
         .plotly .annotation text { 
-            /* fill and color are intentionally omitted here to let JS `font.color` (which becomes `fill`) take precedence for unclassed text annotations */
             font-weight: normal !important; 
         }
-        /* END OF MODIFIED CSS */
 
-        .plotly .annotation .norm-value { font-weight: normal !important; }
+        /* PDF Preview Plotly Annotation Styling */
+        body.pdf-preview-active .plotly .annotation .norm-label, 
+        body.pdf-preview-active .plotly .annotation .left-label, 
+        body.pdf-preview-active .plotly .annotation .right-label, 
+        body.pdf-preview-active .plotly .annotation .value-display, 
+        body.pdf-preview-active .plotly .annotation .nkg-combined-text span,
+        body.pdf-preview-active .plotly .annotation .asymmetry-percent {
+            fill: black !important; 
+            color: black !important; 
+            font-weight: normal !important; 
+        }
+        /* Allow JS to control color of unclassed text annotations in PDF (for percentageDiff) */
+        body.pdf-preview-active .plotly .annotation text {
+            font-weight: normal !important;
+            /* fill: black !important; IS REMOVED HERE to allow JS color */
+        }
+
+        .plotly .annotation .norm-value { font-weight: normal !important; } /* This applies to both views */
         .plotly .gtitle { fill: black !important; font-weight: normal !important; }
         .plotly .axistitle { fill: black !important; font-size: 9pt !important; font-weight: normal !important; }
         .plotly .tick text { fill: black !important; font-size: 8pt !important; font-weight: normal !important; }
-        .plotly .legend { display: none !important; } /* This was already here, ensure it's intended for PDF */
-        .plotly .modebar { display: none !important; }
+        /* Removed: body.pdf-preview-active .plotly .legend { display: none !important; } to allow legend in PDF */
+        .plotly .modebar { display: none !important; } /* Applies to both views */
         #bar-chart-I, #bar-chart-Y, #bar-chart-T { height: 100% !important; }
         #normative-chart-I, #normative-chart-Y, #normative-chart-T { height: 100% !important; }
-        }
+        
     </style>
 </head>
 <body>
@@ -1103,7 +1113,7 @@
 
         // Firebase configuration
         const firebaseConfig = {
-            apiKey: "AIzaSyDhEihuoWm4c5MSOHrSqkkzca7tn86roq4", // Replace with your actual API key if different
+            apiKey: "AIzaSyDhEihuoWm4c5MSOHrSqkkzca7tn86roq4", 
             authDomain: "pwr-analytics.firebaseapp.com",
             projectId: "pwr-analytics",
             storageBucket: "pwr-analytics.appspot.com",
@@ -1126,9 +1136,9 @@
             gender: '',
             sport: '',
             injury: '',
-            injuredSide: 'Left', // Default injured side
+            injuredSide: 'Left', 
             bodyweight: '',
-            screeningId: null // To track if a specific screening is loaded
+            screeningId: null 
         };
 
         // DOM Element References
