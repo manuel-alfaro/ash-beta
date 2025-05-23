@@ -704,10 +704,18 @@
             margin-bottom: 8px;
         }
 
+        /* Container for action buttons within each test item */
+        .test-item-actions {
+            display: flex;
+            gap: 8px; /* Space between edit and delete buttons */
+            margin-top: 5px; /* Space above the buttons */
+            align-items: center;
+        }
+
+        #selected-patient-tests-list button.edit-test-btn,
         #selected-patient-tests-list button.delete-test-btn {
             background-color: transparent;
             border: 1px solid transparent;
-            color: var(--danger-color-dark);
             border-radius: var(--border-radius);
             cursor: pointer;
             padding: 4px 7px;
@@ -718,11 +726,25 @@
             align-items: center;
             justify-content: center;
         }
+
+        #selected-patient-tests-list button.edit-test-btn {
+            color: var(--app-primary-color);
+        }
+        #selected-patient-tests-list button.edit-test-btn:hover {
+            background-color: var(--app-primary-color);
+            color: white;
+            border-color: var(--app-primary-color);
+        }
+
+        #selected-patient-tests-list button.delete-test-btn {
+            color: var(--danger-color-dark);
+        }
         #selected-patient-tests-list button.delete-test-btn:hover {
             background-color: var(--danger-color-dark);
             color: white;
             border-color: var(--danger-color-dark);
         }
+
 
         #patient-data-container { display:none !important; }
 
@@ -1446,10 +1468,10 @@
 
             const pMap = [
                 { v: 0, p: 0 }, 
-                { v: thresholds.poor_max, p: percentileZones.poor },        
-                { v: thresholds.average_mid, p: percentileMidpoint },      
-                { v: thresholds.good_min, p: percentileZones.average },    
-                { v: thresholds.excellent_min, p: percentileZones.good },   
+                { v: thresholds.poor_max, p: percentileZones.poor },      
+                { v: thresholds.average_mid, p: percentileMidpoint },    
+                { v: thresholds.good_min, p: percentileZones.average },   
+                { v: thresholds.excellent_min, p: percentileZones.good },  
                 { v: thresholds.excellent_min * 1.25, p: percentileZones.excellent } 
             ];
             pMap.sort((a, b) => a.v - b.v);
@@ -1773,8 +1795,8 @@
                 confirmationCancelBtn.removeEventListener('click', handleCancelClick);
             };
 
-            confirmationConfirmBtn.removeEventListener('click', handleConfirmClick);
-            confirmationCancelBtn.removeEventListener('click', handleCancelClick);
+            confirmationConfirmBtn.removeEventListener('click', handleConfirmClick); // Remove previous if any
+            confirmationCancelBtn.removeEventListener('click', handleCancelClick); // Remove previous if any
 
             confirmationConfirmBtn.addEventListener('click', handleConfirmClick);
             confirmationCancelBtn.addEventListener('click', handleCancelClick);
@@ -2222,6 +2244,20 @@
                         dateSpan.textContent = "Invalid date";
                     }
                     dateSpan.title = "Load this test";
+                    li.appendChild(dateSpan);
+
+                    const actionsDiv = document.createElement('div');
+                    actionsDiv.classList.add('test-item-actions');
+
+                    const editButton = document.createElement('button');
+                    editButton.innerHTML = '<i class="fas fa-edit"></i>';
+                    editButton.title = "Edit test date";
+                    editButton.classList.add('edit-test-btn');
+                    editButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        openEditTestDateModal(patientId, screeningDocId, screeningTimestampDate);
+                    });
+                    actionsDiv.appendChild(editButton);
 
                     const deleteButton = document.createElement('button');
                     deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
@@ -2236,13 +2272,92 @@
                             }
                         );
                     });
-                    li.appendChild(dateSpan);
-                    li.appendChild(deleteButton);
+                    actionsDiv.appendChild(deleteButton);
+                    li.appendChild(actionsDiv);
                     localTestsListUL.appendChild(li);
                 });
             } catch (error) {
                 localTestsListUL.innerHTML = '<li>Error loading tests. Check console for details.</li>';
                 showStatusMessage("Error loading patient tests.", "error");
+            }
+        }
+
+        // Function to open modal for editing test date
+        function openEditTestDateModal(patientId, screeningDocId, currentScreeningTimestampDate) {
+            if (!currentUserId) {
+                showStatusMessage("You must be logged in.", "error");
+                return;
+            }
+            patientModalOverlay.style.display = 'flex';
+
+            let initialDateTimeString = '';
+            if (currentScreeningTimestampDate instanceof Date && !isNaN(currentScreeningTimestampDate)) {
+                const year = currentScreeningTimestampDate.getFullYear();
+                const month = (currentScreeningTimestampDate.getMonth() + 1).toString().padStart(2, '0');
+                const day = currentScreeningTimestampDate.getDate().toString().padStart(2, '0');
+                const hours = currentScreeningTimestampDate.getHours().toString().padStart(2, '0');
+                const minutes = currentScreeningTimestampDate.getMinutes().toString().padStart(2, '0');
+                initialDateTimeString = `${year}-${month}-${day}T${hours}:${minutes}`;
+            }
+
+            const modalHTML = `
+                <h3>Edit Test Date</h3>
+                <div class="modal-form-grid">
+                    <div class="modal-form-item" style="grid-column: 1 / -1;">
+                        <label for="modal-edit-test-date">New Test Date & Time:</label>
+                        <input type="datetime-local" id="modal-edit-test-date" value="${initialDateTimeString}">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="modal-cancel-button" id="modal-cancel-edit-date">Cancel</button>
+                    <button type="button" class="modal-confirm-button" id="modal-confirm-edit-date">Confirm</button>
+                </div>`;
+            patientModalContent.innerHTML = modalHTML;
+
+            patientModalContent.querySelector('#modal-confirm-edit-date').addEventListener('click', () => {
+                handleUpdateTestDate(patientId, screeningDocId);
+            });
+            patientModalContent.querySelector('#modal-cancel-edit-date').addEventListener('click', closePatientModal);
+        }
+
+        // Function to handle the update of the test date
+        async function handleUpdateTestDate(patientId, screeningDocId) {
+            if (!currentUserId) {
+                showStatusMessage("You must be logged in.", "error");
+                return;
+            }
+            const newDateString = patientModalContent.querySelector('#modal-edit-test-date').value;
+            if (!newDateString) {
+                showStatusMessage("Please select a new date and time.", "error");
+                return;
+            }
+
+            try {
+                const newDate = new Date(newDateString);
+                if (isNaN(newDate.getTime())) {
+                    showStatusMessage("Invalid date format.", "error");
+                    return;
+                }
+                const newTimestamp = Timestamp.fromDate(newDate);
+                const screeningDocRef = doc(db, "users", currentUserId, "patients", patientId, "screenings", screeningDocId);
+                
+                await updateDoc(screeningDocRef, {
+                    testTimestamp: newTimestamp
+                });
+
+                showStatusMessage("Test date updated successfully.", "success");
+                closePatientModal();
+                await displayTestsForPatientFromFirestore(patientId); // Refresh the test log
+
+                 // If the updated test was the one currently loaded, re-load its data to reflect new date if necessary
+                if (currentPatientDataForApp.screeningId === screeningDocId) {
+                    await loadScreeningDataFromFirestore(patientId, screeningDocId);
+                }
+
+
+            } catch (error) {
+                console.error("Error updating test date:", error);
+                showStatusMessage("Error updating test date.", "error");
             }
         }
 
@@ -2545,7 +2660,7 @@
         window.addEventListener('resize', () => {
             asymmetryChartDivs.concat(normativeChartDivs).forEach(divId => {
                 const gd = document.getElementById(divId);
-                if (gd && gd.classList.contains('js-plotly-plot') && typeof gd.layout !== 'undefined') { 
+                 if (gd && gd.classList.contains('js-plotly-plot') && typeof gd.layout !== 'undefined') { 
                      try {
                         Plotly.Plots.resize(gd);
                      } catch (e) { /* Ignore resize errors if plot not fully rendered */ }
