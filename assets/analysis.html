@@ -474,7 +474,7 @@
         .patient-card-body .info-item .value { color: var(--text-color); font-weight: var(--bold-font-weight); text-align: right; }
 
         #selected-patient-tests-container .test-log-title-internal {
-            font-size: 1.3rem; color: var(--app-primary-color); margin-bottom: 10px; /* Reduced margin */
+            font-size: 1.3rem; color: var(--app-primary-color); margin-bottom: 10px; 
             padding-bottom: 10px; border-bottom: 1px solid var(--medium-gray);
             margin-top:0; font-weight: var(--normal-font-weight);
         }
@@ -487,20 +487,21 @@
         }
         #selected-patient-tests-list li.test-log-item { 
             display: flex; 
-            flex-direction: column; /* Stack date and icon */
+            flex-direction: column; 
             justify-content: center; 
-            align-items: center; /* Center content */
-            padding: 8px 10px; /* Adjusted padding */
+            align-items: center; 
+            padding: 8px 10px; 
             border: 1px solid rgba(40, 84, 132, 0.3); 
             background-color: rgba(112, 188, 252, 0.05); 
             border-radius: var(--border-radius-general); 
-            min-width: 120px; /* Adjusted min-width */
+            min-width: 100px; /* Adjusted for a more compact look */
+            max-width: 140px;
             width: auto;
             box-sizing: border-box; 
-            text-align: center; /* Center text */
+            text-align: center; 
             transition: all 0.2s ease;
             cursor: pointer; 
-            position: relative; /* For absolute positioning of delete button if needed */
+            position: relative; 
         }
         #selected-patient-tests-list li.test-log-item.active-date-filter,
         #selected-patient-tests-list li.test-log-item.active-date-filter:hover { 
@@ -509,7 +510,7 @@
             box-shadow: inset 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.05);
         }
         #selected-patient-tests-list li.test-log-item.active-date-filter .test-date-span,
-        #selected-patient-tests-list li.test-log-item.active-date-filter .test-visibility-icon i { /* Target icon color */
+        #selected-patient-tests-list li.test-log-item.active-date-filter .test-visibility-icon i { 
             color: var(--app-primary-color); 
         }
         #selected-patient-tests-list li.test-log-item:not(.active-date-filter):hover {
@@ -519,44 +520,22 @@
         #selected-patient-tests-list li .test-date-span { 
             color: var(--app-primary-color); font-size: 0.85rem;
             font-weight: var(--semibold-font-weight); 
-            display: block; /* Ensure it takes its own line */
-            margin-bottom: 5px; /* Space between date and icon */
+            display: block; 
+            margin-bottom: 5px; 
         }
         .test-visibility-icon {
-            font-size: 1.2em; /* Make icon larger */
-            color: var(--dark-gray); /* Default color for non-active */
+            font-size: 1.2em; 
+            color: var(--dark-gray); 
             line-height: 1;
         }
         #selected-patient-tests-list li.test-log-item.active-date-filter .test-visibility-icon {
-            color: var(--app-primary-color); /* Active color */
+            color: var(--app-primary-color); 
         }
 
-        .delete-log-item-btn { 
-            position: absolute; /* Position delete button */
-            top: 2px;
-            right: 2px;
-            background-color: transparent;
-            border: none;
-            color: var(--danger-color-dark);
-            border-radius: 50%; /* Make it roundish */
-            cursor: pointer;
-            padding: 2px 4px; /* Small padding */
-            font-size: 0.7rem; /* Smaller icon */
-            line-height: 1; 
-            opacity: 0.6; /* Less prominent */
-            transition: opacity 0.2s ease, background-color 0.2s ease;
+        .delete-log-item-btn { /* Hidden, but kept for potential future use if triggered differently */
+           display: none;
         }
-        .delete-log-item-btn:hover {
-            opacity: 1;
-            background-color: rgba(220, 38, 38, 0.1); /* Light red background on hover */
-        }
-        #selected-patient-tests-list li.test-log-item.active-date-filter .delete-log-item-btn {
-             color: var(--app-primary-color); /* Match active color */
-        }
-        #selected-patient-tests-list li.test-log-item.active-date-filter .delete-log-item-btn:hover {
-            background-color: rgba(220, 38, 38, 0.2); /* Slightly darker red on active hover */
-            color: var(--danger-color-dark);
-        }
+        
 
         /* NYE CSS-REGLER FOR GRAFER OG TABELLER FRA BRUKER */
 
@@ -819,7 +798,7 @@
     <div class="app-layout">
         <aside class="app-sidebar">
             <div class="sidebar-logo-placeholder"><i class="fas fa-bars"></i></div> <div class="sidebar-buttons">
-                <a href="index.html" id="screening-link-button"><button type="button"><i class="fas fa-notes-medical"></i> <span class="button-text">New Screening</span></button></a>
+                <a href="../screening.html" id="screening-link-button"><button type="button"><i class="fas fa-notes-medical"></i> <span class="button-text">New Screening</span></button></a>
                 <button type="button" id="view-analysis-button" class="active-sidebar-button"><i class="fas fa-history"></i> <span class="button-text">Patient History</span></button>
                 </div>
             <div id="loggedInUserContainer" class="sidebar-user-info">
@@ -1344,18 +1323,19 @@
                 visibilityIconContainer.classList.add('test-visibility-icon');
                 const icon = document.createElement('i');
                 icon.classList.add('fas');
-                // Set icon based on visibility
+                
                 if (dateKey && currentVisibility[dateKey]) {
-                    icon.classList.add('fa-check-circle'); // Checked
+                    icon.classList.add('fa-check-circle'); 
                 } else {
-                    icon.classList.add('fa-circle'); // Empty circle (or use fa-times-circle for unchecked)
+                    icon.classList.add('fa-times-circle'); // Changed to X icon
                 }
                 visibilityIconContainer.appendChild(icon);
                 li.appendChild(visibilityIconContainer);
 
-
+                // Delete button is now visually hidden by CSS (.delete-log-item-btn { display: none; })
+                // but the JS logic for it is kept in case it's re-enabled or triggered differently.
                 const deleteBtn = document.createElement('button');
-                deleteBtn.classList.add('delete-log-item-btn');
+                deleteBtn.classList.add('delete-log-item-btn'); // This class now hides it
                 deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
                 deleteBtn.title = "Delete this test";
                 deleteBtn.addEventListener('click', (e) => {
@@ -1368,7 +1348,7 @@
                         "Confirm Deletion"
                     );
                 });
-                li.appendChild(deleteBtn); // Append delete button to the li directly
+                li.appendChild(deleteBtn); 
 
                 if (dateKey) {
                     li.dataset.dateKey = dateKey;
@@ -1546,7 +1526,6 @@
                     const graphDivId = `scatter-${pos}-${metric.replace(/[^a-zA-Z0-9]/g, '')}`;
                     let graphSection = document.createElement('div');
                     graphSection.className = 'graph-section-box';
-                    // Removed " (Trend)" from title
                     graphSection.innerHTML = `<h3 class="graph-box-title">${pos} - ${metric}</h3><div id="${graphDivId}" class="plotly-graph-div js-plotly-plot"><div class="loading-placeholder"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>`;
                     analysisGraphsContainer.appendChild(graphSection);
                     setTimeout(() => createTimeSeriesScatterPlot(dGBD, pos, metric, graphDivId), 0);
@@ -1622,17 +1601,17 @@
             const plotDiv = document.getElementById(divId);
             if (!plotDiv) return;
 
-            const xValuesWeeks = dGBD_data.map(d => `Wk ${d['Weeks Since First']}`); 
+            const xValuesDates = dGBD_data.map(d => d['Test Date']); // Use actual dates for data
             const yValuesLeft = dGBD_data.map(d => d[position]?.[metricKey]?.Left);
             const yValuesRight = dGBD_data.map(d => d[position]?.[metricKey]?.Right);
 
             const traceLeft = {
-                x: xValuesWeeks, y: yValuesLeft, mode: 'lines+markers', name: 'Left',
+                x: xValuesDates, y: yValuesLeft, mode: 'lines+markers', name: 'Left',
                 line: { color: LEFT_COLOR, width: 2 }, marker: { color: LEFT_COLOR, size: 7 },
                 hovertemplate: 'Left: %{y:.2f}<extra></extra>'
             };
             const traceRight = {
-                x: xValuesWeeks, y: yValuesRight, mode: 'lines+markers', name: 'Right',
+                x: xValuesDates, y: yValuesRight, mode: 'lines+markers', name: 'Right',
                 line: { color: RIGHT_COLOR, width: 2 }, marker: { color: RIGHT_COLOR, size: 7 },
                 hovertemplate: 'Right: %{y:.2f}<extra></extra>'
             };
@@ -1642,15 +1621,13 @@
 
             const layout = {
                 xaxis: { 
-                    type: 'category', 
+                    type: 'date', // Keep as date type for proper scaling
+                    tickformat: '%d %b', // Format: Day Month (e.g., 23 Mai)
                     automargin: true, 
-                    title: {text: 'Test Session (Weeks from first)', font: {size: 11}},
-                    tickmode: 'array', // Ensure only data point ticks
-                    tickvals: xValuesWeeks,
-                    ticktext: xValuesWeeks 
+                    // title: {text: 'Test Session', font: {size: 11}} // X-axis title removed
                 },
                 yaxis: { title: {text: metricKey, font: {size: 11}}, automargin: true, zeroline: metricKey !== METRIC_KEYS.NORM_MAX_FORCE, range: yRangeSettings},
-                margin: { l: 50, r: 20, b: 70, t: 10, pad: 5 }, 
+                margin: { l: 50, r: 20, b: 50, t: 10, pad: 5 }, 
                 legend: {orientation: "h", yanchor: "bottom", y: 1.05, xanchor: "right", x: 1, font: {size: 10}},
                 shapes: [], 
                 paper_bgcolor: 'rgba(0,0,0,0)',
@@ -1689,12 +1666,12 @@
             const plotDiv = document.getElementById(divId);
             if (!plotDiv) return;
 
-            const xValuesWeeks = dGBD_data.map(d => `Wk ${d['Weeks Since First']}`);
+            const xValuesFormattedDates = dGBD_data.map(d => d['Test Date'].toLocaleDateString('nb-NO', {day:'2-digit', month:'short'})); // DD Mon
             const yValuesLeft = dGBD_data.map(d => d[position]?.[metricKey]?.Left);
             const yValuesRight = dGBD_data.map(d => d[position]?.[metricKey]?.Right);
 
             const traceLeft = {
-                x: xValuesWeeks, y: yValuesLeft, type: 'bar', name: 'Left',
+                x: xValuesFormattedDates, y: yValuesLeft, type: 'bar', name: 'Left',
                 marker: { color: LEFT_BAR_COLOR }, 
                 text: yValuesLeft.map(v => v !== null && v !== undefined ? v.toFixed(1) : ''),
                 textposition: 'inside', insidetextanchor: 'end', 
@@ -1702,7 +1679,7 @@
                 hovertemplate: 'Left: %{y:.1f}<extra></extra>'
             };
             const traceRight = {
-                x: xValuesWeeks, y: yValuesRight, type: 'bar', name: 'Right',
+                x: xValuesFormattedDates, y: yValuesRight, type: 'bar', name: 'Right',
                 marker: { color: RIGHT_BAR_COLOR }, 
                 text: yValuesRight.map(v => v !== null && v !== undefined ? v.toFixed(1) : ''),
                 textposition: 'inside', insidetextanchor: 'end', 
@@ -1711,19 +1688,16 @@
             };
             
             const allYValues = [...yValuesLeft, ...yValuesRight].filter(v => v !== null && v !== undefined && isFinite(v));
-            const yAxisRange = calculateAxisRange(allYValues, 0.55, 20); // Increased buffer more for annotations
+            const yAxisRange = calculateAxisRange(allYValues, 0.55, 20); 
 
             const layout = {
                 barmode: 'group',
                 xaxis: { 
-                    title: {text: 'Test Session (Weeks from first)', font: {size: 11}}, 
-                    automargin: true, tickangle: -30, type: 'category',
-                    tickmode: 'array', 
-                    tickvals: xValuesWeeks,
-                    ticktext: xValuesWeeks.map(wk => wk.replace('Wk ','')) // Show only number for less clutter
+                    // title: {text: 'Test Session', font: {size: 11}}, // X-axis title removed
+                    automargin: true, tickangle: -45, type: 'category', // Keep as category for formatted dates
                 }, 
                 yaxis: { title: {text: metricKey, font: {size: 11}}, automargin: true, range: yAxisRange, zeroline: true },
-                margin: { l: 50, r: 20, b: 70, t: 80, pad: 5 }, // Increased top margin significantly
+                margin: { l: 50, r: 20, b: 80, t: 80, pad: 5 }, // Adjusted bottom and top margin
                 legend: {orientation: "h", yanchor: "bottom", y: 1.05, xanchor: "right", x: 1, font: {size: 10}},
                 annotations: [],
                 paper_bgcolor: 'rgba(0,0,0,0)',
@@ -1759,40 +1733,39 @@
                 }
                 
                 const barTopY = Math.max(Lval || 0, Rval || 0);
-                const xCategory = xValuesWeeks[index];
-                const annotationOffsetFactor = 0.05; // Percentage of y-axis range for offset
+                const xCategory = xValuesFormattedDates[index]; // Use formatted date for x category
+                const annotationOffsetFactor = 0.06; 
                 const yOffsetStep = (yAxisRange[1] - yAxisRange[0]) * annotationOffsetFactor;
-
 
                 // L Change %
                 if (changePercentL !== null) {
                     layout.annotations.push({
-                        x: xCategory, y: barTopY + yOffsetStep * 1.5, 
+                        x: xCategory, y: barTopY + yOffsetStep * 1, 
                         xref: 'x', yref: 'y',
                         text: `${changePercentL > 0 ? '+' : ''}${changePercentL.toFixed(0)}%`,
-                        showarrow: false, font: {size: 12, color: changePercentL > 0 ? 'var(--success-color)' : 'var(--danger-color-dark)'},
-                        xshift: -20, yshift: 0, xanchor: 'center', yanchor: 'bottom'
+                        showarrow: false, font: {size: 14, color: changePercentL > 0 ? 'var(--success-color)' : 'var(--danger-color-dark)'},
+                        xshift: -22, yshift: 0, xanchor: 'center', yanchor: 'bottom'
                     });
                 }
                 // R Change %
                 if (changePercentR !== null) {
                      layout.annotations.push({
-                        x: xCategory, y: barTopY + yOffsetStep * 1.5, 
+                        x: xCategory, y: barTopY + yOffsetStep * 1, 
                         xref: 'x', yref: 'y',
                         text: `${changePercentR > 0 ? '+' : ''}${changePercentR.toFixed(0)}%`,
-                        showarrow: false, font: {size: 12, color: changePercentR > 0 ? 'var(--success-color)' : 'var(--danger-color-dark)'},
-                        xshift: 20, yshift: 0, xanchor: 'center', yanchor: 'bottom'
+                        showarrow: false, font: {size: 14, color: changePercentR > 0 ? 'var(--success-color)' : 'var(--danger-color-dark)'},
+                        xshift: 22, yshift: 0, xanchor: 'center', yanchor: 'bottom'
                     });
                 }
                 
                 // Asymmetry % - Placed above the change %
                 if (asymmetryPercent !== null) {
                      layout.annotations.push({
-                        x: xCategory, y: barTopY + yOffsetStep * 3.5, // Higher for asymmetry
+                        x: xCategory, y: barTopY + yOffsetStep * 3, 
                         text: `Asym: ${asymmetryPercent > 0 ? '+' : ''}${asymmetryPercent.toFixed(0)}%`,
                         showarrow: false, 
                         font: {
-                            size: 14, 
+                            size: 16, 
                             color: asymmetryPercent >= -10 ? 'var(--success-color)' : (asymmetryPercent >= -15 ? 'var(--warning-color)' : 'var(--danger-color-dark)')
                         },
                         xanchor: 'center', yanchor: 'bottom'
