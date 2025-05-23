@@ -66,7 +66,7 @@
             --normal-font-weight: 400;
             --semibold-font-weight: 600; 
             --bold-font-weight: 700; 
-            --main-content-margin: 20px; 
+            --main-content-margin: 40px; /* Consistent with original app's padding */
 
             --print-text-color: #000000;
             --print-primary-color: #285484;
@@ -277,8 +277,8 @@
 
         .app-main-content {
             flex-grow: 1;
-            margin-left: calc(var(--sidebar-width) + var(--main-content-margin)); /* Original margin */
-            padding: 30px var(--main-content-margin); /* Symmetrical padding */
+            margin-left: calc(var(--sidebar-width) + var(--main-content-margin)); 
+            padding: 30px var(--main-content-margin); 
             background-color: var(--white);
             overflow-y: auto;
             height: 100vh;
@@ -301,49 +301,56 @@
         h3.normative-title { text-align: center;}
         
         /* Patient Selection Area */
+        #patient-selection-container { /* New container for title + box */
+             margin-bottom: 25px;
+        }
         #patient-selection-area {
             background-color: var(--box-background-color);
             padding: 20px;
             border-radius: var(--border-radius-general); 
-            margin-bottom: 25px;
+            /* margin-bottom: 25px; /* Moved to container */
             display: flex;
             justify-content: center;
             align-items: center;
         }
-        /* Styling for the "Select Patient for Analysis" button to match sidebar buttons */
-        #select-patient-for-analysis-btn {
-            font-family: 'Avenir', sans-serif;
-            font-size: 0.9rem; /* Match sidebar button font size */
-            font-weight: var(--normal-font-weight); /* Match sidebar button font weight */
-            padding: 10px 15px; /* Match sidebar button padding */
-            color: var(--app-primary-color);
+        /* Styling for the "Select Patient for Analysis" button to match original choice-box */
+        .analysis-choice-box { /* Renamed to avoid conflict if original .choice-box has other uses */
             background-color: transparent;
-            border: 1px solid var(--app-primary-color); /* Add a border like logout button for distinction */
-            border-radius: var(--border-radius-general); 
+            border: 1px solid var(--medium-gray);
+            border-radius: var(--border-radius-general);
+            padding: 20px 25px;
+            text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            min-width: 220px; /* Adjusted min-width */
             box-shadow: none;
-            letter-spacing: 0.5px;
-            /* width: auto; /* Allow button to size to content */
-            min-width: 220px; /* Ensure it's reasonably sized */
-            text-align: center; /* Center text if icon is also centered */
-            display: flex;
-            align-items: center;
-            justify-content: center; /* Center icon and text */
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
             gap: 10px; 
         }
-        #select-patient-for-analysis-btn i {
-            /* Icon styling if needed, already covered by FontAwesome */
-        }
-        #select-patient-for-analysis-btn:hover {
-            background-image: linear-gradient(to right, var(--app-button-light-gradient-start), var(--app-button-light-gradient-end));
-            color: var(--app-text-on-primary);
+        .analysis-choice-box:hover {
+            background-color: rgba(40, 84, 132, 0.8); /* var(--app-primary-color) with alpha */
             border-color: transparent;
-            transform: translateY(-1px);
         }
-         #select-patient-for-analysis-btn:hover i {
-            color: var(--app-text-on-primary);
-         }
+        .analysis-choice-box:hover i,
+        .analysis-choice-box:hover span {
+            color: var(--white);
+        }
+        .analysis-choice-box i {
+            font-size: 2.2rem;
+            color: var(--app-primary-color);
+            margin-bottom: 10px; /* Space between icon and text */
+            display: block;
+            transition: color 0.2s ease;
+        }
+        .analysis-choice-box span {
+            font-size: 1rem;
+            color: var(--text-color);
+            font-weight: var(--semibold-font-weight); 
+            transition: color 0.2s ease;
+        }
 
 
         /* Modal styles (reused from original) */
@@ -473,68 +480,72 @@
             padding-bottom: 10px; border-bottom: 1px solid var(--medium-gray);
             margin-top:0; font-weight: var(--normal-font-weight);
         }
-        /* Test Log / Date Filter Styling */
+        /* Test Log / Date Filter Styling - Adjusted to match original screening app's test log button style */
         #selected-patient-tests-list { 
             list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap;
             gap: 10px; overflow-y: auto; flex-grow: 1; justify-content: flex-start;
             align-content: flex-start;
-            max-height: 280px; /* Limit height if it grows too tall */
+            max-height: 280px; 
         }
-        #selected-patient-tests-list li.test-log-item { /* Added class for targeting */
+        #selected-patient-tests-list li.test-log-item { 
             display: flex; 
-            /* flex-direction: column;  Allow row for button */
-            justify-content: space-between; /* Space out date and button */
+            justify-content: space-between; 
             align-items: center;
-            padding: 8px 12px; 
-            border: 1px solid var(--app-primary-color);
-            background-color: var(--white); 
+            padding: 10px 12px; /* Match original */
+            border: 1px solid rgba(40, 84, 132, 0.3); /* Match original */
+            background-color: rgba(112, 188, 252, 0.05); /* Match original */
             border-radius: var(--border-radius-general); 
-            width: auto; /* Adjust width as needed, or let content decide */
-            min-width: 160px;
-            box-sizing: border-box; text-align: left; /* Align date text to left */
+            min-width: 160px; /* Increased min-width to accommodate button */
+            box-sizing: border-box; 
+            text-align: left; 
             transition: all 0.2s ease;
-            cursor: pointer; /* Make the whole item clickable for toggle */
+            cursor: pointer; 
         }
-        #selected-patient-tests-list li.test-log-item.active-date-filter {
-            background-color: var(--app-secondary-color);
-            color: var(--app-text-on-primary);
+        #selected-patient-tests-list li.test-log-item.active-date-filter,
+        #selected-patient-tests-list li.test-log-item.active-date-filter:hover { /* Match original active style */
+            background-color: rgba(112, 188, 252, 0.3);
             border-color: var(--app-primary-color);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.05);
         }
-         #selected-patient-tests-list li.test-log-item.active-date-filter .test-date-span,
+        #selected-patient-tests-list li.test-log-item.active-date-filter .test-date-span {
+            color: var(--app-primary-color); /* Text color for active date */
+        }
          #selected-patient-tests-list li.test-log-item.active-date-filter .delete-log-item-btn i {
-            color: var(--app-text-on-primary);
+            color: var(--app-primary-color); /* Match text color on active */
          }
+         #selected-patient-tests-list li.test-log-item.active-date-filter .delete-log-item-btn:hover i {
+            color: var(--white);
+         }
+
 
         #selected-patient-tests-list li.test-log-item:not(.active-date-filter):hover {
-            background-color: rgba(112, 188, 252, 0.2); /* Lighter hover for non-active */
+            background-color: rgba(112, 188, 252, 0.15); /* Slightly darker hover for non-active */
+            border-color: rgba(40, 84, 132, 0.6); /* Match original hover */
         }
 
-        #selected-patient-tests-list li .test-date-span { /* Class for the date part */
+        #selected-patient-tests-list li .test-date-span { 
             color: var(--app-primary-color); font-size: 0.85rem;
             font-weight: var(--semibold-font-weight); 
-            margin-right: 10px; /* Space before delete button */
-            flex-grow: 1; /* Allow date to take available space */
+            margin-right: 10px; 
+            flex-grow: 1; 
         }
-        .delete-log-item-btn {
-            background: none;
-            border: none;
+        .delete-log-item-btn { /* Style to match original screening app's delete button */
+            background-color: transparent;
+            border: 1px solid transparent;
             color: var(--danger-color-dark);
+            border-radius: var(--border-radius-general);
             cursor: pointer;
-            padding: 2px 5px;
-            font-size: 0.9em;
-            line-height: 1;
+            padding: 4px 7px;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+            line-height: 1; /* Ensure icon is vertically centered */
         }
         .delete-log-item-btn:hover {
-            color: var(--white);
             background-color: var(--danger-color-dark);
-            border-radius: var(--border-radius-general);
+            color: white;
+            border-color: var(--danger-color-dark);
         }
-        #selected-patient-tests-list li.test-log-item.active-date-filter .delete-log-item-btn {
-            color: var(--white); /* Ensure delete icon is visible on active background */
-        }
-         #selected-patient-tests-list li.test-log-item.active-date-filter .delete-log-item-btn:hover {
-            background-color: var(--danger-color-dark);
-         }
+        
 
 
         /* NYE CSS-REGLER FOR GRAFER OG TABELLER FRA BRUKER */
@@ -726,7 +737,7 @@
             color: var(--app-primary-color);
             font-size: 0.9rem;
         }
-        .control-buttons button { /* Removed .date-filter-buttons button from here */
+        .control-buttons button { 
             font-family: 'Avenir', sans-serif;
             font-size: 0.85rem;
             font-weight: var(--normal-font-weight);
@@ -739,7 +750,7 @@
             transition: all 0.2s ease;
             margin-right: 8px;
         }
-        .control-buttons button.active-view-btn { /* Removed .date-filter-buttons button.active-date-filter */
+        .control-buttons button.active-view-btn { 
             background-color: var(--app-primary-color);
             color: var(--app-text-on-primary);
         }
@@ -748,21 +759,18 @@
             color: var(--app-text-on-primary);
             border-color: var(--app-secondary-color);
         }
-        /* Removed .date-filter-buttons and related styles as it's integrated into test log now */
         
         #analysis-graphs-container {
             display: grid;
             gap: 25px; 
             margin-bottom: 30px;
         }
-        /* .analysis-graph-item and .js-plotly-plot-analysis are now effectively .graph-section-box and .plotly-graph-div */
         
         #analysis-table-container { 
             margin-top: 30px;
-            /* background-color, padding, border-radius, box-shadow handled by .summary-container-box */
             overflow-x: auto; 
         }
-        #analysis-table-container h2.section-title-main { /* More specific selector for table title */
+        #analysis-table-container h2.section-title-main { 
              margin-top:0;
              margin-bottom:0.5em;
         }
@@ -821,15 +829,20 @@
         <main class="app-main-content">
             <div class="content-container">
                 <h1>Patient History Analysis</h1>
-
-                <div id="patient-selection-area">
-                    <button id="select-patient-for-analysis-btn">
-                        <i class="fas fa-folder-open"></i>
-                        <span>Select Patient for Analysis</span>
-                    </button>
+                
+                <div id="patient-selection-container">
+                    <h2 class="section-title-main" style="margin-top: 0; margin-bottom: 0.5em;">Select Patient</h2>
+                    <div id="patient-selection-area">
+                        <div id="select-patient-for-analysis-btn" class="analysis-choice-box">
+                            <i class="fas fa-folder-open"></i>
+                            <span>Browse Patients</span>
+                        </div>
+                    </div>
                 </div>
                 
-                <div id="patient-overview-section"> <div class="overview-column patient-details-column">
+                <h2 id="patient-details-title" class="section-title-main" style="display: none;">Details</h2>
+                <div id="patient-overview-section"> 
+                    <div class="overview-column patient-details-column">
                         <div id="patient-identity-card" class="patient-card" style="display: none;">
                             <h3 class="patient-profile-title-internal">Patient Profile
                                 <div class="action-buttons">
@@ -959,6 +972,7 @@
         const patientModalContent = document.getElementById('patient-modal-content');
         const selectPatientForAnalysisBtn = document.getElementById('select-patient-for-analysis-btn');
 
+        const patientDetailsTitle = document.getElementById('patient-details-title');
         const patientOverviewSection = document.getElementById('patient-overview-section');
         const patientIdentityCard = document.getElementById('patient-identity-card');
         const displayPatientIdCard = document.getElementById('display-patient-id-card');
@@ -976,8 +990,6 @@
         const analysisMainContent = document.getElementById('analysis-main-content');
         const scatterViewBtn = document.getElementById('scatter-view-btn');
         const barViewBtn = document.getElementById('bar-view-btn');
-        // const dateFilterButtonsContainer = document.getElementById('date-filter-buttons-container'); // Removed
-        // const dateFilterPlaceholder = document.getElementById('date-filter-placeholder'); // Removed
         const analysisGraphsContainer = document.getElementById('analysis-graphs-container');
         const summaryTableWrapper = document.getElementById('summary-table-wrapper');
         const noDataMessage = document.getElementById('no-data-message');
@@ -1195,6 +1207,8 @@
             loadingAnalysisMessage.style.display = 'block';
             analysisMainContent.style.display = 'none';
             noDataMessage.style.display = 'none';
+            if(patientDetailsTitle) patientDetailsTitle.style.display = 'none';
+
 
             try {
                 const patientDocRef = doc(db, "users", currentUserId, "patients", selectedPatientId);
@@ -1209,6 +1223,8 @@
                 }
                 selectedPatientProfileData = patientDocSnap.data();
                 updatePatientProfileCard(selectedPatientProfileData); 
+                if(patientDetailsTitle) patientDetailsTitle.style.display = 'block';
+
 
                 const screeningsRef = collection(db, "users", currentUserId, "patients", selectedPatientId, "screenings");
                 const q = query(screeningsRef, orderBy("testTimestamp", "asc")); 
@@ -1226,15 +1242,13 @@
                     noDataMessage.innerHTML = `No screening data found for patient <strong>${selectedPatientId}</strong>.`;
                     noDataMessage.style.display = 'block';
                     loadingAnalysisMessage.style.display = 'none';
-                    // Clear date filter buttons if no tests
-                    const dateFilterContainer = document.getElementById('selected-patient-tests-list'); // Using test log as filter
+                    const dateFilterContainer = document.getElementById('selected-patient-tests-list'); 
                     if(dateFilterContainer) dateFilterContainer.innerHTML = '<li>No tests available.</li>';
                     analysisGraphsContainer.innerHTML = '';
                     summaryTableWrapper.innerHTML = '';
                     return;
                 }
                 
-                // Initialize Date Visibility and First Test Date
                 testDateVisibility = {};
                 firstTestDateForPatient = null;
                 if (allScreeningsForSelectedPatient.length > 0) {
@@ -1255,7 +1269,7 @@
                     if (dateKey) testDateVisibility[dateKey] = true; 
                 });
                 
-                updateTestLogDisplay(allScreeningsForSelectedPatient, testDateVisibility); // Pass visibility
+                updateTestLogDisplay(allScreeningsForSelectedPatient, testDateVisibility); 
                 prepareAndRenderAnalysis();
                 analysisMainContent.style.display = 'block';
                 noDataMessage.style.display = 'none';
@@ -1320,7 +1334,7 @@
                 deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
                 deleteBtn.title = "Delete this test";
                 deleteBtn.addEventListener('click', (e) => {
-                    e.stopPropagation(); // Prevent li click from firing
+                    e.stopPropagation(); 
                     showConfirmationModal(
                         `Are you sure you want to delete the test from ${screeningDateStr} for patient "${selectedPatientId}"? This action cannot be undone.`,
                         async () => {
@@ -1336,7 +1350,8 @@
                     li.classList.toggle('active-date-filter', currentVisibility[dateKey]);
                     li.addEventListener('click', () => {
                         testDateVisibility[dateKey] = !testDateVisibility[dateKey];
-                        li.classList.toggle('active-date-filter', testDateVisibility[dateKey]);
+                        // li.classList.toggle('active-date-filter', testDateVisibility[dateKey]); // UpdateTestLogDisplay will handle this
+                        updateTestLogDisplay(allScreeningsForSelectedPatient, testDateVisibility); // Re-render list to update all styles
                         prepareAndRenderAnalysis();
                     });
                 }
@@ -1354,7 +1369,6 @@
                 const screeningDocRef = doc(db, "users", currentUserId, "patients", patientId, "screenings", screeningDocId);
                 await deleteDoc(screeningDocRef);
                 showStatusMessage('Test deleted successfully.', 'success');
-                // Refresh data for the current patient
                 loadPatientAnalysisData(patientId); 
             } catch (error) {
                 console.error("Error deleting screening:", error);
@@ -1366,7 +1380,6 @@
             if (!allScreeningsForSelectedPatient || allScreeningsForSelectedPatient.length === 0) {
                 analysisGraphsContainer.innerHTML = '<div class="graph-section-box"><div class="loading-placeholder">No data to analyze.</div></div>';
                 summaryTableWrapper.innerHTML = '<div class="summary-position-block"><p>No data for summary.</p></div>';
-                // updateTestLogDisplay might have already handled the "no tests" message for filters
                 return;
             }
 
@@ -1374,7 +1387,6 @@
             const processedData = processAndFilterData(internalStructure, testDateVisibility, firstTestDateForPatient);
             processedAndGroupedData = groupDataByDateForAnalysis(processedData);
             
-            // No need to call renderTestDateToggleButtons here as it's part of updateTestLogDisplay
             renderAnalysisContent(); 
         }
 
@@ -1391,7 +1403,6 @@
                     if (ashTestDataForPos) {
                         let leftMaxForce, rightMaxForce, leftRfd, rightRfd;
                         
-                        // Use the injuredSide recorded AT THE TIME OF THE SCREENING if available
                         const screeningRecordInjuredSide = ashTestDataForPos.injuredSideAtScreening || screening.injuredSideAtScreening || patientProfileInjuredSide;
 
                         if (screeningRecordInjuredSide === 'Left') {
@@ -1399,7 +1410,7 @@
                             leftRfd = ashTestDataForPos.injuredRfd;
                             rightMaxForce = ashTestDataForPos.nonInjuredMaxForce;
                             rightRfd = ashTestDataForPos.nonInjuredRfd;
-                        } else { // Right is injured or default
+                        } else { 
                             leftMaxForce = ashTestDataForPos.nonInjuredMaxForce;
                             leftRfd = ashTestDataForPos.nonInjuredRfd;
                             rightMaxForce = ashTestDataForPos.injuredMaxForce;
@@ -1541,7 +1552,6 @@
                     name: 'Download Plot as PNG',
                     icon: Plotly.Icons.camera,
                     click: function(gd) {
-                        // Try to get title from the parent .graph-box-title
                         let filename = 'plot';
                         const graphBox = gd.closest('.graph-section-box');
                         if (graphBox) {
@@ -1586,20 +1596,18 @@
         function createTimeSeriesScatterPlot(dGBD_data, position, metricKey, divId) {
             const plotDiv = document.getElementById(divId);
             if (!plotDiv) return;
-            // Placeholder is already in HTML, just clear it if plot is successful
-            // plotDiv.innerHTML = '<div class="loading-placeholder"><i class="fas fa-spinner fa-spin"></i> Generating...</div>'; 
 
-            const xValuesDates = dGBD_data.map(d => d['Test Date']);
+            const xValuesWeeks = dGBD_data.map(d => `Wk ${d['Weeks Since First']}`); // Use Weeks for X-axis
             const yValuesLeft = dGBD_data.map(d => d[position]?.[metricKey]?.Left);
             const yValuesRight = dGBD_data.map(d => d[position]?.[metricKey]?.Right);
 
             const traceLeft = {
-                x: xValuesDates, y: yValuesLeft, mode: 'lines+markers', name: 'Left',
+                x: xValuesWeeks, y: yValuesLeft, mode: 'lines+markers', name: 'Left',
                 line: { color: LEFT_COLOR, width: 2 }, marker: { color: LEFT_COLOR, size: 7 },
                 hovertemplate: 'Left: %{y:.2f}<extra></extra>'
             };
             const traceRight = {
-                x: xValuesDates, y: yValuesRight, mode: 'lines+markers', name: 'Right',
+                x: xValuesWeeks, y: yValuesRight, mode: 'lines+markers', name: 'Right',
                 line: { color: RIGHT_COLOR, width: 2 }, marker: { color: RIGHT_COLOR, size: 7 },
                 hovertemplate: 'Right: %{y:.2f}<extra></extra>'
             };
@@ -1608,9 +1616,13 @@
             const yRangeSettings = calculateAxisRange(allYValues, 0.15, metricKey === METRIC_KEYS.NORM_MAX_FORCE ? 0.5 : 20);
 
             const layout = {
-                xaxis: { type: 'date', tickformat: '%d %b %y', automargin: true, title: {text: 'Test Date', font: {size: 11}}},
+                xaxis: { 
+                    type: 'category', // Changed to category for "Wk X"
+                    automargin: true, 
+                    title: {text: 'Test Session (Weeks from first)', font: {size: 11}}
+                },
                 yaxis: { title: {text: metricKey, font: {size: 11}}, automargin: true, zeroline: metricKey !== METRIC_KEYS.NORM_MAX_FORCE, range: yRangeSettings},
-                margin: { l: 50, r: 20, b: 50, t: 10, pad: 5 }, // Reduced top margin as title is external
+                margin: { l: 50, r: 20, b: 70, t: 10, pad: 5 }, // Adjusted bottom margin for category labels
                 legend: {orientation: "h", yanchor: "bottom", y: 1.05, xanchor: "right", x: 1, font: {size: 10}},
                 shapes: [], 
                 paper_bgcolor: 'rgba(0,0,0,0)',
@@ -1648,7 +1660,6 @@
         function createTimeSeriesBarChart(dGBD_data, position, metricKey, divId) {
             const plotDiv = document.getElementById(divId);
             if (!plotDiv) return;
-            // Placeholder is already in HTML
 
             const xValuesWeeks = dGBD_data.map(d => `Wk ${d['Weeks Since First']}`);
             const yValuesLeft = dGBD_data.map(d => d[position]?.[metricKey]?.Left);
@@ -1658,27 +1669,27 @@
                 x: xValuesWeeks, y: yValuesLeft, type: 'bar', name: 'Left',
                 marker: { color: LEFT_BAR_COLOR }, 
                 text: yValuesLeft.map(v => v !== null && v !== undefined ? v.toFixed(1) : ''),
-                textposition: 'inside', insidetextanchor: 'end', // Place at bottom of bar
-                textfont: { color: 'var(--white)' }, // White text
+                textposition: 'inside', insidetextanchor: 'end', 
+                textfont: { color: 'var(--white)' }, 
                 hovertemplate: 'Left: %{y:.1f}<extra></extra>'
             };
             const traceRight = {
                 x: xValuesWeeks, y: yValuesRight, type: 'bar', name: 'Right',
                 marker: { color: RIGHT_BAR_COLOR }, 
                 text: yValuesRight.map(v => v !== null && v !== undefined ? v.toFixed(1) : ''),
-                textposition: 'inside', insidetextanchor: 'end', // Place at bottom of bar
-                textfont: { color: 'var(--white)' }, // White text
+                textposition: 'inside', insidetextanchor: 'end', 
+                textfont: { color: 'var(--white)' }, 
                 hovertemplate: 'Right: %{y:.1f}<extra></extra>'
             };
             
             const allYValues = [...yValuesLeft, ...yValuesRight].filter(v => v !== null && v !== undefined && isFinite(v));
-            const yAxisRange = calculateAxisRange(allYValues, 0.35, 20); // Increased buffer for annotations
+            const yAxisRange = calculateAxisRange(allYValues, 0.45, 20); // Increased buffer significantly for annotations
 
             const layout = {
                 barmode: 'group',
-                xaxis: { title: {text: 'Test Session (Weeks from first)', font: {size: 11}}, automargin: true, tickangle: -30, type: 'category' }, // Ensure categorical for "Wk X"
+                xaxis: { title: {text: 'Test Session (Weeks from first)', font: {size: 11}}, automargin: true, tickangle: -30, type: 'category' }, 
                 yaxis: { title: {text: metricKey, font: {size: 11}}, automargin: true, range: yAxisRange, zeroline: true },
-                margin: { l: 50, r: 20, b: 70, t: 60, pad: 5 }, // Increased top margin for annotations
+                margin: { l: 50, r: 20, b: 70, t: 70, pad: 5 }, // Increased top margin for annotations
                 legend: {orientation: "h", yanchor: "bottom", y: 1.05, xanchor: "right", x: 1, font: {size: 10}},
                 annotations: [],
                 paper_bgcolor: 'rgba(0,0,0,0)',
@@ -1696,7 +1707,7 @@
                 if (Lval !== null && Lval !== undefined && Rval !== null && Rval !== undefined && patientActualInjuredSide) {
                     const injuredVal = patientActualInjuredSide === 'Left' ? Lval : Rval;
                     const uninjuredVal = patientActualInjuredSide === 'Left' ? Rval : Lval;
-                    if (uninjuredVal !== 0 && isFinite(uninjuredVal)) { // Check for finite uninjuredVal
+                    if (uninjuredVal !== 0 && isFinite(uninjuredVal)) { 
                         asymmetryPercent = ((injuredVal - uninjuredVal) / Math.abs(uninjuredVal)) * 100;
                     }
                 }
@@ -1714,47 +1725,34 @@
                 }
                 
                 const barTopY = Math.max(Lval || 0, Rval || 0);
-                const annotationBaseY = barTopY * 1.02; // Start slightly above the bar
-
-                // Annotation for % Change - Placed on top of each bar
-                // For grouped bars, x needs to be adjusted slightly for L and R
-                const groupWidth = 0.8; // Default group width in Plotly
-                const numBarsInGroup = 2;
-                const barWidthFraction = groupWidth / numBarsInGroup; 
                 const xCategory = xValuesWeeks[index];
+                const annotationYOffsetStep = yAxisRange[1] * 0.06; // Step for vertical spacing of annotations
 
-                // Left bar change %
+                // L Change %
                 if (changePercentL !== null) {
                     layout.annotations.push({
-                        x: xCategory,
-                        y: Lval > 0 ? Lval * 1.05 : annotationBaseY * 0.2, // Position above left bar
+                        x: xCategory, y: barTopY + annotationYOffsetStep * 0.5, // Position above bar
                         xref: 'x', yref: 'y',
                         text: `L: ${changePercentL > 0 ? '+' : ''}${changePercentL.toFixed(0)}%`,
                         showarrow: false, font: {size: 9, color: 'var(--dark-gray)'},
-                        xshift: -15, // Shift left for left bar
-                        yshift: 5,
-                        xanchor: 'center', yanchor: 'bottom'
+                        xshift: -18, yshift: 0, xanchor: 'center', yanchor: 'bottom'
                     });
                 }
-                // Right bar change %
+                // R Change %
                 if (changePercentR !== null) {
                      layout.annotations.push({
-                        x: xCategory,
-                        y: Rval > 0 ? Rval * 1.05 : annotationBaseY * 0.2, // Position above right bar
+                        x: xCategory, y: barTopY + annotationYOffsetStep * 0.5, // Position above bar
                         xref: 'x', yref: 'y',
                         text: `R: ${changePercentR > 0 ? '+' : ''}${changePercentR.toFixed(0)}%`,
                         showarrow: false, font: {size: 9, color: 'var(--dark-gray)'},
-                        xshift: 15,  // Shift right for right bar
-                        yshift: 5,
-                        xanchor: 'center', yanchor: 'bottom'
+                        xshift: 18, yshift: 0, xanchor: 'center', yanchor: 'bottom'
                     });
                 }
                 
                 // Asymmetry % - Placed above the change %
                 if (asymmetryPercent !== null) {
                      layout.annotations.push({
-                        x: xCategory,
-                        y: annotationBaseY + (yAxisRange[1] * 0.08), // Higher for asymmetry
+                        x: xCategory, y: barTopY + annotationYOffsetStep * 2, // Higher for asymmetry
                         text: `Asym: ${asymmetryPercent > 0 ? '+' : ''}${asymmetryPercent.toFixed(0)}%`,
                         showarrow: false, font: {size: 10, color: asymmetryPercent < -10 ? 'var(--danger-color-dark)' : 'var(--dark-gray)'},
                         xanchor: 'center', yanchor: 'bottom'
@@ -1878,8 +1876,10 @@
                 noDataMessage.style.display = 'block';
                 analysisMainContent.style.display = 'none';
                 patientOverviewSection.style.display = 'none';
+                if(patientDetailsTitle) patientDetailsTitle.style.display = 'none';
             } else {
                 noDataMessage.style.display = 'none';
+                if(patientDetailsTitle) patientDetailsTitle.style.display = 'block';
             }
         }
 
@@ -1972,7 +1972,6 @@
         window.addEventListener('resize', () => {
             const plotElements = document.querySelectorAll('.plotly-graph-div'); 
             plotElements.forEach(gdContainer => {
-                // Plotly attaches the graph to the div itself, not a child with .js-plotly-plot
                 if (gdContainer && typeof gdContainer.layout !== 'undefined') { 
                     try {
                         Plotly.Plots.resize(gdContainer);
