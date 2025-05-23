@@ -254,7 +254,7 @@
             margin-bottom: 15px;
         }
         #loggedInUserName {
-            font-weight: var(--semibold-font-weight); 
+            font-weight: var(--normal-font-weight); /* Changed from semibold */
             font-size: 0.95rem;
             color: var(--app-primary-color);
             overflow-wrap: break-word;
@@ -301,20 +301,18 @@
         h3.normative-title { text-align: center;}
         
         /* Patient Selection Area */
-        #patient-selection-container { /* New container for title + box */
+        #patient-selection-container { 
              margin-bottom: 25px;
         }
         #patient-selection-area {
             background-color: var(--box-background-color);
             padding: 20px;
             border-radius: var(--border-radius-general); 
-            /* margin-bottom: 25px; /* Moved to container */
             display: flex;
             justify-content: center;
             align-items: center;
         }
-        /* Styling for the "Select Patient for Analysis" button to match original choice-box */
-        .analysis-choice-box { /* Renamed to avoid conflict if original .choice-box has other uses */
+        .analysis-choice-box { 
             background-color: transparent;
             border: 1px solid var(--medium-gray);
             border-radius: var(--border-radius-general);
@@ -322,7 +320,7 @@
             text-align: center;
             cursor: pointer;
             transition: all 0.2s ease;
-            min-width: 220px; /* Adjusted min-width */
+            min-width: 220px; 
             box-shadow: none;
             display: flex; 
             flex-direction: column; 
@@ -331,7 +329,7 @@
             gap: 10px; 
         }
         .analysis-choice-box:hover {
-            background-color: rgba(40, 84, 132, 0.8); /* var(--app-primary-color) with alpha */
+            background-color: rgba(40, 84, 132, 0.8); 
             border-color: transparent;
         }
         .analysis-choice-box:hover i,
@@ -341,14 +339,14 @@
         .analysis-choice-box i {
             font-size: 2.2rem;
             color: var(--app-primary-color);
-            margin-bottom: 10px; /* Space between icon and text */
+            margin-bottom: 10px; 
             display: block;
             transition: color 0.2s ease;
         }
         .analysis-choice-box span {
             font-size: 1rem;
             color: var(--text-color);
-            font-weight: var(--semibold-font-weight); 
+            font-weight: var(--normal-font-weight); /* Changed from semibold */
             transition: color 0.2s ease;
         }
 
@@ -491,27 +489,27 @@
             display: flex; 
             justify-content: space-between; 
             align-items: center;
-            padding: 10px 12px; /* Match original */
-            border: 1px solid rgba(40, 84, 132, 0.3); /* Match original */
-            background-color: rgba(112, 188, 252, 0.05); /* Match original */
+            padding: 10px 12px; 
+            border: 1px solid rgba(40, 84, 132, 0.3); 
+            background-color: rgba(112, 188, 252, 0.05); 
             border-radius: var(--border-radius-general); 
-            min-width: 160px; /* Increased min-width to accommodate button */
+            min-width: 180px; /* Adjusted to ensure space for date and button */
             box-sizing: border-box; 
             text-align: left; 
             transition: all 0.2s ease;
             cursor: pointer; 
         }
         #selected-patient-tests-list li.test-log-item.active-date-filter,
-        #selected-patient-tests-list li.test-log-item.active-date-filter:hover { /* Match original active style */
+        #selected-patient-tests-list li.test-log-item.active-date-filter:hover { 
             background-color: rgba(112, 188, 252, 0.3);
             border-color: var(--app-primary-color);
             box-shadow: inset 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.05);
         }
         #selected-patient-tests-list li.test-log-item.active-date-filter .test-date-span {
-            color: var(--app-primary-color); /* Text color for active date */
+            color: var(--app-primary-color); 
         }
          #selected-patient-tests-list li.test-log-item.active-date-filter .delete-log-item-btn i {
-            color: var(--app-primary-color); /* Match text color on active */
+            color: var(--app-primary-color); 
          }
          #selected-patient-tests-list li.test-log-item.active-date-filter .delete-log-item-btn:hover i {
             color: var(--white);
@@ -519,8 +517,8 @@
 
 
         #selected-patient-tests-list li.test-log-item:not(.active-date-filter):hover {
-            background-color: rgba(112, 188, 252, 0.15); /* Slightly darker hover for non-active */
-            border-color: rgba(40, 84, 132, 0.6); /* Match original hover */
+            background-color: rgba(112, 188, 252, 0.15); 
+            border-color: rgba(40, 84, 132, 0.6); 
         }
 
         #selected-patient-tests-list li .test-date-span { 
@@ -529,7 +527,7 @@
             margin-right: 10px; 
             flex-grow: 1; 
         }
-        .delete-log-item-btn { /* Style to match original screening app's delete button */
+        .delete-log-item-btn { 
             background-color: transparent;
             border: 1px solid transparent;
             color: var(--danger-color-dark);
@@ -538,7 +536,7 @@
             padding: 4px 7px;
             font-size: 0.8rem;
             transition: all 0.2s ease;
-            line-height: 1; /* Ensure icon is vertically centered */
+            line-height: 1; 
         }
         .delete-log-item-btn:hover {
             background-color: var(--danger-color-dark);
@@ -808,7 +806,7 @@
 
     <div class="app-layout">
         <aside class="app-sidebar">
-            <div class="sidebar-logo-placeholder"><i class="fas fa-chart-line"></i></div> <div class="sidebar-buttons">
+            <div class="sidebar-logo-placeholder"><i class="fas fa-bars"></i></div> <div class="sidebar-buttons">
                 <a href="index.html" id="screening-link-button"><button type="button"><i class="fas fa-notes-medical"></i> <span class="button-text">New Screening</span></button></a>
                 <button type="button" id="view-analysis-button" class="active-sidebar-button"><i class="fas fa-history"></i> <span class="button-text">Patient History</span></button>
                 </div>
@@ -1350,8 +1348,7 @@
                     li.classList.toggle('active-date-filter', currentVisibility[dateKey]);
                     li.addEventListener('click', () => {
                         testDateVisibility[dateKey] = !testDateVisibility[dateKey];
-                        // li.classList.toggle('active-date-filter', testDateVisibility[dateKey]); // UpdateTestLogDisplay will handle this
-                        updateTestLogDisplay(allScreeningsForSelectedPatient, testDateVisibility); // Re-render list to update all styles
+                        updateTestLogDisplay(allScreeningsForSelectedPatient, testDateVisibility); 
                         prepareAndRenderAnalysis();
                     });
                 }
@@ -1726,12 +1723,12 @@
                 
                 const barTopY = Math.max(Lval || 0, Rval || 0);
                 const xCategory = xValuesWeeks[index];
-                const annotationYOffsetStep = yAxisRange[1] * 0.06; // Step for vertical spacing of annotations
+                const annotationYOffsetStep = yAxisRange[1] * 0.06; 
 
                 // L Change %
                 if (changePercentL !== null) {
                     layout.annotations.push({
-                        x: xCategory, y: barTopY + annotationYOffsetStep * 0.5, // Position above bar
+                        x: xCategory, y: barTopY + annotationYOffsetStep * 0.5, 
                         xref: 'x', yref: 'y',
                         text: `L: ${changePercentL > 0 ? '+' : ''}${changePercentL.toFixed(0)}%`,
                         showarrow: false, font: {size: 9, color: 'var(--dark-gray)'},
@@ -1741,7 +1738,7 @@
                 // R Change %
                 if (changePercentR !== null) {
                      layout.annotations.push({
-                        x: xCategory, y: barTopY + annotationYOffsetStep * 0.5, // Position above bar
+                        x: xCategory, y: barTopY + annotationYOffsetStep * 0.5, 
                         xref: 'x', yref: 'y',
                         text: `R: ${changePercentR > 0 ? '+' : ''}${changePercentR.toFixed(0)}%`,
                         showarrow: false, font: {size: 9, color: 'var(--dark-gray)'},
@@ -1752,7 +1749,7 @@
                 // Asymmetry % - Placed above the change %
                 if (asymmetryPercent !== null) {
                      layout.annotations.push({
-                        x: xCategory, y: barTopY + annotationYOffsetStep * 2, // Higher for asymmetry
+                        x: xCategory, y: barTopY + annotationYOffsetStep * 2, 
                         text: `Asym: ${asymmetryPercent > 0 ? '+' : ''}${asymmetryPercent.toFixed(0)}%`,
                         showarrow: false, font: {size: 10, color: asymmetryPercent < -10 ? 'var(--danger-color-dark)' : 'var(--dark-gray)'},
                         xanchor: 'center', yanchor: 'bottom'
