@@ -9,57 +9,76 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" xintegrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         :root {
+            /* Fra original + brukerens oppdateringer/tillegg */
             --app-primary-color: #285484;
             --app-secondary-color: rgb(112, 188, 252);
-            --app-tertiary-color: #121630;
-            --app-text-on-primary: #ffffff;
-            --app-text-on-secondary: var(--app-primary-color);
-            --app-button-text-color: var(--app-text-on-primary);
-            --app-button-icon-color: var(--app-secondary-color);
-            --app-button-gradient-start: var(--app-primary-color);
-            --app-button-gradient-end: var(--app-tertiary-color);
-            --app-button-hover-gradient-start: #1e3a5c;
-            --app-button-hover-gradient-end: #121630;
-            --app-button-light-gradient-start: rgba(112, 188, 252, 0.8);
-            --app-button-light-gradient-end: rgba(40, 84, 132, 0.9);
+            --app-tertiary-color: #121630; /* Beholdt fra original */
+            --app-text-on-primary: #ffffff; /* Beholdt fra original */
+            --app-text-on-secondary: var(--app-primary-color); /* Beholdt fra original */
+            --app-button-text-color: var(--app-text-on-primary); /* Beholdt fra original */
+            --app-button-icon-color: var(--app-secondary-color); /* Beholdt fra original */
+            --app-button-gradient-start: var(--app-primary-color); /* Beholdt fra original */
+            --app-button-gradient-end: var(--app-tertiary-color); /* Beholdt fra original */
+            --app-button-hover-gradient-start: #1e3a5c; /* Beholdt fra original */
+            --app-button-hover-gradient-end: #121630; /* Beholdt fra original */
+            --app-button-light-gradient-start: rgba(112, 188, 252, 0.8); /* Beholdt fra original */
+            --app-button-light-gradient-end: rgba(40, 84, 132, 0.9); /* Beholdt fra original */
+            
             --light-gray: #f8f9fa; /* Main page background */
-            --box-background-color: #f0f2f5; /* Intermediate gray for boxes and sidebar */
+            --box-background-color: #f0f2f5; /* Intermediate gray for boxes and sidebar - Beholdt fra original */
             --medium-gray: #dee2e6;
             --dark-gray: #495057;
             --text-color: #212529;
-            --success-color: #2a9d8f; /* Consistent green for success */
-            --success-border-color: #217e72; /* Darker shade of #2a9d8f */
-            
-            --success-shadow-color: rgba(22, 163, 74, 0.45);  
-            --success-gradient-start-color: rgba(22, 163, 74, 1);  
 
-            --warning-color: #facc15;
+            --success-color: #16a34a; /* Oppdatert av bruker */
+            --success-border-color: #217e72; /* Beholdt fra original, kan justeres om nødvendig */
+            --success-shadow-color: rgba(22, 163, 74, 0.45);  /* Beholdt fra original */
+            --success-gradient-start-color: rgba(22, 163, 74, 1); /* Beholdt fra original */
+
+            --warning-color: #facc15; /* Beholdt fra original */
             --danger-color-dark: #dc2626;
-            --white: #ffffff;
-            --border-radius: 4px;
-            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            --sidebar-border-color: var(--medium-gray);
-            --header-border-color: var(--medium-gray);
-            --subtle-shadow: 0 1px 3px rgba(0,0,0,0.07);
-            --left-line-color: #ff7f0e; /* Orange */
-            --right-line-color: #1f77b4; /* Blue */
+            --white: #ffffff; /* Beholdt fra original */
+            
+            --border-radius-general: 6px; /* Ny/oppdatert av bruker (erstatter --border-radius) */
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Beholdt fra original */
+            --sidebar-border-color: var(--medium-gray); /* Beholdt fra original */
+            --header-border-color: var(--medium-gray); /* Beholdt fra original */
+            --subtle-shadow: 0 1px 3px rgba(0,0,0,0.07); /* Beholdt fra original */
 
+            /* Farger for linjer/stolper i grafer - Oppdatert av bruker */
+            --left-line-color: #1f77b4; /* Blå - byttet fra oransje */
+            --right-line-color: #ff7f0e; /* Oransje - byttet fra blå */
+            --left-bar-color-rgba: rgba(31, 119, 180, 0.8); /* Ny */
+            --right-bar-color-rgba: rgba(255, 127, 14, 0.8); /* Ny */
+
+            /* Farger for normative soner i grafer */
             --norm-poor-bg: rgba(252, 165, 165, 0.5);
             --norm-average-bg: rgba(252, 211, 77, 0.5);
             --norm-good-bg: rgba(167, 243, 208, 0.5);
             --norm-excellent-bg: rgba(52, 211, 153, 0.5);
 
-            --status-success-bg: rgba(74, 222, 128, 0.55);
-            --status-error-bg: rgba(220, 38, 38, 0.55);
-            --status-info-bg: rgba(250, 204, 21, 0.55);
+            --status-success-bg: rgba(74, 222, 128, 0.55); /* Beholdt fra original */
+            --status-error-bg: rgba(220, 38, 38, 0.55); /* Beholdt fra original */
+            --status-info-bg: rgba(250, 204, 21, 0.55); /* Beholdt fra original */
 
             --base-font-size: 16px;
-            --graph-box-height: 380px; /* Adjusted for analysis graphs */
-            --sidebar-width: 180px;
+            --graph-box-height: auto; /* Oppdatert av bruker */
+            --graph-fixed-height: 330px; /* Ny fra bruker */
+            --sidebar-width: 180px; /* Beholdt fra original */
             --normal-font-weight: 400;
-            --semibold-font-weight: 400; /* Changed from 600 to 400 for Avenir */
-            --bold-font-weight: 700;
-            --main-content-margin: 20px;
+            --semibold-font-weight: 600; /* Oppdatert av bruker */
+            --bold-font-weight: 700; /* Beholdt fra original */
+            --main-content-margin: 20px; /* Beholdt fra original */
+
+            /* Print-spesifikke farger - Nye fra bruker */
+            --print-text-color: #000000;
+            --print-primary-color: #285484;
+            --print-dark-gray: #495057;
+            --print-table-header-bg: #f0f3f5;
+            --print-left-value-cell-bg: rgba(31, 119, 180, 0.08);
+            --print-right-value-cell-bg: rgba(255, 127, 14, 0.08);
+            --print-light-gray: #f8f9fa;
+            --print-medium-gray: #dee2e6;
         }
         body {
             font-family: 'Avenir', sans-serif;
@@ -99,7 +118,7 @@
         .status-message {
             height: auto;
             padding: 12px 18px;
-            border-radius: var(--border-radius);
+            border-radius: var(--border-radius-general); /* Bruker ny variabel */
             min-width: 220px;
             top: 20px;
             left: 50%;
@@ -153,7 +172,7 @@
             background-color: transparent;
             background-image: none;
             border: none;
-            border-radius: var(--border-radius);
+            border-radius: var(--border-radius-general); /* Bruker ny variabel */
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: none;
@@ -238,7 +257,7 @@
             margin-bottom: 15px;
         }
         #loggedInUserName {
-            font-weight: var(--semibold-font-weight);
+            font-weight: var(--semibold-font-weight); /* Bruker oppdatert variabel */
             font-size: 0.95rem;
             color: var(--app-primary-color);
             overflow-wrap: break-word;
@@ -279,7 +298,7 @@
             padding-bottom: 0.4em;
             margin-top: 1.8em;
             color: var(--app-secondary-color);
-            font-weight: var(--normal-font-weight);
+            font-weight: var(--normal-font-weight); /* Bruker normal, kan endres til semibold hvis ønskelig */
         }
         h3.position-title, h3.normative-title { font-size: 1.15rem; color: var(--app-primary-color); margin-bottom: 0.3em; font-weight: var(--normal-font-weight); }
         h3.normative-title { text-align: center;}
@@ -288,7 +307,7 @@
         #patient-selection-area {
             background-color: var(--box-background-color);
             padding: 20px;
-            border-radius: var(--border-radius);
+            border-radius: var(--border-radius-general); /* Bruker ny variabel */
             margin-bottom: 25px;
             display: flex;
             justify-content: center;
@@ -297,18 +316,18 @@
         .choice-box { /* Reusing for select patient button */
             background-color: transparent;
             border: 1px solid var(--medium-gray);
-            border-radius: var(--border-radius);
+            border-radius: var(--border-radius-general); /* Bruker ny variabel */
             padding: 20px 25px;
             text-align: center;
             cursor: pointer;
             transition: all 0.2s ease;
             min-width: 180px;
             box-shadow: none;
-            display: flex; /* Added for icon and text alignment */
-            flex-direction: column; /* Added */
-            align-items: center; /* Added */
-            justify-content: center; /* Added */
-            gap: 10px; /* Added */
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px; 
         }
         .choice-box:hover {
             background-color: rgba(40, 84, 132, 0.8);
@@ -321,14 +340,14 @@
         .choice-box i {
             font-size: 2.2rem;
             color: var(--app-primary-color);
-            margin-bottom: 0; /* Adjusted */
+            margin-bottom: 0; 
             display: block;
             transition: color 0.2s ease;
         }
         .choice-box span {
             font-size: 1rem;
             color: var(--text-color);
-            font-weight: var(--semibold-font-weight);
+            font-weight: var(--semibold-font-weight); /* Bruker oppdatert variabel */
             transition: color 0.2s ease;
         }
 
@@ -352,7 +371,7 @@
         .modal-form-item { display: flex; flex-direction: column; }
         .modal-form-item label { margin-bottom: 6px; font-size: 0.85rem; color: rgba(255,255,255,0.8); font-weight: 300; }
         .modal-form-item input, .modal-form-item select {
-            padding: 10px 12px; border: none; border-radius: var(--border-radius);
+            padding: 10px 12px; border: none; border-radius: var(--border-radius-general); /* Bruker ny variabel */
             font-size: 0.95rem; width: 100%; box-sizing: border-box;
             background-color: rgba(255,255,255,0.1); color: var(--white);
             box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
@@ -366,8 +385,8 @@
         }
         .modal-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; }
         .modal-actions button {
-            padding: 10px 20px; border-radius: var(--border-radius); cursor: pointer;
-            font-weight: var(--semibold-font-weight);
+            padding: 10px 20px; border-radius: var(--border-radius-general); /* Bruker ny variabel */ cursor: pointer;
+            font-weight: var(--semibold-font-weight); /* Bruker oppdatert variabel */
             transition: background-image 0.2s ease-in-out, background-color 0.2s ease, color 0.2s ease;
             border: none;
         }
@@ -383,14 +402,14 @@
         .modal-cancel-button:hover { background-color: rgba(255,255,255,0.1); border-color: var(--white); }
         .modal-patient-id-buttons {
             display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; margin-bottom: 20px;
-            height: 150px; width: 100%; /* Adjusted width */ overflow-y: auto; padding: 5px;
-            border: none; border-radius: var(--border-radius); align-content: flex-start;
+            height: 150px; width: 100%; overflow-y: auto; padding: 5px;
+            border: none; border-radius: var(--border-radius-general); /* Bruker ny variabel */ align-content: flex-start;
         }
         .modal-patient-id-button {
             background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-            color: var(--white); padding: 8px 12px; border-radius: var(--border-radius);
-            cursor: pointer; transition: all 0.2s ease; width: auto; min-width: 120px; /* Adjusted width */
-            height: 40px; flex-shrink: 0; flex-grow: 1; /* Allow grow */ text-align: center;
+            color: var(--white); padding: 8px 12px; border-radius: var(--border-radius-general); /* Bruker ny variabel */
+            cursor: pointer; transition: all 0.2s ease; width: auto; min-width: 120px; 
+            height: 40px; flex-shrink: 0; flex-grow: 1; text-align: center;
             box-sizing: border-box; display: flex; justify-content: center; align-items: center;
         }
         .modal-patient-id-button:hover {
@@ -412,7 +431,7 @@
         .test-log-column { flex: 2 1 400px; min-width: 300px; }
         .patient-card, #selected-patient-tests-container {
             background-color: var(--box-background-color);
-            border-radius: var(--border-radius);
+            border-radius: var(--border-radius-general); /* Bruker ny variabel */
             padding: 20px;
             border: none;
             box-shadow: none;
@@ -429,9 +448,9 @@
             position: relative; display: flex; justify-content: space-between; align-items: center;
         }
         .patient-profile-title-internal .action-buttons { display: flex; gap: 20px; }
-        .edit-profile-button, .delete-patient-btn { /* No delete patient on this page */
+        .edit-profile-button, .delete-patient-btn { 
             background-color: transparent; color: var(--app-primary-color); border: none;
-            padding: 0; border-radius: var(--border-radius); cursor: pointer;
+            padding: 0; border-radius: var(--border-radius-general); /* Bruker ny variabel */ cursor: pointer;
             font-size: 1.2rem; transition: color 0.2s ease; display: flex;
             align-items: center; gap: 0; box-shadow: none;
         }
@@ -459,7 +478,7 @@
             padding-bottom: 10px; border-bottom: 1px solid var(--medium-gray);
             margin-top:0; font-weight: var(--normal-font-weight);
         }
-        #selected-patient-tests-list { /* Test log for context, not interactive for loading data here */
+        #selected-patient-tests-list { 
             list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap;
             gap: 10px; overflow-y: auto; flex-grow: 1; justify-content: flex-start;
             align-content: flex-start;
@@ -467,23 +486,208 @@
         #selected-patient-tests-list li {
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             padding: 10px 12px; border: 1px solid rgba(40, 84, 132, 0.3);
-            background-color: rgba(112, 188, 252, 0.05); border-radius: var(--border-radius);
+            background-color: rgba(112, 188, 252, 0.05); border-radius: var(--border-radius-general); /* Bruker ny variabel */
             min-width: 140px; width: auto; box-sizing: border-box; text-align: center;
             transition: background-color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-            /* cursor: pointer; */ /* Not clickable to load data on this page */
         }
-        /* #selected-patient-tests-list li:hover {
-            background-color: rgba(112, 188, 252, 0.3);
-            border-color: rgba(40, 84, 132, 0.6);
-            box-shadow: var(--subtle-shadow);
-        } */
         #selected-patient-tests-list li span {
             color: var(--app-primary-color); font-size: 0.85rem;
-            font-weight: var(--semibold-font-weight); margin-bottom: 0px; /* No delete button */
+            font-weight: var(--semibold-font-weight); /* Bruker oppdatert variabel */ margin-bottom: 0px; 
         }
-        /* No delete test button in analysis view's log */
 
-        /* Analysis Specific Styles */
+        /* NYE CSS-REGLER FOR GRAFER OG TABELLER FRA BRUKER */
+
+        /* Container for en hel grafseksjon (tittel + graf(er)) */
+        .graph-section-box {
+            background-color: var(--light-gray);
+            border: 0; /* Ingen border */
+            border-radius: var(--border-radius-general);
+            padding: 1rem 1.5rem 1.5rem 1.5rem; /* Mer padding nederst for graf-legender */
+            margin-bottom: 1.5rem;
+            box-shadow: none; /* Ingen skygge */
+            height: var(--graph-box-height); /* Kan være 'auto' eller en fastsatt høyde */
+        }
+        /* Tittel over en graf eller gruppe grafer i en graph-section-box */
+        .graph-box-title {
+            font-size: 1.15rem;
+            color: var(--app-primary-color);
+            margin-bottom: 0.5em; /* Økt litt for mer luft */
+            font-weight: var(--semibold-font-weight);
+            padding-bottom: 0; /* Fjernet padding og border herfra */
+            border-bottom: none;
+        }
+        /* Rutenett for å plassere flere grafer */
+        .graph-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        .graph-grid-scatter {
+            grid-template-columns: repeat(1, 1fr); /* Mobil først: 1 kolonne */
+        }
+        .graph-grid-bar {
+            grid-template-columns: repeat(1, 1fr); /* Mobil først: 1 kolonne */
+        }
+        /* Større skjermer: 3 kolonner for scatter, 2 for bar */
+        @media (min-width: 1024px) {
+            .graph-grid-scatter {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .graph-grid-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        /* Selve Plotly graf-containeren */
+        .plotly-graph-div {
+            height: var(--graph-fixed-height); /* Fast høyde for hver graf */
+            width: 100%;
+        }
+        /* Laster-placeholder inne i graf-div før grafen er tegnet */
+        .loading-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #94a3b8; /* En lys gråfarge */
+            font-style: italic;
+            padding: 20px;
+            font-size: 1.5rem;
+        }
+        .loading-placeholder i { /* Spinner-ikon */
+            /* FontAwesome klasser brukes i HTML, f.eks. fas fa-spinner fa-spin */
+        }
+        /* Overstyring av Plotly-interne skrifttyper og farger */
+        .js-plotly-plot .plotly { /* Sikrer at Avenir brukes i selve grafen */
+            font-family: 'Avenir', sans-serif !important;
+        }
+        .js-plotly-plot .plotly .gtitle { /* Graftittel inne i Plotly */
+            font-family: 'Avenir', sans-serif !important;
+            font-size: 1rem !important; /* Litt mindre enn graph-box-title */
+            fill: var(--app-primary-color) !important;
+            font-weight: var(--semibold-font-weight) !important;
+        }
+        .js-plotly-plot .plotly .axistitle { /* Aksetitler (X og Y) */
+            font-size: 0.85rem !important;
+            fill: var(--dark-gray) !important;
+            font-weight: var(--normal-font-weight) !important;
+        }
+        .js-plotly-plot .plotly .tick text { /* Tall/tekst på aksene */
+            font-size: 0.8rem !important;
+            fill: var(--dark-gray) !important;
+        }
+        .js-plotly-plot .plotly .legendtext { /* Tekst i legenden */
+            font-size: 0.85rem !important;
+        }
+        .js-plotly-plot .plotly .annotation text { /* Annotasjonstekst i grafer (brukt i bar charts) */
+            font-family: 'Avenir', sans-serif !important;
+            /* Farge og størrelse settes ofte direkte i Plotly layout/annotations-definisjonen */
+        }
+
+        /* Container for hele oppsummeringstabell-seksjonen */
+        .summary-container-box {
+            background-color: var(--light-gray);
+            border: 0;
+            border-radius: var(--border-radius-general);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: none;
+        }
+        /* Blokk for hver posisjons tabell (I, Y, T) for bedre struktur og sidebryt-kontroll ved print */
+        .summary-position-block {
+            margin-bottom: 1.5rem; /* Mer luft mellom tabeller for ulike posisjoner */
+        }
+        .summary-position-block:last-child {
+            margin-bottom: 0;
+        }
+        /* Tittel for tabellseksjonen (f.eks. "Detailed Summary") */
+        h2.section-title /* + spesifisitet hvis nødvendig */ {
+            font-size: 1.5rem;
+            margin-top: 1.8em;
+            margin-bottom: 0.6em;
+            color: var(--app-secondary-color);
+            font-weight: var(--semibold-font-weight);
+        }
+        /* Tittel for hver posisjonstabell (f.eks. "Position I") */
+        .summary-position-block h3.section-title { /* Mer spesifikk selector */
+            font-size: 1.15rem;
+            color: var(--app-primary-color);
+            margin-top: 0; /* Nullstill margin siden den er inni summary-position-block */
+            margin-bottom: 0.5em;
+            font-weight: var(--semibold-font-weight);
+        }
+        /* Hovedtabellen */
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0.5rem;
+            font-size: 0.875rem; /* Litt mindre skrift for tabeller */
+            table-layout: fixed; /* Viktig for konsistente kolonner */
+        }
+        /* Generelt for celler i tabellen */
+        .summary-table th,
+        .summary-table td {
+            border: 1px solid var(--medium-gray);
+            padding: 0.5rem 0.5rem; /* Redusert padding litt */
+            text-align: center;
+            vertical-align: middle;
+            white-space: nowrap; /* Forhindrer linjeskift i celler */
+        }
+        /* Header-celler generelt */
+        .summary-table th {
+            background-color: var(--light-gray); /* Matcher .summary-container-box for enklere look */
+            font-weight: var(--semibold-font-weight);
+            color: var(--text-color);
+        }
+        /* Spesiell header-celle for metrikk-kolonnen */
+        .summary-table .metric-header {
+            width: 140px; /* Fast bredde */
+            text-align: left;
+            font-weight: var(--semibold-font-weight);
+            background-color: var(--print-table-header-bg); /* Bruker print-farge for konsistens, kan endres */
+            padding-left: 0.75rem;
+        }
+        /* Header-celle for datoer */
+        .summary-table .date-header {
+            background-color: var(--print-table-header-bg);
+            font-weight: var(--semibold-font-weight);
+            text-align: center;
+        }
+        /* Sub-header (L Val, R Val, L Ch%, R Ch%) */
+        .summary-table .sub-header {
+            background-color: var(--print-table-header-bg);
+            font-weight: var(--normal-font-weight);
+            font-size: 0.8rem; /* Enda litt mindre */
+            color: var(--dark-gray);
+        }
+        /* Celler som inneholder metrikknavn (f.eks. "Max Force (N)") */
+        .summary-table .metric-label {
+            text-align: left;
+            font-weight: var(--normal-font-weight);
+            padding-left: 1rem; /* Mer innrykk */
+            background-color: var(--print-table-header-bg); /* Samme som header for rad-følelse */
+        }
+        /* Celler for venstre verdier */
+        .summary-table .left-value-cell {
+            background-color: var(--print-left-value-cell-bg); /* Lett blå bakgrunn */
+        }
+        /* Celler for høyre verdier */
+        .summary-table .right-value-cell {
+            background-color: var(--print-right-value-cell-bg); /* Lett oransje bakgrunn */
+        }
+        /* Stiler for prosentvis endring */
+        .summary-table .change-pos {
+            color: var(--success-color); /* Bruker oppdatert --success-color */
+            font-weight: var(--semibold-font-weight);
+        }
+        .summary-table .change-neg {
+            color: var(--danger-color-dark);
+            font-weight: var(--semibold-font-weight);
+        }
+        .summary-table .change-neutral {
+            color: var(--text-color); /* Eller --dark-gray for mindre fremtredende */
+        }
+        /* SLUTT PÅ NYE CSS-REGLER FRA BRUKER */
+
+        /* Analysis Specific Styles (original from previous version) */
         #analysis-controls {
             display: flex;
             flex-wrap: wrap;
@@ -491,7 +695,7 @@
             margin-bottom: 25px;
             padding: 15px;
             background-color: var(--box-background-color);
-            border-radius: var(--border-radius);
+            border-radius: var(--border-radius-general); /* Bruker ny variabel */
             align-items: center;
         }
         .control-group {
@@ -500,7 +704,7 @@
             gap: 8px;
         }
         .control-group label {
-            font-weight: var(--semibold-font-weight);
+            font-weight: var(--semibold-font-weight); /* Bruker oppdatert variabel */
             color: var(--app-primary-color);
             font-size: 0.9rem;
         }
@@ -512,7 +716,7 @@
             color: var(--app-primary-color);
             background-color: var(--white);
             border: 1px solid var(--app-primary-color);
-            border-radius: var(--border-radius);
+            border-radius: var(--border-radius-general); /* Bruker ny variabel */
             cursor: pointer;
             transition: all 0.2s ease;
             margin-right: 8px;
@@ -536,83 +740,49 @@
 
         #analysis-graphs-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 25px;
+            /* grid-template-columns set by .graph-grid-* classes now */
+            gap: 25px; /* Kan justeres med .graph-grid gap */
             margin-bottom: 30px;
         }
-        .analysis-graph-item {
-            background-color: var(--box-background-color);
+        .analysis-graph-item { /* Denne klassen kan erstattes av .graph-section-box hvis strukturen endres */
+            background-color: var(--box-background-color); /* Eller --light-gray hvis .graph-section-box brukes */
             padding: 15px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--subtle-shadow);
-            min-height: var(--graph-box-height);
+            border-radius: var(--border-radius-general); /* Bruker ny variabel */
+            box-shadow: var(--subtle-shadow); /* Eller none hvis .graph-section-box brukes */
+            min-height: var(--graph-box-height); /* Styres av :root var eller 'auto' */
             display: flex;
             flex-direction: column;
         }
-        .analysis-graph-item h3 {
+        .analysis-graph-item h3 { /* Denne kan erstattes av .graph-box-title */
             font-size: 1.1rem;
             color: var(--app-primary-color);
             margin-top: 0;
             margin-bottom: 10px;
             text-align: center;
         }
-        .js-plotly-plot-analysis {
+        .js-plotly-plot-analysis { /* Denne kan erstattes av .plotly-graph-div */
             flex-grow: 1;
-            min-height: calc(var(--graph-box-height) - 60px); /* Adjust based on title height */
+            min-height: calc(var(--graph-fixed-height) - 60px); /* Juster basert på tittelhøyde hvis .graph-box-title brukes */
         }
 
-        #analysis-table-container {
+        #analysis-table-container { /* Denne kan erstattes av .summary-container-box */
             margin-top: 30px;
-            background-color: var(--box-background-color);
+            background-color: var(--box-background-color); /* Eller --light-gray hvis .summary-container-box brukes */
             padding: 20px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--subtle-shadow);
-            overflow-x: auto; /* For wide tables */
+            border-radius: var(--border-radius-general); /* Bruker ny variabel */
+            box-shadow: var(--subtle-shadow); /* Eller none hvis .summary-container-box brukes */
+            overflow-x: auto; 
         }
         #analysis-table-container h2 { margin-top: 0; }
-        .summary-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-        }
-        .summary-table th, .summary-table td {
-            border: 1px solid var(--medium-gray);
-            padding: 8px 10px;
-            text-align: center;
-            vertical-align: middle;
-        }
-        .summary-table th {
-            background-color: var(--app-primary-color);
-            color: var(--app-text-on-primary);
-            font-weight: var(--semibold-font-weight);
-        }
-        .summary-table .position-header th {
-            background-color: var(--app-secondary-color);
-            color: var(--app-text-on-secondary);
-            font-size: 1rem;
-        }
-        .summary-table .metric-row-header {
-            text-align: left;
-            font-weight: var(--semibold-font-weight);
-            background-color: #e9ecef;
-        }
-        .summary-table .date-column-group {
-            border-left: 2px solid var(--dark-gray);
-        }
-        .summary-table .date-column-group:first-of-type {
-            border-left: none;
-        }
-        .summary-table .change-positive { color: #16a34a; } /* Green */
-        .summary-table .change-negative { color: #dc2626; } /* Red */
-        .summary-table .change-neutral { color: var(--dark-gray); }
-
+        /* .summary-table styles are now defined in the new CSS section */
+        
         #no-data-message, #loading-analysis-message {
             text-align: center;
             font-size: 1.1rem;
             color: var(--dark-gray);
             padding: 30px;
             background-color: var(--box-background-color);
-            border-radius: var(--border-radius);
+            border-radius: var(--border-radius-general); /* Bruker ny variabel */
             margin-top: 20px;
         }
     </style>
@@ -721,11 +891,9 @@
                     </div>
 
                     <div id="loading-analysis-message" style="display: none;">Loading analysis data...</div>
-                    <div id="analysis-graphs-container">
-                        </div>
+                    <div id="analysis-graphs-container" class="graph-grid"> </div>
 
-                    <div id="analysis-table-container">
-                        <h2 class="section-title-main" style="margin-top:1em; margin-bottom:0.5em;">Detailed Summary</h2>
+                    <div id="analysis-table-container" class="summary-container-box">                         <h2 class="section-title-main" style="margin-top:0; margin-bottom:0.5em;">Detailed Summary</h2>
                         <div id="summary-table-wrapper">
                             </div>
                     </div>
@@ -769,16 +937,16 @@
 
         const METRIC_KEYS = {
             MAX_FORCE: 'Max Force (N)',
-            RFD: 'RFD 100ms (N/s)', // Note: N/s is typical for RFD, not Ns^-1 in display usually
+            RFD: 'RFD 100ms (N/s)', 
             NORM_MAX_FORCE: 'Max Force / BW' // (N/kg)
         };
         const POSITIONS = ['I', 'Y', 'T'];
-        const NORMATIVE_THRESHOLDS = { // From your original script, ensure these are relevant for analysis
+        const NORMATIVE_THRESHOLDS = { 
             I: { poor_max: 1.47, average_mid: 1.65, good_min: 1.85, excellent_min: 2.1 },
             Y: { poor_max: 1.25, average_mid: 1.4, good_min: 1.6, excellent_min: 1.76 },
             T: { poor_max: 1.15, average_mid: 1.25, good_min: 1.4, excellent_min: 1.58 }
         };
-        // Colors for normative zones (ensure these CSS variables are defined)
+        
         const NORM_ZONE_COLORS = {
             POOR: getComputedStyle(document.documentElement).getPropertyValue('--norm-poor-bg').trim() || 'rgba(252, 165, 165, 0.5)',
             AVERAGE: getComputedStyle(document.documentElement).getPropertyValue('--norm-average-bg').trim() || 'rgba(252, 211, 77, 0.5)',
@@ -787,6 +955,8 @@
         };
          const LEFT_COLOR = getComputedStyle(document.documentElement).getPropertyValue('--left-line-color').trim();
          const RIGHT_COLOR = getComputedStyle(document.documentElement).getPropertyValue('--right-line-color').trim();
+         const LEFT_BAR_COLOR = getComputedStyle(document.documentElement).getPropertyValue('--left-bar-color-rgba').trim();
+         const RIGHT_BAR_COLOR = getComputedStyle(document.documentElement).getPropertyValue('--right-bar-color-rgba').trim();
 
 
         // --- DOM Element References ---
@@ -864,9 +1034,8 @@
                 currentUser = null;
                 currentUserId = null;
                 appLoadingMessage.textContent = 'Redirecting to login...';
-                // Redirect to login page if not authenticated
                 localStorage.setItem('redirectToAfterLogin', window.location.pathname + window.location.search);
-                window.location.href = window.location.origin + "/index.html"; // Assuming login is at index.html
+                window.location.href = window.location.origin + "/index.html"; 
             }
         });
 
@@ -885,7 +1054,6 @@
                 logoutButton.addEventListener('click', async () => {
                     try {
                         await signOut(auth);
-                        // Clear any sensitive local storage if needed
                     } catch (error) {
                         console.error("Logout error:", error);
                         showStatusMessage("Error logging out. Please try again.", "error");
@@ -895,11 +1063,7 @@
             if (editPatientProfileButton) {
                 editPatientProfileButton.addEventListener('click', () => {
                     if (selectedPatientId && selectedPatientProfileData) {
-                        // Reuse the modal logic from the screening page for editing patient profile
-                        // This requires adapting the 'openPatientModal' function or creating a similar one.
-                        // For now, let's log it.
-                        console.log("Edit patient profile clicked for:", selectedPatientId);
-                        openPatientModal('existing-edit', selectedPatientId, true); // true to indicate it's from analysis page
+                        openPatientModal('existing-edit', selectedPatientId, true); 
                     } else {
                         showStatusMessage("No patient selected to edit.", "info");
                     }
@@ -919,7 +1083,7 @@
             }, duration);
         }
         
-        // --- Confirmation Modal (reused from original) ---
+        // --- Confirmation Modal ---
         function showConfirmationModal(message, onConfirmCallback) {
             confirmationModalMessage.textContent = message;
             confirmationModalOverlay.style.display = 'flex';
@@ -937,7 +1101,6 @@
                 confirmationCancelBtn.removeEventListener('click', handleCancelClick);
             };
             
-            // Remove previous listeners before adding new ones
             confirmationConfirmBtn.removeEventListener('click', handleConfirmClick);
             confirmationCancelBtn.removeEventListener('click', handleCancelClick);
 
@@ -946,8 +1109,8 @@
         }
 
 
-        // --- Patient Selection Modal Logic (Adapted) ---
-        let allPatientIdsCache = []; // Cache for patient IDs to avoid frequent Firestore reads
+        // --- Patient Selection Modal Logic ---
+        let allPatientIdsCache = []; 
 
         async function openSelectPatientModalForAnalysis() {
             if (!currentUserId) {
@@ -997,13 +1160,13 @@
                     return;
                 }
             }
-            filterModalPatientButtonsForAnalysis(''); // Display all initially
+            filterModalPatientButtonsForAnalysis(''); 
         }
 
         function filterModalPatientButtonsForAnalysis(filterText) {
             const container = document.getElementById('modal-patient-id-button-container-analysis');
             if (!container) return;
-            container.innerHTML = ''; // Clear previous buttons or message
+            container.innerHTML = ''; 
 
             const filteredIds = allPatientIdsCache.filter(id =>
                 id.toLowerCase().includes(filterText.toLowerCase())
@@ -1019,7 +1182,7 @@
                 button.textContent = patientIdStr;
                 button.classList.add('modal-patient-id-button');
                 button.addEventListener('click', () => {
-                    loadPatientAnalysisData(patientIdStr); // Main function to load data for this page
+                    loadPatientAnalysisData(patientIdStr); 
                     closePatientModal();
                 });
                 container.appendChild(button);
@@ -1044,7 +1207,6 @@
             noDataMessage.style.display = 'none';
 
             try {
-                // 1. Fetch Patient Profile
                 const patientDocRef = doc(db, "users", currentUserId, "patients", selectedPatientId);
                 const patientDocSnap = await getDoc(patientDocRef);
 
@@ -1056,11 +1218,10 @@
                     return;
                 }
                 selectedPatientProfileData = patientDocSnap.data();
-                updatePatientProfileCard(selectedPatientProfileData); // Display profile info
+                updatePatientProfileCard(selectedPatientProfileData); 
 
-                // 2. Fetch All Screenings for this Patient
                 const screeningsRef = collection(db, "users", currentUserId, "patients", selectedPatientId, "screenings");
-                const q = query(screeningsRef, orderBy("testTimestamp", "asc")); // Order by date
+                const q = query(screeningsRef, orderBy("testTimestamp", "asc")); 
                 const screeningsSnapshot = await getDocs(q);
                 
                 allScreeningsForSelectedPatient = [];
@@ -1070,8 +1231,8 @@
 
                 if (allScreeningsForSelectedPatient.length === 0) {
                     showStatusMessage(`No screening data found for patient ${selectedPatientId}.`, "info");
-                    updateTestLogDisplay([]); // Empty log
-                    analysisMainContent.style.display = 'none'; // Hide analysis section
+                    updateTestLogDisplay([]); 
+                    analysisMainContent.style.display = 'none'; 
                     noDataMessage.innerHTML = `No screening data found for patient <strong>${selectedPatientId}</strong>.`;
                     noDataMessage.style.display = 'block';
                     loadingAnalysisMessage.style.display = 'none';
@@ -1081,28 +1242,28 @@
                     return;
                 }
                 
-                updateTestLogDisplay(allScreeningsForSelectedPatient); // Display test log dates
+                updateTestLogDisplay(allScreeningsForSelectedPatient); 
 
-                // 3. Initialize Date Visibility and First Test Date
                 testDateVisibility = {};
                 firstTestDateForPatient = null;
                 if (allScreeningsForSelectedPatient.length > 0) {
                     const firstScreeningTimestamp = allScreeningsForSelectedPatient[0].testTimestamp;
                     if (firstScreeningTimestamp && firstScreeningTimestamp.toDate) {
                          firstTestDateForPatient = firstScreeningTimestamp.toDate();
-                    } else { // Fallback if not a Firestore Timestamp (e.g. already converted)
+                    } else { 
                         firstTestDateForPatient = new Date(firstScreeningTimestamp);
                     }
                 }
                 allScreeningsForSelectedPatient.forEach(screening => {
+                    let dateKey = null;
                     if (screening.testTimestamp && screening.testTimestamp.toDate) {
-                        testDateVisibility[screening.testTimestamp.toDate().toISOString().split('T')[0]] = true; // Default to visible
-                    } else if (screening.testTimestamp) { // Fallback for string dates
-                         testDateVisibility[new Date(screening.testTimestamp).toISOString().split('T')[0]] = true;
+                        dateKey = screening.testTimestamp.toDate().toISOString().split('T')[0];
+                    } else if (screening.testTimestamp) { 
+                         dateKey = new Date(screening.testTimestamp).toISOString().split('T')[0];
                     }
+                    if (dateKey) testDateVisibility[dateKey] = true; 
                 });
                 
-                // 4. Prepare and Render Analysis
                 prepareAndRenderAnalysis();
                 analysisMainContent.style.display = 'block';
                 noDataMessage.style.display = 'none';
@@ -1128,7 +1289,7 @@
             displayBodyweightCard.textContent = profileData.bodyweight ? `${profileData.bodyweight} kg` : 'N/A';
             
             patientIdentityCard.style.display = 'flex';
-            selectedPatientTestsContainer.style.display = 'flex'; // Show test log container too
+            selectedPatientTestsContainer.style.display = 'flex'; 
             patientOverviewSection.style.display = 'flex';
         }
 
@@ -1144,7 +1305,7 @@
                 let screeningDate = "Invalid Date";
                 if (screening.testTimestamp && screening.testTimestamp.toDate) {
                     screeningDate = screening.testTimestamp.toDate().toLocaleDateString('nb-NO', { year: 'numeric', month: 'short', day: 'numeric' });
-                } else if (screening.testTimestamp) { // Fallback for string dates
+                } else if (screening.testTimestamp) { 
                     screeningDate = new Date(screening.testTimestamp).toLocaleDateString('nb-NO', { year: 'numeric', month: 'short', day: 'numeric' });
                 }
                 dateSpan.textContent = screeningDate;
@@ -1155,9 +1316,9 @@
         
         function prepareAndRenderAnalysis() {
             if (!allScreeningsForSelectedPatient || allScreeningsForSelectedPatient.length === 0) {
-                analysisGraphsContainer.innerHTML = '<p>No data to analyze.</p>';
-                summaryTableWrapper.innerHTML = '<p>No data for summary.</p>';
-                renderTestDateToggleButtons(); // Will show "no tests"
+                analysisGraphsContainer.innerHTML = '<div class="graph-section-box"><p class="loading-placeholder">No data to analyze.</p></div>';
+                summaryTableWrapper.innerHTML = '<div class="summary-position-block"><p>No data for summary.</p></div>';
+                renderTestDateToggleButtons(); 
                 return;
             }
 
@@ -1165,61 +1326,61 @@
             const processedData = processAndFilterData(internalStructure, testDateVisibility, firstTestDateForPatient);
             processedAndGroupedData = groupDataByDateForAnalysis(processedData);
             
-            renderTestDateToggleButtons(); // Update date buttons based on all screenings and current visibility
-            renderAnalysisContent(); // Render graphs and table
+            renderTestDateToggleButtons(); 
+            renderAnalysisContent(); 
         }
 
         function transformRawScreeningsToInternalStructure(rawScreenings, profileData) {
             const transformed = [];
+            const patientInjuredSide = profileData.injuredSide; // 'Left' or 'Right'
+
             rawScreenings.forEach(screening => {
                 const testDate = screening.testTimestamp && screening.testTimestamp.toDate ? screening.testTimestamp.toDate() : new Date(screening.testTimestamp);
                 const bodyweight = screening.bodyweightAtScreening || profileData.bodyweight || null;
+                // Den lagrede 'injuredSideAtScreening' i screening-dokumentet bestemmer hvilken side som var "skadet" for *denne* testen.
+                // 'nonInjuredSideIsLeft' var en dårlig navngivning i forrige eksempel. Vi bør heller lagre data som LeftMaxForce, RightMaxForce etc.
+                // For nå, antar vi at 'ashTest' inneholder 'nonInjuredMaxForce', 'injuredMaxForce', etc.
+                // OG at vi vet hvilken side som var 'injuredSideAtScreening' for den testen.
+                // Hvis 'ashTest' direkte har 'leftMaxForce' og 'rightMaxForce', er det enklere.
+                // Her antar jeg at 'ashTest[pos]' har 'nonInjuredMaxForce', 'injuredMaxForce', 'nonInjuredRfd', 'injuredRfd'
+                // og 'injuredSideAtScreening' (som kan være 'Left' eller 'Right') forteller oss hvilken av disse som er hva.
 
                 POSITIONS.forEach(pos => {
-                    const ashTestData = screening.ashTest ? screening.ashTest[pos] : null;
-                    if (ashTestData) {
+                    const ashTestDataForPos = screening.ashTest ? screening.ashTest[pos] : null;
+                    if (ashTestDataForPos) {
+                        let leftMaxForce, rightMaxForce, leftRfd, rightRfd;
+                        const screeningInjuredSide = ashTestDataForPos.injuredSideAtScreening || screening.injuredSideAtScreening || patientInjuredSide; // Prioriter test-spesifikk, så screening, så profil
+
+                        if (screeningInjuredSide === 'Left') {
+                            leftMaxForce = ashTestDataForPos.injuredMaxForce;
+                            leftRfd = ashTestDataForPos.injuredRfd;
+                            rightMaxForce = ashTestDataForPos.nonInjuredMaxForce;
+                            rightRfd = ashTestDataForPos.nonInjuredRfd;
+                        } else { // Right is injured or default
+                            leftMaxForce = ashTestDataForPos.nonInjuredMaxForce;
+                            leftRfd = ashTestDataForPos.nonInjuredRfd;
+                            rightMaxForce = ashTestDataForPos.injuredMaxForce;
+                            rightRfd = ashTestDataForPos.injuredRfd;
+                        }
+                        
                         // Max Force
                         transformed.push({
-                            'Test Date': testDate,
-                            'Position Clean': pos,
-                            'Metric': METRIC_KEYS.MAX_FORCE,
-                            'Left Value': ashTestData.nonInjuredSideIsLeft === 'Left' ? ashTestData.injuredMaxForce : ashTestData.nonInjuredMaxForce, // This logic needs to be based on actual injured side
-                            'Right Value': ashTestData.nonInjuredSideIsLeft === 'Right' ? ashTestData.injuredMaxForce : ashTestData.nonInjuredMaxForce, // This logic needs to be based on actual injured side
-                            'Bodyweight (kg)': bodyweight,
-                            'Injured Side': profileData.injuredSide // From patient profile
+                            'Test Date': testDate, 'Position Clean': pos, 'Metric': METRIC_KEYS.MAX_FORCE,
+                            'Left Value': leftMaxForce, 'Right Value': rightMaxForce,
+                            'Bodyweight (kg)': bodyweight, 'Injured Side': patientInjuredSide 
                         });
                         // RFD
                         transformed.push({
-                            'Test Date': testDate,
-                            'Position Clean': pos,
-                            'Metric': METRIC_KEYS.RFD,
-                            'Left Value': ashTestData.nonInjuredSideIsLeft === 'Left' ? ashTestData.injuredRfd : ashTestData.nonInjuredRfd,
-                            'Right Value': ashTestData.nonInjuredSideIsLeft === 'Right' ? ashTestData.injuredRfd : ashTestData.nonInjuredRfd,
-                            'Bodyweight (kg)': bodyweight,
-                            'Injured Side': profileData.injuredSide
+                            'Test Date': testDate, 'Position Clean': pos, 'Metric': METRIC_KEYS.RFD,
+                            'Left Value': leftRfd, 'Right Value': rightRfd,
+                            'Bodyweight (kg)': bodyweight, 'Injured Side': patientInjuredSide
                         });
-                         // Norm Max Force (will be calculated later if bodyweight exists)
-                        let leftMaxForce = ashTestData.nonInjuredSideIsLeft === 'Left' ? ashTestData.injuredMaxForce : ashTestData.nonInjuredMaxForce;
-                        let rightMaxForce = ashTestData.nonInjuredSideIsLeft === 'Right' ? ashTestData.injuredMaxForce : ashTestData.nonInjuredMaxForce;
-                        
-                        // Adjust based on actual injured side from profile
-                        if (profileData.injuredSide === 'Left') {
-                            leftMaxForce = ashTestData.injuredMaxForce;
-                            rightMaxForce = ashTestData.nonInjuredMaxForce;
-                        } else if (profileData.injuredSide === 'Right') {
-                            leftMaxForce = ashTestData.nonInjuredMaxForce;
-                            rightMaxForce = ashTestData.injuredMaxForce;
-                        }
-
-
+                        // Norm Max Force
                         transformed.push({
-                            'Test Date': testDate,
-                            'Position Clean': pos,
-                            'Metric': METRIC_KEYS.NORM_MAX_FORCE,
+                            'Test Date': testDate, 'Position Clean': pos, 'Metric': METRIC_KEYS.NORM_MAX_FORCE,
                             'Left Value': (bodyweight && leftMaxForce) ? leftMaxForce / bodyweight : null,
                             'Right Value': (bodyweight && rightMaxForce) ? rightMaxForce / bodyweight : null,
-                            'Bodyweight (kg)': bodyweight,
-                            'Injured Side': profileData.injuredSide
+                            'Bodyweight (kg)': bodyweight, 'Injured Side': patientInjuredSide
                         });
                     }
                 });
@@ -1229,9 +1390,11 @@
         
         function processAndFilterData(internalStructure, currentTestDateVisibility, firstTestDate) {
             if (!firstTestDate) return [];
-
             return internalStructure
-                .filter(item => currentTestDateVisibility[item['Test Date'].toISOString().split('T')[0]])
+                .filter(item => {
+                    const dateKey = item['Test Date'].toISOString().split('T')[0];
+                    return currentTestDateVisibility[dateKey];
+                })
                 .map(item => {
                     const diffTime = Math.abs(item['Test Date'] - firstTestDate);
                     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -1248,7 +1411,8 @@
                     grouped[dateStr] = {
                         'Test Date': item['Test Date'],
                         'Weeks Since First': item['Weeks Since First'],
-                        'Bodyweight (kg)': item['Bodyweight (kg)'],
+                        'Bodyweight (kg)': item['Bodyweight (kg)'], // Assuming this is consistent per test date
+                        'Injured Side': item['Injured Side'], // Assuming this is consistent for the patient
                         'I': {}, 'Y': {}, 'T': {}
                     };
                     POSITIONS.forEach(pos => {
@@ -1257,7 +1421,6 @@
                         grouped[dateStr][pos][METRIC_KEYS.NORM_MAX_FORCE] = { Left: null, Right: null };
                     });
                 }
-                // Ensure position and metric objects exist
                 if (!grouped[dateStr][item['Position Clean']]) grouped[dateStr][item['Position Clean']] = {};
                 if (!grouped[dateStr][item['Position Clean']][item['Metric']]) grouped[dateStr][item['Position Clean']][item['Metric']] = {};
                 
@@ -1265,6 +1428,9 @@
                     Left: item['Left Value'],
                     Right: item['Right Value']
                 };
+                 // Ensure bodyweight and injuredSide are set from the first item for that date if not already set
+                if (grouped[dateStr]['Bodyweight (kg)'] === undefined) grouped[dateStr]['Bodyweight (kg)'] = item['Bodyweight (kg)'];
+                if (grouped[dateStr]['Injured Side'] === undefined) grouped[dateStr]['Injured Side'] = item['Injured Side'];
             });
             return Object.values(grouped).sort((a,b) => a['Test Date'] - b['Test Date']);
         }
@@ -1272,21 +1438,23 @@
 
         // --- UI Rendering for Analysis ---
         function renderTestDateToggleButtons() {
-            dateFilterButtonsContainer.innerHTML = ''; // Clear previous
+            dateFilterButtonsContainer.innerHTML = ''; 
             if (!allScreeningsForSelectedPatient || allScreeningsForSelectedPatient.length === 0) {
                 dateFilterButtonsContainer.innerHTML = '<p id="date-filter-placeholder" style="font-size:0.9em; color: var(--dark-gray);">No tests available for filtering.</p>';
                 return;
             }
              if (dateFilterPlaceholder) dateFilterPlaceholder.style.display = 'none';
 
-
             const uniqueDates = [...new Set(allScreeningsForSelectedPatient.map(s => {
-                return s.testTimestamp && s.testTimestamp.toDate ? s.testTimestamp.toDate().toISOString().split('T')[0] : new Date(s.testTimestamp).toISOString().split('T')[0];
-            }))].sort();
+                let dateObj = null;
+                if (s.testTimestamp && s.testTimestamp.toDate) dateObj = s.testTimestamp.toDate();
+                else if (s.testTimestamp) dateObj = new Date(s.testTimestamp);
+                return dateObj ? dateObj.toISOString().split('T')[0] : null;
+            }))].filter(Boolean).sort();
 
             if (uniqueDates.length <= 1) {
                  dateFilterButtonsContainer.innerHTML = '<p id="date-filter-placeholder" style="font-size:0.9em; color: var(--dark-gray);">Only one test session available.</p>';
-                return; // No need for toggles if only one or zero dates
+                return; 
             }
             
             uniqueDates.forEach(dateStr => {
@@ -1299,7 +1467,7 @@
                 
                 btn.addEventListener('click', () => {
                     testDateVisibility[dateStr] = !testDateVisibility[dateStr];
-                    prepareAndRenderAnalysis(); // Re-process and re-render
+                    prepareAndRenderAnalysis(); 
                 });
                 dateFilterButtonsContainer.appendChild(btn);
             });
@@ -1309,52 +1477,56 @@
             currentViewMode = mode;
             scatterViewBtn.classList.toggle('active-view-btn', mode === 'scatter');
             barViewBtn.classList.toggle('active-view-btn', mode === 'bar');
-            renderAnalysisContent(); // Re-render graphs
+            renderAnalysisContent(); 
         }
         
         function renderAnalysisContent() {
-            analysisGraphsContainer.innerHTML = ''; // Clear previous graphs
-            summaryTableWrapper.innerHTML = ''; // Clear previous table
+            analysisGraphsContainer.innerHTML = ''; 
+            summaryTableWrapper.innerHTML = ''; 
 
             if (!processedAndGroupedData || processedAndGroupedData.length === 0) {
-                analysisGraphsContainer.innerHTML = '<p>No data to display for the selected filters.</p>';
-                summaryTableWrapper.innerHTML = '<p>No data for summary table based on current filters.</p>';
+                analysisGraphsContainer.innerHTML = '<div class="graph-section-box"><div class="loading-placeholder">No data to display for the selected filters.</div></div>';
+                summaryTableWrapper.innerHTML = '<div class="summary-position-block"><p>No data for summary table based on current filters.</p></div>';
                 return;
             }
-
+            
+            // Apply new grid classes based on view mode
             if (currentViewMode === 'scatter') {
+                analysisGraphsContainer.className = 'graph-grid graph-grid-scatter';
                 renderAllScatterPlots(processedAndGroupedData);
             } else {
+                analysisGraphsContainer.className = 'graph-grid graph-grid-bar';
                 renderAllBarCharts(processedAndGroupedData);
             }
             renderDetailedSummaryTable(processedAndGroupedData);
         }
         
-        // --- Plotly Graph Rendering Functions (Stubs - Complex to fully implement here) ---
         function renderAllScatterPlots(dGBD) {
-            analysisGraphsContainer.innerHTML = ''; // Clear
+            analysisGraphsContainer.innerHTML = ''; 
             POSITIONS.forEach(pos => {
                 [METRIC_KEYS.MAX_FORCE, METRIC_KEYS.RFD, METRIC_KEYS.NORM_MAX_FORCE].forEach(metric => {
                     const graphDivId = `scatter-${pos}-${metric.replace(/[^a-zA-Z0-9]/g, '')}`;
-                    let graphItem = document.createElement('div');
-                    graphItem.className = 'analysis-graph-item';
-                    graphItem.innerHTML = `<h3>${pos} - ${metric} (Trend)</h3><div id="${graphDivId}" class="js-plotly-plot-analysis"></div>`;
-                    analysisGraphsContainer.appendChild(graphItem);
-                    createTimeSeriesScatterPlot(dGBD, pos, metric, graphDivId);
+                    // Bruker .graph-section-box for hver graf
+                    let graphSection = document.createElement('div');
+                    graphSection.className = 'graph-section-box';
+                    graphSection.innerHTML = `<h3 class="graph-box-title">${pos} - ${metric} (Trend)</h3><div id="${graphDivId}" class="plotly-graph-div"><div class="loading-placeholder"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>`;
+                    analysisGraphsContainer.appendChild(graphSection);
+                    // Utsett graftegning for å la DOM oppdateres
+                    setTimeout(() => createTimeSeriesScatterPlot(dGBD, pos, metric, graphDivId), 0);
                 });
             });
         }
 
         function renderAllBarCharts(dGBD) {
-            analysisGraphsContainer.innerHTML = ''; // Clear
+            analysisGraphsContainer.innerHTML = '';
              POSITIONS.forEach(pos => {
-                [METRIC_KEYS.MAX_FORCE, METRIC_KEYS.RFD].forEach(metric => { // NORM_MAX_FORCE usually not a bar chart per session
+                [METRIC_KEYS.MAX_FORCE, METRIC_KEYS.RFD].forEach(metric => { 
                     const graphDivId = `bar-${pos}-${metric.replace(/[^a-zA-Z0-9]/g, '')}`;
-                    let graphItem = document.createElement('div');
-                    graphItem.className = 'analysis-graph-item';
-                    graphItem.innerHTML = `<h3>${pos} - ${metric} (Per Session)</h3><div id="${graphDivId}" class="js-plotly-plot-analysis"></div>`;
-                    analysisGraphsContainer.appendChild(graphItem);
-                    createTimeSeriesBarChart(dGBD, pos, metric, graphDivId);
+                    let graphSection = document.createElement('div');
+                    graphSection.className = 'graph-section-box';
+                    graphSection.innerHTML = `<h3 class="graph-box-title">${pos} - ${metric} (Per Session)</h3><div id="${graphDivId}" class="plotly-graph-div"><div class="loading-placeholder"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>`;
+                    analysisGraphsContainer.appendChild(graphSection);
+                    setTimeout(() => createTimeSeriesBarChart(dGBD, pos, metric, graphDivId), 0);
                 });
             });
         }
@@ -1368,114 +1540,87 @@
                     name: 'Download Plot as PNG',
                     icon: Plotly.Icons.camera,
                     click: function(gd) {
-                        Plotly.downloadImage(gd, {format: 'png', width: gd._fullLayout.width, height: gd._fullLayout.height, filename: gd.layout.title.text || 'plot'});
+                        const titleText = gd.layout && gd.layout.title && gd.layout.title.text ? gd.layout.title.text : 'plot';
+                        Plotly.downloadImage(gd, {format: 'png', width: gd._fullLayout.width, height: gd._fullLayout.height, filename: titleText.replace(/[^a-z0-9]/gi, '_').toLowerCase() });
                     }
                 }]
             };
         }
         
-        function calculateAxisRange(values, bufferFactor = 0.1, minRange = 10) {
+        function calculateAxisRange(values, bufferFactor = 0.1, minAbsRange = 10) {
             const numericValues = values.filter(v => typeof v === 'number' && isFinite(v));
-            if (numericValues.length === 0) return [0, minRange]; // Default range if no valid data
+            if (numericValues.length === 0) return [0, minAbsRange]; 
 
             let minVal = Math.min(...numericValues);
             let maxVal = Math.max(...numericValues);
             
-            if (minVal === maxVal) { // Handle case where all values are the same
-                minVal -= minRange / 2;
-                maxVal += minRange / 2;
+            if (minVal === maxVal) { 
+                minVal -= minAbsRange / 2;
+                maxVal += minAbsRange / 2;
             }
 
-            const range = maxVal - minVal;
-            const buffer = range * bufferFactor;
+            const currentRange = maxVal - minVal;
+            const buffer = currentRange * bufferFactor;
             
             let finalMin = minVal - buffer;
             let finalMax = maxVal + buffer;
 
-            if (finalMax - finalMin < minRange) {
+            if (finalMax - finalMin < minAbsRange) {
                 const mid = (finalMin + finalMax) / 2;
-                finalMin = mid - minRange / 2;
-                finalMax = mid + minRange / 2;
+                finalMin = mid - minAbsRange / 2;
+                finalMax = mid + minAbsRange / 2;
             }
-            // Ensure y-axis starts at 0 for certain metrics if appropriate, e.g., force, RFD
-            // For NORM_MAX_FORCE, it might be okay to not start at 0 if values are clustered higher.
-            // if (minVal >= 0) finalMin = Math.max(0, finalMin);
-
-
             return [finalMin, finalMax];
         }
 
 
         function createTimeSeriesScatterPlot(dGBD_data, position, metricKey, divId) {
-            const xValuesWeeks = dGBD_data.map(d => `Wk ${d['Weeks Since First']}`); // Or format Test Date
+            const plotDiv = document.getElementById(divId);
+            if (!plotDiv) return;
+            plotDiv.innerHTML = '<div class="loading-placeholder"><i class="fas fa-spinner fa-spin"></i> Generating...</div>'; // Vis laster
+
             const xValuesDates = dGBD_data.map(d => d['Test Date']);
-
-
-            const leftValues = dGBD_data.map(d => d[position]?.[metricKey]?.Left).filter(v => v !== null && v !== undefined);
-            const rightValues = dGBD_data.map(d => d[position]?.[metricKey]?.Right).filter(v => v !== null && v !== undefined);
+            const yValuesLeft = dGBD_data.map(d => d[position]?.[metricKey]?.Left);
+            const yValuesRight = dGBD_data.map(d => d[position]?.[metricKey]?.Right);
 
             const traceLeft = {
-                x: xValuesDates,
-                y: dGBD_data.map(d => d[position]?.[metricKey]?.Left),
-                mode: 'lines+markers',
-                name: 'Left',
-                line: { color: LEFT_COLOR, width: 2 },
-                marker: { color: LEFT_COLOR, size: 8 },
+                x: xValuesDates, y: yValuesLeft, mode: 'lines+markers', name: 'Left',
+                line: { color: LEFT_COLOR, width: 2 }, marker: { color: LEFT_COLOR, size: 7 },
                 hovertemplate: 'Left: %{y:.2f}<extra></extra>'
             };
             const traceRight = {
-                x: xValuesDates,
-                y: dGBD_data.map(d => d[position]?.[metricKey]?.Right),
-                mode: 'lines+markers',
-                name: 'Right',
-                line: { color: RIGHT_COLOR, width: 2 },
-                marker: { color: RIGHT_COLOR, size: 8 },
+                x: xValuesDates, y: yValuesRight, mode: 'lines+markers', name: 'Right',
+                line: { color: RIGHT_COLOR, width: 2 }, marker: { color: RIGHT_COLOR, size: 7 },
                 hovertemplate: 'Right: %{y:.2f}<extra></extra>'
             };
+            
+            const allYValues = [...yValuesLeft, ...yValuesRight].filter(v => v !== null && v !== undefined);
+            const yRangeSettings = calculateAxisRange(allYValues, 0.15, metricKey === METRIC_KEYS.NORM_MAX_FORCE ? 0.5 : 20);
 
             const layout = {
-                // title: `${position} - ${metricKey}`, // Title is in the HTML h3 now
-                xaxis: {
-                    title: 'Test Date',
-                    type: 'date',
-                    tickformat: '%d %b %Y', // Format date ticks
-                    automargin: true,
-                },
-                yaxis: {
-                    title: metricKey,
-                    automargin: true,
-                    zeroline: metricKey !== METRIC_KEYS.NORM_MAX_FORCE, // Show zeroline for force/RFD
-                    range: calculateAxisRange([...leftValues, ...rightValues], 0.1, metricKey === METRIC_KEYS.NORM_MAX_FORCE ? 0.5 : 20)
-                },
-                margin: { l: 60, r: 30, b: 80, t: 20, pad: 5 }, // Adjusted margins
-                legend: {orientation: "h", yanchor: "bottom", y: 1.02, xanchor: "right", x: 1},
-                shapes: [], // For normative zones
+                xaxis: { type: 'date', tickformat: '%d %b %y', automargin: true, title: {text: 'Test Date', font: {size: 11}}},
+                yaxis: { title: {text: metricKey, font: {size: 11}}, automargin: true, zeroline: metricKey !== METRIC_KEYS.NORM_MAX_FORCE, range: yRangeSettings},
+                margin: { l: 50, r: 20, b: 50, t: 30, pad: 5 },
+                legend: {orientation: "h", yanchor: "bottom", y: 1.05, xanchor: "right", x: 1, font: {size: 10}},
+                shapes: [], 
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)',
-                font: { family: 'Avenir, sans-serif', size: 12, color: 'var(--dark-gray)'}
+                // title prop removed from here, handled by .graph-box-title
             };
 
             if (metricKey === METRIC_KEYS.NORM_MAX_FORCE && NORMATIVE_THRESHOLDS[position]) {
                 const thresholds = NORMATIVE_THRESHOLDS[position];
-                const yRange = layout.yaxis.range;
-
-                // Define zones based on thresholds (N/kg values)
                 const zones = [
-                    { y0: 0, y1: thresholds.poor_max, color: NORM_ZONE_COLORS.POOR, name: "Poor" },
-                    { y0: thresholds.poor_max, y1: thresholds.good_min, color: NORM_ZONE_COLORS.AVERAGE, name: "Average" }, // Average spans up to good_min
-                    { y0: thresholds.good_min, y1: thresholds.excellent_min, color: NORM_ZONE_COLORS.GOOD, name: "Good" },
-                    { y0: thresholds.excellent_min, y1: Math.max(yRange[1], thresholds.excellent_min + 0.5), color: NORM_ZONE_COLORS.EXCELLENT, name: "Excellent" } // Extend excellent zone
+                    { y0: 0, y1: thresholds.poor_max, color: NORM_ZONE_COLORS.POOR },
+                    { y0: thresholds.poor_max, y1: thresholds.good_min, color: NORM_ZONE_COLORS.AVERAGE },
+                    { y0: thresholds.good_min, y1: thresholds.excellent_min, color: NORM_ZONE_COLORS.GOOD },
+                    { y0: thresholds.excellent_min, y1: Math.max(yRangeSettings[1], thresholds.excellent_min + 0.5), color: NORM_ZONE_COLORS.EXCELLENT }
                 ];
-                
                 zones.forEach(zone => {
                     layout.shapes.push({
-                        type: 'rect',
-                        xref: 'paper', x0: 0, x1: 1,
+                        type: 'rect', xref: 'paper', x0: 0, x1: 1,
                         yref: 'y', y0: zone.y0, y1: zone.y1,
-                        fillcolor: zone.color,
-                        opacity: 0.7, // Ensure CSS var has alpha or set here
-                        layer: 'below',
-                        line: { width: 0 }
+                        fillcolor: zone.color, opacity: 0.6, layer: 'below', line: { width: 0 }
                     });
                 });
             }
@@ -1483,57 +1628,45 @@
             try {
                  Plotly.newPlot(divId, [traceLeft, traceRight], layout, getPlotlyConfig());
             } catch(e) {
-                document.getElementById(divId).innerHTML = `<p style="color:red;">Error rendering scatter plot: ${e.message}</p>`;
+                plotDiv.innerHTML = `<p style="color:red;">Error rendering scatter plot: ${e.message}</p>`;
             }
         }
 
         function createTimeSeriesBarChart(dGBD_data, position, metricKey, divId) {
-            const xValuesDatesFormatted = dGBD_data.map(d => d['Test Date'].toLocaleDateString('nb-NO', {day:'2-digit', month:'short'}));
+            const plotDiv = document.getElementById(divId);
+            if (!plotDiv) return;
+            plotDiv.innerHTML = '<div class="loading-placeholder"><i class="fas fa-spinner fa-spin"></i> Generating...</div>';
 
-            const leftValues = dGBD_data.map(d => d[position]?.[metricKey]?.Left);
-            const rightValues = dGBD_data.map(d => d[position]?.[metricKey]?.Right);
+            const xValuesDatesFormatted = dGBD_data.map(d => d['Test Date'].toLocaleDateString('nb-NO', {day:'2-digit', month:'short', year:'2-digit'}));
+            const yValuesLeft = dGBD_data.map(d => d[position]?.[metricKey]?.Left);
+            const yValuesRight = dGBD_data.map(d => d[position]?.[metricKey]?.Right);
 
             const traceLeft = {
-                x: xValuesDatesFormatted,
-                y: leftValues,
-                type: 'bar',
-                name: 'Left',
-                marker: { color: LEFT_COLOR },
-                text: leftValues.map(v => v !== null && v !== undefined ? v.toFixed(1) : ''),
-                textposition: 'inside',
-                insidetextanchor: 'middle',
-                hovertemplate: 'Left: %{y:.1f}<extra></extra>'
+                x: xValuesDatesFormatted, y: yValuesLeft, type: 'bar', name: 'Left',
+                marker: { color: LEFT_BAR_COLOR }, text: yValuesLeft.map(v => v !== null && v !== undefined ? v.toFixed(1) : ''),
+                textposition: 'auto', hovertemplate: 'Left: %{y:.1f}<extra></extra>'
             };
             const traceRight = {
-                x: xValuesDatesFormatted,
-                y: rightValues,
-                type: 'bar',
-                name: 'Right',
-                marker: { color: RIGHT_COLOR },
-                text: rightValues.map(v => v !== null && v !== undefined ? v.toFixed(1) : ''),
-                textposition: 'inside',
-                insidetextanchor: 'middle',
-                hovertemplate: 'Right: %{y:.1f}<extra></extra>'
+                x: xValuesDatesFormatted, y: yValuesRight, type: 'bar', name: 'Right',
+                marker: { color: RIGHT_BAR_COLOR }, text: yValuesRight.map(v => v !== null && v !== undefined ? v.toFixed(1) : ''),
+                textposition: 'auto', hovertemplate: 'Right: %{y:.1f}<extra></extra>'
             };
             
-            const allValues = [...leftValues, ...rightValues].filter(v => v !== null && v !== undefined);
-            const yAxisRange = calculateAxisRange(allValues, 0.2, 20); // Generous buffer for annotations
+            const allYValues = [...yValuesLeft, ...yValuesRight].filter(v => v !== null && v !== undefined);
+            const yAxisRange = calculateAxisRange(allYValues, 0.25, 20); 
 
             const layout = {
-                // title: `${position} - ${metricKey}`,
                 barmode: 'group',
-                xaxis: { title: 'Test Session', automargin: true },
-                yaxis: { title: metricKey, automargin: true, range: yAxisRange, zeroline: true },
-                margin: { l: 60, r: 30, b: 80, t: 40, pad: 5 }, // Increased top margin for annotations
-                legend: {orientation: "h", yanchor: "bottom", y: 1.02, xanchor: "right", x: 1},
+                xaxis: { title: {text: 'Test Session', font: {size: 11}}, automargin: true, tickangle: -30 },
+                yaxis: { title: {text: metricKey, font: {size: 11}}, automargin: true, range: yAxisRange, zeroline: true },
+                margin: { l: 50, r: 20, b: 70, t: 50, pad: 5 },
+                legend: {orientation: "h", yanchor: "bottom", y: 1.05, xanchor: "right", x: 1, font: {size: 10}},
                 annotations: [],
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)',
-                font: { family: 'Avenir, sans-serif', size: 12, color: 'var(--dark-gray)'}
             };
 
-            // Add annotations for asymmetry and change %
-            const injuredSide = selectedPatientProfileData?.injuredSide; // 'Left' or 'Right'
+            const patientActualInjuredSide = selectedPatientProfileData?.injuredSide;
             dGBD_data.forEach((sessionData, index) => {
                 const Lval = sessionData[position]?.[metricKey]?.Left;
                 const Rval = sessionData[position]?.[metricKey]?.Right;
@@ -1541,11 +1674,11 @@
                 let changePercentL = null;
                 let changePercentR = null;
 
-                if (Lval !== null && Rval !== null && injuredSide) {
-                    const injuredVal = injuredSide === 'Left' ? Lval : Rval;
-                    const uninjuredVal = injuredSide === 'Left' ? Rval : Lval;
+                if (Lval !== null && Lval !== undefined && Rval !== null && Rval !== undefined && patientActualInjuredSide) {
+                    const injuredVal = patientActualInjuredSide === 'Left' ? Lval : Rval;
+                    const uninjuredVal = patientActualInjuredSide === 'Left' ? Rval : Lval;
                     if (uninjuredVal !== 0) {
-                        asymmetryPercent = ((injuredVal - uninjuredVal) / uninjuredVal) * 100;
+                        asymmetryPercent = ((injuredVal - uninjuredVal) / Math.abs(uninjuredVal)) * 100;
                     }
                 }
 
@@ -1553,64 +1686,51 @@
                     const prevSessionData = dGBD_data[index-1];
                     const prevLval = prevSessionData[position]?.[metricKey]?.Left;
                     const prevRval = prevSessionData[position]?.[metricKey]?.Right;
-                    if (prevLval !== null && Lval !== null && prevLval !== 0) {
-                        changePercentL = ((Lval - prevLval) / prevLval) * 100;
+                    if (prevLval !== null && prevLval !== undefined && Lval !== null && Lval !== undefined && prevLval !== 0) {
+                        changePercentL = ((Lval - prevLval) / Math.abs(prevLval)) * 100;
                     }
-                    if (prevRval !== null && Rval !== null && prevRval !== 0) {
-                        changePercentR = ((Rval - prevRval) / prevRval) * 100;
+                    if (prevRval !== null && prevRval !== undefined && Rval !== null && Rval !== undefined && prevRval !== 0) {
+                        changePercentR = ((Rval - prevRval) / Math.abs(prevRval)) * 100;
                     }
                 }
                 
-                // Position annotations - this is tricky with grouped bars.
-                // For simplicity, one annotation above the group.
-                let annotationText = '';
+                let asymmetryText = '';
                 if (asymmetryPercent !== null) {
-                    annotationText += `Asym: ${asymmetryPercent.toFixed(0)}%`;
-                }
-                
-                const yPos = Math.max(Lval || 0, Rval || 0) * 1.05 + (yAxisRange[1] * 0.05); // Position above taller bar
-
-
-                if (annotationText) {
+                    asymmetryText = `Asym: ${asymmetryPercent > 0 ? '+' : ''}${asymmetryPercent.toFixed(0)}%`;
                      layout.annotations.push({
                         x: xValuesDatesFormatted[index],
-                        y: yPos + (yAxisRange[1] * 0.08), // Higher for asymmetry
-                        text: annotationText,
-                        showarrow: false,
-                        font: {size: 10, color: 'var(--dark-gray)'},
-                        xanchor: 'center',
-                        yanchor: 'bottom'
+                        y: Math.max(Lval || 0, Rval || 0) * 1.15, // Position above bars
+                        text: asymmetryText,
+                        showarrow: false, font: {size: 9, color: asymmetryPercent < -10 ? 'var(--danger-color-dark)' : 'var(--dark-gray)'},
+                        xanchor: 'center', yanchor: 'bottom'
                     });
                 }
                 
-                let changeAnnotationText = '';
-                if (changePercentL !== null) changeAnnotationText += `L: ${changePercentL.toFixed(0)}% `;
-                if (changePercentR !== null) changeAnnotationText += `R: ${changePercentR.toFixed(0)}%`;
+                let changeAnnotationText = [];
+                if (changePercentL !== null) changeAnnotationText.push(`L: ${changePercentL > 0 ? '+' : ''}${changePercentL.toFixed(0)}%`);
+                if (changePercentR !== null) changeAnnotationText.push(`R: ${changePercentR > 0 ? '+' : ''}${changePercentR.toFixed(0)}%`);
                 
-                if (changeAnnotationText) {
+                if (changeAnnotationText.length > 0) {
                     layout.annotations.push({
                         x: xValuesDatesFormatted[index],
-                        y: yPos, // Slightly lower for change %
-                        text: changeAnnotationText.trim(),
-                        showarrow: false,
-                        font: {size: 9, color: 'var(--text-color)'},
-                        xanchor: 'center',
-                        yanchor: 'bottom'
+                        y: Math.max(Lval || 0, Rval || 0) * 1.05, // Position slightly lower than asymmetry
+                        text: changeAnnotationText.join(' '),
+                        showarrow: false, font: {size: 9, color: 'var(--text-color)'},
+                        xanchor: 'center', yanchor: 'bottom'
                     });
                 }
             });
              try {
                 Plotly.newPlot(divId, [traceLeft, traceRight], layout, getPlotlyConfig());
             } catch(e) {
-                document.getElementById(divId).innerHTML = `<p style="color:red;">Error rendering bar chart: ${e.message}</p>`;
+                plotDiv.innerHTML = `<p style="color:red;">Error rendering bar chart: ${e.message}</p>`;
             }
         }
         
-        // --- Summary Table Rendering (Stub - Complex to fully implement here) ---
         function renderDetailedSummaryTable(dGBD_data) {
-            summaryTableWrapper.innerHTML = ''; // Clear
+            summaryTableWrapper.innerHTML = ''; 
             if (!dGBD_data || dGBD_data.length === 0) {
-                summaryTableWrapper.innerHTML = '<p>No data for summary table.</p>';
+                summaryTableWrapper.innerHTML = '<div class="summary-position-block"><p>No data for summary table.</p></div>';
                 return;
             }
 
@@ -1619,72 +1739,78 @@
             const thead = table.createTHead();
             const tbody = table.createTBody();
 
-            // Header Row 1: Metric + Dates
             let headerRow1 = thead.insertRow();
-            headerRow1.insertCell().textContent = 'Metric'; // Span 2 rows
+            let metricTh = headerRow1.insertCell();
+            metricTh.textContent = 'Metric';
+            metricTh.classList.add('metric-header');
+            
             dGBD_data.forEach(session => {
                 const th = document.createElement('th');
-                th.colSpan = 4; // L Val, R Val, L Ch%, R Ch%
+                th.colSpan = 4; 
                 th.textContent = session['Test Date'].toLocaleDateString('nb-NO', {day:'2-digit', month:'short', year:'numeric'});
-                th.classList.add('date-column-group');
+                th.classList.add('date-header', 'date-column-group');
                 headerRow1.appendChild(th);
             });
 
-            // Header Row 2: Sub-columns for each date
             let headerRow2 = thead.insertRow();
-            headerRow2.insertCell(); // Placeholder for Metric cell from row 1
+            headerRow2.insertCell(); // For the Metric cell span
             dGBD_data.forEach(() => {
                 ['L Val', 'R Val', 'L Ch%', 'R Ch%'].forEach(subCol => {
-                    headerRow2.insertCell().textContent = subCol;
+                    let subTh = headerRow2.insertCell();
+                    subTh.textContent = subCol;
+                    subTh.classList.add('sub-header');
                 });
             });
             
-            // Make "Metric" cell span two rows
             thead.rows[0].cells[0].rowSpan = 2;
-            thead.rows[1].cells[0].remove(); // Remove the placeholder
+            thead.rows[1].cells[0].remove();
 
-            // Table Body
             POSITIONS.forEach(pos => {
-                // Position Header Row
                 let posHeaderRow = tbody.insertRow();
                 let posTh = document.createElement('th');
                 posTh.colSpan = 1 + dGBD_data.length * 4;
                 posTh.textContent = `Position ${pos}`;
-                posTh.classList.add('position-header');
+                // posTh.classList.add('position-header'); // Brukerens CSS hadde .summary-table .position-header th
                 posHeaderRow.appendChild(posTh);
+                posHeaderRow.style.backgroundColor = 'var(--app-secondary-color)'; // Midlertidig for synlighet
+                posHeaderRow.style.color = 'var(--app-text-on-secondary)';
 
-                // Metric Rows for this position
+
                 [METRIC_KEYS.MAX_FORCE, METRIC_KEYS.RFD, METRIC_KEYS.NORM_MAX_FORCE].forEach(metricKey => {
                     let metricRow = tbody.insertRow();
-                    metricRow.insertCell().textContent = metricKey;
-                    metricRow.cells[0].classList.add('metric-row-header');
+                    let labelCell = metricRow.insertCell();
+                    labelCell.textContent = metricKey;
+                    labelCell.classList.add('metric-label');
 
                     dGBD_data.forEach((session, index) => {
                         const metricData = session[pos]?.[metricKey];
                         const Lval = metricData?.Left;
                         const Rval = metricData?.Right;
                         
-                        metricRow.insertCell().textContent = Lval !== null && Lval !== undefined ? Lval.toFixed(metricKey === METRIC_KEYS.NORM_MAX_FORCE ? 2 : 1) : '-';
-                        metricRow.insertCell().textContent = Rval !== null && Rval !== undefined ? Rval.toFixed(metricKey === METRIC_KEYS.NORM_MAX_FORCE ? 2 : 1) : '-';
+                        let lValCell = metricRow.insertCell();
+                        lValCell.textContent = Lval !== null && Lval !== undefined ? Lval.toFixed(metricKey === METRIC_KEYS.NORM_MAX_FORCE ? 2 : 1) : '-';
+                        lValCell.classList.add('left-value-cell');
+
+                        let rValCell = metricRow.insertCell();
+                        rValCell.textContent = Rval !== null && Rval !== undefined ? Rval.toFixed(metricKey === METRIC_KEYS.NORM_MAX_FORCE ? 2 : 1) : '-';
+                        rValCell.classList.add('right-value-cell');
                         
-                        let Lchange = '-';
-                        let Rchange = '-';
-                        let LchangeClass = 'change-neutral';
-                        let RchangeClass = 'change-neutral';
+                        let Lchange = '-'; let Rchange = '-';
+                        let LchangeClass = 'change-neutral'; let RchangeClass = 'change-neutral';
 
                         if (index > 0) {
                             const prevSession = dGBD_data[index-1];
                             const prevMetricData = prevSession[pos]?.[metricKey];
                             if (prevMetricData) {
-                                if (Lval !== null && prevMetricData.Left !== null && prevMetricData.Left !== 0) {
-                                    const change = ((Lval - prevMetricData.Left) / prevMetricData.Left) * 100;
-                                    Lchange = `${change.toFixed(0)}%`;
-                                    LchangeClass = change > 0 ? 'change-positive' : (change < 0 ? 'change-negative' : 'change-neutral');
+                                if (Lval !== null && Lval !== undefined && prevMetricData.Left !== null && prevMetricData.Left !== undefined && prevMetricData.Left !== 0) {
+                                    const change = ((Lval - prevMetricData.Left) / Math.abs(prevMetricData.Left)) * 100;
+                                    Lchange = `${change > 0 ? '+' : ''}${change.toFixed(0)}%`;
+                                    LchangeClass = change > 0 ? 'change-pos' : (change < 0 ? 'change-neg' : 'change-neutral');
                                 }
-                                if (Rval !== null && prevMetricData.Right !== null && prevMetricData.Right !== 0) {
-                                    const change = ((Rval - prevMetricData.Right) / prevMetricData.Right) * 100;
-                                    Rchange = `${change.toFixed(0)}%`;
-                                    RchangeClass = change > 0 ? 'change-positive' : (change < 0 ? 'change-negative' : 'change-neutral');
+                                if (Rval !== null && Rval !== undefined && prevMetricData.Right !== null && prevMetricData.Right !== undefined && prevMetricData.Right !== 0) {
+                                    const change = ((Rval - prevMetricData.Right) / Math.abs(prevMetricData.Right)) * 100;
+                                    Rchange = `${change > 0 ? '+' : ''}${change.toFixed(0)}%`;
+                                    RchangeClass = change > 0 ? 'change-pos' : (change < 0 ? 'change-neg' : 'change-neutral');
                                 }
                             }
                         }
@@ -1702,7 +1828,6 @@
             summaryTableWrapper.appendChild(table);
         }
         
-        // --- Helper to update visibility of "no data" message ---
         function updateNoDataMessage() {
             if (!selectedPatientId) {
                 noDataMessage.textContent = 'Please select a patient to view their history and analysis.';
@@ -1714,7 +1839,6 @@
             }
         }
 
-         // --- Patient Modal for Editing (Adapted from original screening page) ---
         async function openPatientModal(type, patientIdToEdit = null, fromAnalysisPage = false) {
             if (!currentUserId) {
                 showStatusMessage("You must be logged in.", "error");
@@ -1770,8 +1894,6 @@
                 patientModalContent.querySelector('#modal-confirm-edit')?.addEventListener('click', () => handleUpdatePatientProfile(patientIdToEdit));
                 patientModalContent.querySelector('#modal-cancel-edit')?.addEventListener('click', closePatientModal);
             } else {
-                // This modal function on analysis page is primarily for editing existing patient.
-                // New patient creation should ideally be on the screening page.
                 closePatientModal();
             }
         }
@@ -1794,7 +1916,6 @@
                 await updateDoc(patientDocRef, updatedData);
                 showStatusMessage(`Patient "${patientIdToUpdate}" profile updated.`, "success");
                 closePatientModal();
-                // Re-load data for the analysis page if the current patient was edited
                 if (selectedPatientId === patientIdToUpdate) {
                     loadPatientAnalysisData(selectedPatientId); 
                 }
@@ -1804,15 +1925,14 @@
             }
         }
 
-
-        // Make sure Plotly plots resize on window resize
         window.addEventListener('resize', () => {
-            const plotElements = document.querySelectorAll('.js-plotly-plot-analysis');
-            plotElements.forEach(gd => {
-                if (gd && typeof gd.layout !== 'undefined') { // Check if it's a Plotly graph
+            const plotElements = document.querySelectorAll('.plotly-graph-div'); // Changed selector
+            plotElements.forEach(gdContainer => {
+                const gd = gdContainer.querySelector('.js-plotly-plot');
+                 if (gd && typeof gd.layout !== 'undefined') { 
                     try {
                         Plotly.Plots.resize(gd);
-                    } catch(e) { /* ignore if not fully rendered */ }
+                    } catch(e) { /* ignore */ }
                 }
             });
         });
