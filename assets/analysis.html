@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" xintegrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         :root {
-            /* Fra original + brukerens oppdateringer/tillegg */
             --app-primary-color: #285484;
             --app-secondary-color: rgb(112, 188, 252);
             --app-tertiary-color: #121630; 
@@ -25,7 +24,7 @@
             --app-button-light-gradient-end: rgba(40, 84, 132, 0.9); 
             
             --light-gray: #f8f9fa; 
-            --box-background-color: #f0f2f5; 
+            --box-background-color: #f0f2f5; /* Sidebar and other boxes */
             --medium-gray: #dee2e6;
             --dark-gray: #495057;
             --text-color: #212529;
@@ -66,7 +65,7 @@
             --normal-font-weight: 400;
             --semibold-font-weight: 600; 
             --bold-font-weight: 700; 
-            --main-content-margin: 40px; /* Consistent with original app's padding */
+            --main-content-margin: 40px; 
 
             --print-text-color: #000000;
             --print-primary-color: #285484;
@@ -76,10 +75,17 @@
             --print-right-value-cell-bg: rgba(255, 127, 14, 0.08);
             --print-light-gray: #f8f9fa;
             --print-medium-gray: #dee2e6;
+
+            /* New colors for percentage changes */
+            --change-significant-positive: #15803d; /* Strong Green */
+            --change-moderate-positive: #16a34a;  /* Standard Green (same as --success-color) */
+            --change-minimal-neutral: #6b7280;    /* Dus Grå */
+            --change-moderate-negative: #f97316;  /* Orange/Lighter Red */
+            --change-significant-negative: #dc2626;/* Strong Red (same as --danger-color-dark) */
         }
         body {
             font-family: 'Avenir', sans-serif;
-            background-color: var(--light-gray);
+            background-color: var(--light-gray); /* Main page background */
             color: var(--text-color);
             margin: 0;
             padding: 0;
@@ -136,7 +142,7 @@
 
         .app-sidebar {
             width: var(--sidebar-width);
-            background-color: var(--box-background-color);
+            background-color: var(--box-background-color); /* Sidebar background */
             color: var(--text-color);
             padding: 20px 15px;
             display: flex;
@@ -147,7 +153,7 @@
             height: 100vh;
             overflow-y: auto;
             z-index: 100;
-            border-right: none;
+            border-right: none; /* No border to blend with main content if same color, or to be clean */
         }
         .sidebar-logo-placeholder {
            display: flex;
@@ -279,7 +285,7 @@
             flex-grow: 1;
             margin-left: calc(var(--sidebar-width) + var(--main-content-margin)); 
             padding: 30px var(--main-content-margin); 
-            background-color: var(--white);
+            background-color: var(--white); /* Main content background */
             overflow-y: auto;
             height: 100vh;
             box-sizing: border-box;
@@ -312,7 +318,7 @@
             justify-content: center;
             align-items: center;
         }
-        .analysis-choice-box { /* This is for the "Browse Patients" button */
+        .analysis-choice-box { 
             background-color: transparent;
             border: 1px solid var(--medium-gray);
             border-radius: var(--border-radius-general);
@@ -346,7 +352,7 @@
         .analysis-choice-box span {
             font-size: 1rem;
             color: var(--text-color);
-            font-weight: var(--normal-font-weight); /* Changed from semibold */
+            font-weight: var(--normal-font-weight); 
             transition: color 0.2s ease;
         }
 
@@ -494,7 +500,7 @@
             border: 1px solid rgba(40, 84, 132, 0.3); 
             background-color: rgba(112, 188, 252, 0.05); 
             border-radius: var(--border-radius-general); 
-            min-width: 100px; /* Adjusted for a more compact look */
+            min-width: 100px; 
             max-width: 140px;
             width: auto;
             box-sizing: border-box; 
@@ -532,8 +538,8 @@
             color: var(--app-primary-color); 
         }
 
-        .delete-log-item-btn { /* Hidden, but kept for potential future use if triggered differently */
-           display: none;
+        .delete-log-item-btn { 
+           display: none; /* Delete button is visually removed from list items */
         }
         
 
@@ -566,12 +572,34 @@
         .graph-grid-bar {
             grid-template-columns: repeat(1, 1fr); 
         }
+        /* Single container for all graphs of a position */
+        .position-analysis-box {
+            background-color: var(--light-gray);
+            border-radius: var(--border-radius-general);
+            padding: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--subtle-shadow);
+        }
+        .position-analysis-box-title {
+            font-size: 1.3rem;
+            color: var(--app-primary-color);
+            margin-bottom: 1em;
+            font-weight: var(--semibold-font-weight);
+            padding-bottom: 0.5em;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+        .position-graphs-grid { /* Grid inside each position box */
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Responsive columns for graphs */
+        }
+
         @media (min-width: 1024px) {
-            .graph-grid-scatter {
-                grid-template-columns: repeat(3, 1fr);
+            .graph-grid-scatter { /* This might be overridden by .position-graphs-grid */
+                /* grid-template-columns: repeat(3, 1fr); */
             }
-            .graph-grid-bar {
-                grid-template-columns: repeat(2, 1fr);
+            .graph-grid-bar { /* This might be overridden by .position-graphs-grid */
+                /* grid-template-columns: repeat(2, 1fr); */
             }
         }
         .plotly-graph-div {
@@ -594,7 +622,7 @@
         .js-plotly-plot .plotly { 
             font-family: 'Avenir', sans-serif !important;
         }
-        .js-plotly-plot .plotly .gtitle { 
+        .js-plotly-plot .plotly .gtitle { /* Individual graph titles are removed, this might not be needed */
             font-family: 'Avenir', sans-serif !important;
             font-size: 1rem !important; 
             fill: var(--app-primary-color) !important;
@@ -632,7 +660,7 @@
         }
         h2.section-title.summary-title { 
             font-size: 1.5rem;
-            margin-top: 0; /* Adjusted for direct use in summary-container-box */
+            margin-top: 0; 
             margin-bottom: 0.6em;
             color: var(--app-secondary-color);
             font-weight: var(--semibold-font-weight);
@@ -694,17 +722,14 @@
         .summary-table .right-value-cell {
             background-color: var(--print-right-value-cell-bg); 
         }
-        .summary-table .change-pos {
-            color: var(--success-color); 
-            font-weight: var(--semibold-font-weight);
-        }
-        .summary-table .change-neg {
-            color: var(--danger-color-dark);
-            font-weight: var(--semibold-font-weight);
-        }
-        .summary-table .change-neutral {
-            color: var(--text-color); 
-        }
+        /* Detailed Change Percentage Classes */
+        .summary-table .change-significant-positive { color: var(--change-significant-positive); font-weight: var(--semibold-font-weight); }
+        .summary-table .change-moderate-positive  { color: var(--change-moderate-positive); font-weight: var(--normal-font-weight); } /* Adjusted weight */
+        .summary-table .change-minimal-neutral    { color: var(--change-minimal-neutral); font-weight: var(--normal-font-weight); }
+        .summary-table .change-moderate-negative  { color: var(--change-moderate-negative); font-weight: var(--normal-font-weight); } /* Adjusted weight */
+        .summary-table .change-significant-negative{ color: var(--change-significant-negative); font-weight: var(--semibold-font-weight); }
+        .summary-table .change-na                 { color: var(--dark-gray); font-style: italic; }
+
         
         #analysis-controls {
             display: flex;
@@ -749,9 +774,10 @@
             border-color: var(--app-secondary-color);
         }
         
-        #analysis-graphs-container {
-            display: grid;
-            gap: 25px; 
+        #analysis-graphs-container { /* This will now contain .position-analysis-box elements */
+            display: flex;
+            flex-direction: column; /* Stack position boxes vertically */
+            gap: 2rem; /* Space between position boxes */
             margin-bottom: 30px;
         }
         
@@ -879,7 +905,7 @@
                         </div>
 
                     <div id="loading-analysis-message" style="display: none;">Loading analysis data...</div>
-                    <div id="analysis-graphs-container" class="graph-grid"> 
+                    <div id="analysis-graphs-container"> 
                         </div>
 
                     <div id="analysis-table-container" class="summary-container-box">                         
@@ -1325,17 +1351,18 @@
                 icon.classList.add('fas');
                 
                 if (dateKey && currentVisibility[dateKey]) {
+                    icon.classList.remove('fa-times-circle');
                     icon.classList.add('fa-check-circle'); 
                 } else {
-                    icon.classList.add('fa-times-circle'); // Changed to X icon
+                    icon.classList.remove('fa-check-circle');
+                    icon.classList.add('fa-times-circle'); 
                 }
                 visibilityIconContainer.appendChild(icon);
                 li.appendChild(visibilityIconContainer);
 
-                // Delete button is now visually hidden by CSS (.delete-log-item-btn { display: none; })
-                // but the JS logic for it is kept in case it's re-enabled or triggered differently.
+                // Delete button is visually hidden by CSS
                 const deleteBtn = document.createElement('button');
-                deleteBtn.classList.add('delete-log-item-btn'); // This class now hides it
+                deleteBtn.classList.add('delete-log-item-btn'); 
                 deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
                 deleteBtn.title = "Delete this test";
                 deleteBtn.addEventListener('click', (e) => {
@@ -1348,7 +1375,7 @@
                         "Confirm Deletion"
                     );
                 });
-                li.appendChild(deleteBtn); 
+                // li.appendChild(deleteBtn); // Not appending as it's hidden
 
                 if (dateKey) {
                     li.dataset.dateKey = dateKey;
@@ -1364,6 +1391,7 @@
         }
         
         async function deleteScreeningFromFirestore(patientId, screeningDocId) {
+            // This function is kept for potential future use, but the button is hidden.
             if (!currentUserId || !patientId || !screeningDocId) {
                 showStatusMessage("Error: Missing IDs for deletion.", "error");
                 return;
@@ -1509,44 +1537,39 @@
                 return;
             }
             
-            if (currentViewMode === 'scatter') {
-                analysisGraphsContainer.className = 'graph-grid graph-grid-scatter';
-                renderAllScatterPlots(processedAndGroupedData);
-            } else {
-                analysisGraphsContainer.className = 'graph-grid graph-grid-bar';
-                renderAllBarCharts(processedAndGroupedData);
-            }
+            // Create one box per position
+            POSITIONS.forEach(pos => {
+                const positionBox = document.createElement('div');
+                positionBox.className = 'position-analysis-box';
+                positionBox.innerHTML = `<h2 class="position-analysis-box-title">Position ${pos} Analysis</h2><div class="position-graphs-grid"></div>`;
+                analysisGraphsContainer.appendChild(positionBox);
+                
+                const graphsGrid = positionBox.querySelector('.position-graphs-grid');
+
+                if (currentViewMode === 'scatter') {
+                    // Render scatter plots for this position
+                    [METRIC_KEYS.MAX_FORCE, METRIC_KEYS.RFD, METRIC_KEYS.NORM_MAX_FORCE].forEach(metric => {
+                        const graphDivId = `scatter-${pos}-${metric.replace(/[^a-zA-Z0-9]/g, '')}`;
+                        let graphItem = document.createElement('div'); // Individual graph container within the position box
+                        // graphItem.className = 'graph-section-box'; // Not needed if position-analysis-box handles overall styling
+                        graphItem.innerHTML = `<div id="${graphDivId}" class="plotly-graph-div js-plotly-plot"><div class="loading-placeholder"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>`;
+                        graphsGrid.appendChild(graphItem);
+                        setTimeout(() => createTimeSeriesScatterPlot(processedAndGroupedData, pos, metric, graphDivId), 0);
+                    });
+                } else { // Bar view
+                    [METRIC_KEYS.MAX_FORCE, METRIC_KEYS.RFD].forEach(metric => { 
+                        const graphDivId = `bar-${pos}-${metric.replace(/[^a-zA-Z0-9]/g, '')}`;
+                        let graphItem = document.createElement('div');
+                        // graphItem.className = 'graph-section-box';
+                        graphItem.innerHTML = `<div id="${graphDivId}" class="plotly-graph-div js-plotly-plot"><div class="loading-placeholder"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>`;
+                        graphsGrid.appendChild(graphItem);
+                        setTimeout(() => createTimeSeriesBarChart(processedAndGroupedData, pos, metric, graphDivId), 0);
+                    });
+                }
+            });
             renderDetailedSummaryTable(processedAndGroupedData);
         }
         
-        function renderAllScatterPlots(dGBD) {
-            analysisGraphsContainer.innerHTML = ''; 
-            POSITIONS.forEach(pos => {
-                [METRIC_KEYS.MAX_FORCE, METRIC_KEYS.RFD, METRIC_KEYS.NORM_MAX_FORCE].forEach(metric => {
-                    const graphDivId = `scatter-${pos}-${metric.replace(/[^a-zA-Z0-9]/g, '')}`;
-                    let graphSection = document.createElement('div');
-                    graphSection.className = 'graph-section-box';
-                    graphSection.innerHTML = `<h3 class="graph-box-title">${pos} - ${metric}</h3><div id="${graphDivId}" class="plotly-graph-div js-plotly-plot"><div class="loading-placeholder"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>`;
-                    analysisGraphsContainer.appendChild(graphSection);
-                    setTimeout(() => createTimeSeriesScatterPlot(dGBD, pos, metric, graphDivId), 0);
-                });
-            });
-        }
-
-        function renderAllBarCharts(dGBD) {
-            analysisGraphsContainer.innerHTML = '';
-             POSITIONS.forEach(pos => {
-                [METRIC_KEYS.MAX_FORCE, METRIC_KEYS.RFD].forEach(metric => { 
-                    const graphDivId = `bar-${pos}-${metric.replace(/[^a-zA-Z0-9]/g, '')}`;
-                    let graphSection = document.createElement('div');
-                    graphSection.className = 'graph-section-box';
-                    graphSection.innerHTML = `<h3 class="graph-box-title">${pos} - ${metric} (Per Session)</h3><div id="${graphDivId}" class="plotly-graph-div js-plotly-plot"><div class="loading-placeholder"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>`;
-                    analysisGraphsContainer.appendChild(graphSection);
-                    setTimeout(() => createTimeSeriesBarChart(dGBD, pos, metric, graphDivId), 0);
-                });
-            });
-        }
-
         function getPlotlyConfig() {
             return {
                 responsive: true,
@@ -1557,13 +1580,18 @@
                     icon: Plotly.Icons.camera,
                     click: function(gd) {
                         let filename = 'plot';
-                        const graphBox = gd.closest('.graph-section-box');
-                        if (graphBox) {
-                            const titleEl = graphBox.querySelector('.graph-box-title');
-                            if (titleEl && titleEl.textContent) {
-                                filename = titleEl.textContent.trim().replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                        // Try to get title from the parent .position-analysis-box-title and metric from y-axis
+                        const positionBox = gd.closest('.position-analysis-box');
+                        if (positionBox) {
+                            const posTitleEl = positionBox.querySelector('.position-analysis-box-title');
+                            if (posTitleEl && posTitleEl.textContent) {
+                                filename = posTitleEl.textContent.trim().replace(' Analysis','').replace(/[^a-z0-9]/gi, '_').toLowerCase();
                             }
                         }
+                        if (gd.layout && gd.layout.yaxis && gd.layout.yaxis.title && gd.layout.yaxis.title.text) {
+                             filename += '_' + gd.layout.yaxis.title.text.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                        }
+
                         Plotly.downloadImage(gd, {format: 'png', width: gd._fullLayout.width, height: gd._fullLayout.height, filename: filename });
                     }
                 }]
@@ -1601,7 +1629,7 @@
             const plotDiv = document.getElementById(divId);
             if (!plotDiv) return;
 
-            const xValuesDates = dGBD_data.map(d => d['Test Date']); // Use actual dates for data
+            const xValuesDates = dGBD_data.map(d => d['Test Date']); 
             const yValuesLeft = dGBD_data.map(d => d[position]?.[metricKey]?.Left);
             const yValuesRight = dGBD_data.map(d => d[position]?.[metricKey]?.Right);
 
@@ -1621,10 +1649,10 @@
 
             const layout = {
                 xaxis: { 
-                    type: 'date', // Keep as date type for proper scaling
-                    tickformat: '%d %b', // Format: Day Month (e.g., 23 Mai)
+                    type: 'date', 
+                    tickformat: '%d %b', 
                     automargin: true, 
-                    // title: {text: 'Test Session', font: {size: 11}} // X-axis title removed
+                    title: {text: ''} // X-axis title removed
                 },
                 yaxis: { title: {text: metricKey, font: {size: 11}}, automargin: true, zeroline: metricKey !== METRIC_KEYS.NORM_MAX_FORCE, range: yRangeSettings},
                 margin: { l: 50, r: 20, b: 50, t: 10, pad: 5 }, 
@@ -1666,38 +1694,38 @@
             const plotDiv = document.getElementById(divId);
             if (!plotDiv) return;
 
-            const xValuesFormattedDates = dGBD_data.map(d => d['Test Date'].toLocaleDateString('nb-NO', {day:'2-digit', month:'short'})); // DD Mon
+            const xValuesFormattedDates = dGBD_data.map(d => d['Test Date'].toLocaleDateString('nb-NO', {day:'2-digit', month:'short'})); 
             const yValuesLeft = dGBD_data.map(d => d[position]?.[metricKey]?.Left);
             const yValuesRight = dGBD_data.map(d => d[position]?.[metricKey]?.Right);
 
             const traceLeft = {
                 x: xValuesFormattedDates, y: yValuesLeft, type: 'bar', name: 'Left',
                 marker: { color: LEFT_BAR_COLOR }, 
-                text: yValuesLeft.map(v => v !== null && v !== undefined ? v.toFixed(1) : ''),
+                text: yValuesLeft.map(v => v !== null && v !== undefined ? v.toFixed(0) : ''), // No decimals
                 textposition: 'inside', insidetextanchor: 'end', 
-                textfont: { color: 'var(--white)', size: 10 }, 
+                textfont: { color: 'var(--white)', size: 12 }, // Larger text
                 hovertemplate: 'Left: %{y:.1f}<extra></extra>'
             };
             const traceRight = {
                 x: xValuesFormattedDates, y: yValuesRight, type: 'bar', name: 'Right',
                 marker: { color: RIGHT_BAR_COLOR }, 
-                text: yValuesRight.map(v => v !== null && v !== undefined ? v.toFixed(1) : ''),
+                text: yValuesRight.map(v => v !== null && v !== undefined ? v.toFixed(0) : ''), // No decimals
                 textposition: 'inside', insidetextanchor: 'end', 
-                textfont: { color: 'var(--white)', size: 10 }, 
+                textfont: { color: 'var(--white)', size: 12 }, // Larger text
                 hovertemplate: 'Right: %{y:.1f}<extra></extra>'
             };
             
             const allYValues = [...yValuesLeft, ...yValuesRight].filter(v => v !== null && v !== undefined && isFinite(v));
-            const yAxisRange = calculateAxisRange(allYValues, 0.55, 20); 
+            const yAxisRange = calculateAxisRange(allYValues, 0.65, 20); // Increased buffer more for annotations
 
             const layout = {
                 barmode: 'group',
                 xaxis: { 
                     // title: {text: 'Test Session', font: {size: 11}}, // X-axis title removed
-                    automargin: true, tickangle: -45, type: 'category', // Keep as category for formatted dates
+                    automargin: true, tickangle: -45, type: 'category', 
                 }, 
                 yaxis: { title: {text: metricKey, font: {size: 11}}, automargin: true, range: yAxisRange, zeroline: true },
-                margin: { l: 50, r: 20, b: 80, t: 80, pad: 5 }, // Adjusted bottom and top margin
+                margin: { l: 50, r: 20, b: 80, t: 80, pad: 5 }, 
                 legend: {orientation: "h", yanchor: "bottom", y: 1.05, xanchor: "right", x: 1, font: {size: 10}},
                 annotations: [],
                 paper_bgcolor: 'rgba(0,0,0,0)',
@@ -1733,8 +1761,8 @@
                 }
                 
                 const barTopY = Math.max(Lval || 0, Rval || 0);
-                const xCategory = xValuesFormattedDates[index]; // Use formatted date for x category
-                const annotationOffsetFactor = 0.06; 
+                const xCategory = xValuesFormattedDates[index]; 
+                const annotationOffsetFactor = 0.07; 
                 const yOffsetStep = (yAxisRange[1] - yAxisRange[0]) * annotationOffsetFactor;
 
                 // L Change %
@@ -1762,7 +1790,7 @@
                 if (asymmetryPercent !== null) {
                      layout.annotations.push({
                         x: xCategory, y: barTopY + yOffsetStep * 3, 
-                        text: `Asym: ${asymmetryPercent > 0 ? '+' : ''}${asymmetryPercent.toFixed(0)}%`,
+                        text: `${asymmetryPercent > 0 ? '+' : ''}${asymmetryPercent.toFixed(0)}%`, // Removed "Asym:"
                         showarrow: false, 
                         font: {
                             size: 16, 
@@ -1783,6 +1811,15 @@
             }
         }
         
+        function getChangeClass(changePercent) {
+            if (changePercent === null || changePercent === undefined || !isFinite(changePercent)) return 'change-na';
+            if (changePercent > 15) return 'change-significant-positive';
+            if (changePercent > 5) return 'change-moderate-positive';
+            if (changePercent >= -5) return 'change-minimal-neutral';
+            if (changePercent >= -15) return 'change-moderate-negative';
+            return 'change-significant-negative';
+        }
+
         function renderDetailedSummaryTable(dGBD_data) {
             summaryTableWrapper.innerHTML = ''; 
             if (!dGBD_data || dGBD_data.length === 0) {
@@ -1851,31 +1888,29 @@
                         rValCell.classList.add('right-value-cell');
                         
                         let Lchange = '-'; let Rchange = '-';
-                        let LchangeClass = 'change-neutral'; let RchangeClass = 'change-neutral';
+                        let LchangePercentNum = null; let RchangePercentNum = null;
 
                         if (index > 0) {
                             const prevSession = dGBD_data[index-1];
                             const prevMetricData = prevSession[pos]?.[metricKey];
                             if (prevMetricData) {
                                 if (Lval !== null && Lval !== undefined && prevMetricData.Left !== null && prevMetricData.Left !== undefined && prevMetricData.Left !== 0 && isFinite(prevMetricData.Left)) {
-                                    const change = ((Lval - prevMetricData.Left) / Math.abs(prevMetricData.Left)) * 100;
-                                    Lchange = `${change > 0 ? '+' : ''}${change.toFixed(0)}%`;
-                                    LchangeClass = change > 0 ? 'change-pos' : (change < 0 ? 'change-neg' : 'change-neutral');
+                                    LchangePercentNum = ((Lval - prevMetricData.Left) / Math.abs(prevMetricData.Left)) * 100;
+                                    Lchange = `${LchangePercentNum > 0 ? '+' : ''}${LchangePercentNum.toFixed(0)}%`;
                                 }
                                 if (Rval !== null && Rval !== undefined && prevMetricData.Right !== null && prevMetricData.Right !== undefined && prevMetricData.Right !== 0 && isFinite(prevMetricData.Right)) {
-                                    const change = ((Rval - prevMetricData.Right) / Math.abs(prevMetricData.Right)) * 100;
-                                    Rchange = `${change > 0 ? '+' : ''}${change.toFixed(0)}%`;
-                                    RchangeClass = change > 0 ? 'change-pos' : (change < 0 ? 'change-neg' : 'change-neutral');
+                                    RchangePercentNum = ((Rval - prevMetricData.Right) / Math.abs(prevMetricData.Right)) * 100;
+                                    Rchange = `${RchangePercentNum > 0 ? '+' : ''}${RchangePercentNum.toFixed(0)}%`;
                                 }
                             }
                         }
                         let lChangeCell = metricRow.insertCell();
                         lChangeCell.textContent = Lchange;
-                        lChangeCell.className = LchangeClass;
+                        lChangeCell.className = getChangeClass(LchangePercentNum);
 
                         let rChangeCell = metricRow.insertCell();
                         rChangeCell.textContent = Rchange;
-                        rChangeCell.className = RchangeClass;
+                        rChangeCell.className = getChangeClass(RchangePercentNum);
                     });
                 });
             });
