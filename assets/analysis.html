@@ -153,7 +153,7 @@
             height: 100vh;
             overflow-y: auto;
             z-index: 100;
-            border-right: none; /* No border to blend with main content if same color, or to be clean */
+            border-right: none; 
         }
         .sidebar-logo-placeholder {
            display: flex;
@@ -545,44 +545,45 @@
 
         /* NYE CSS-REGLER FOR GRAFER OG TABELLER FRA BRUKER */
 
-        .graph-section-box {
+        .graph-section-box { /* This class is now used for individual graph items within a position box */
             background-color: var(--light-gray);
             border: 0; 
             border-radius: var(--border-radius-general);
-            padding: 1rem 1.5rem 1.5rem 1.5rem; 
-            margin-bottom: 1.5rem;
+            padding: 1rem; /* Reduced padding for individual graph items */
+            margin-bottom: 0; /* No margin as gap is handled by grid */
             box-shadow: none; 
             height: var(--graph-box-height); 
         }
-        .graph-box-title {
-            font-size: 1.15rem;
+        .graph-box-title { /* No longer used for individual graphs */
+            /* font-size: 1.15rem;
             color: var(--app-primary-color);
             margin-bottom: 0.5em; 
             font-weight: var(--semibold-font-weight);
             padding-bottom: 0; 
-            border-bottom: none;
+            border-bottom: none; */
         }
-        .graph-grid {
-            display: grid;
-            gap: 1.5rem;
+        .graph-grid { /* This class is now applied to #analysis-graphs-container */
+            /* display: grid;
+            gap: 1.5rem; */
         }
         .graph-grid-scatter {
-            grid-template-columns: repeat(1, 1fr); 
+            /* grid-template-columns: repeat(1, 1fr);  */
         }
         .graph-grid-bar {
-            grid-template-columns: repeat(1, 1fr); 
+            /* grid-template-columns: repeat(1, 1fr);  */
         }
         /* Single container for all graphs of a position */
         .position-analysis-box {
-            background-color: var(--light-gray);
+            background-color: var(--box-background-color); /* Using box-background for slight distinction */
             border-radius: var(--border-radius-general);
-            padding: 1rem;
+            padding: 1.5rem; /* More padding for the overall position box */
             margin-bottom: 2rem;
             box-shadow: var(--subtle-shadow);
         }
         .position-analysis-box-title {
             font-size: 1.3rem;
             color: var(--app-primary-color);
+            margin-top: 0;
             margin-bottom: 1em;
             font-weight: var(--semibold-font-weight);
             padding-bottom: 0.5em;
@@ -591,16 +592,11 @@
         .position-graphs-grid { /* Grid inside each position box */
             display: grid;
             gap: 1.5rem;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Responsive columns for graphs */
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* Adjusted minmax for better fit */
         }
 
         @media (min-width: 1024px) {
-            .graph-grid-scatter { /* This might be overridden by .position-graphs-grid */
-                /* grid-template-columns: repeat(3, 1fr); */
-            }
-            .graph-grid-bar { /* This might be overridden by .position-graphs-grid */
-                /* grid-template-columns: repeat(2, 1fr); */
-            }
+            /* .position-graphs-grid might already handle this well with auto-fit */
         }
         .plotly-graph-div {
             height: var(--graph-fixed-height); 
@@ -622,11 +618,8 @@
         .js-plotly-plot .plotly { 
             font-family: 'Avenir', sans-serif !important;
         }
-        .js-plotly-plot .plotly .gtitle { /* Individual graph titles are removed, this might not be needed */
-            font-family: 'Avenir', sans-serif !important;
-            font-size: 1rem !important; 
-            fill: var(--app-primary-color) !important;
-            font-weight: var(--semibold-font-weight) !important;
+        .js-plotly-plot .plotly .gtitle { 
+            display: none !important; /* Individual graph titles removed */
         }
         .js-plotly-plot .plotly .axistitle { 
             font-size: 0.85rem !important;
@@ -1365,7 +1358,8 @@
                 deleteBtn.classList.add('delete-log-item-btn'); 
                 deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
                 deleteBtn.title = "Delete this test";
-                deleteBtn.addEventListener('click', (e) => {
+                // Event listener for delete is kept for backend logic, but button is hidden
+                deleteBtn.addEventListener('click', (e) => { 
                     e.stopPropagation(); 
                     showConfirmationModal(
                         `Are you sure you want to delete the test from ${screeningDateStr} for patient "${selectedPatientId}"? This action cannot be undone.`,
@@ -1375,7 +1369,7 @@
                         "Confirm Deletion"
                     );
                 });
-                // li.appendChild(deleteBtn); // Not appending as it's hidden
+                // li.appendChild(deleteBtn); // Not appending as it's hidden by CSS
 
                 if (dateKey) {
                     li.dataset.dateKey = dateKey;
@@ -1391,7 +1385,6 @@
         }
         
         async function deleteScreeningFromFirestore(patientId, screeningDocId) {
-            // This function is kept for potential future use, but the button is hidden.
             if (!currentUserId || !patientId || !screeningDocId) {
                 showStatusMessage("Error: Missing IDs for deletion.", "error");
                 return;
@@ -1547,11 +1540,9 @@
                 const graphsGrid = positionBox.querySelector('.position-graphs-grid');
 
                 if (currentViewMode === 'scatter') {
-                    // Render scatter plots for this position
                     [METRIC_KEYS.MAX_FORCE, METRIC_KEYS.RFD, METRIC_KEYS.NORM_MAX_FORCE].forEach(metric => {
                         const graphDivId = `scatter-${pos}-${metric.replace(/[^a-zA-Z0-9]/g, '')}`;
-                        let graphItem = document.createElement('div'); // Individual graph container within the position box
-                        // graphItem.className = 'graph-section-box'; // Not needed if position-analysis-box handles overall styling
+                        let graphItem = document.createElement('div'); 
                         graphItem.innerHTML = `<div id="${graphDivId}" class="plotly-graph-div js-plotly-plot"><div class="loading-placeholder"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>`;
                         graphsGrid.appendChild(graphItem);
                         setTimeout(() => createTimeSeriesScatterPlot(processedAndGroupedData, pos, metric, graphDivId), 0);
@@ -1560,7 +1551,6 @@
                     [METRIC_KEYS.MAX_FORCE, METRIC_KEYS.RFD].forEach(metric => { 
                         const graphDivId = `bar-${pos}-${metric.replace(/[^a-zA-Z0-9]/g, '')}`;
                         let graphItem = document.createElement('div');
-                        // graphItem.className = 'graph-section-box';
                         graphItem.innerHTML = `<div id="${graphDivId}" class="plotly-graph-div js-plotly-plot"><div class="loading-placeholder"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>`;
                         graphsGrid.appendChild(graphItem);
                         setTimeout(() => createTimeSeriesBarChart(processedAndGroupedData, pos, metric, graphDivId), 0);
@@ -1580,7 +1570,6 @@
                     icon: Plotly.Icons.camera,
                     click: function(gd) {
                         let filename = 'plot';
-                        // Try to get title from the parent .position-analysis-box-title and metric from y-axis
                         const positionBox = gd.closest('.position-analysis-box');
                         if (positionBox) {
                             const posTitleEl = positionBox.querySelector('.position-analysis-box-title');
@@ -1629,17 +1618,17 @@
             const plotDiv = document.getElementById(divId);
             if (!plotDiv) return;
 
-            const xValuesDates = dGBD_data.map(d => d['Test Date']); 
+            const xValuesFormattedDates = dGBD_data.map(d => d['Test Date'].toLocaleDateString('nb-NO', {day:'2-digit', month:'short'})); 
             const yValuesLeft = dGBD_data.map(d => d[position]?.[metricKey]?.Left);
             const yValuesRight = dGBD_data.map(d => d[position]?.[metricKey]?.Right);
 
             const traceLeft = {
-                x: xValuesDates, y: yValuesLeft, mode: 'lines+markers', name: 'Left',
+                x: xValuesFormattedDates, y: yValuesLeft, mode: 'lines+markers', name: 'Left',
                 line: { color: LEFT_COLOR, width: 2 }, marker: { color: LEFT_COLOR, size: 7 },
                 hovertemplate: 'Left: %{y:.2f}<extra></extra>'
             };
             const traceRight = {
-                x: xValuesDates, y: yValuesRight, mode: 'lines+markers', name: 'Right',
+                x: xValuesFormattedDates, y: yValuesRight, mode: 'lines+markers', name: 'Right',
                 line: { color: RIGHT_COLOR, width: 2 }, marker: { color: RIGHT_COLOR, size: 7 },
                 hovertemplate: 'Right: %{y:.2f}<extra></extra>'
             };
@@ -1649,14 +1638,13 @@
 
             const layout = {
                 xaxis: { 
-                    type: 'date', 
-                    tickformat: '%d %b', 
+                    type: 'category', // Changed to category for "DD Mon" strings
                     automargin: true, 
-                    title: {text: ''} // X-axis title removed
+                    title: {text: ''} 
                 },
                 yaxis: { title: {text: metricKey, font: {size: 11}}, automargin: true, zeroline: metricKey !== METRIC_KEYS.NORM_MAX_FORCE, range: yRangeSettings},
-                margin: { l: 50, r: 20, b: 50, t: 10, pad: 5 }, 
-                legend: {orientation: "h", yanchor: "bottom", y: 1.05, xanchor: "right", x: 1, font: {size: 10}},
+                margin: { l: 50, r: 20, b: 50, t: 40, pad: 5 }, // Increased top margin for legend
+                legend: {orientation: "h", yanchor: "bottom", y: 1.02, xanchor: "center", x: 0.5, font: {size: 10}},
                 shapes: [], 
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)',
@@ -1701,32 +1689,32 @@
             const traceLeft = {
                 x: xValuesFormattedDates, y: yValuesLeft, type: 'bar', name: 'Left',
                 marker: { color: LEFT_BAR_COLOR }, 
-                text: yValuesLeft.map(v => v !== null && v !== undefined ? v.toFixed(0) : ''), // No decimals
+                text: yValuesLeft.map(v => v !== null && v !== undefined ? v.toFixed(0) : ''), 
                 textposition: 'inside', insidetextanchor: 'end', 
-                textfont: { color: 'var(--white)', size: 12 }, // Larger text
+                textfont: { color: 'var(--white)', size: 14 }, // Increased size
                 hovertemplate: 'Left: %{y:.1f}<extra></extra>'
             };
             const traceRight = {
                 x: xValuesFormattedDates, y: yValuesRight, type: 'bar', name: 'Right',
                 marker: { color: RIGHT_BAR_COLOR }, 
-                text: yValuesRight.map(v => v !== null && v !== undefined ? v.toFixed(0) : ''), // No decimals
+                text: yValuesRight.map(v => v !== null && v !== undefined ? v.toFixed(0) : ''), 
                 textposition: 'inside', insidetextanchor: 'end', 
-                textfont: { color: 'var(--white)', size: 12 }, // Larger text
+                textfont: { color: 'var(--white)', size: 14 }, // Increased size
                 hovertemplate: 'Right: %{y:.1f}<extra></extra>'
             };
             
             const allYValues = [...yValuesLeft, ...yValuesRight].filter(v => v !== null && v !== undefined && isFinite(v));
-            const yAxisRange = calculateAxisRange(allYValues, 0.65, 20); // Increased buffer more for annotations
+            const yAxisRange = calculateAxisRange(allYValues, 0.65, 20); 
 
             const layout = {
                 barmode: 'group',
                 xaxis: { 
-                    // title: {text: 'Test Session', font: {size: 11}}, // X-axis title removed
                     automargin: true, tickangle: -45, type: 'category', 
+                    title: {text: ''} // X-axis title removed
                 }, 
                 yaxis: { title: {text: metricKey, font: {size: 11}}, automargin: true, range: yAxisRange, zeroline: true },
                 margin: { l: 50, r: 20, b: 80, t: 80, pad: 5 }, 
-                legend: {orientation: "h", yanchor: "bottom", y: 1.05, xanchor: "right", x: 1, font: {size: 10}},
+                legend: {orientation: "h", yanchor: "bottom", y: 1.02, xanchor: "center", x: 0.5, font: {size: 10}}, // Centered legend
                 annotations: [],
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)',
@@ -1770,7 +1758,7 @@
                     layout.annotations.push({
                         x: xCategory, y: barTopY + yOffsetStep * 1, 
                         xref: 'x', yref: 'y',
-                        text: `${changePercentL > 0 ? '+' : ''}${changePercentL.toFixed(0)}%`,
+                        text: `${changePercentL > 0 ? '+' : ''}${changePercentL.toFixed(0)}%`, // Removed "L:"
                         showarrow: false, font: {size: 14, color: changePercentL > 0 ? 'var(--success-color)' : 'var(--danger-color-dark)'},
                         xshift: -22, yshift: 0, xanchor: 'center', yanchor: 'bottom'
                     });
@@ -1780,7 +1768,7 @@
                      layout.annotations.push({
                         x: xCategory, y: barTopY + yOffsetStep * 1, 
                         xref: 'x', yref: 'y',
-                        text: `${changePercentR > 0 ? '+' : ''}${changePercentR.toFixed(0)}%`,
+                        text: `${changePercentR > 0 ? '+' : ''}${changePercentR.toFixed(0)}%`, // Removed "R:"
                         showarrow: false, font: {size: 14, color: changePercentR > 0 ? 'var(--success-color)' : 'var(--danger-color-dark)'},
                         xshift: 22, yshift: 0, xanchor: 'center', yanchor: 'bottom'
                     });
