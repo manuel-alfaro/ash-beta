@@ -555,22 +555,12 @@
             height: var(--graph-box-height); 
         }
         .graph-box-title { /* No longer used for individual graphs */
-            /* font-size: 1.15rem;
-            color: var(--app-primary-color);
-            margin-bottom: 0.5em; 
-            font-weight: var(--semibold-font-weight);
-            padding-bottom: 0; 
-            border-bottom: none; */
         }
         .graph-grid { /* This class is now applied to #analysis-graphs-container */
-            /* display: grid;
-            gap: 1.5rem; */
         }
         .graph-grid-scatter {
-            /* grid-template-columns: repeat(1, 1fr);  */
         }
         .graph-grid-bar {
-            /* grid-template-columns: repeat(1, 1fr);  */
         }
         /* Single container for all graphs of a position */
         .position-analysis-box {
@@ -596,7 +586,6 @@
         }
 
         @media (min-width: 1024px) {
-            /* .position-graphs-grid might already handle this well with auto-fit */
         }
         .plotly-graph-div {
             height: var(--graph-fixed-height); 
@@ -613,7 +602,6 @@
             font-size: 1.5rem;
         }
         .loading-placeholder i { 
-            /* FontAwesome klasser brukes i HTML, f.eks. fas fa-spinner fa-spin */
         }
         .js-plotly-plot .plotly { 
             font-family: 'Avenir', sans-serif !important;
@@ -716,12 +704,12 @@
             background-color: var(--print-right-value-cell-bg); 
         }
         /* Detailed Change Percentage Classes */
-        .summary-table .change-significant-positive { color: var(--change-significant-positive); font-weight: var(--semibold-font-weight); }
-        .summary-table .change-moderate-positive  { color: var(--change-moderate-positive); font-weight: var(--normal-font-weight); } /* Adjusted weight */
-        .summary-table .change-minimal-neutral    { color: var(--change-minimal-neutral); font-weight: var(--normal-font-weight); }
-        .summary-table .change-moderate-negative  { color: var(--change-moderate-negative); font-weight: var(--normal-font-weight); } /* Adjusted weight */
-        .summary-table .change-significant-negative{ color: var(--change-significant-negative); font-weight: var(--semibold-font-weight); }
-        .summary-table .change-na                 { color: var(--dark-gray); font-style: italic; }
+        .summary-table .change-significant-positive { color: var(--change-significant-positive) !important; font-weight: var(--semibold-font-weight); }
+        .summary-table .change-moderate-positive  { color: var(--change-moderate-positive) !important; font-weight: var(--normal-font-weight); }
+        .summary-table .change-minimal-neutral    { color: var(--change-minimal-neutral) !important; font-weight: var(--normal-font-weight); }
+        .summary-table .change-moderate-negative  { color: var(--change-moderate-negative) !important; font-weight: var(--normal-font-weight); }
+        .summary-table .change-significant-negative{ color: var(--change-significant-negative) !important; font-weight: var(--semibold-font-weight); }
+        .summary-table .change-na                 { color: var(--dark-gray) !important; font-style: italic; }
 
         
         #analysis-controls {
@@ -1638,13 +1626,13 @@
 
             const layout = {
                 xaxis: { 
-                    type: 'category', // Changed to category for "DD Mon" strings
+                    type: 'category', 
                     automargin: true, 
                     title: {text: ''} 
                 },
                 yaxis: { title: {text: metricKey, font: {size: 11}}, automargin: true, zeroline: metricKey !== METRIC_KEYS.NORM_MAX_FORCE, range: yRangeSettings},
-                margin: { l: 50, r: 20, b: 50, t: 40, pad: 5 }, // Increased top margin for legend
-                legend: {orientation: "h", yanchor: "bottom", y: 1.02, xanchor: "center", x: 0.5, font: {size: 10}},
+                margin: { l: 50, r: 20, b: 50, t: 10, pad: 5 }, 
+                legend: {orientation: "h", yanchor: "top", y: -0.2, xanchor: "center", x: 0.5, font: {size: 10}}, // Legend bottom-center
                 shapes: [], 
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)',
@@ -1691,7 +1679,7 @@
                 marker: { color: LEFT_BAR_COLOR }, 
                 text: yValuesLeft.map(v => v !== null && v !== undefined ? v.toFixed(0) : ''), 
                 textposition: 'inside', insidetextanchor: 'end', 
-                textfont: { color: 'var(--white)', size: 14 }, // Increased size
+                textfont: { color: 'var(--white)', size: 14 }, 
                 hovertemplate: 'Left: %{y:.1f}<extra></extra>'
             };
             const traceRight = {
@@ -1699,7 +1687,7 @@
                 marker: { color: RIGHT_BAR_COLOR }, 
                 text: yValuesRight.map(v => v !== null && v !== undefined ? v.toFixed(0) : ''), 
                 textposition: 'inside', insidetextanchor: 'end', 
-                textfont: { color: 'var(--white)', size: 14 }, // Increased size
+                textfont: { color: 'var(--white)', size: 14 }, 
                 hovertemplate: 'Right: %{y:.1f}<extra></extra>'
             };
             
@@ -1710,11 +1698,11 @@
                 barmode: 'group',
                 xaxis: { 
                     automargin: true, tickangle: -45, type: 'category', 
-                    title: {text: ''} // X-axis title removed
+                    title: {text: ''} 
                 }, 
                 yaxis: { title: {text: metricKey, font: {size: 11}}, automargin: true, range: yAxisRange, zeroline: true },
                 margin: { l: 50, r: 20, b: 80, t: 80, pad: 5 }, 
-                legend: {orientation: "h", yanchor: "bottom", y: 1.02, xanchor: "center", x: 0.5, font: {size: 10}}, // Centered legend
+                legend: {orientation: "h", yanchor: "top", y: -0.2, xanchor: "center", x: 0.5, font: {size: 10}}, // Legend bottom-center
                 annotations: [],
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)',
@@ -1758,7 +1746,7 @@
                     layout.annotations.push({
                         x: xCategory, y: barTopY + yOffsetStep * 1, 
                         xref: 'x', yref: 'y',
-                        text: `${changePercentL > 0 ? '+' : ''}${changePercentL.toFixed(0)}%`, // Removed "L:"
+                        text: `${changePercentL > 0 ? '+' : ''}${changePercentL.toFixed(0)}%`, 
                         showarrow: false, font: {size: 14, color: changePercentL > 0 ? 'var(--success-color)' : 'var(--danger-color-dark)'},
                         xshift: -22, yshift: 0, xanchor: 'center', yanchor: 'bottom'
                     });
@@ -1768,7 +1756,7 @@
                      layout.annotations.push({
                         x: xCategory, y: barTopY + yOffsetStep * 1, 
                         xref: 'x', yref: 'y',
-                        text: `${changePercentR > 0 ? '+' : ''}${changePercentR.toFixed(0)}%`, // Removed "R:"
+                        text: `${changePercentR > 0 ? '+' : ''}${changePercentR.toFixed(0)}%`, 
                         showarrow: false, font: {size: 14, color: changePercentR > 0 ? 'var(--success-color)' : 'var(--danger-color-dark)'},
                         xshift: 22, yshift: 0, xanchor: 'center', yanchor: 'bottom'
                     });
@@ -1778,7 +1766,7 @@
                 if (asymmetryPercent !== null) {
                      layout.annotations.push({
                         x: xCategory, y: barTopY + yOffsetStep * 3, 
-                        text: `${asymmetryPercent > 0 ? '+' : ''}${asymmetryPercent.toFixed(0)}%`, // Removed "Asym:"
+                        text: `${asymmetryPercent > 0 ? '+' : ''}${asymmetryPercent.toFixed(0)}%`, 
                         showarrow: false, 
                         font: {
                             size: 16, 
