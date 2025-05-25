@@ -1127,7 +1127,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import {
-            getFirestore, doc, setDoc, getDoc, collection, addDoc, query, where, getDocs, deleteDoc, updateDoc, orderBy, serverTimestamp, Timestamp
+            getFirestore, doc, setDoc, getDoc, collection, addDoc, query, where, getDocs, deleteDoc, updateDoc, orderBy, serverTimestamp, Timestamp, writeBatch
         } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         // Firebase configuration
@@ -1159,6 +1159,10 @@
             bodyweight: '',
             screeningId: null 
         };
+        
+        // localStorage key for selected patient ID (for analysis.html)
+        const SELECTED_PATIENT_ID_FOR_ANALYSIS_KEY = 'selectedPatientIdForAnalysis';
+
 
         // DOM Element References
         const appLayout = document.querySelector('.app-layout');
@@ -1210,9 +1214,9 @@
         };
 
         const percentileZones = {
-            poor: 30,   
+            poor: 30,  
             average: 70,  
-            good: 90,    
+            good: 90,   
             excellent: 100 
         };
         const percentileMidpoint = 50; 
@@ -1258,7 +1262,8 @@
         };
         const allNumberInputs = Array.from(document.querySelectorAll('#input-section-container input[type="number"]'));
         
-        let allPatientIds = [];
+        let allPatientIds = []; // Cache for patient IDs to reduce Firestore reads
+        let originalPatientIdForEdit = null; // Used when editing patient ID
 
         onAuthStateChanged(auth, async (user) => {
             if (appLoadingMessage) appLoadingMessage.style.display = 'flex';
@@ -1468,9 +1473,9 @@
 
             const pMap = [
                 { v: 0, p: 0 }, 
-                { v: thresholds.poor_max, p: percentileZones.poor },      
-                { v: thresholds.average_mid, p: percentileMidpoint },    
-                { v: thresholds.good_min, p: percentileZones.average },   
+                { v: thresholds.poor_max, p: percentileZones.poor },   
+                { v: thresholds.average_mid, p: percentileMidpoint },   
+                { v: thresholds.good_min, p: percentileZones.average },  
                 { v: thresholds.excellent_min, p: percentileZones.good },  
                 { v: thresholds.excellent_min * 1.25, p: percentileZones.excellent } 
             ];
@@ -1707,6 +1712,7 @@
 
             updateGraphsAndTable();
             saveInputsToLocalStorage();
+            localStorage.removeItem(SELECTED_PATIENT_ID_FOR_ANALYSIS_KEY); // Clear selected patient for analysis
             showInitialScreenState();
             showStatusMessage("All fields cleared.", "info");
         }
@@ -1727,6 +1733,12 @@
             });
             try {
                 localStorage.setItem(localStorageKey, JSON.stringify(dataToSave));
+                 // Also save/update the selected patient ID for analysis.html
+                if (currentPatientDataForApp && currentPatientDataForApp.patientId) {
+                    localStorage.setItem(SELECTED_PATIENT_ID_FOR_ANALYSIS_KEY, currentPatientDataForApp.patientId);
+                } else {
+                    localStorage.removeItem(SELECTED_PATIENT_ID_FOR_ANALYSIS_KEY);
+                }
             } catch (error) {
                 console.error('Error saving inputs to localStorage:', error);
             }
@@ -1745,6 +1757,12 @@
                         if(injuryInput) injuryInput.value = currentPatientDataForApp.injury || '';
                         if(injuredSideRadio) injuredSideRadio.value = currentPatientDataForApp.injuredSide || 'Left';
                         if(bodyweightInput) bodyweightInput.value = currentPatientDataForApp.bodyweight || '';
+                        
+                        // Ensure selectedPatientIdForAnalysis is also set if patientId exists
+                        if (currentPatientDataForApp.patientId) {
+                            localStorage.setItem(SELECTED_PATIENT_ID_FOR_ANALYSIS_KEY, currentPatientDataForApp.patientId);
+                        }
+
                     }
                     if (savedData.ashTest) {
                         ['I', 'Y', 'T'].forEach(pos => {
@@ -1778,29 +1796,29 @@
             if(saveDataButtonContainer) saveDataButtonContainer.style.display = 'block';
         }
 
-        function showConfirmationModal(message, onConfirmCallback) {
+        function showConfirmationModal(message, onConfirmCallback, title = "Confirm Action") {
+            confirmationModalTitle.textContent = title;
             confirmationModalMessage.textContent = message;
             confirmationModalOverlay.style.display = 'flex';
 
-            const handleConfirmClick = () => {
-                onConfirmCallback();
-                confirmationModalOverlay.style.display = 'none';
-                confirmationConfirmBtn.removeEventListener('click', handleConfirmClick);
-                confirmationCancelBtn.removeEventListener('click', handleCancelClick);
-            };
-
-            const handleCancelClick = () => {
-                confirmationModalOverlay.style.display = 'none';
-                confirmationConfirmBtn.removeEventListener('click', handleConfirmClick);
-                confirmationCancelBtn.removeEventListener('click', handleCancelClick);
-            };
-
-            confirmationConfirmBtn.removeEventListener('click', handleConfirmClick); // Remove previous if any
-            confirmationCancelBtn.removeEventListener('click', handleCancelClick); // Remove previous if any
-
-            confirmationConfirmBtn.addEventListener('click', handleConfirmClick);
-            confirmationCancelBtn.addEventListener('click', handleCancelClick);
+            // Store the callback to avoid issues with re-adding listeners
+            confirmationConfirmBtn._confirmCallback = onConfirmCallback; 
         }
+        
+        // Centralized handler for confirmation modal confirm button
+        confirmationConfirmBtn.addEventListener('click', () => {
+            if (typeof confirmationConfirmBtn._confirmCallback === 'function') {
+                confirmationConfirmBtn._confirmCallback();
+            }
+            confirmationModalOverlay.style.display = 'none';
+            confirmationConfirmBtn._confirmCallback = null; // Clear callback
+        });
+
+        confirmationCancelBtn.addEventListener('click', () => {
+            confirmationModalOverlay.style.display = 'none';
+            confirmationConfirmBtn._confirmCallback = null; // Clear callback
+        });
+
 
         async function openPatientModal(type, patientIdToEdit = null) {
             if (!currentUserId) {
@@ -1810,6 +1828,7 @@
             patientModalOverlay.style.display = 'flex';
             let modalHTML = '';
             let tempPatientData = {};
+            originalPatientIdForEdit = patientIdToEdit; // Store original ID for edit operations
 
             if (type === 'new') {
                 tempPatientData = { patientId: '', age: '', gender: '', sport: '', injury: '', injuredSide: 'Left', bodyweight: '' };
@@ -1840,25 +1859,26 @@
                     <div class="modal-actions">
                         <button type="button" class="modal-cancel-button" id="modal-cancel-search">Cancel</button>
                     </div>`;
-            } else if (type === 'existing-edit' && patientIdToEdit) {
+            } else if (type === 'existing-edit' && originalPatientIdForEdit) {
                 try {
-                    const patientDocRef = doc(db, "users", currentUserId, "patients", patientIdToEdit);
+                    const patientDocRef = doc(db, "users", currentUserId, "patients", originalPatientIdForEdit);
                     const patientDocSnap = await getDoc(patientDocRef);
                     if (patientDocSnap.exists()) {
-                        tempPatientData = { patientId: patientIdToEdit, ...patientDocSnap.data() };
+                        tempPatientData = { patientId: originalPatientIdForEdit, ...patientDocSnap.data() };
                     } else {
-                        showStatusMessage(`Patient data for ${patientIdToEdit} not found. Cannot edit.`, "error");
-                        tempPatientData = { patientId: patientIdToEdit, age: '', gender: '', sport: '', injury: '', injuredSide: 'Left', bodyweight: '' };
+                        showStatusMessage(`Patient data for ${originalPatientIdForEdit} not found. Cannot edit.`, "error");
+                        tempPatientData = { patientId: originalPatientIdForEdit, age: '', gender: '', sport: '', injury: '', injuredSide: 'Left', bodyweight: '' };
                     }
                 } catch(error) {
                     console.error("Error fetching patient data for edit:", error);
                     showStatusMessage("Could not fetch patient data for editing.", "error");
-                    tempPatientData = { patientId: patientIdToEdit, age: '', gender: '', sport: '', injury: '', injuredSide: 'Left', bodyweight: '' };
+                    tempPatientData = { patientId: originalPatientIdForEdit, age: '', gender: '', sport: '', injury: '', injuredSide: 'Left', bodyweight: '' };
                 }
                 modalHTML = `
-                    <h3>Edit Patient: ${patientIdToEdit}</h3>
+                    <h3>Edit Patient: ${originalPatientIdForEdit}</h3>
                     <div class="modal-form-grid">
-                        <div class="modal-form-item"><label>Patient ID:</label><input type="text" value="${tempPatientData.patientId}" disabled></div> <div class="modal-form-item"><label for="modal-injured-side">Injured Side:</label><select id="modal-injured-side"></select></div>
+                        <div class="modal-form-item"><label for="modal-edit-fp-nr">Patient ID:</label><input type="text" id="modal-edit-fp-nr" value="${tempPatientData.patientId}" autocomplete="off"></div>
+                        <div class="modal-form-item"><label for="modal-injured-side">Injured Side:</label><select id="modal-injured-side"></select></div>
                         <div class="modal-form-item"><label for="modal-bodyweight">Bodyweight (kg):</label><input type="number" id="modal-bodyweight" value="${tempPatientData.bodyweight || ''}"></div>
                         <div class="modal-form-item"><label for="modal-age">Age:</label><input type="number" id="modal-age" value="${tempPatientData.age || ''}"></div>
                         <div class="modal-form-item"><label for="modal-gender">Gender:</label><select id="modal-gender"></select></div>
@@ -1904,9 +1924,8 @@
                 }
                 patientModalContent.querySelector('#modal-cancel-search')?.addEventListener('click', closePatientModal);
             } else if (type === 'existing-edit') {
-                const capturedIdForEdit = patientIdToEdit;
                 patientModalContent.querySelector('#modal-confirm-edit')?.addEventListener('click', () => {
-                    handleExistingPatientDone(capturedIdForEdit);
+                    handleExistingPatientDone(originalPatientIdForEdit); // Pass the original ID
                 });
                 patientModalContent.querySelector('#modal-cancel-edit')?.addEventListener('click', closePatientModal);
             }
@@ -1915,6 +1934,7 @@
         function closePatientModal() {
             patientModalOverlay.style.display = 'none';
             patientModalContent.innerHTML = '';
+            originalPatientIdForEdit = null; // Clear the stored original ID
         }
 
         async function populateModalPatientButtons() {
@@ -1931,7 +1951,7 @@
                     querySnapshot.forEach((docSnap) => {
                         allPatientIds.push(docSnap.id);
                     });
-                    allPatientIds.sort(); 
+                    allPatientIds.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())); 
                 } catch (error) {
                     console.error("Error fetching patient IDs for modal:", error);
                     container.textContent = 'Error loading patients.';
@@ -2018,8 +2038,10 @@
                 showStatusMessage(`New patient "${newPatientId}" saved. Ready for screening.`, "success");
                 displayPatientInfoInCard(currentPatientDataForApp);
                 if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
-                allPatientIds.push(newPatientId); 
-                allPatientIds.sort(); 
+                if (!allPatientIds.includes(newPatientId)) { // Add to cache if not already there
+                    allPatientIds.push(newPatientId); 
+                    allPatientIds.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())); 
+                }
                 closePatientModal();
 
                 if(fpNrInput) fpNrInput.value = currentPatientDataForApp.patientId;
@@ -2035,6 +2057,7 @@
                 if (existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
                 if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
 
+                localStorage.setItem(SELECTED_PATIENT_ID_FOR_ANALYSIS_KEY, newPatientId); // Update localStorage
 
                 resetScreeningInputFields();
                 updateGraphsAndTable();
@@ -2046,68 +2069,133 @@
             }
         }
 
-        async function handleExistingPatientDone(patientIdToUpdate) {
-            console.log("handleExistingPatientDone called with ID:", patientIdToUpdate);
-            if (!currentUserId || !patientIdToUpdate) {
-                console.warn("handleExistingPatientDone: Missing currentUserId or patientIdToUpdate.", currentUserId, patientIdToUpdate);
+        async function handleExistingPatientDone(originalPatientId) {
+            if (!currentUserId || !originalPatientId) {
+                showStatusMessage("Error: Missing user or original patient ID.", "error");
                 return;
             }
 
-            const updatedPatientDataFromModal = {
-                patientId: patientIdToUpdate,
+            const newPatientIdFromModal = patientModalContent.querySelector('#modal-edit-fp-nr').value.trim();
+            if (!newPatientIdFromModal) {
+                showStatusMessage("Patient ID cannot be empty.", "error");
+                return;
+            }
+
+            const updatedDetails = {
                 age: patientModalContent.querySelector('#modal-age').value,
                 gender: patientModalContent.querySelector('#modal-gender').value,
                 sport: patientModalContent.querySelector('#modal-sport').value,
                 injury: patientModalContent.querySelector('#modal-injury').value,
                 injuredSide: patientModalContent.querySelector('#modal-injured-side').value,
                 bodyweight: patientModalContent.querySelector('#modal-bodyweight').value,
-                screeningId: null 
             };
-            currentPatientDataForApp = { ...updatedPatientDataFromModal };
 
-            const patientDataToUpdateFirestore = {
-                age: updatedPatientDataFromModal.age ? parseInt(updatedPatientDataFromModal.age) : null,
-                gender: updatedPatientDataFromModal.gender || null,
-                sport: updatedPatientDataFromModal.sport || null,
-                injury: updatedPatientDataFromModal.injury || null,
-                injuredSide: updatedPatientDataFromModal.injuredSide || 'Left',
-                bodyweight: parseFloat(updatedPatientDataFromModal.bodyweight) || null,
+            const patientDataForFirestore = {
+                age: updatedDetails.age ? parseInt(updatedDetails.age) : null,
+                gender: updatedDetails.gender || null,
+                sport: updatedDetails.sport || null,
+                injury: updatedDetails.injury || null,
+                injuredSide: updatedDetails.injuredSide || 'Left',
+                bodyweight: updatedDetails.bodyweight ? parseFloat(updatedDetails.bodyweight) : null,
                 lastUpdatedAt: serverTimestamp()
             };
 
-            try {
-                const patientDocRef = doc(db, "users", currentUserId, "patients", patientIdToUpdate);
-                await updateDoc(patientDocRef, patientDataToUpdateFirestore);
-                showStatusMessage(`Details for patient "${patientIdToUpdate}" updated.`, "success");
+            if (newPatientIdFromModal !== originalPatientId) {
+                // Patient ID has changed - requires migration
+                showConfirmationModal(
+                    `Are you sure you want to change Patient ID from "${originalPatientId}" to "${newPatientIdFromModal}"? This will update all associated records.`,
+                    async () => {
+                        showStatusMessage("Updating Patient ID and migrating data...", "info", 15000);
+                        try {
+                            // 1. Check if new patient ID already exists
+                            const newPatientDocRef = doc(db, "users", currentUserId, "patients", newPatientIdFromModal);
+                            const newPatientDocSnap = await getDoc(newPatientDocRef);
+                            if (newPatientDocSnap.exists()) {
+                                showStatusMessage(`Patient ID "${newPatientIdFromModal}" already exists. Please choose a different ID.`, "error");
+                                return;
+                            }
 
-                if(fpNrInput) fpNrInput.value = currentPatientDataForApp.patientId;
-                if(ageInput) ageInput.value = currentPatientDataForApp.age;
-                if(genderSelect) genderSelect.value = currentPatientDataForApp.gender;
-                if(sportInput) sportInput.value = currentPatientDataForApp.sport;
-                if(injuryInput) injuryInput.value = currentPatientDataForApp.injury;
-                if(injuredSideRadio) injuredSideRadio.value = currentPatientDataForApp.injuredSide;
-                if(bodyweightInput) bodyweightInput.value = currentPatientDataForApp.bodyweight;
+                            // 2. Create new patient document with updated details
+                            await setDoc(newPatientDocRef, patientDataForFirestore);
 
-                displayPatientInfoInCard(currentPatientDataForApp);
-                if (patientCardAndLogTitle) patientCardAndLogTitle.style.display = 'block';
-                await displayTestsForPatientFromFirestore(patientIdToUpdate);
+                            // 3. Migrate screenings
+                            const oldScreeningsPath = `users/${currentUserId}/patients/${originalPatientId}/screenings`;
+                            const oldScreeningsRef = collection(db, oldScreeningsPath);
+                            const oldScreeningsSnapshot = await getDocs(oldScreeningsRef);
 
-                resetScreeningInputFields(); 
+                            const batch = writeBatch(db);
+                            oldScreeningsSnapshot.forEach(screeningDoc => {
+                                const screeningData = screeningDoc.data();
+                                screeningData.patientId = newPatientIdFromModal; // Update patientId within screening data
+                                const newScreeningDocRef = doc(db, "users", currentUserId, "patients", newPatientIdFromModal, "screenings", screeningDoc.id);
+                                batch.set(newScreeningDocRef, screeningData);
+                                batch.delete(screeningDoc.ref); // Delete old screening
+                            });
+                            
+                            // 4. Delete old patient document (after screenings are set to be moved)
+                            const oldPatientDocRef = doc(db, "users", currentUserId, "patients", originalPatientId);
+                            batch.delete(oldPatientDocRef);
+                            
+                            await batch.commit();
 
-                closePatientModal();
 
-                if (newPatientChoiceButton) newPatientChoiceButton.classList.remove('active-choice');
-                if (existingPatientChoiceButton) existingPatientChoiceButton.classList.remove('active-choice');
-                if (existingPatientSearchContainer) existingPatientSearchContainer.style.display = 'none';
-                if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
+                            // 5. Update local state and UI
+                            currentPatientDataForApp = { ...updatedDetails, patientId: newPatientIdFromModal, screeningId: null };
+                            
+                            allPatientIds = allPatientIds.filter(id => id !== originalPatientId);
+                            if (!allPatientIds.includes(newPatientIdFromModal)) {
+                                allPatientIds.push(newPatientIdFromModal);
+                                allPatientIds.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+                            }
+                            
+                            localStorage.setItem(SELECTED_PATIENT_ID_FOR_ANALYSIS_KEY, newPatientIdFromModal);
 
-                updateGraphsAndTable();
-                saveInputsToLocalStorage();
-            } catch (error) {
-                console.error("Error updating patient data:", error);
-                showStatusMessage("Error updating patient data.", "error");
+                            if(fpNrInput) fpNrInput.value = currentPatientDataForApp.patientId;
+                            if(ageInput) ageInput.value = currentPatientDataForApp.age;
+                            // ... update other hidden inputs ...
+                            
+                            displayPatientInfoInCard(currentPatientDataForApp);
+                            await displayTestsForPatientFromFirestore(newPatientIdFromModal);
+                            resetScreeningInputFields();
+                            updateGraphsAndTable();
+                            saveInputsToLocalStorage();
+                            closePatientModal();
+                            showStatusMessage(`Patient ID changed to "${newPatientIdFromModal}" and data migrated.`, "success");
+
+                        } catch (error) {
+                            console.error("Error migrating patient data:", error);
+                            showStatusMessage("Error changing Patient ID. Check console.", "error");
+                        }
+                    },
+                    "Confirm Patient ID Change"
+                );
+
+            } else {
+                // Patient ID has NOT changed - just update details
+                try {
+                    const patientDocRef = doc(db, "users", currentUserId, "patients", originalPatientId);
+                    await updateDoc(patientDocRef, patientDataForFirestore);
+                    
+                    currentPatientDataForApp = { ...currentPatientDataForApp, ...updatedDetails };
+                    localStorage.setItem(SELECTED_PATIENT_ID_FOR_ANALYSIS_KEY, originalPatientId);
+
+                    if(fpNrInput) fpNrInput.value = currentPatientDataForApp.patientId;
+                    if(ageInput) ageInput.value = currentPatientDataForApp.age;
+                     // ... update other hidden inputs ...
+
+                    displayPatientInfoInCard(currentPatientDataForApp);
+                    // No need to reload tests if only details changed, unless bodyweight/injured side relevant to display
+                    updateGraphsAndTable(); // In case bodyweight or injured side changed
+                    saveInputsToLocalStorage();
+                    closePatientModal();
+                    showStatusMessage(`Details for patient "${originalPatientId}" updated.`, "success");
+                } catch (error) {
+                    console.error("Error updating patient data:", error);
+                    showStatusMessage("Error updating patient data.", "error");
+                }
             }
         }
+
 
         async function deletePatientAndScreenings(patientId) {
             if (!currentUserId || !patientId) {
@@ -2122,19 +2210,25 @@
                 const q = query(screeningsRef);
                 const querySnapshot = await getDocs(q);
 
-                const deletePromises = [];
-                querySnapshot.forEach((docSnap) => {
-                    deletePromises.push(deleteDoc(doc(db, "users", currentUserId, "patients", patientId, "screenings", docSnap.id)));
-                });
-                await Promise.all(deletePromises);
-                console.log(`Deleted ${deletePromises.length} screenings for patient ${patientId}.`);
+                const batch = writeBatch(db); // Use a batch for deletions
 
+                querySnapshot.forEach((docSnap) => {
+                    batch.delete(doc(db, "users", currentUserId, "patients", patientId, "screenings", docSnap.id));
+                });
+                
                 const patientDocRef = doc(db, "users", currentUserId, "patients", patientId);
-                await deleteDoc(patientDocRef);
+                batch.delete(patientDocRef);
+
+                await batch.commit();
+
 
                 showStatusMessage(`Patient "${patientId}" and all data deleted successfully.`, "success");
                 allPatientIds = allPatientIds.filter(id => id !== patientId);
-                clearAllFields(); 
+                
+                if (currentPatientDataForApp.patientId === patientId) {
+                    localStorage.removeItem(SELECTED_PATIENT_ID_FOR_ANALYSIS_KEY); // Clear selected patient for analysis
+                    clearAllFields(); 
+                }
                 showInitialScreenState(); 
             } catch (error) {
                 console.error("Error deleting patient and screenings:", error);
@@ -2185,7 +2279,7 @@
                 const patientIds = new Set();
                 querySnapshot.forEach((docSnap) => patientIds.add(docSnap.id));
                 allPatientIds = Array.from(patientIds);
-                allPatientIds.sort();
+                allPatientIds.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
             } catch (error) {
                 console.error("Error populating patient ID list from Firestore:", error);
                 showStatusMessage("Error loading patient list.", "error");
@@ -2408,6 +2502,9 @@
                     if (activeLi) {
                         activeLi.classList.add('active-test-item');
                     }
+                    // Update localStorage for analysis.html
+                    localStorage.setItem(SELECTED_PATIENT_ID_FOR_ANALYSIS_KEY, patientId);
+
 
                 } else {
                     showStatusMessage("Could not find selected test data.", "error");
@@ -2524,6 +2621,7 @@
                     resetScreeningInputFields(); 
                     updateGraphsAndTable();
                     saveInputsToLocalStorage(); 
+                    localStorage.setItem(SELECTED_PATIENT_ID_FOR_ANALYSIS_KEY, patientId); // Update localStorage
 
                     if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
                     showStatusMessage(`Patient "${patientId}" loaded successfully.`, "success");
@@ -2573,6 +2671,7 @@
                             resetScreeningInputFields(); 
                             updateGraphsAndTable();
                             saveInputsToLocalStorage(); 
+                            localStorage.setItem(SELECTED_PATIENT_ID_FOR_ANALYSIS_KEY, enteredPatientId); // Update localStorage
 
                             if (patientOverviewSection) patientOverviewSection.style.display = 'flex';
                             showStatusMessage(`Patient "${enteredPatientId}" data displayed. Select a test from the log.`, "info");
@@ -2650,6 +2749,7 @@
                 try {
                     await signOut(auth);
                     localStorage.removeItem(localStorageKey);
+                    localStorage.removeItem(SELECTED_PATIENT_ID_FOR_ANALYSIS_KEY); // Clear selected patient for analysis on logout
                 } catch (error) {
                     console.error("Logout error:", error);
                     showStatusMessage("Error logging out. Please try again.", "error");
