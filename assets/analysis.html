@@ -29,13 +29,13 @@
             --dark-gray: #495057;
             --text-color: #212529;
 
-            --success-color: #16a34a; 
+            --success-color: #16a34a; /* Standard Green */
             --success-border-color: #217e72; 
             --success-shadow-color: rgba(22, 163, 74, 0.45);  
             --success-gradient-start-color: rgba(22, 163, 74, 1); 
 
-            --warning-color: #facc15; 
-            --danger-color-dark: #dc2626;
+            --warning-color: #f97316; /* Orange for moderate negative/warning */
+            --danger-color-dark: #dc2626; /* Strong Red */
             --white: #ffffff; 
             
             --border-radius-general: 6px; 
@@ -77,11 +77,11 @@
             --print-medium-gray: #dee2e6;
 
             /* New colors for percentage changes */
-            --change-significant-positive: #15803d; /* Strong Green */
-            --change-moderate-positive: #16a34a;  /* Standard Green (same as --success-color) */
-            --change-minimal-neutral: #6b7280;    /* Dus Grå */
-            --change-moderate-negative: #f97316;  /* Orange/Lighter Red */
-            --change-significant-negative: #dc2626;/* Strong Red (same as --danger-color-dark) */
+            --change-super-green: #15803d;  /* Stronger Green for "Super Green" */
+            --change-green: #16a34a;       /* Standard Green */
+            --change-neutral-gray: #6b7280; /* Dus Grå */
+            --change-orange-warning: #f97316;/* Orange/Lighter Red */
+            --change-strong-red: #dc2626;  /* Strong Red */
         }
         body {
             font-family: 'Avenir', sans-serif;
@@ -1742,13 +1742,7 @@
 
                 // L Change %
                 if (changePercentL !== null) {
-                    let changeLColor = 'var(--dark-gray)';
-                    if (changePercentL > 15) changeLColor = 'var(--change-significant-positive)';
-                    else if (changePercentL > 5) changeLColor = 'var(--change-moderate-positive)';
-                    else if (changePercentL < -15) changeLColor = 'var(--change-significant-negative)';
-                    else if (changePercentL < -5) changeLColor = 'var(--change-moderate-negative)';
-                    else changeLColor = 'var(--change-minimal-neutral)';
-
+                    let changeLColor = getComputedStyle(document.documentElement).getPropertyValue(getCssVariableForChange(changePercentL)).trim();
                     layout.annotations.push({
                         x: xCategory, y: barTopY + yOffsetStep * 1, 
                         xref: 'x', yref: 'y',
@@ -1759,13 +1753,7 @@
                 }
                 // R Change %
                 if (changePercentR !== null) {
-                    let changeRColor = 'var(--dark-gray)';
-                    if (changePercentR > 15) changeRColor = 'var(--change-significant-positive)';
-                    else if (changePercentR > 5) changeRColor = 'var(--change-moderate-positive)';
-                    else if (changePercentR < -15) changeRColor = 'var(--change-significant-negative)';
-                    else if (changePercentR < -5) changeRColor = 'var(--change-moderate-negative)';
-                    else changeRColor = 'var(--change-minimal-neutral)';
-
+                    let changeRColor = getComputedStyle(document.documentElement).getPropertyValue(getCssVariableForChange(changePercentR)).trim();
                      layout.annotations.push({
                         x: xCategory, y: barTopY + yOffsetStep * 1, 
                         xref: 'x', yref: 'y',
@@ -1777,14 +1765,12 @@
                 
                 // Asymmetry % - Placed above the change %
                 if (asymmetryPercent !== null) {
+                    let asymColor = getComputedStyle(document.documentElement).getPropertyValue(getCssVariableForChange(asymmetryPercent, true)).trim(); // true for asymmetry logic
                      layout.annotations.push({
                         x: xCategory, y: barTopY + yOffsetStep * 3, 
                         text: `${asymmetryPercent > 0 ? '+' : ''}${asymmetryPercent.toFixed(0)}%`, 
                         showarrow: false, 
-                        font: {
-                            size: 16, 
-                            color: asymmetryPercent >= -10 ? 'var(--success-color)' : (asymmetryPercent >= -15 ? 'var(--warning-color)' : 'var(--danger-color-dark)')
-                        },
+                        font: { size: 16, color: asymColor },
                         xanchor: 'center', yanchor: 'bottom'
                     });
                 }
@@ -1801,13 +1787,32 @@
             }
         }
         
-        function getChangeClass(changePercent) {
+        function getCssVariableForChange(percent, isAsymmetry = false) {
+            const absPercent = Math.abs(percent);
+            if (isAsymmetry) { // Asymmetry: closer to 0 is better
+                if (absPercent <= 10) return '--change-super-green';
+                if (absPercent <= 15) return '--change-green';
+                if (absPercent <= 20) return '--change-orange-warning';
+                return '--change-strong-red';
+            } else { // Regular change: positive is green, negative is red/orange
+                if (percent > 15) return '--change-significant-positive';
+                if (percent > 5) return '--change-moderate-positive';
+                if (percent >= -5) return '--change-minimal-neutral';
+                if (percent >= -15) return '--change-moderate-negative';
+                return '--change-significant-negative';
+            }
+        }
+
+        function getChangeClass(changePercent) { // For table
             if (changePercent === null || changePercent === undefined || !isFinite(changePercent)) return 'change-na';
-            if (changePercent > 15) return 'change-significant-positive';
-            if (changePercent > 5) return 'change-moderate-positive';
-            if (changePercent >= -5) return 'change-minimal-neutral';
-            if (changePercent >= -15) return 'change-moderate-negative';
-            return 'change-significant-negative';
+            const absPercent = Math.abs(changePercent);
+            // Using the "closer to 0 is better" logic for table as well, as per graph request for asymmetry.
+            // If a different logic is needed for table's L/R Ch%, this needs adjustment.
+            // For now, applying the same logic for consistency.
+            if (absPercent <= 10) return 'change-significant-positive'; // "Super Green"
+            if (absPercent <= 15) return 'change-moderate-positive';    // "Green"
+            if (absPercent <= 20) return 'change-moderate-negative'; // "Orange/Warning"
+            return 'change-significant-negative'; // "Red"
         }
 
         function renderDetailedSummaryTable(dGBD_data) {
@@ -1896,11 +1901,11 @@
                         }
                         let lChangeCell = metricRow.insertCell();
                         lChangeCell.textContent = Lchange;
-                        lChangeCell.className = getChangeClass(LchangePercentNum);
+                        lChangeCell.className = getChangeClass(LchangePercentNum, false); // false for regular change
 
                         let rChangeCell = metricRow.insertCell();
                         rChangeCell.textContent = Rchange;
-                        rChangeCell.className = getChangeClass(RchangePercentNum);
+                        rChangeCell.className = getChangeClass(RchangePercentNum, false); // false for regular change
                     });
                 });
             });
@@ -2021,3 +2026,4 @@
     </script>
 </body>
 </html>
+I have selected the whole docume
