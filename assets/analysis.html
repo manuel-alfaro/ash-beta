@@ -1346,7 +1346,6 @@
                 deleteBtn.classList.add('delete-log-item-btn'); 
                 deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
                 deleteBtn.title = "Delete this test";
-                // Event listener for delete is kept for backend logic, but button is hidden
                 deleteBtn.addEventListener('click', (e) => { 
                     e.stopPropagation(); 
                     showConfirmationModal(
@@ -1666,67 +1665,43 @@
             }
         }
 
-       function createTimeSeriesBarChart(dGBD_data, position, metricKey, divId) {
+        function createTimeSeriesBarChart(dGBD_data, position, metricKey, divId) {
             const plotDiv = document.getElementById(divId);
             if (!plotDiv) return;
 
-            // Fjern eventuell 'Loading...' melding
-            const existingPlaceholder = plotDiv.querySelector('.loading-placeholder');
-            if (existingPlaceholder) existingPlaceholder.remove();
-
-
-            const xValuesFormattedDates = dGBD_data.map(d => d['Test Date'].toLocaleDateString('nb-NO', {day:'2-digit', month:'short'}));
+            const xValuesFormattedDates = dGBD_data.map(d => d['Test Date'].toLocaleDateString('nb-NO', {day:'2-digit', month:'short'})); 
             const yValuesLeft = dGBD_data.map(d => d[position]?.[metricKey]?.Left);
             const yValuesRight = dGBD_data.map(d => d[position]?.[metricKey]?.Right);
 
             const traceLeft = {
                 x: xValuesFormattedDates, y: yValuesLeft, type: 'bar', name: 'Left',
-                marker: { color: LEFT_BAR_COLOR },
-                text: yValuesLeft.map(v => v !== null && v !== undefined ? v.toFixed(0) : ''),
-                textposition: 'inside', insidetextanchor: 'middle', // Endret til 'middle' for bedre sentrering i stolpen
-                textfont: { color: 'var(--white)', size: 12 }, // Redusert skriftstørrelse litt
+                marker: { color: LEFT_BAR_COLOR }, 
+                text: yValuesLeft.map(v => v !== null && v !== undefined ? v.toFixed(0) : ''), 
+                textposition: 'inside', insidetextanchor: 'end', 
+                textfont: { color: 'var(--white)', size: 14 }, 
                 hovertemplate: 'Left: %{y:.1f}<extra></extra>'
             };
             const traceRight = {
                 x: xValuesFormattedDates, y: yValuesRight, type: 'bar', name: 'Right',
-                marker: { color: RIGHT_BAR_COLOR },
-                text: yValuesRight.map(v => v !== null && v !== undefined ? v.toFixed(0) : ''),
-                textposition: 'inside', insidetextanchor: 'middle', // Endret til 'middle'
-                textfont: { color: 'var(--white)', size: 12 }, // Redusert skriftstørrelse litt
+                marker: { color: RIGHT_BAR_COLOR }, 
+                text: yValuesRight.map(v => v !== null && v !== undefined ? v.toFixed(0) : ''), 
+                textposition: 'inside', insidetextanchor: 'end', 
+                textfont: { color: 'var(--white)', size: 14 }, 
                 hovertemplate: 'Right: %{y:.1f}<extra></extra>'
             };
-
+            
             const allYValues = [...yValuesLeft, ...yValuesRight].filter(v => v !== null && v !== undefined && isFinite(v));
-            // Justert bufferfaktor og minAbsRange for å gjøre aksen litt strammere om nødvendig
-            const yAxisRange = calculateAxisRange(allYValues, 0.15, 10); // Tidligere 0.65, 20
+            const yAxisRange = calculateAxisRange(allYValues, 0.65, 20); 
 
             const layout = {
                 barmode: 'group',
-                xaxis: {
-                    automargin: true,
-                    tickangle: (xValuesFormattedDates.length > 5) ? -45 : 0, // Vinkle kun hvis mange datoer
-                    type: 'category',
-                    title: {text: ''},
-                    showgrid: false, // Fjernet rutenett på x-aksen
-                    zeroline: false // Fjernet null-linje på x-aksen
-                },
-                yaxis: {
-                    title: {text: metricKey, font: {size: 10}}, // Litt mindre font for aksetittel
-                    automargin: true,
-                    range: yAxisRange,
-                    zeroline: true,
-                    showgrid: true, // Beholdt rutenett på y-aksen for lesbarhet
-                    gridcolor: 'rgba(0,0,0,0.1)' // Lysere rutenettfarge
-                },
-                margin: { l: 45, r: 20, b: (xValuesFormattedDates.length > 5) ? 70 : 50, t: 30, pad: 5 }, // Redusert t fra 80 til 30, b justert
-                legend: {
-                    orientation: "h",
-                    yanchor: "bottom", // Endret til bottom
-                    y: 1.02,         // Plassert over grafen
-                    xanchor: "center",
-                    x: 0.5,
-                    font: {size: 10}
-                },
+                xaxis: { 
+                    automargin: true, tickangle: -45, type: 'category', 
+                    title: {text: ''} 
+                }, 
+                yaxis: { title: {text: metricKey, font: {size: 11}}, automargin: true, range: yAxisRange, zeroline: true },
+                margin: { l: 50, r: 20, b: 80, t: 80, pad: 5 }, 
+                legend: {orientation: "h", yanchor: "top", y: -0.2, xanchor: "center", x: 0.5, font: {size: 10}},
                 annotations: [],
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)',
@@ -1743,7 +1718,7 @@
                 if (Lval !== null && Lval !== undefined && Rval !== null && Rval !== undefined && patientActualInjuredSide) {
                     const injuredVal = patientActualInjuredSide === 'Left' ? Lval : Rval;
                     const uninjuredVal = patientActualInjuredSide === 'Left' ? Rval : Lval;
-                    if (uninjuredVal !== 0 && isFinite(uninjuredVal) && uninjuredVal !== null && injuredVal !== null) { // Sjekk for null også
+                    if (uninjuredVal !== 0 && isFinite(uninjuredVal) && uninjuredVal !== null && injuredVal !== null) { 
                         asymmetryPercent = ((injuredVal - uninjuredVal) / Math.abs(uninjuredVal)) * 100;
                     }
                 }
@@ -1759,42 +1734,55 @@
                         changePercentR = ((Rval - prevRval) / Math.abs(prevRval)) * 100;
                     }
                 }
-
+                
                 const barTopY = Math.max(Lval || 0, Rval || 0);
-                const xCategory = xValuesFormattedDates[index];
-                const annotationOffsetFactor = 0.05; // Redusert offset for mindre luft
+                const xCategory = xValuesFormattedDates[index]; 
+                const annotationOffsetFactor = 0.07; 
                 const yOffsetStep = (yAxisRange[1] - yAxisRange[0]) * annotationOffsetFactor;
-                const annotationBaseY = barTopY + yOffsetStep * 0.5; // Start litt nærmere stolpen
 
                 // L Change %
                 if (changePercentL !== null) {
+                    let changeLColor = 'var(--dark-gray)';
+                    if (changePercentL > 15) changeLColor = 'var(--change-significant-positive)';
+                    else if (changePercentL > 5) changeLColor = 'var(--change-moderate-positive)';
+                    else if (changePercentL < -15) changeLColor = 'var(--change-significant-negative)';
+                    else if (changePercentL < -5) changeLColor = 'var(--change-moderate-negative)';
+                    else changeLColor = 'var(--change-minimal-neutral)';
+
                     layout.annotations.push({
-                        x: xCategory, y: annotationBaseY,
+                        x: xCategory, y: barTopY + yOffsetStep * 1, 
                         xref: 'x', yref: 'y',
-                        text: `${changePercentL > 0 ? '+' : ''}${changePercentL.toFixed(0)}%`,
-                        showarrow: false, font: {size: 11, color: changePercentL > 5 ? 'var(--success-color)' : (changePercentL < -5 ? 'var(--danger-color-dark)' : 'var(--dark-gray)')},
-                        xshift: -18, yshift: 0, xanchor: 'center', yanchor: 'bottom' // Justert xshift
+                        text: `${changePercentL > 0 ? '+' : ''}${changePercentL.toFixed(0)}%`, 
+                        showarrow: false, font: {size: 14, color: changeLColor},
+                        xshift: -22, yshift: 0, xanchor: 'center', yanchor: 'bottom'
                     });
                 }
                 // R Change %
                 if (changePercentR !== null) {
+                    let changeRColor = 'var(--dark-gray)';
+                    if (changePercentR > 15) changeRColor = 'var(--change-significant-positive)';
+                    else if (changePercentR > 5) changeRColor = 'var(--change-moderate-positive)';
+                    else if (changePercentR < -15) changeRColor = 'var(--change-significant-negative)';
+                    else if (changePercentR < -5) changeRColor = 'var(--change-moderate-negative)';
+                    else changeRColor = 'var(--change-minimal-neutral)';
+
                      layout.annotations.push({
-                        x: xCategory, y: annotationBaseY,
+                        x: xCategory, y: barTopY + yOffsetStep * 1, 
                         xref: 'x', yref: 'y',
-                        text: `${changePercentR > 0 ? '+' : ''}${changePercentR.toFixed(0)}%`,
-                        showarrow: false, font: {size: 11, color: changePercentR > 5 ? 'var(--success-color)' : (changePercentR < -5 ? 'var(--danger-color-dark)' : 'var(--dark-gray)')},
-                        xshift: 18, yshift: 0, xanchor: 'center', yanchor: 'bottom' // Justert xshift
+                        text: `${changePercentR > 0 ? '+' : ''}${changePercentR.toFixed(0)}%`, 
+                        showarrow: false, font: {size: 14, color: changeRColor},
+                        xshift: 22, yshift: 0, xanchor: 'center', yanchor: 'bottom'
                     });
                 }
-
+                
                 // Asymmetry % - Placed above the change %
                 if (asymmetryPercent !== null) {
                      layout.annotations.push({
-                        x: xCategory, y: annotationBaseY + yOffsetStep * 2.5, // Økt yOffset for å plassere over change%
-                        text: `${asymmetryPercent > 0 ? '+' : ''}${asymmetryPercent.toFixed(0)}%`,
-                        showarrow: false,
+                        x: xCategory, y: barTopY + yOffsetStep * 3, 
+                        text: `${asymmetryPercent > 0 ? '+' : ''}${asymmetryPercent.toFixed(0)}%`, 
+                        showarrow: false, 
                         font: {
-                            size: 13, // Litt mindre
+                            size: 16, 
                             color: asymmetryPercent >= -10 ? 'var(--success-color)' : (asymmetryPercent >= -15 ? 'var(--warning-color)' : 'var(--danger-color-dark)')
                         },
                         xanchor: 'center', yanchor: 'bottom'
@@ -1809,227 +1797,227 @@
                     });
             } catch(e) {
                 plotDiv.innerHTML = `<p style="color:red; text-align:center; padding: 10px;">Error rendering bar chart.</p>`;
-                 console.error(`Error rendering bar chart for ${divId}:`, e);
-            }
-        }
-        
-        function getChangeClass(changePercent) {
-            if (changePercent === null || changePercent === undefined || !isFinite(changePercent)) return 'change-na';
-            if (changePercent > 15) return 'change-significant-positive';
-            if (changePercent > 5) return 'change-moderate-positive';
-            if (changePercent >= -5) return 'change-minimal-neutral';
-            if (changePercent >= -15) return 'change-moderate-negative';
-            return 'change-significant-negative';
-        }
+                 console.error(`Error rendering bar chart for ${divId}:`, e);
+            }
+        }
+        
+        function getChangeClass(changePercent) {
+            if (changePercent === null || changePercent === undefined || !isFinite(changePercent)) return 'change-na';
+            if (changePercent > 15) return 'change-significant-positive';
+            if (changePercent > 5) return 'change-moderate-positive';
+            if (changePercent >= -5) return 'change-minimal-neutral';
+            if (changePercent >= -15) return 'change-moderate-negative';
+            return 'change-significant-negative';
+        }
 
-        function renderDetailedSummaryTable(dGBD_data) {
-            summaryTableWrapper.innerHTML = ''; 
-            if (!dGBD_data || dGBD_data.length === 0) {
-                summaryTableWrapper.innerHTML = '<div class="summary-position-block"><p>No data for summary table.</p></div>';
-                return;
-            }
+        function renderDetailedSummaryTable(dGBD_data) {
+            summaryTableWrapper.innerHTML = ''; 
+            if (!dGBD_data || dGBD_data.length === 0) {
+                summaryTableWrapper.innerHTML = '<div class="summary-position-block"><p>No data for summary table.</p></div>';
+                return;
+            }
 
-            const table = document.createElement('table');
-            table.className = 'summary-table';
-            const thead = table.createTHead();
-            const tbody = table.createTBody();
+            const table = document.createElement('table');
+            table.className = 'summary-table';
+            const thead = table.createTHead();
+            const tbody = table.createTBody();
 
-            let headerRow1 = thead.insertRow();
-            let metricTh = headerRow1.insertCell();
-            metricTh.textContent = 'Metric';
-            metricTh.classList.add('metric-header');
-            
-            dGBD_data.forEach(session => {
-                const th = document.createElement('th');
-                th.colSpan = 4; 
-                th.textContent = session['Test Date'].toLocaleDateString('nb-NO', {day:'2-digit', month:'short', year:'numeric'});
-                th.classList.add('date-header', 'date-column-group');
-                headerRow1.appendChild(th);
-            });
+            let headerRow1 = thead.insertRow();
+            let metricTh = headerRow1.insertCell();
+            metricTh.textContent = 'Metric';
+            metricTh.classList.add('metric-header');
+            
+            dGBD_data.forEach(session => {
+                const th = document.createElement('th');
+                th.colSpan = 4; 
+                th.textContent = session['Test Date'].toLocaleDateString('nb-NO', {day:'2-digit', month:'short', year:'numeric'});
+                th.classList.add('date-header', 'date-column-group');
+                headerRow1.appendChild(th);
+            });
 
-            let headerRow2 = thead.insertRow();
-            headerRow2.insertCell(); 
-            dGBD_data.forEach(() => {
-                ['L Val', 'R Val', 'L Ch%', 'R Ch%'].forEach(subCol => {
-                    let subTh = headerRow2.insertCell();
-                    subTh.textContent = subCol;
-                    subTh.classList.add('sub-header');
-                });
-            });
-            
-            thead.rows[0].cells[0].rowSpan = 2;
-            thead.rows[1].cells[0].remove();
+            let headerRow2 = thead.insertRow();
+            headerRow2.insertCell(); 
+            dGBD_data.forEach(() => {
+                ['L Val', 'R Val', 'L Ch%', 'R Ch%'].forEach(subCol => {
+                    let subTh = headerRow2.insertCell();
+                    subTh.textContent = subCol;
+                    subTh.classList.add('sub-header');
+                });
+            });
+            
+            thead.rows[0].cells[0].rowSpan = 2;
+            thead.rows[1].cells[0].remove();
 
-            POSITIONS.forEach(pos => {
-                let posHeaderRow = tbody.insertRow();
-                let posTh = document.createElement('th');
-                posTh.colSpan = 1 + dGBD_data.length * 4;
-                posTh.textContent = `Position ${pos}`;
-                posHeaderRow.appendChild(posTh);
-                posHeaderRow.style.backgroundColor = 'var(--app-secondary-color)'; 
-                posHeaderRow.style.color = 'var(--app-text-on-secondary)';
+            POSITIONS.forEach(pos => {
+                let posHeaderRow = tbody.insertRow();
+                let posTh = document.createElement('th');
+                posTh.colSpan = 1 + dGBD_data.length * 4;
+                posTh.textContent = `Position ${pos}`;
+                posHeaderRow.appendChild(posTh);
+                posHeaderRow.style.backgroundColor = 'var(--app-secondary-color)'; 
+                posHeaderRow.style.color = 'var(--app-text-on-secondary)';
 
 
-                [METRIC_KEYS.MAX_FORCE, METRIC_KEYS.RFD, METRIC_KEYS.NORM_MAX_FORCE].forEach(metricKey => {
-                    let metricRow = tbody.insertRow();
-                    let labelCell = metricRow.insertCell();
-                    labelCell.textContent = metricKey;
-                    labelCell.classList.add('metric-label');
+                [METRIC_KEYS.MAX_FORCE, METRIC_KEYS.RFD, METRIC_KEYS.NORM_MAX_FORCE].forEach(metricKey => {
+                    let metricRow = tbody.insertRow();
+                    let labelCell = metricRow.insertCell();
+                    labelCell.textContent = metricKey;
+                    labelCell.classList.add('metric-label');
 
-                    dGBD_data.forEach((session, index) => {
-                        const metricData = session[pos]?.[metricKey];
-                        const Lval = metricData?.Left;
-                        const Rval = metricData?.Right;
-                        
-                        let lValCell = metricRow.insertCell();
-                        lValCell.textContent = Lval !== null && Lval !== undefined ? Lval.toFixed(metricKey === METRIC_KEYS.NORM_MAX_FORCE ? 2 : 1) : '-';
-                        lValCell.classList.add('left-value-cell');
+                    dGBD_data.forEach((session, index) => {
+                        const metricData = session[pos]?.[metricKey];
+                        const Lval = metricData?.Left;
+                        const Rval = metricData?.Right;
+                        
+                        let lValCell = metricRow.insertCell();
+                        lValCell.textContent = Lval !== null && Lval !== undefined ? Lval.toFixed(metricKey === METRIC_KEYS.NORM_MAX_FORCE ? 2 : 1) : '-';
+                        lValCell.classList.add('left-value-cell');
 
-                        let rValCell = metricRow.insertCell();
-                        rValCell.textContent = Rval !== null && Rval !== undefined ? Rval.toFixed(metricKey === METRIC_KEYS.NORM_MAX_FORCE ? 2 : 1) : '-';
-                        rValCell.classList.add('right-value-cell');
-                        
-                        let Lchange = '-'; let Rchange = '-';
-                        let LchangePercentNum = null; let RchangePercentNum = null;
+                        let rValCell = metricRow.insertCell();
+                        rValCell.textContent = Rval !== null && Rval !== undefined ? Rval.toFixed(metricKey === METRIC_KEYS.NORM_MAX_FORCE ? 2 : 1) : '-';
+                        rValCell.classList.add('right-value-cell');
+                        
+                        let Lchange = '-'; let Rchange = '-';
+                        let LchangePercentNum = null; let RchangePercentNum = null;
 
-                        if (index > 0) {
-                            const prevSession = dGBD_data[index-1];
-                            const prevMetricData = prevSession[pos]?.[metricKey];
-                            if (prevMetricData) {
-                                if (Lval !== null && Lval !== undefined && prevMetricData.Left !== null && prevMetricData.Left !== undefined && prevMetricData.Left !== 0 && isFinite(prevMetricData.Left)) {
-                                    LchangePercentNum = ((Lval - prevMetricData.Left) / Math.abs(prevMetricData.Left)) * 100;
-                                    Lchange = `${LchangePercentNum > 0 ? '+' : ''}${LchangePercentNum.toFixed(0)}%`;
-                                }
-                                if (Rval !== null && Rval !== undefined && prevMetricData.Right !== null && prevMetricData.Right !== undefined && prevMetricData.Right !== 0 && isFinite(prevMetricData.Right)) {
-                                    RchangePercentNum = ((Rval - prevMetricData.Right) / Math.abs(prevMetricData.Right)) * 100;
-                                    Rchange = `${RchangePercentNum > 0 ? '+' : ''}${RchangePercentNum.toFixed(0)}%`;
-                                }
-                            }
-                        }
-                        let lChangeCell = metricRow.insertCell();
-                        lChangeCell.textContent = Lchange;
-                        lChangeCell.className = getChangeClass(LchangePercentNum);
+                        if (index > 0) {
+                            const prevSession = dGBD_data[index-1];
+                            const prevMetricData = prevSession[pos]?.[metricKey];
+                            if (prevMetricData) {
+                                if (Lval !== null && Lval !== undefined && prevMetricData.Left !== null && prevMetricData.Left !== undefined && prevMetricData.Left !== 0 && isFinite(prevMetricData.Left)) {
+                                    LchangePercentNum = ((Lval - prevMetricData.Left) / Math.abs(prevMetricData.Left)) * 100;
+                                    Lchange = `${LchangePercentNum > 0 ? '+' : ''}${LchangePercentNum.toFixed(0)}%`;
+                                }
+                                if (Rval !== null && Rval !== undefined && prevMetricData.Right !== null && prevMetricData.Right !== undefined && prevMetricData.Right !== 0 && isFinite(prevMetricData.Right)) {
+                                    RchangePercentNum = ((Rval - prevMetricData.Right) / Math.abs(prevMetricData.Right)) * 100;
+                                    Rchange = `${RchangePercentNum > 0 ? '+' : ''}${RchangePercentNum.toFixed(0)}%`;
+                                }
+                            }
+                        }
+                        let lChangeCell = metricRow.insertCell();
+                        lChangeCell.textContent = Lchange;
+                        lChangeCell.className = getChangeClass(LchangePercentNum);
 
-                        let rChangeCell = metricRow.insertCell();
-                        rChangeCell.textContent = Rchange;
-                        rChangeCell.className = getChangeClass(RchangePercentNum);
-                    });
-                });
-            });
+                        let rChangeCell = metricRow.insertCell();
+                        rChangeCell.textContent = Rchange;
+                        rChangeCell.className = getChangeClass(RchangePercentNum);
+                    });
+                });
+            });
 
-            summaryTableWrapper.appendChild(table);
-        }
-        
-        function updateNoDataMessage() {
-            if (!selectedPatientId) {
-                noDataMessage.textContent = 'Please select a patient to view their history and analysis.';
-                noDataMessage.style.display = 'block';
-                analysisMainContent.style.display = 'none';
-                patientOverviewSection.style.display = 'none';
-                if(patientDetailsTitle) patientDetailsTitle.style.display = 'none';
-            } else {
-                noDataMessage.style.display = 'none';
-                if(patientDetailsTitle) patientDetailsTitle.style.display = 'block';
-            }
-        }
+            summaryTableWrapper.appendChild(table);
+        }
+        
+        function updateNoDataMessage() {
+            if (!selectedPatientId) {
+                noDataMessage.textContent = 'Please select a patient to view their history and analysis.';
+                noDataMessage.style.display = 'block';
+                analysisMainContent.style.display = 'none';
+                patientOverviewSection.style.display = 'none';
+                if(patientDetailsTitle) patientDetailsTitle.style.display = 'none';
+            } else {
+                noDataMessage.style.display = 'none';
+                if(patientDetailsTitle) patientDetailsTitle.style.display = 'block';
+            }
+        }
 
-        async function openPatientModal(type, patientIdToEdit = null, fromAnalysisPage = false) {
-            if (!currentUserId) {
-                showStatusMessage("You must be logged in.", "error");
-                return;
-            }
-            patientModalOverlay.style.display = 'flex';
-            let modalHTML = '';
-            let tempPatientData = {};
+        async function openPatientModal(type, patientIdToEdit = null, fromAnalysisPage = false) {
+            if (!currentUserId) {
+                showStatusMessage("You must be logged in.", "error");
+                return;
+            }
+            patientModalOverlay.style.display = 'flex';
+            let modalHTML = '';
+            let tempPatientData = {};
 
-            if (type === 'existing-edit' && patientIdToEdit) {
-                try {
-                    const patientDocRef = doc(db, "users", currentUserId, "patients", patientIdToEdit);
-                    const patientDocSnap = await getDoc(patientDocRef);
-                    if (patientDocSnap.exists()) {
-                        tempPatientData = { patientId: patientIdToEdit, ...patientDocSnap.data() };
-                    } else {
-                        showStatusMessage(`Patient data for ${patientIdToEdit} not found. Cannot edit.`, "error");
-                        closePatientModal(); return;
-                    }
-                } catch(error) {
-                    console.error("Error fetching patient data for edit:", error);
-                    showStatusMessage("Could not fetch patient data for editing.", "error");
-                    closePatientModal(); return;
-                }
-                modalHTML = `
-                    <h3>Edit Patient: ${patientIdToEdit}</h3>
-                    <div class="modal-form-grid">
-                        <div class="modal-form-item"><label>Patient ID:</label><input type="text" value="${tempPatientData.patientId}" disabled></div>
-                        <div class="modal-form-item"><label for="modal-injured-side">Injured Side:</label><select id="modal-injured-side"></select></div>
-                        <div class="modal-form-item"><label for="modal-bodyweight">Bodyweight (kg):</label><input type="number" id="modal-bodyweight" value="${tempPatientData.bodyweight || ''}"></div>
-                        <div class="modal-form-item"><label for="modal-age">Age:</label><input type="number" id="modal-age" value="${tempPatientData.age || ''}"></div>
-                        <div class="modal-form-item"><label for="modal-gender">Gender:</label><select id="modal-gender"></select></div>
-                        <div class="modal-form-item"><label for="modal-sport">Sport:</label><input type="text" id="modal-sport" value="${tempPatientData.sport || ''}"></div>
-                        <div class="modal-form-item full-width" style="grid-column: 1 / -1;"><label for="modal-injury">Injury:</label><input type="text" id="modal-injury" value="${tempPatientData.injury || ''}"></div>
-                    </div>
-                    <div class="modal-actions">
-                        <button type="button" class="modal-cancel-button" id="modal-cancel-edit">Cancel</button>
-                        <button type="button" class="modal-confirm-button" id="modal-confirm-edit">Save Changes</button>
-                    </div>`;
-                patientModalContent.innerHTML = modalHTML;
+            if (type === 'existing-edit' && patientIdToEdit) {
+                try {
+                    const patientDocRef = doc(db, "users", currentUserId, "patients", patientIdToEdit);
+                    const patientDocSnap = await getDoc(patientDocRef);
+                    if (patientDocSnap.exists()) {
+                        tempPatientData = { patientId: patientIdToEdit, ...patientDocSnap.data() };
+                    } else {
+                        showStatusMessage(`Patient data for ${patientIdToEdit} not found. Cannot edit.`, "error");
+                        closePatientModal(); return;
+                    }
+                } catch(error) {
+                    console.error("Error fetching patient data for edit:", error);
+                    showStatusMessage("Could not fetch patient data for editing.", "error");
+                    closePatientModal(); return;
+                }
+                modalHTML = `
+                    <h3>Edit Patient: ${patientIdToEdit}</h3>
+                    <div class="modal-form-grid">
+                        <div class="modal-form-item"><label>Patient ID:</label><input type="text" value="${tempPatientData.patientId}" disabled></div>
+                        <div class="modal-form-item"><label for="modal-injured-side">Injured Side:</label><select id="modal-injured-side"></select></div>
+                        <div class="modal-form-item"><label for="modal-bodyweight">Bodyweight (kg):</label><input type="number" id="modal-bodyweight" value="${tempPatientData.bodyweight || ''}"></div>
+                        <div class="modal-form-item"><label for="modal-age">Age:</label><input type="number" id="modal-age" value="${tempPatientData.age || ''}"></div>
+                        <div class="modal-form-item"><label for="modal-gender">Gender:</label><select id="modal-gender"></select></div>
+                        <div class="modal-form-item"><label for="modal-sport">Sport:</label><input type="text" id="modal-sport" value="${tempPatientData.sport || ''}"></div>
+                        <div class="modal-form-item full-width" style="grid-column: 1 / -1;"><label for="modal-injury">Injury:</label><input type="text" id="modal-injury" value="${tempPatientData.injury || ''}"></div>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="modal-cancel-button" id="modal-cancel-edit">Cancel</button>
+                        <button type="button" class="modal-confirm-button" id="modal-confirm-edit">Save Changes</button>
+                    </div>`;
+                patientModalContent.innerHTML = modalHTML;
 
-                const genderModalSelect = patientModalContent.querySelector('#modal-gender');
-                const injuredSideModalSelect = patientModalContent.querySelector('#modal-injured-side');
-                if (genderModalSelect) {
-                    ['', 'Male', 'Female', 'Other'].forEach(val => genderModalSelect.add(new Option(val === '' ? 'Select...' : val, val)));
-                    genderModalSelect.value = tempPatientData.gender || '';
-                }
-                if (injuredSideModalSelect) {
-                    ['Left', 'Right'].forEach(val => injuredSideModalSelect.add(new Option(val, val)));
-                    injuredSideModalSelect.value = tempPatientData.injuredSide || 'Left';
-                }
-                
-                patientModalContent.querySelector('#modal-confirm-edit')?.addEventListener('click', () => handleUpdatePatientProfile(patientIdToEdit));
-                patientModalContent.querySelector('#modal-cancel-edit')?.addEventListener('click', closePatientModal);
-            } else {
-                closePatientModal();
-            }
-        }
+                const genderModalSelect = patientModalContent.querySelector('#modal-gender');
+                const injuredSideModalSelect = patientModalContent.querySelector('#modal-injured-side');
+                if (genderModalSelect) {
+                    ['', 'Male', 'Female', 'Other'].forEach(val => genderModalSelect.add(new Option(val === '' ? 'Select...' : val, val)));
+                    genderModalSelect.value = tempPatientData.gender || '';
+                }
+                if (injuredSideModalSelect) {
+                    ['Left', 'Right'].forEach(val => injuredSideModalSelect.add(new Option(val, val)));
+                    injuredSideModalSelect.value = tempPatientData.injuredSide || 'Left';
+                }
+                
+                patientModalContent.querySelector('#modal-confirm-edit')?.addEventListener('click', () => handleUpdatePatientProfile(patientIdToEdit));
+                patientModalContent.querySelector('#modal-cancel-edit')?.addEventListener('click', closePatientModal);
+            } else {
+                closePatientModal();
+            }
+        }
 
-        async function handleUpdatePatientProfile(patientIdToUpdate) {
-            if (!currentUserId || !patientIdToUpdate) return;
+        async function handleUpdatePatientProfile(patientIdToUpdate) {
+            if (!currentUserId || !patientIdToUpdate) return;
 
-            const updatedData = {
-                age: patientModalContent.querySelector('#modal-age').value ? parseInt(patientModalContent.querySelector('#modal-age').value) : null,
-                gender: patientModalContent.querySelector('#modal-gender').value || null,
-                sport: patientModalContent.querySelector('#modal-sport').value || null,
-                injury: patientModalContent.querySelector('#modal-injury').value || null,
-                injuredSide: patientModalContent.querySelector('#modal-injured-side').value || 'Left',
-                bodyweight: patientModalContent.querySelector('#modal-bodyweight').value ? parseFloat(patientModalContent.querySelector('#modal-bodyweight').value) : null,
-                lastUpdatedAt: serverTimestamp()
-            };
+            const updatedData = {
+                age: patientModalContent.querySelector('#modal-age').value ? parseInt(patientModalContent.querySelector('#modal-age').value) : null,
+                gender: patientModalContent.querySelector('#modal-gender').value || null,
+                sport: patientModalContent.querySelector('#modal-sport').value || null,
+                injury: patientModalContent.querySelector('#modal-injury').value || null,
+                injuredSide: patientModalContent.querySelector('#modal-injured-side').value || 'Left',
+                bodyweight: patientModalContent.querySelector('#modal-bodyweight').value ? parseFloat(patientModalContent.querySelector('#modal-bodyweight').value) : null,
+                lastUpdatedAt: serverTimestamp()
+            };
 
-            try {
-                const patientDocRef = doc(db, "users", currentUserId, "patients", patientIdToUpdate);
-                await updateDoc(patientDocRef, updatedData);
-                showStatusMessage(`Patient "${patientIdToUpdate}" profile updated.`, "success");
-                closePatientModal();
-                if (selectedPatientId === patientIdToUpdate) {
-                    loadPatientAnalysisData(selectedPatientId); 
-                }
-            } catch (error) {
-                console.error("Error updating patient profile:", error);
-                showStatusMessage("Error updating profile.", "error");
-            }
-        }
+            try {
+                const patientDocRef = doc(db, "users", currentUserId, "patients", patientIdToUpdate);
+                await updateDoc(patientDocRef, updatedData);
+                showStatusMessage(`Patient "${patientIdToUpdate}" profile updated.`, "success");
+                closePatientModal();
+                if (selectedPatientId === patientIdToUpdate) {
+                    loadPatientAnalysisData(selectedPatientId); 
+                }
+            } catch (error) {
+                console.error("Error updating patient profile:", error);
+                showStatusMessage("Error updating profile.", "error");
+            }
+        }
 
-        window.addEventListener('resize', () => {
-            const plotElements = document.querySelectorAll('.plotly-graph-div'); 
-            plotElements.forEach(gdContainer => {
-                if (gdContainer && typeof gdContainer.layout !== 'undefined') { 
-                    try {
-                        Plotly.Plots.resize(gdContainer);
-                    } catch(e) { /* ignore */ }
-                }
-            });
-        });
+        window.addEventListener('resize', () => {
+            const plotElements = document.querySelectorAll('.plotly-graph-div'); 
+            plotElements.forEach(gdContainer => {
+                if (gdContainer && typeof gdContainer.layout !== 'undefined') { 
+                    try {
+                        Plotly.Plots.resize(gdContainer);
+                    } catch(e) { /* ignore */ }
+                }
+            });
+        });
 
-    </script>
+    </script>
 </body>
 </html>
