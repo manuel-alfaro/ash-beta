@@ -77,11 +77,11 @@
             --print-medium-gray: #dee2e6;
 
             /* New colors for percentage changes */
-            --change-super-green: #15803d;  /* Stronger Green for "Super Green" */
-            --change-green: #16a34a;       /* Standard Green */
-            --change-neutral-gray: #6b7280; /* Dus Grå */
-            --change-orange-warning: #f97316;/* Orange/Lighter Red */
-            --change-strong-red: #dc2626;  /* Strong Red */
+            --change-significant-positive: #15803d; /* Strong Green */
+            --change-moderate-positive: #16a34a;  /* Standard Green (same as --success-color) */
+            --change-minimal-neutral: #6b7280;    /* Dus Grå */
+            --change-moderate-negative: #f97316;  /* Orange/Lighter Red */
+            --change-significant-negative: #dc2626;/* Strong Red (same as --danger-color-dark) */
         }
         body {
             font-family: 'Avenir', sans-serif;
@@ -1065,7 +1065,13 @@
                     }
                 });
             }
-            updateNoDataMessage();
+            // Check for patient ID in local storage on load
+            const patientIdFromStorage = localStorage.getItem('selectedPatientIdForAnalysis');
+            if (patientIdFromStorage) {
+                loadPatientAnalysisData(patientIdFromStorage);
+            } else {
+                updateNoDataMessage();
+            }
         }
 
         // --- Status Message Utility ---
@@ -1180,6 +1186,7 @@
                 button.textContent = patientIdStr;
                 button.classList.add('modal-patient-id-button');
                 button.addEventListener('click', () => {
+                    localStorage.setItem('selectedPatientIdForAnalysis', patientIdStr); // Save to local storage
                     loadPatientAnalysisData(patientIdStr); 
                     closePatientModal();
                 });
@@ -1213,6 +1220,7 @@
                 if (!patientDocSnap.exists()) {
                     showStatusMessage(`Patient profile for ${selectedPatientId} not found.`, "error");
                     selectedPatientId = null;
+                    localStorage.removeItem('selectedPatientIdForAnalysis'); // Clear if not found
                     updateNoDataMessage();
                     loadingAnalysisMessage.style.display = 'none';
                     return;
@@ -1274,6 +1282,7 @@
                 console.error("Error loading patient analysis data:", error);
                 showStatusMessage("Error loading data. Check console.", "error");
                 selectedPatientId = null;
+                localStorage.removeItem('selectedPatientIdForAnalysis');
                 updateNoDataMessage();
             } finally {
                 loadingAnalysisMessage.style.display = 'none';
@@ -1341,23 +1350,6 @@
                 visibilityIconContainer.appendChild(icon);
                 li.appendChild(visibilityIconContainer);
 
-                // Delete button is visually hidden by CSS
-                const deleteBtn = document.createElement('button');
-                deleteBtn.classList.add('delete-log-item-btn'); 
-                deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
-                deleteBtn.title = "Delete this test";
-                deleteBtn.addEventListener('click', (e) => { 
-                    e.stopPropagation(); 
-                    showConfirmationModal(
-                        `Are you sure you want to delete the test from ${screeningDateStr} for patient "${selectedPatientId}"? This action cannot be undone.`,
-                        async () => {
-                            await deleteScreeningFromFirestore(selectedPatientId, screening.id);
-                        },
-                        "Confirm Deletion"
-                    );
-                });
-                // li.appendChild(deleteBtn); // Not appending as it's hidden by CSS
-
                 if (dateKey) {
                     li.dataset.dateKey = dateKey;
                     li.classList.toggle('active-date-filter', currentVisibility[dateKey]);
@@ -1372,6 +1364,7 @@
         }
         
         async function deleteScreeningFromFirestore(patientId, screeningDocId) {
+            // This function remains for potential future use, though the button is hidden.
             if (!currentUserId || !patientId || !screeningDocId) {
                 showStatusMessage("Error: Missing IDs for deletion.", "error");
                 return;
@@ -1517,7 +1510,6 @@
                 return;
             }
             
-            // Create one box per position
             POSITIONS.forEach(pos => {
                 const positionBox = document.createElement('div');
                 positionBox.className = 'position-analysis-box';
@@ -1534,7 +1526,7 @@
                         graphsGrid.appendChild(graphItem);
                         setTimeout(() => createTimeSeriesScatterPlot(processedAndGroupedData, pos, metric, graphDivId), 0);
                     });
-                } else { // Bar view
+                } else { 
                     [METRIC_KEYS.MAX_FORCE, METRIC_KEYS.RFD].forEach(metric => { 
                         const graphDivId = `bar-${pos}-${metric.replace(/[^a-zA-Z0-9]/g, '')}`;
                         let graphItem = document.createElement('div');
@@ -1551,8 +1543,9 @@
             return {
                 responsive: true,
                 displaylogo: false,
+                displayModeBar: false, // Completely hide the modebar
                 modeBarButtonsToRemove: ['sendDataToCloud', 'lasso2d', 'select2d', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'toggleSpikelines'],
-                modeBarButtonsToAdd: [{
+                 modeBarButtonsToAdd: [{ // Keep download button if needed, or remove this block
                     name: 'Download Plot as PNG',
                     icon: Plotly.Icons.camera,
                     click: function(gd) {
@@ -1700,7 +1693,7 @@
                     title: {text: ''} 
                 }, 
                 yaxis: { title: {text: metricKey, font: {size: 11}}, automargin: true, range: yAxisRange, zeroline: true },
-                margin: { l: 50, r: 20, b: 80, t: 80, pad: 5 }, 
+                margin: { l: 50, r: 20, b: 80, t: 30, pad: 5 }, // Reduced top margin
                 legend: {orientation: "h", yanchor: "top", y: -0.2, xanchor: "center", x: 0.5, font: {size: 10}},
                 annotations: [],
                 paper_bgcolor: 'rgba(0,0,0,0)',
@@ -1805,14 +1798,12 @@
 
         function getChangeClass(changePercent) { // For table
             if (changePercent === null || changePercent === undefined || !isFinite(changePercent)) return 'change-na';
-            const absPercent = Math.abs(changePercent);
-            // Using the "closer to 0 is better" logic for table as well, as per graph request for asymmetry.
-            // If a different logic is needed for table's L/R Ch%, this needs adjustment.
-            // For now, applying the same logic for consistency.
-            if (absPercent <= 10) return 'change-significant-positive'; // "Super Green"
-            if (absPercent <= 15) return 'change-moderate-positive';    // "Green"
-            if (absPercent <= 20) return 'change-moderate-negative'; // "Orange/Warning"
-            return 'change-significant-negative'; // "Red"
+            // This function now uses the directional logic for L/R changes.
+            if (changePercent > 15) return 'change-significant-positive';
+            if (changePercent > 5) return 'change-moderate-positive';
+            if (changePercent >= -5) return 'change-minimal-neutral';
+            if (changePercent >= -15) return 'change-moderate-negative';
+            return 'change-significant-negative';
         }
 
         function renderDetailedSummaryTable(dGBD_data) {
@@ -2026,4 +2017,3 @@
     </script>
 </body>
 </html>
-I have selected the whole docume
