@@ -1666,67 +1666,43 @@
             }
         }
 
-       function createTimeSeriesBarChart(dGBD_data, position, metricKey, divId) {
+        function createTimeSeriesBarChart(dGBD_data, position, metricKey, divId) {
             const plotDiv = document.getElementById(divId);
             if (!plotDiv) return;
 
-            // Fjern eventuell 'Loading...' melding
-            const existingPlaceholder = plotDiv.querySelector('.loading-placeholder');
-            if (existingPlaceholder) existingPlaceholder.remove();
-
-
-            const xValuesFormattedDates = dGBD_data.map(d => d['Test Date'].toLocaleDateString('nb-NO', {day:'2-digit', month:'short'}));
+            const xValuesFormattedDates = dGBD_data.map(d => d['Test Date'].toLocaleDateString('nb-NO', {day:'2-digit', month:'short'})); 
             const yValuesLeft = dGBD_data.map(d => d[position]?.[metricKey]?.Left);
             const yValuesRight = dGBD_data.map(d => d[position]?.[metricKey]?.Right);
 
             const traceLeft = {
                 x: xValuesFormattedDates, y: yValuesLeft, type: 'bar', name: 'Left',
-                marker: { color: LEFT_BAR_COLOR },
-                text: yValuesLeft.map(v => v !== null && v !== undefined ? v.toFixed(0) : ''),
-                textposition: 'inside', insidetextanchor: 'middle', // Endret til 'middle' for bedre sentrering i stolpen
-                textfont: { color: 'var(--white)', size: 12 }, // Redusert skriftstørrelse litt
+                marker: { color: LEFT_BAR_COLOR }, 
+                text: yValuesLeft.map(v => v !== null && v !== undefined ? v.toFixed(0) : ''), 
+                textposition: 'inside', insidetextanchor: 'end', 
+                textfont: { color: 'var(--white)', size: 14 }, 
                 hovertemplate: 'Left: %{y:.1f}<extra></extra>'
             };
             const traceRight = {
                 x: xValuesFormattedDates, y: yValuesRight, type: 'bar', name: 'Right',
-                marker: { color: RIGHT_BAR_COLOR },
-                text: yValuesRight.map(v => v !== null && v !== undefined ? v.toFixed(0) : ''),
-                textposition: 'inside', insidetextanchor: 'middle', // Endret til 'middle'
-                textfont: { color: 'var(--white)', size: 12 }, // Redusert skriftstørrelse litt
+                marker: { color: RIGHT_BAR_COLOR }, 
+                text: yValuesRight.map(v => v !== null && v !== undefined ? v.toFixed(0) : ''), 
+                textposition: 'inside', insidetextanchor: 'end', 
+                textfont: { color: 'var(--white)', size: 14 }, 
                 hovertemplate: 'Right: %{y:.1f}<extra></extra>'
             };
-
+            
             const allYValues = [...yValuesLeft, ...yValuesRight].filter(v => v !== null && v !== undefined && isFinite(v));
-            // Justert bufferfaktor og minAbsRange for å gjøre aksen litt strammere om nødvendig
-            const yAxisRange = calculateAxisRange(allYValues, 0.15, 10); // Tidligere 0.65, 20
+            const yAxisRange = calculateAxisRange(allYValues, 0.65, 20); 
 
             const layout = {
                 barmode: 'group',
-                xaxis: {
-                    automargin: true,
-                    tickangle: (xValuesFormattedDates.length > 5) ? -45 : 0, // Vinkle kun hvis mange datoer
-                    type: 'category',
-                    title: {text: ''},
-                    showgrid: false, // Fjernet rutenett på x-aksen
-                    zeroline: false // Fjernet null-linje på x-aksen
-                },
-                yaxis: {
-                    title: {text: metricKey, font: {size: 10}}, // Litt mindre font for aksetittel
-                    automargin: true,
-                    range: yAxisRange,
-                    zeroline: true,
-                    showgrid: true, // Beholdt rutenett på y-aksen for lesbarhet
-                    gridcolor: 'rgba(0,0,0,0.1)' // Lysere rutenettfarge
-                },
-                margin: { l: 45, r: 20, b: (xValuesFormattedDates.length > 5) ? 70 : 50, t: 30, pad: 5 }, // Redusert t fra 80 til 30, b justert
-                legend: {
-                    orientation: "h",
-                    yanchor: "bottom", // Endret til bottom
-                    y: 1.02,         // Plassert over grafen
-                    xanchor: "center",
-                    x: 0.5,
-                    font: {size: 10}
-                },
+                xaxis: { 
+                    automargin: true, tickangle: -45, type: 'category', 
+                    title: {text: ''} 
+                }, 
+                yaxis: { title: {text: metricKey, font: {size: 11}}, automargin: true, range: yAxisRange, zeroline: true },
+                margin: { l: 50, r: 20, b: 80, t: 80, pad: 5 }, 
+                legend: {orientation: "h", yanchor: "top", y: -0.2, xanchor: "center", x: 0.5, font: {size: 10}}, // Legend bottom-center
                 annotations: [],
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)',
@@ -1743,7 +1719,7 @@
                 if (Lval !== null && Lval !== undefined && Rval !== null && Rval !== undefined && patientActualInjuredSide) {
                     const injuredVal = patientActualInjuredSide === 'Left' ? Lval : Rval;
                     const uninjuredVal = patientActualInjuredSide === 'Left' ? Rval : Lval;
-                    if (uninjuredVal !== 0 && isFinite(uninjuredVal) && uninjuredVal !== null && injuredVal !== null) { // Sjekk for null også
+                    if (uninjuredVal !== 0 && isFinite(uninjuredVal)) { 
                         asymmetryPercent = ((injuredVal - uninjuredVal) / Math.abs(uninjuredVal)) * 100;
                     }
                 }
@@ -1759,42 +1735,41 @@
                         changePercentR = ((Rval - prevRval) / Math.abs(prevRval)) * 100;
                     }
                 }
-
+                
                 const barTopY = Math.max(Lval || 0, Rval || 0);
-                const xCategory = xValuesFormattedDates[index];
-                const annotationOffsetFactor = 0.05; // Redusert offset for mindre luft
+                const xCategory = xValuesFormattedDates[index]; 
+                const annotationOffsetFactor = 0.07; 
                 const yOffsetStep = (yAxisRange[1] - yAxisRange[0]) * annotationOffsetFactor;
-                const annotationBaseY = barTopY + yOffsetStep * 0.5; // Start litt nærmere stolpen
 
                 // L Change %
                 if (changePercentL !== null) {
                     layout.annotations.push({
-                        x: xCategory, y: annotationBaseY,
+                        x: xCategory, y: barTopY + yOffsetStep * 1, 
                         xref: 'x', yref: 'y',
-                        text: `${changePercentL > 0 ? '+' : ''}${changePercentL.toFixed(0)}%`,
-                        showarrow: false, font: {size: 11, color: changePercentL > 5 ? 'var(--success-color)' : (changePercentL < -5 ? 'var(--danger-color-dark)' : 'var(--dark-gray)')},
-                        xshift: -18, yshift: 0, xanchor: 'center', yanchor: 'bottom' // Justert xshift
+                        text: `${changePercentL > 0 ? '+' : ''}${changePercentL.toFixed(0)}%`, 
+                        showarrow: false, font: {size: 14, color: changePercentL > 0 ? 'var(--success-color)' : 'var(--danger-color-dark)'},
+                        xshift: -22, yshift: 0, xanchor: 'center', yanchor: 'bottom'
                     });
                 }
                 // R Change %
                 if (changePercentR !== null) {
                      layout.annotations.push({
-                        x: xCategory, y: annotationBaseY,
+                        x: xCategory, y: barTopY + yOffsetStep * 1, 
                         xref: 'x', yref: 'y',
-                        text: `${changePercentR > 0 ? '+' : ''}${changePercentR.toFixed(0)}%`,
-                        showarrow: false, font: {size: 11, color: changePercentR > 5 ? 'var(--success-color)' : (changePercentR < -5 ? 'var(--danger-color-dark)' : 'var(--dark-gray)')},
-                        xshift: 18, yshift: 0, xanchor: 'center', yanchor: 'bottom' // Justert xshift
+                        text: `${changePercentR > 0 ? '+' : ''}${changePercentR.toFixed(0)}%`, 
+                        showarrow: false, font: {size: 14, color: changePercentR > 0 ? 'var(--success-color)' : 'var(--danger-color-dark)'},
+                        xshift: 22, yshift: 0, xanchor: 'center', yanchor: 'bottom'
                     });
                 }
-
+                
                 // Asymmetry % - Placed above the change %
                 if (asymmetryPercent !== null) {
                      layout.annotations.push({
-                        x: xCategory, y: annotationBaseY + yOffsetStep * 2.5, // Økt yOffset for å plassere over change%
-                        text: `${asymmetryPercent > 0 ? '+' : ''}${asymmetryPercent.toFixed(0)}%`,
-                        showarrow: false,
+                        x: xCategory, y: barTopY + yOffsetStep * 3, 
+                        text: `${asymmetryPercent > 0 ? '+' : ''}${asymmetryPercent.toFixed(0)}%`, 
+                        showarrow: false, 
                         font: {
-                            size: 13, // Litt mindre
+                            size: 16, 
                             color: asymmetryPercent >= -10 ? 'var(--success-color)' : (asymmetryPercent >= -15 ? 'var(--warning-color)' : 'var(--danger-color-dark)')
                         },
                         xanchor: 'center', yanchor: 'bottom'
@@ -1808,8 +1783,7 @@
                         if(placeholder) placeholder.style.display = 'none';
                     });
             } catch(e) {
-                plotDiv.innerHTML = `<p style="color:red; text-align:center; padding: 10px;">Error rendering bar chart.</p>`;
-                 console.error(`Error rendering bar chart for ${divId}:`, e);
+                plotDiv.innerHTML = `<p style="color:red;">Error rendering bar chart: ${e.message}</p>`;
             }
         }
         
