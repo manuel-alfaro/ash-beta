@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient History Analysis</title>
+    <title>Patient History Analysis</title>    
     <script src="https://cdn.plot.ly/plotly-2.27.1.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Avenir:wght@400&family=Futura:wght@400&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" xintegrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -22,21 +22,28 @@
             --app-button-hover-gradient-end: #121630; 
             --app-button-light-gradient-start: rgba(112, 188, 252, 0.8); 
             --app-button-light-gradient-end: rgba(40, 84, 132, 0.9); 
-            
+           
             --light-gray: #f8f9fa; 
             --box-background-color: #f0f2f5; /* Sidebar and other boxes */
             --medium-gray: #dee2e6;
             --dark-gray: #495057;
             --text-color: #212529;
 
+            /* Standard Colors from original user CSS */
             --success-color: #16a34a; /* Standard Green */
-            --success-border-color: #217e72; 
-            --success-shadow-color: rgba(22, 163, 74, 0.45);  
-            --success-gradient-start-color: rgba(22, 163, 74, 1); 
-
             --warning-color: #f97316; /* Orange for moderate negative/warning */
             --danger-color-dark: #dc2626; /* Strong Red */
             --white: #ffffff; 
+
+            /* User-provided specific colors for new logic */
+            --asym-green: #15803d;          /* Asymmetry: >= -10% (Green) */
+            --asym-orange-warning: #f97316; /* Asymmetry: < -10% to -15% (Gold/Orange) */
+            --asym-strong-red: #b91c1c;     /* Asymmetry: < -15% (Red as hell) */
+            /* --asym-super-green: #14532d; was for abs Asym <= 5%, new logic is simpler */
+            
+            --change-positive: #16a34a;     /* L/R Change: Positive (Green) */
+            --change-negative: #dc2626;     /* L/R Change: Negative (Red) */
+            --change-neutral: #6b7280;      /* L/R Change: Neutral/0% (Gray) */
             
             --border-radius-general: 6px; 
             --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); 
@@ -75,17 +82,6 @@
             --print-right-value-cell-bg: rgba(255, 127, 14, 0.08);
             --print-light-gray: #f8f9fa;
             --print-medium-gray: #dee2e6;
-
-            /* New colors for percentage changes (asymmetry logic: closer to 0 is better) */
-            --asym-super-green: #14532d; /* For abs Asym <= 5% */
-            --asym-green: #15803d;       /* For abs Asym <= 10% */
-            --asym-orange-warning: #f97316; /* For abs Asym <= 15% (was 20%) */
-            --asym-strong-red: #b91c1c;   /* For abs Asym > 15% */
-            
-            /* Colors for L/R change (directional) */
-            --change-positive: #16a34a; /* Standard Green for any positive change */
-            --change-negative: #dc2626; /* Strong Red for any negative change */
-            --change-neutral: #6b7280;   /* Neutral gray for ~0% change */
         }
         body {
             font-family: 'Avenir', sans-serif;
@@ -309,7 +305,7 @@
         }
         h3.position-title, h3.normative-title { font-size: 1.15rem; color: var(--app-primary-color); margin-bottom: 0.3em; font-weight: var(--normal-font-weight); }
         h3.normative-title { text-align: center;}
-        
+       
         /* Patient Selection Area */
         #patient-selection-container { 
              margin-bottom: 25px;
@@ -466,7 +462,7 @@
         }
         .edit-profile-button:hover { background-color: transparent; color: var(--app-secondary-color); }
         .edit-profile-button i { color: inherit; }
-        
+       
         .patient-card-header {
             display: flex; align-items: center; margin-bottom: 15px; padding-bottom: 15px;
             justify-content: flex-start;
@@ -488,7 +484,7 @@
             padding-bottom: 10px; border-bottom: 1px solid var(--medium-gray);
             margin-top:0; font-weight: var(--normal-font-weight);
         }
-        
+       
         #selected-patient-tests-list { 
             list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap;
             gap: 10px; overflow-y: auto; flex-grow: 1; justify-content: flex-start;
@@ -545,7 +541,7 @@
         .delete-log-item-btn { 
            display: none; /* Delete button is visually removed from list items */
         }
-        
+       
 
         /* NYE CSS-REGLER FOR GRAFER OG TABELLER FRA BRUKER */
 
@@ -717,20 +713,21 @@
             margin-left: 0.1em;
         }
 
-        /* Detailed Change Percentage Classes for Table Values (Arrow and Superscript) */
-        .change-significant-positive { color: var(--change-significant-positive) !important; }
-        .change-moderate-positive  { color: var(--change-moderate-positive) !important; }
-        .change-minimal-neutral    { color: var(--change-minimal-neutral) !important; }
-        .change-moderate-negative  { color: var(--change-moderate-negative) !important; }
-        .change-significant-negative{ color: var(--change-significant-negative) !important; }
-        .change-na                 { color: var(--dark-gray) !important; font-style: italic; }
-        
+        /* NEW Simplified Table Cell Color Classes */
+        .change-positive-table { color: var(--change-positive) !important; }
+        .change-negative-table { color: var(--change-negative) !important; }
+        .change-neutral-table  { color: var(--change-neutral) !important; }
+        .asym-green-table      { color: var(--asym-green) !important; }
+        .asym-gold-table       { color: var(--asym-orange-warning) !important; } /* Using orange for gold */
+        .asym-red-table        { color: var(--asym-strong-red) !important; }
+        .change-na             { color: var(--dark-gray) !important; font-style: italic; }
+       
         .summary-table .asymmetry-cell {
             /* General style for asymmetry cell, color will be applied by specific class */
         }
 
 
-        
+       
         #analysis-controls {
             display: flex;
             flex-wrap: wrap;
@@ -773,14 +770,14 @@
             color: var(--app-text-on-primary);
             border-color: var(--app-secondary-color);
         }
-        
+       
         #analysis-graphs-container { /* This will now contain .position-analysis-box elements */
             display: flex;
             flex-direction: column; /* Stack position boxes vertically */
             gap: 2rem; /* Space between position boxes */
             margin-bottom: 30px;
         }
-        
+       
         #analysis-table-container { 
             margin-top: 30px;
             overflow-x: auto; 
@@ -789,7 +786,7 @@
              margin-top:0;
              margin-bottom:0.5em;
         }
-        
+       
         #no-data-message, #loading-analysis-message {
             text-align: center;
             font-size: 1.1rem;
@@ -844,7 +841,7 @@
         <main class="app-main-content">
             <div class="content-container">
                 <h1>Patient History Analysis</h1>
-                
+               
                 <div id="patient-selection-container">
                     <h2 class="section-title-main" style="margin-top: 0; margin-bottom: 0.5em;">Select Patient</h2>
                     <div id="patient-selection-area">
@@ -854,7 +851,7 @@
                         </div>
                     </div>
                 </div>
-                
+               
                 <h2 id="patient-details-title" class="section-title-main" style="display: none;">Details</h2>
                 <div id="patient-overview-section"> 
                     <div class="overview-column patient-details-column">
@@ -908,7 +905,7 @@
                     <div id="analysis-graphs-container"> 
                         </div>
 
-                    <div id="analysis-table-container" class="summary-container-box">                         
+                    <div id="analysis-table-container" class="summary-container-box">                                     
                         <h2 class="section-title-main summary-title">Detailed Summary</h2>
                         <div id="summary-table-wrapper">
                             </div>
@@ -962,7 +959,7 @@
             Y: { poor_max: 1.25, average_mid: 1.4, good_min: 1.6, excellent_min: 1.76 },
             T: { poor_max: 1.15, average_mid: 1.25, good_min: 1.4, excellent_min: 1.58 }
         };
-        
+       
         const NORM_ZONE_COLORS = {
             POOR: getComputedStyle(document.documentElement).getPropertyValue('--norm-poor-bg').trim() || 'rgba(252, 165, 165, 0.5)',
             AVERAGE: getComputedStyle(document.documentElement).getPropertyValue('--norm-average-bg').trim() || 'rgba(252, 211, 77, 0.5)',
@@ -998,7 +995,7 @@
         const displayInjuredSideCard = document.getElementById('display-injured-side-card');
         const displayBodyweightCard = document.getElementById('display-bodyweight-card');
         const editPatientProfileButton = document.getElementById('edit-patient-profile-btn');
-        
+       
         const selectedPatientTestsContainer = document.getElementById('selected-patient-tests-container');
         const selectedPatientTestsListUL = document.getElementById('selected-patient-tests-list');
 
@@ -1041,7 +1038,7 @@
                     loggedInUserNameSpan.textContent = 'Hi User!';
                     loggedInUserEmailDisplaySpan.textContent = currentUser.email || '';
                 }
-                
+               
                 initializeAppUI();
                 appLoadingMessage.style.display = 'none';
                 appLayout.style.display = 'flex';
@@ -1103,7 +1100,7 @@
                 appStatusMessage.style.display = 'none';
             }, duration);
         }
-        
+       
         // --- Confirmation Modal ---
         function showConfirmationModal(message, onConfirmCallback, title = "Confirm Action") {
             const modalTitleEl = document.getElementById('confirmation-modal-title');
@@ -1123,9 +1120,9 @@
                 confirmationConfirmBtn.removeEventListener('click', handleConfirmClick);
                 confirmationCancelBtn.removeEventListener('click', handleCancelClick);
             };
-            
-            confirmationConfirmBtn.removeEventListener('click', handleConfirmClick);
-            confirmationCancelBtn.removeEventListener('click', handleCancelClick);
+           
+            confirmationConfirmBtn.removeEventListener('click', handleConfirmClick); // Remove previous if any
+            confirmationCancelBtn.removeEventListener('click', handleCancelClick); // Remove previous if any
 
             confirmationConfirmBtn.addEventListener('click', handleConfirmClick);
             confirmationCancelBtn.addEventListener('click', handleCancelClick);
@@ -1155,7 +1152,7 @@
             patientModalContent.innerHTML = modalHTML;
 
             await populateModalPatientButtonsForAnalysis();
-            
+           
             const modalSearchInput = patientModalContent.querySelector('#modal-search-fp-nr-analysis');
             if (modalSearchInput) {
                 modalSearchInput.addEventListener('input', (e) => {
@@ -1164,7 +1161,7 @@
             }
             patientModalContent.querySelector('#modal-cancel-search-analysis')?.addEventListener('click', closePatientModal);
         }
-        
+       
         async function populateModalPatientButtonsForAnalysis(forceRefresh = false) {
             const container = document.getElementById('modal-patient-id-button-container-analysis');
             if (!container || !currentUserId) return;
@@ -1212,7 +1209,7 @@
                 container.appendChild(button);
             });
         }
-        
+       
         function closePatientModal() {
             patientModalOverlay.style.display = 'none';
             patientModalContent.innerHTML = '';
@@ -1252,7 +1249,7 @@
                 const screeningsRef = collection(db, "users", currentUserId, "patients", selectedPatientId, "screenings");
                 const q = query(screeningsRef, orderBy("testTimestamp", "asc")); 
                 const screeningsSnapshot = await getDocs(q);
-                
+               
                 allScreeningsForSelectedPatient = [];
                 screeningsSnapshot.forEach(docSnap => {
                     allScreeningsForSelectedPatient.push({ id: docSnap.id, ...docSnap.data() });
@@ -1271,7 +1268,7 @@
                     summaryTableWrapper.innerHTML = '';
                     return;
                 }
-                
+               
                 testDateVisibility = {};
                 firstTestDateForPatient = null;
                 if (allScreeningsForSelectedPatient.length > 0) {
@@ -1291,7 +1288,7 @@
                     }
                     if (dateKey) testDateVisibility[dateKey] = true; 
                 });
-                
+               
                 updateTestLogDisplay(allScreeningsForSelectedPatient, testDateVisibility); 
                 prepareAndRenderAnalysis();
                 analysisMainContent.style.display = 'block';
@@ -1307,7 +1304,7 @@
                 loadingAnalysisMessage.style.display = 'none';
             }
         }
-        
+       
         function updatePatientProfileCard(profileData) {
             if (!profileData || !patientIdentityCard) return;
             displayPatientIdCard.textContent = selectedPatientId || 'N/A';
@@ -1317,7 +1314,7 @@
             displayInjuryCard.textContent = profileData.injury || 'N/A';
             displayInjuredSideCard.textContent = profileData.injuredSide || 'N/A';
             displayBodyweightCard.textContent = profileData.bodyweight ? `${profileData.bodyweight} kg` : 'N/A';
-            
+           
             patientIdentityCard.style.display = 'flex';
             selectedPatientTestsContainer.style.display = 'flex'; 
             patientOverviewSection.style.display = 'flex';
@@ -1332,10 +1329,10 @@
             screenings.forEach(screening => {
                 const li = document.createElement('li');
                 li.classList.add('test-log-item');
-                
+               
                 const dateSpan = document.createElement('span');
                 dateSpan.classList.add('test-date-span');
-                
+               
                 let screeningDateObj = null;
                 let screeningDateStr = "Invalid Date";
                 let dateKey = null;
@@ -1350,7 +1347,7 @@
                     screeningDateStr = screeningDateObj.toLocaleDateString('nb-NO', { day: '2-digit', month: 'short', year: 'numeric' });
                     dateKey = screeningDateObj.toISOString().split('T')[0];
                 }
-                
+               
                 dateSpan.textContent = screeningDateStr;
                 li.appendChild(dateSpan);
 
@@ -1358,7 +1355,7 @@
                 visibilityIconContainer.classList.add('test-visibility-icon');
                 const icon = document.createElement('i');
                 icon.classList.add('fas');
-                
+               
                 if (dateKey && currentVisibility[dateKey]) {
                     icon.classList.remove('fa-times-circle');
                     icon.classList.add('fa-check-circle'); 
@@ -1381,7 +1378,7 @@
                 selectedPatientTestsListUL.appendChild(li);
             });
         }
-        
+       
         async function deleteScreeningFromFirestore(patientId, screeningDocId) {
             // This function remains for potential future use, though the button is hidden.
             if (!currentUserId || !patientId || !screeningDocId) {
@@ -1399,7 +1396,7 @@
                 showStatusMessage("Error deleting test. Check console.", "error");
             }
         }
-        
+       
         function prepareAndRenderAnalysis() {
             if (!allScreeningsForSelectedPatient || allScreeningsForSelectedPatient.length === 0) {
                 analysisGraphsContainer.innerHTML = '<div class="graph-section-box"><div class="loading-placeholder">No data to analyze.</div></div>';
@@ -1410,7 +1407,7 @@
             const internalStructure = transformRawScreeningsToInternalStructure(allScreeningsForSelectedPatient, selectedPatientProfileData);
             const processedData = processAndFilterData(internalStructure, testDateVisibility, firstTestDateForPatient);
             processedAndGroupedData = groupDataByDateForAnalysis(processedData);
-            
+           
             renderAnalysisContent(); 
         }
 
@@ -1421,12 +1418,12 @@
             rawScreenings.forEach(screening => {
                 const testDate = screening.testTimestamp && screening.testTimestamp.toDate ? screening.testTimestamp.toDate() : new Date(screening.testTimestamp);
                 const bodyweight = screening.bodyweightAtScreening !== undefined && screening.bodyweightAtScreening !== null ? screening.bodyweightAtScreening : (profileData.bodyweight !== undefined && profileData.bodyweight !== null ? profileData.bodyweight : null);
-                
+               
                 POSITIONS.forEach(pos => {
                     const ashTestDataForPos = screening.ashTest ? screening.ashTest[pos] : null;
                     if (ashTestDataForPos) {
                         let leftMaxForce, rightMaxForce, leftRfd, rightRfd;
-                        
+                       
                         const screeningRecordInjuredSide = ashTestDataForPos.injuredSideAtScreening || screening.injuredSideAtScreening || patientProfileInjuredSide;
 
                         if (screeningRecordInjuredSide === 'Left') {
@@ -1440,7 +1437,7 @@
                             rightMaxForce = ashTestDataForPos.injuredMaxForce;
                             rightRfd = ashTestDataForPos.injuredRfd;
                         }
-                        
+                       
                         transformed.push({
                             'Test Date': testDate, 'Position Clean': pos, 'Metric': METRIC_KEYS.MAX_FORCE,
                             'Left Value': leftMaxForce, 'Right Value': rightMaxForce,
@@ -1462,7 +1459,7 @@
             });
             return transformed;
         }
-        
+       
         function processAndFilterData(internalStructure, currentTestDateVisibility, firstTestDate) {
             if (!firstTestDate) return [];
             return internalStructure
@@ -1498,7 +1495,7 @@
                 }
                 if (!grouped[dateStr][item['Position Clean']]) grouped[dateStr][item['Position Clean']] = {};
                 if (!grouped[dateStr][item['Position Clean']][item['Metric']]) grouped[dateStr][item['Position Clean']][item['Metric']] = {};
-                
+               
                 grouped[dateStr][item['Position Clean']][item['Metric']] = {
                     Left: item['Left Value'],
                     Right: item['Right Value']
@@ -1511,14 +1508,14 @@
 
 
         // --- UI Rendering for Analysis ---
-        
+       
         function switchViewMode(mode) {
             currentViewMode = mode;
             scatterViewBtn.classList.toggle('active-view-btn', mode === 'scatter');
             barViewBtn.classList.toggle('active-view-btn', mode === 'bar');
             renderAnalysisContent(); 
         }
-        
+       
         function renderAnalysisContent() {
             analysisGraphsContainer.innerHTML = ''; 
             summaryTableWrapper.innerHTML = ''; 
@@ -1528,13 +1525,13 @@
                 summaryTableWrapper.innerHTML = '<div class="summary-position-block"><p>No data for summary table based on current filters.</p></div>';
                 return;
             }
-            
+           
             POSITIONS.forEach(pos => {
                 const positionBox = document.createElement('div');
                 positionBox.className = 'position-analysis-box';
                 positionBox.innerHTML = `<h2 class="position-analysis-box-title">Position ${pos} Analysis</h2><div class="position-graphs-grid"></div>`;
                 analysisGraphsContainer.appendChild(positionBox);
-                
+               
                 const graphsGrid = positionBox.querySelector('.position-graphs-grid');
 
                 if (currentViewMode === 'scatter') {
@@ -1557,7 +1554,7 @@
             });
             renderDetailedSummaryTable(processedAndGroupedData);
         }
-        
+       
         function getPlotlyConfig() {
             return {
                 responsive: true,
@@ -1585,14 +1582,14 @@
                 }]
             };
         }
-        
+       
         function calculateAxisRange(values, bufferFactor = 0.1, minAbsRange = 10) {
             const numericValues = values.filter(v => typeof v === 'number' && isFinite(v));
             if (numericValues.length === 0) return [0, minAbsRange]; 
 
             let minVal = Math.min(...numericValues);
             let maxVal = Math.max(...numericValues);
-            
+           
             if (minVal === maxVal) { 
                 minVal -= minAbsRange / 2;
                 maxVal += minAbsRange / 2;
@@ -1600,7 +1597,7 @@
 
             const currentRange = maxVal - minVal;
             const buffer = currentRange * bufferFactor;
-            
+           
             let finalMin = minVal - buffer;
             let finalMax = maxVal + buffer;
 
@@ -1631,7 +1628,7 @@
                 line: { color: RIGHT_COLOR, width: 2, shape: 'spline' }, marker: { color: RIGHT_COLOR, size: 7 }, 
                 hovertemplate: 'Right: %{y:.2f}<extra></extra>'
             };
-            
+           
             const allYValues = [...yValuesLeft, ...yValuesRight].filter(v => v !== null && v !== undefined && isFinite(v));
             const yRangeSettings = calculateAxisRange(allYValues, 0.15, metricKey === METRIC_KEYS.NORM_MAX_FORCE ? 0.5 : 20);
 
@@ -1665,7 +1662,7 @@
                     });
                 });
             }
-            
+           
             try {
                  Plotly.newPlot(divId, [traceLeft, traceRight], layout, getPlotlyConfig())
                     .then(() => {
@@ -1701,7 +1698,7 @@
                 textfont: { color: 'var(--white)', size: 14 }, 
                 hovertemplate: 'Right: %{y:.1f}<extra></extra>'
             };
-            
+           
             const allYValues = [...yValuesLeft, ...yValuesRight].filter(v => v !== null && v !== undefined && isFinite(v));
             const yAxisRange = calculateAxisRange(allYValues, 0.65, 20); 
 
@@ -1746,7 +1743,7 @@
                         changePercentR = ((Rval - prevRval) / Math.abs(prevRval)) * 100;
                     }
                 }
-                
+               
                 const barTopY = Math.max(Lval || 0, Rval || 0);
                 const xCategory = xValuesFormattedDates[index]; 
                 const annotationOffsetFactor = 0.07; 
@@ -1774,7 +1771,7 @@
                         xshift: 22, yshift: 0, xanchor: 'center', yanchor: 'bottom'
                     });
                 }
-                
+               
                 // Asymmetry % - Placed above the change %
                 if (asymmetryPercent !== null) {
                     let asymColor = getComputedStyle(document.documentElement).getPropertyValue(getCssVariableForChange(asymmetryPercent, true)).trim(); 
@@ -1795,273 +1792,273 @@
                     });
             } catch(e) {
                 plotDiv.innerHTML = `<p style="color:red; text-align:center; padding: 10px;">Error rendering bar chart.</p>`;
-                 console.error(`Error rendering bar chart for ${divId}:`, e);
-            }
-        }
-        
+                 console.error(`Error rendering bar chart for ${divId}:`, e);
+            }
+        }
+       
         function getCssVariableForChange(percent, isAsymmetry = false) {
-            if (percent === null || percent === undefined || !isFinite(percent)) return '--change-neutral-gray'; // Default for N/A
-            const absPercent = Math.abs(percent);
+            if (percent === null || percent === undefined || !isFinite(percent)) return '--change-neutral'; 
 
-            if (isAsymmetry) { // Asymmetry: closer to 0 is better
-                if (absPercent <= 5) return '--change-super-green';  
-                if (absPercent <= 10) return '--change-green';      
-                if (absPercent <= 15) return '--change-orange-warning'; 
-                return '--change-strong-red';                       
-            } else { // Regular L/R change: positive is green, negative is red
-                if (percent > 0) return '--change-green'; // All positive changes are green
-                if (percent < 0) return '--change-strong-red'; // All negative changes are red
-                return '--change-neutral-gray'; // For 0% change
+            if (isAsymmetry) {
+                // User: alt over -10% opp til null og oppover må være grønt.
+                // User: under 10% til 15 gull
+                // User: !5% og mindre rødt som faen
+                if (percent >= -10) return '--asym-green';         // Green for -10% and above
+                if (percent < -10 && percent >= -15) return '--asym-orange-warning'; // Gold/Orange for < -10% down to -15%
+                return '--asym-strong-red';                        // Red for < -15%
+            } else { // Regular L/R change
+                // User: alt negativt skal være rødt og alt positivt skal være grønt
+                if (percent > 0) return '--change-positive';      // Green for positive
+                if (percent < 0) return '--change-negative';      // Red for negative
+                return '--change-neutral';                         // Neutral for 0%
             }
         }
 
-        function getChangeClassForTable(changePercent, isAsymmetry = false) { 
-            if (changePercent === null || changePercent === undefined || !isFinite(changePercent)) return 'change-na';
-            const absPercent = Math.abs(changePercent);
+        function getChangeClassForTable(changePercent, isAsymmetry = false) { 
+            if (changePercent === null || changePercent === undefined || !isFinite(changePercent)) return 'change-na';
 
-            if (isAsymmetry) { // Closer to 0 is better
-                if (absPercent <= 5) return 'change-significant-positive'; // Maps to --change-super-green
-                if (absPercent <= 10) return 'change-moderate-positive';    // Maps to --change-green
-                if (absPercent <= 15) return 'change-moderate-negative'; // Maps to --change-orange-warning
-                return 'change-significant-negative'; // Maps to --change-strong-red
-            } else { // Directional: positive is good, negative is bad for L/R change
-                if (changePercent > 0) return 'change-moderate-positive'; // Green
-                if (changePercent < 0) return 'change-significant-negative'; // Red
-                return 'change-minimal-neutral'; // Gray for 0%
+            if (isAsymmetry) { // Asymmetry: specific thresholds
+                if (changePercent >= -10) return 'asym-green-table';        // Green
+                if (changePercent < -10 && changePercent >= -15) return 'asym-gold-table'; // Gold/Orange
+                return 'asym-red-table';                                    // Red
+            } else { // Directional L/R change: positive is green, negative is red
+                if (changePercent > 0) return 'change-positive-table';    // Green
+                if (changePercent < 0) return 'change-negative-table';    // Red
+                return 'change-neutral-table';                             // Gray for 0%
             }
-        }
+        }
 
-        function renderDetailedSummaryTable(dGBD_data) {
-            summaryTableWrapper.innerHTML = ''; 
-            if (!dGBD_data || dGBD_data.length === 0) {
-                summaryTableWrapper.innerHTML = '<div class="summary-position-block"><p>No data for summary table.</p></div>';
-                return;
-            }
+        function renderDetailedSummaryTable(dGBD_data) {
+            summaryTableWrapper.innerHTML = ''; 
+            if (!dGBD_data || dGBD_data.length === 0) {
+                summaryTableWrapper.innerHTML = '<div class="summary-position-block"><p>No data for summary table.</p></div>';
+                return;
+            }
 
-            const table = document.createElement('table');
-            table.className = 'summary-table';
-            const thead = table.createTHead();
-            const tbody = table.createTBody();
+            const table = document.createElement('table');
+            table.className = 'summary-table';
+            const thead = table.createTHead();
+            const tbody = table.createTBody();
 
-            let headerRow1 = thead.insertRow();
-            let metricTh = headerRow1.insertCell();
-            metricTh.textContent = 'Metric';
-            metricTh.classList.add('metric-header');
-            
-            dGBD_data.forEach(session => {
-                const th = document.createElement('th');
-                th.colSpan = 3; // L Val (%Chg), R Val (%Chg), Asym %
-                th.textContent = session['Test Date'].toLocaleDateString('nb-NO', {day:'2-digit', month:'short', year:'numeric'});
-                th.classList.add('date-header', 'date-column-group');
-                headerRow1.appendChild(th);
-            });
+            let headerRow1 = thead.insertRow();
+            let metricTh = headerRow1.insertCell();
+            metricTh.textContent = 'Metric';
+            metricTh.classList.add('metric-header');
+           
+            dGBD_data.forEach(session => {
+                const th = document.createElement('th');
+                th.colSpan = 3; // L Val (%Chg), R Val (%Chg), Asym %
+                th.textContent = session['Test Date'].toLocaleDateString('nb-NO', {day:'2-digit', month:'short', year:'numeric'});
+                th.classList.add('date-header', 'date-column-group');
+                headerRow1.appendChild(th);
+            });
 
-            let headerRow2 = thead.insertRow();
-            headerRow2.insertCell(); 
-            dGBD_data.forEach(() => {
-                ['L Val (%Chg)', 'R Val (%Chg)', 'Asym %'].forEach(subCol => {
-                    let subTh = headerRow2.insertCell();
-                    subTh.textContent = subCol;
-                    subTh.classList.add('sub-header');
-                });
-            });
-            
-            thead.rows[0].cells[0].rowSpan = 2;
-            thead.rows[1].cells[0].remove();
+            let headerRow2 = thead.insertRow();
+            headerRow2.insertCell(); 
+            dGBD_data.forEach(() => {
+                ['L Val (%Chg)', 'R Val (%Chg)', 'Asym %'].forEach(subCol => {
+                    let subTh = headerRow2.insertCell();
+                    subTh.textContent = subCol;
+                    subTh.classList.add('sub-header');
+                });
+            });
+           
+            thead.rows[0].cells[0].rowSpan = 2;
+            thead.rows[1].cells[0].remove();
 
-            POSITIONS.forEach(pos => {
-                let posHeaderRow = tbody.insertRow();
-                let posTh = document.createElement('th');
-                posTh.colSpan = 1 + dGBD_data.length * 3; // Adjusted colspan
-                posTh.textContent = `Position ${pos}`;
-                posHeaderRow.appendChild(posTh);
-                posHeaderRow.style.backgroundColor = 'var(--app-secondary-color)'; 
-                posHeaderRow.style.color = 'var(--app-text-on-secondary)';
+            POSITIONS.forEach(pos => {
+                let posHeaderRow = tbody.insertRow();
+                let posTh = document.createElement('th');
+                posTh.colSpan = 1 + dGBD_data.length * 3; // Adjusted colspan
+                posTh.textContent = `Position ${pos}`;
+                posHeaderRow.appendChild(posTh);
+                posHeaderRow.style.backgroundColor = 'var(--app-secondary-color)'; 
+                posHeaderRow.style.color = 'var(--app-text-on-secondary)';
 
 
-                [METRIC_KEYS.MAX_FORCE, METRIC_KEYS.RFD, METRIC_KEYS.NORM_MAX_FORCE].forEach(metricKey => {
-                    let metricRow = tbody.insertRow();
-                    let labelCell = metricRow.insertCell();
-                    labelCell.textContent = metricKey;
-                    labelCell.classList.add('metric-label');
+                [METRIC_KEYS.MAX_FORCE, METRIC_KEYS.RFD, METRIC_KEYS.NORM_MAX_FORCE].forEach(metricKey => {
+                    let metricRow = tbody.insertRow();
+                    let labelCell = metricRow.insertCell();
+                    labelCell.textContent = metricKey;
+                    labelCell.classList.add('metric-label');
 
-                    dGBD_data.forEach((session, index) => {
-                        const metricData = session[pos]?.[metricKey];
-                        const Lval = metricData?.Left;
-                        const Rval = metricData?.Right;
-                        
-                        let LchangePercentNum = null; 
-                            let RchangePercentNum = null;
-                            let asymmetryPercentNum = null;
+                    dGBD_data.forEach((session, index) => {
+                        const metricData = session[pos]?.[metricKey];
+                        const Lval = metricData?.Left;
+                        const Rval = metricData?.Right;
+                       
+                        let LchangePercentNum = null; 
+                         let RchangePercentNum = null;
+                         let asymmetryPercentNum = null;
 
-                        if (index > 0) {
-                            const prevSession = dGBD_data[index-1];
-                            const prevMetricData = prevSession[pos]?.[metricKey];
-                            if (prevMetricData) {
-                                if (Lval !== null && Lval !== undefined && prevMetricData.Left !== null && prevMetricData.Left !== undefined && prevMetricData.Left !== 0 && isFinite(prevMetricData.Left)) {
-                                    LchangePercentNum = ((Lval - prevMetricData.Left) / Math.abs(prevMetricData.Left)) * 100;
-                                }
-                                if (Rval !== null && Rval !== undefined && prevMetricData.Right !== null && prevMetricData.Right !== undefined && prevMetricData.Right !== 0 && isFinite(prevMetricData.Right)) {
-                                    RchangePercentNum = ((Rval - prevMetricData.Right) / Math.abs(prevMetricData.Right)) * 100;
-                                }
-                            }
-                        }
-                            if (Lval !== null && Lval !== undefined && Rval !== null && Rval !== undefined && session['Injured Side Profile']) {
-                                const injuredVal = session['Injured Side Profile'] === 'Left' ? Lval : Rval;
-                                const uninjuredVal = session['Injured Side Profile'] === 'Left' ? Rval : Lval;
-                                if (uninjuredVal !== 0 && isFinite(uninjuredVal)) {
-                                    asymmetryPercentNum = ((injuredVal - uninjuredVal) / Math.abs(uninjuredVal)) * 100;
+                        if (index > 0) {
+                            const prevSession = dGBD_data[index-1];
+                            const prevMetricData = prevSession[pos]?.[metricKey];
+                            if (prevMetricData) {
+                                if (Lval !== null && Lval !== undefined && prevMetricData.Left !== null && prevMetricData.Left !== undefined && prevMetricData.Left !== 0 && isFinite(prevMetricData.Left)) {
+                                    LchangePercentNum = ((Lval - prevMetricData.Left) / Math.abs(prevMetricData.Left)) * 100;
+                                }
+                                if (Rval !== null && Rval !== undefined && prevMetricData.Right !== null && prevMetricData.Right !== undefined && prevMetricData.Right !== 0 && isFinite(prevMetricData.Right)) {
+                                    RchangePercentNum = ((Rval - prevMetricData.Right) / Math.abs(prevMetricData.Right)) * 100;
                                 }
                             }
+                        }
+                         if (Lval !== null && Lval !== undefined && Rval !== null && Rval !== undefined && session['Injured Side Profile']) {
+                             const injuredVal = session['Injured Side Profile'] === 'Left' ? Lval : Rval;
+                             const uninjuredVal = session['Injured Side Profile'] === 'Left' ? Rval : Lval;
+                             if (uninjuredVal !== 0 && isFinite(uninjuredVal)) {
+                                 asymmetryPercentNum = ((injuredVal - uninjuredVal) / Math.abs(uninjuredVal)) * 100;
+                             }
+                         }
 
-                            let lValCell = metricRow.insertCell();
-                            lValCell.classList.add('value-cell', 'left-value-cell-bg'); 
-                            let lValText = Lval !== null && Lval !== undefined ? Lval.toFixed(metricKey === METRIC_KEYS.NORM_MAX_FORCE ? 2 : 1) : '-';
-                            let lChangeHTML = '';
-                            if (LchangePercentNum !== null) {
-                                const lChangeClass = getChangeClassForTable(LchangePercentNum, false);
-                                const lArrow = LchangePercentNum > 0 ? '<i class="fas fa-arrow-up"></i> ' : (LchangePercentNum < 0 ? '<i class="fas fa-arrow-down"></i> ' : '');
-                                lChangeHTML = ` <span class="change-arrow ${lChangeClass}">${lArrow}</span><sup class="change-percent ${lChangeClass}">${LchangePercentNum > 0 ? '+' : ''}${LchangePercentNum.toFixed(0)}%</sup>`;
-                            }
-                            lValCell.innerHTML = lValText + lChangeHTML;
-                            
-                            let rValCell = metricRow.insertCell();
-                            rValCell.classList.add('value-cell', 'right-value-cell-bg'); 
-                            let rValText = Rval !== null && Rval !== undefined ? Rval.toFixed(metricKey === METRIC_KEYS.NORM_MAX_FORCE ? 2 : 1) : '-';
-                            let rChangeHTML = '';
-                             if (RchangePercentNum !== null) {
-                                const rChangeClass = getChangeClassForTable(RchangePercentNum, false);
-                                const rArrow = RchangePercentNum > 0 ? '<i class="fas fa-arrow-up"></i> ' : (RchangePercentNum < 0 ? '<i class="fas fa-arrow-down"></i> ' : '');
-                                rChangeHTML = ` <span class="change-arrow ${rChangeClass}">${rArrow}</span><sup class="change-percent ${rChangeClass}">${RchangePercentNum > 0 ? '+' : ''}${RchangePercentNum.toFixed(0)}%</sup>`;
-                            }
-                            rValCell.innerHTML = rValText + rChangeHTML;
+                         let lValCell = metricRow.insertCell();
+                         lValCell.classList.add('value-cell', 'left-value-cell-bg'); 
+                         let lValText = Lval !== null && Lval !== undefined ? Lval.toFixed(metricKey === METRIC_KEYS.NORM_MAX_FORCE ? 2 : 1) : '-';
+                         let lChangeHTML = '';
+                         if (LchangePercentNum !== null) {
+                             const lChangeClass = getChangeClassForTable(LchangePercentNum, false);
+                             const lArrow = LchangePercentNum > 0 ? '<i class="fas fa-arrow-up"></i> ' : (LchangePercentNum < 0 ? '<i class="fas fa-arrow-down"></i> ' : '');
+                             lChangeHTML = ` <span class="change-arrow ${lChangeClass}">${lArrow}</span><sup class="change-percent ${lChangeClass}">${LchangePercentNum > 0 ? '+' : ''}${LchangePercentNum.toFixed(0)}%</sup>`;
+                         }
+                         lValCell.innerHTML = lValText + lChangeHTML;
+                        
+                         let rValCell = metricRow.insertCell();
+                         rValCell.classList.add('value-cell', 'right-value-cell-bg'); 
+                         let rValText = Rval !== null && Rval !== undefined ? Rval.toFixed(metricKey === METRIC_KEYS.NORM_MAX_FORCE ? 2 : 1) : '-';
+                         let rChangeHTML = '';
+                          if (RchangePercentNum !== null) {
+                             const rChangeClass = getChangeClassForTable(RchangePercentNum, false);
+                             const rArrow = RchangePercentNum > 0 ? '<i class="fas fa-arrow-up"></i> ' : (RchangePercentNum < 0 ? '<i class="fas fa-arrow-down"></i> ' : '');
+                             rChangeHTML = ` <span class="change-arrow ${rChangeClass}">${rArrow}</span><sup class="change-percent ${rChangeClass}">${RchangePercentNum > 0 ? '+' : ''}${RchangePercentNum.toFixed(0)}%</sup>`;
+                         }
+                         rValCell.innerHTML = rValText + rChangeHTML;
 
-                            let asymCell = metricRow.insertCell();
-                            asymCell.classList.add('asymmetry-cell');
-                            if (asymmetryPercentNum !== null) {
-                                asymCell.textContent = `${asymmetryPercentNum > 0 ? '+' : ''}${asymmetryPercentNum.toFixed(0)}%`;
-                                asymCell.className += ' ' + getChangeClassForTable(asymmetryPercentNum, true); 
-                            } else {
-                                asymCell.textContent = '-';
-                                asymCell.classList.add('change-na');
-                            }
-                    });
-                });
-            });
+                         let asymCell = metricRow.insertCell();
+                         asymCell.classList.add('asymmetry-cell'); // Base class
+                         if (asymmetryPercentNum !== null) {
+                             asymCell.textContent = `${asymmetryPercentNum > 0 ? '+' : ''}${asymmetryPercentNum.toFixed(0)}%`;
+                             asymCell.classList.add(getChangeClassForTable(asymmetryPercentNum, true)); 
+                         } else {
+                             asymCell.textContent = '-';
+                             asymCell.classList.add('change-na');
+                         }
+                    });
+                });
+            });
 
-            summaryTableWrapper.appendChild(table);
-        }
-        
-        function updateNoDataMessage() {
-            if (!selectedPatientId) {
-                noDataMessage.textContent = 'Please select a patient to view their history and analysis.';
-                noDataMessage.style.display = 'block';
-                analysisMainContent.style.display = 'none';
-                patientOverviewSection.style.display = 'none';
-                if(patientDetailsTitle) patientDetailsTitle.style.display = 'none';
-            } else {
-                noDataMessage.style.display = 'none';
-                if(patientDetailsTitle) patientDetailsTitle.style.display = 'block';
-            }
-        }
+            summaryTableWrapper.appendChild(table);
+        }
+       
+        function updateNoDataMessage() {
+            if (!selectedPatientId) {
+                noDataMessage.textContent = 'Please select a patient to view their history and analysis.';
+                noDataMessage.style.display = 'block';
+                analysisMainContent.style.display = 'none';
+                patientOverviewSection.style.display = 'none';
+                if(patientDetailsTitle) patientDetailsTitle.style.display = 'none';
+            } else {
+                noDataMessage.style.display = 'none';
+                if(patientDetailsTitle) patientDetailsTitle.style.display = 'block';
+            }
+        }
 
-        async function openPatientModal(type, patientIdToEdit = null, fromAnalysisPage = false) {
-            if (!currentUserId) {
-                showStatusMessage("You must be logged in.", "error");
-                return;
-            }
-            patientModalOverlay.style.display = 'flex';
-            let modalHTML = '';
-            let tempPatientData = {};
+        async function openPatientModal(type, patientIdToEdit = null, fromAnalysisPage = false) {
+            if (!currentUserId) {
+                showStatusMessage("You must be logged in.", "error");
+                return;
+            }
+            patientModalOverlay.style.display = 'flex';
+            let modalHTML = '';
+            let tempPatientData = {};
 
-            if (type === 'existing-edit' && patientIdToEdit) {
-                try {
-                    const patientDocRef = doc(db, "users", currentUserId, "patients", patientIdToEdit);
-                    const patientDocSnap = await getDoc(patientDocRef);
-                    if (patientDocSnap.exists()) {
-                        tempPatientData = { patientId: patientIdToEdit, ...patientDocSnap.data() };
-                    } else {
-                        showStatusMessage(`Patient data for ${patientIdToEdit} not found. Cannot edit.`, "error");
-                        closePatientModal(); return;
-                    }
-                } catch(error) {
-                    console.error("Error fetching patient data for edit:", error);
-                    showStatusMessage("Could not fetch patient data for editing.", "error");
-                    closePatientModal(); return;
-                }
-                modalHTML = `
-                    <h3>Edit Patient: ${patientIdToEdit}</h3>
-                    <div class="modal-form-grid">
-                        <div class="modal-form-item"><label>Patient ID:</label><input type="text" value="${tempPatientData.patientId}" disabled></div>
-                        <div class="modal-form-item"><label for="modal-injured-side">Injured Side:</label><select id="modal-injured-side"></select></div>
-                        <div class="modal-form-item"><label for="modal-bodyweight">Bodyweight (kg):</label><input type="number" id="modal-bodyweight" value="${tempPatientData.bodyweight || ''}"></div>
-                        <div class="modal-form-item"><label for="modal-age">Age:</label><input type="number" id="modal-age" value="${tempPatientData.age || ''}"></div>
-                        <div class="modal-form-item"><label for="modal-gender">Gender:</label><select id="modal-gender"></select></div>
-                        <div class="modal-form-item"><label for="modal-sport">Sport:</label><input type="text" id="modal-sport" value="${tempPatientData.sport || ''}"></div>
-                        <div class="modal-form-item full-width" style="grid-column: 1 / -1;"><label for="modal-injury">Injury:</label><input type="text" id="modal-injury" value="${tempPatientData.injury || ''}"></div>
-                    </div>
-                    <div class="modal-actions">
-                        <button type="button" class="modal-cancel-button" id="modal-cancel-edit">Cancel</button>
-                        <button type="button" class="modal-confirm-button" id="modal-confirm-edit">Save Changes</button>
-                    </div>`;
-                patientModalContent.innerHTML = modalHTML;
+            if (type === 'existing-edit' && patientIdToEdit) {
+                try {
+                    const patientDocRef = doc(db, "users", currentUserId, "patients", patientIdToEdit);
+                    const patientDocSnap = await getDoc(patientDocRef);
+                    if (patientDocSnap.exists()) {
+                        tempPatientData = { patientId: patientIdToEdit, ...patientDocSnap.data() };
+                    } else {
+                        showStatusMessage(`Patient data for ${patientIdToEdit} not found. Cannot edit.`, "error");
+                        closePatientModal(); return;
+                    }
+                } catch(error) {
+                    console.error("Error fetching patient data for edit:", error);
+                    showStatusMessage("Could not fetch patient data for editing.", "error");
+                    closePatientModal(); return;
+                }
+                modalHTML = `
+                    <h3>Edit Patient: ${patientIdToEdit}</h3>
+                    <div class="modal-form-grid">
+                        <div class="modal-form-item"><label>Patient ID:</label><input type="text" value="${tempPatientData.patientId}" disabled></div>
+                        <div class="modal-form-item"><label for="modal-injured-side">Injured Side:</label><select id="modal-injured-side"></select></div>
+                        <div class="modal-form-item"><label for="modal-bodyweight">Bodyweight (kg):</label><input type="number" id="modal-bodyweight" value="${tempPatientData.bodyweight || ''}"></div>
+                        <div class="modal-form-item"><label for="modal-age">Age:</label><input type="number" id="modal-age" value="${tempPatientData.age || ''}"></div>
+                        <div class="modal-form-item"><label for="modal-gender">Gender:</label><select id="modal-gender"></select></div>
+                        <div class="modal-form-item"><label for="modal-sport">Sport:</label><input type="text" id="modal-sport" value="${tempPatientData.sport || ''}"></div>
+                        <div class="modal-form-item full-width" style="grid-column: 1 / -1;"><label for="modal-injury">Injury:</label><input type="text" id="modal-injury" value="${tempPatientData.injury || ''}"></div>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="modal-cancel-button" id="modal-cancel-edit">Cancel</button>
+                        <button type="button" class="modal-confirm-button" id="modal-confirm-edit">Save Changes</button>
+                    </div>`;
+                patientModalContent.innerHTML = modalHTML;
 
-                const genderModalSelect = patientModalContent.querySelector('#modal-gender');
-                const injuredSideModalSelect = patientModalContent.querySelector('#modal-injured-side');
-                if (genderModalSelect) {
-                    ['', 'Male', 'Female', 'Other'].forEach(val => genderModalSelect.add(new Option(val === '' ? 'Select...' : val, val)));
-                    genderModalSelect.value = tempPatientData.gender || '';
-                }
-                if (injuredSideModalSelect) {
-                    ['Left', 'Right'].forEach(val => injuredSideModalSelect.add(new Option(val, val)));
-                    injuredSideModalSelect.value = tempPatientData.injuredSide || 'Left';
-                }
-                
-                patientModalContent.querySelector('#modal-confirm-edit')?.addEventListener('click', () => handleUpdatePatientProfile(patientIdToEdit));
-                patientModalContent.querySelector('#modal-cancel-edit')?.addEventListener('click', closePatientModal);
-            } else {
-                closePatientModal();
-            }
-        }
+                const genderModalSelect = patientModalContent.querySelector('#modal-gender');
+                const injuredSideModalSelect = patientModalContent.querySelector('#modal-injured-side');
+                if (genderModalSelect) {
+                    ['', 'Male', 'Female', 'Other'].forEach(val => genderModalSelect.add(new Option(val === '' ? 'Select...' : val, val)));
+                    genderModalSelect.value = tempPatientData.gender || '';
+                }
+                if (injuredSideModalSelect) {
+                    ['Left', 'Right'].forEach(val => injuredSideModalSelect.add(new Option(val, val)));
+                    injuredSideModalSelect.value = tempPatientData.injuredSide || 'Left';
+                }
+               
+                patientModalContent.querySelector('#modal-confirm-edit')?.addEventListener('click', () => handleUpdatePatientProfile(patientIdToEdit));
+                patientModalContent.querySelector('#modal-cancel-edit')?.addEventListener('click', closePatientModal);
+            } else {
+                closePatientModal();
+            }
+        }
 
-        async function handleUpdatePatientProfile(patientIdToUpdate) {
-            if (!currentUserId || !patientIdToUpdate) return;
+        async function handleUpdatePatientProfile(patientIdToUpdate) {
+            if (!currentUserId || !patientIdToUpdate) return;
 
-            const updatedData = {
-                age: patientModalContent.querySelector('#modal-age').value ? parseInt(patientModalContent.querySelector('#modal-age').value) : null,
-                gender: patientModalContent.querySelector('#modal-gender').value || null,
-                sport: patientModalContent.querySelector('#modal-sport').value || null,
-                injury: patientModalContent.querySelector('#modal-injury').value || null,
-                injuredSide: patientModalContent.querySelector('#modal-injured-side').value || 'Left',
-                bodyweight: patientModalContent.querySelector('#modal-bodyweight').value ? parseFloat(patientModalContent.querySelector('#modal-bodyweight').value) : null,
-                lastUpdatedAt: serverTimestamp()
-            };
+            const updatedData = {
+                age: patientModalContent.querySelector('#modal-age').value ? parseInt(patientModalContent.querySelector('#modal-age').value) : null,
+                gender: patientModalContent.querySelector('#modal-gender').value || null,
+                sport: patientModalContent.querySelector('#modal-sport').value || null,
+                injury: patientModalContent.querySelector('#modal-injury').value || null,
+                injuredSide: patientModalContent.querySelector('#modal-injured-side').value || 'Left',
+                bodyweight: patientModalContent.querySelector('#modal-bodyweight').value ? parseFloat(patientModalContent.querySelector('#modal-bodyweight').value) : null,
+                lastUpdatedAt: serverTimestamp()
+            };
 
-            try {
-                const patientDocRef = doc(db, "users", currentUserId, "patients", patientIdToUpdate);
-                await updateDoc(patientDocRef, updatedData);
-                showStatusMessage(`Patient "${patientIdToUpdate}" profile updated.`, "success");
-                closePatientModal();
-                if (selectedPatientId === patientIdToUpdate) {
-                    loadPatientAnalysisData(selectedPatientId); 
-                }
-            } catch (error) {
-                console.error("Error updating patient profile:", error);
-                showStatusMessage("Error updating profile.", "error");
-            }
-        }
+            try {
+                const patientDocRef = doc(db, "users", currentUserId, "patients", patientIdToUpdate);
+                await updateDoc(patientDocRef, updatedData);
+                showStatusMessage(`Patient "${patientIdToUpdate}" profile updated.`, "success");
+                closePatientModal();
+                if (selectedPatientId === patientIdToUpdate) {
+                    loadPatientAnalysisData(selectedPatientId); 
+                }
+            } catch (error) {
+                console.error("Error updating patient profile:", error);
+                showStatusMessage("Error updating profile.", "error");
+            }
+        }
 
-        window.addEventListener('resize', () => {
-            const plotElements = document.querySelectorAll('.plotly-graph-div'); 
-            plotElements.forEach(gdContainer => {
-                if (gdContainer && typeof gdContainer.layout !== 'undefined') { 
-                    try {
-                        Plotly.Plots.resize(gdContainer);
-                    } catch(e) { /* ignore */ }
-                }
-            });
-        });
+        window.addEventListener('resize', () => {
+            const plotElements = document.querySelectorAll('.plotly-graph-div'); 
+            plotElements.forEach(gdContainer => {
+                if (gdContainer && typeof gdContainer.layout !== 'undefined') { 
+                    try {
+                        Plotly.Plots.resize(gdContainer);
+                    } catch(e) { /* ignore */ }
+                }
+            });
+        });
 
-    </script>
+    </script>
 </body>
 </html>
