@@ -76,14 +76,16 @@
             --print-light-gray: #f8f9fa;
             --print-medium-gray: #dee2e6;
 
-            /* New colors for percentage changes */
-            --change-super-green: #14532d; /* Darker Strong Green for best */
-            --change-green: #15803d; /* Strong Green */
-            --change-light-green: #16a34a;  /* Standard Green (same as --success-color) */
-            --change-neutral-gray: #6b7280;    /* Dus Grå */
-            --change-orange-warning: #f97316;  /* Orange/Lighter Red */
-            --change-strong-red: #b91c1c; /* Darker Strong Red */
-            --change-darker-red: #991b1b; /* Even Darker red for very bad */
+            /* New colors for percentage changes (asymmetry logic: closer to 0 is better) */
+            --asym-super-green: #14532d; /* For abs Asym <= 5% */
+            --asym-green: #15803d;       /* For abs Asym <= 10% */
+            --asym-orange-warning: #f97316; /* For abs Asym <= 15% (was 20%) */
+            --asym-strong-red: #b91c1c;   /* For abs Asym > 15% */
+            
+            /* Colors for L/R change (directional) */
+            --change-positive: #16a34a; /* Standard Green for any positive change */
+            --change-negative: #dc2626; /* Strong Red for any negative change */
+            --change-neutral: #6b7280;   /* Neutral gray for ~0% change */
         }
         body {
             font-family: 'Avenir', sans-serif;
@@ -1575,7 +1577,7 @@
                             }
                         }
                         if (gd.layout && gd.layout.yaxis && gd.layout.yaxis.title && gd.layout.yaxis.title.text) {
-                             filename += '_' + gd.layout.yaxis.title.text.replace(/[^a-zA-Z0-9]/gi, '_').toLowerCase();
+                             filename += '_' + gd.layout.yaxis.title.text.replace(/[^a-z0-9]/gi, '_').toLowerCase();
                         }
 
                         Plotly.downloadImage(gd, {format: 'png', width: gd._fullLayout.width, height: gd._fullLayout.height, filename: filename });
@@ -1775,7 +1777,7 @@
                 
                 // Asymmetry % - Placed above the change %
                 if (asymmetryPercent !== null) {
-                    let asymColor = getComputedStyle(document.documentElement).getPropertyValue(getCssVariableForChange(asymmetryPercent, true)).trim(); // true for asymmetry logic
+                    let asymColor = getComputedStyle(document.documentElement).getPropertyValue(getCssVariableForChange(asymmetryPercent, true)).trim(); 
                      layout.annotations.push({
                         x: xCategory, y: barTopY + yOffsetStep * 3, 
                         text: `${asymmetryPercent > 0 ? '+' : ''}${asymmetryPercent.toFixed(0)}%`, 
@@ -1798,18 +1800,18 @@
         }
         
         function getCssVariableForChange(percent, isAsymmetry = false) {
+            if (percent === null || percent === undefined || !isFinite(percent)) return '--change-neutral-gray'; // Default for N/A
             const absPercent = Math.abs(percent);
-            if (isAsymmetry) { // Asymmetry: closer to 0 is better (lower abs value is better)
-                if (absPercent <= 10) return '--change-super-green';  
-                if (absPercent <= 15) return '--change-green';       
-                if (absPercent <= 20) return '--change-orange-warning';
+
+            if (isAsymmetry) { // Asymmetry: closer to 0 is better
+                if (absPercent <= 5) return '--change-super-green';  
+                if (absPercent <= 10) return '--change-green';      
+                if (absPercent <= 15) return '--change-orange-warning'; 
                 return '--change-strong-red';                       
-            } else { // Regular change: positive is generally better (improvement)
-                if (percent > 15) return '--change-significant-positive';
-                if (percent > 5) return '--change-moderate-positive';
-                if (percent >= -5) return '--change-minimal-neutral';
-                if (percent >= -15) return '--change-moderate-negative';
-                return '--change-significant-negative';
+            } else { // Regular L/R change: positive is green, negative is red
+                if (percent > 0) return '--change-green'; // All positive changes are green
+                if (percent < 0) return '--change-strong-red'; // All negative changes are red
+                return '--change-neutral-gray'; // For 0% change
             }
         }
 
@@ -1818,16 +1820,14 @@
             const absPercent = Math.abs(changePercent);
 
             if (isAsymmetry) { // Closer to 0 is better
-                if (absPercent <= 10) return 'change-significant-positive'; 
-                if (absPercent <= 15) return 'change-moderate-positive';    
-                if (absPercent <= 20) return 'change-moderate-negative'; 
-                return 'change-significant-negative'; 
-            } else { // Directional: positive is good, negative is bad
-                if (changePercent > 15) return 'change-significant-positive';
-                if (changePercent > 5) return 'change-moderate-positive';
-                if (changePercent >= -5) return 'change-minimal-neutral';
-                if (changePercent >= -15) return 'change-moderate-negative';
-                return 'change-significant-negative';
+                if (absPercent <= 5) return 'change-significant-positive'; // Maps to --change-super-green
+                if (absPercent <= 10) return 'change-moderate-positive';    // Maps to --change-green
+                if (absPercent <= 15) return 'change-moderate-negative'; // Maps to --change-orange-warning
+                return 'change-significant-negative'; // Maps to --change-strong-red
+            } else { // Directional: positive is good, negative is bad for L/R change
+                if (changePercent > 0) return 'change-moderate-positive'; // Green
+                if (changePercent < 0) return 'change-significant-negative'; // Red
+                return 'change-minimal-neutral'; // Gray for 0%
             }
         }
 
@@ -1915,23 +1915,23 @@
                             }
 
                             let lValCell = metricRow.insertCell();
-                            lValCell.classList.add('value-cell', 'left-value-cell-bg'); // Added background class
+                            lValCell.classList.add('value-cell', 'left-value-cell-bg'); 
                             let lValText = Lval !== null && Lval !== undefined ? Lval.toFixed(metricKey === METRIC_KEYS.NORM_MAX_FORCE ? 2 : 1) : '-';
                             let lChangeHTML = '';
                             if (LchangePercentNum !== null) {
                                 const lChangeClass = getChangeClassForTable(LchangePercentNum, false);
-                                const lArrow = LchangePercentNum > 5 ? '<i class="fas fa-arrow-up"></i> ' : (LchangePercentNum < -5 ? '<i class="fas fa-arrow-down"></i> ' : '');
+                                const lArrow = LchangePercentNum > 0 ? '<i class="fas fa-arrow-up"></i> ' : (LchangePercentNum < 0 ? '<i class="fas fa-arrow-down"></i> ' : '');
                                 lChangeHTML = ` <span class="change-arrow ${lChangeClass}">${lArrow}</span><sup class="change-percent ${lChangeClass}">${LchangePercentNum > 0 ? '+' : ''}${LchangePercentNum.toFixed(0)}%</sup>`;
                             }
                             lValCell.innerHTML = lValText + lChangeHTML;
                             
                             let rValCell = metricRow.insertCell();
-                            rValCell.classList.add('value-cell', 'right-value-cell-bg'); // Added background class
+                            rValCell.classList.add('value-cell', 'right-value-cell-bg'); 
                             let rValText = Rval !== null && Rval !== undefined ? Rval.toFixed(metricKey === METRIC_KEYS.NORM_MAX_FORCE ? 2 : 1) : '-';
                             let rChangeHTML = '';
                              if (RchangePercentNum !== null) {
                                 const rChangeClass = getChangeClassForTable(RchangePercentNum, false);
-                                const rArrow = RchangePercentNum > 5 ? '<i class="fas fa-arrow-up"></i> ' : (RchangePercentNum < -5 ? '<i class="fas fa-arrow-down"></i> ' : '');
+                                const rArrow = RchangePercentNum > 0 ? '<i class="fas fa-arrow-up"></i> ' : (RchangePercentNum < 0 ? '<i class="fas fa-arrow-down"></i> ' : '');
                                 rChangeHTML = ` <span class="change-arrow ${rChangeClass}">${rArrow}</span><sup class="change-percent ${rChangeClass}">${RchangePercentNum > 0 ? '+' : ''}${RchangePercentNum.toFixed(0)}%</sup>`;
                             }
                             rValCell.innerHTML = rValText + rChangeHTML;
