@@ -6,7 +6,7 @@
     <title>Patient History Analysis</title>    
     <script src="https://cdn.plot.ly/plotly-2.27.1.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Avenir:wght@400&family=Futura:wght@400&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" xintegrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         :root {
             --app-primary-color: #285484;
@@ -22,9 +22,9 @@
             --app-button-hover-gradient-end: #121630; 
             --app-button-light-gradient-start: rgba(112, 188, 252, 0.8); 
             --app-button-light-gradient-end: rgba(40, 84, 132, 0.9); 
-           
+            
             --light-gray: #f8f9fa; 
-            --box-background-color: #f8f9fa; /* KORRIGERT: Samme som --light-gray */
+            --box-background-color: #f0f2f5; /* Tilbake til original screening.html verdi */
             --medium-gray: #dee2e6;
             --dark-gray: #495057;
             --text-color: #212529;
@@ -71,7 +71,7 @@
             --normal-font-weight: 400;
             --semibold-font-weight: 600; 
             --bold-font-weight: 700; 
-            --main-content-margin: 20px; /* KORRIGERT: Til 20px */
+            --main-content-margin: 20px; 
 
             --print-text-color: #000000;
             --print-primary-color: #285484;
@@ -283,14 +283,14 @@
         .app-main-content {
             flex-grow: 1;
             margin-left: calc(var(--sidebar-width) + var(--main-content-margin)); 
-            padding: 30px var(--main-content-margin); 
+            padding: 30px 40px; /* ENDRET for å matche screening.html */
             background-color: var(--white); /* Main content background */
             overflow-y: auto;
             height: 100vh;
             box-sizing: border-box;
         }
         .content-container {
-            max-width: 1200px; 
+            max-width: 1100px; /* ENDRET for å matche screening.html */
             margin: 0 auto;
         }
         h1, h2, h3 { font-family: 'Avenir', sans-serif; margin-bottom: 0.75em; font-weight: var(--normal-font-weight); }
@@ -304,7 +304,7 @@
         }
         h3.position-title, h3.normative-title { font-size: 1.15rem; color: var(--app-primary-color); margin-bottom: 0.3em; font-weight: var(--normal-font-weight); }
         h3.normative-title { text-align: center;}
-       
+        
         /* Patient Selection Area */
         #patient-selection-container { 
              margin-bottom: 25px;
@@ -461,7 +461,7 @@
         }
         .edit-profile-button:hover { background-color: transparent; color: var(--app-secondary-color); }
         .edit-profile-button i { color: inherit; }
-       
+        
         .patient-card-header {
             display: flex; align-items: center; margin-bottom: 15px; padding-bottom: 15px;
             justify-content: flex-start;
@@ -483,7 +483,7 @@
             padding-bottom: 10px; border-bottom: 1px solid var(--medium-gray);
             margin-top:0; font-weight: var(--normal-font-weight);
         }
-       
+        
         #selected-patient-tests-list { 
             list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap;
             gap: 10px; overflow-y: auto; flex-grow: 1; justify-content: flex-start;
@@ -540,7 +540,7 @@
         .delete-log-item-btn { 
            display: none; /* Delete button is visually removed from list items */
         }
-       
+        
 
         /* NYE CSS-REGLER FOR GRAFER OG TABELLER FRA BRUKER */
 
@@ -720,13 +720,13 @@
         .asym-gold-table       { color: var(--asym-orange-warning) !important; } /* Using orange for gold */
         .asym-red-table        { color: var(--asym-strong-red) !important; }
         .change-na             { color: var(--dark-gray) !important; font-style: italic; }
-       
+        
         .summary-table .asymmetry-cell {
             /* General style for asymmetry cell, color will be applied by specific class */
         }
 
 
-       
+        
         #analysis-controls {
             display: flex;
             flex-wrap: wrap;
@@ -769,14 +769,14 @@
             color: var(--app-text-on-primary);
             border-color: var(--app-secondary-color);
         }
-       
+        
         #analysis-graphs-container { /* This will now contain .position-analysis-box elements */
             display: flex;
             flex-direction: column; /* Stack position boxes vertically */
             gap: 2rem; /* Space between position boxes */
             margin-bottom: 30px;
         }
-       
+        
         #analysis-table-container { 
             margin-top: 30px;
             overflow-x: auto; 
@@ -785,7 +785,7 @@
              margin-top:0;
              margin-bottom:0.5em;
         }
-       
+        
         #no-data-message, #loading-analysis-message {
             text-align: center;
             font-size: 1.1rem;
@@ -840,7 +840,7 @@
         <main class="app-main-content">
             <div class="content-container">
                 <h1>Patient History Analysis</h1>
-               
+                
                 <div id="patient-selection-container">
                     <h2 class="section-title-main" style="margin-top: 0; margin-bottom: 0.5em;">Select Patient</h2>
                     <div id="patient-selection-area">
@@ -850,7 +850,7 @@
                         </div>
                     </div>
                 </div>
-               
+                
                 <h2 id="patient-details-title" class="section-title-main" style="display: none;">Details</h2>
                 <div id="patient-overview-section"> 
                     <div class="overview-column patient-details-column">
@@ -904,7 +904,7 @@
                     <div id="analysis-graphs-container"> 
                         </div>
 
-                    <div id="analysis-table-container" class="summary-container-box">                                     
+                    <div id="analysis-table-container" class="summary-container-box">                                               
                         <h2 class="section-title-main summary-title">Detailed Summary</h2>
                         <div id="summary-table-wrapper">
                             </div>
@@ -958,7 +958,7 @@
             Y: { poor_max: 1.25, average_mid: 1.4, good_min: 1.6, excellent_min: 1.76 },
             T: { poor_max: 1.15, average_mid: 1.25, good_min: 1.4, excellent_min: 1.58 }
         };
-       
+        
         const NORM_ZONE_COLORS = {
             POOR: getComputedStyle(document.documentElement).getPropertyValue('--norm-poor-bg').trim() || 'rgba(252, 165, 165, 0.5)',
             AVERAGE: getComputedStyle(document.documentElement).getPropertyValue('--norm-average-bg').trim() || 'rgba(252, 211, 77, 0.5)',
@@ -994,7 +994,7 @@
         const displayInjuredSideCard = document.getElementById('display-injured-side-card');
         const displayBodyweightCard = document.getElementById('display-bodyweight-card');
         const editPatientProfileButton = document.getElementById('edit-patient-profile-btn');
-       
+        
         const selectedPatientTestsContainer = document.getElementById('selected-patient-tests-container');
         const selectedPatientTestsListUL = document.getElementById('selected-patient-tests-list');
 
@@ -1037,7 +1037,7 @@
                     loggedInUserNameSpan.textContent = 'Hi User!';
                     loggedInUserEmailDisplaySpan.textContent = currentUser.email || '';
                 }
-               
+                
                 initializeAppUI();
                 appLoadingMessage.style.display = 'none';
                 appLayout.style.display = 'flex';
@@ -1099,7 +1099,7 @@
                 appStatusMessage.style.display = 'none';
             }, duration);
         }
-       
+        
         // --- Confirmation Modal ---
         function showConfirmationModal(message, onConfirmCallback, title = "Confirm Action") {
             const modalTitleEl = document.getElementById('confirmation-modal-title');
@@ -1119,7 +1119,7 @@
                 confirmationConfirmBtn.removeEventListener('click', handleConfirmClick);
                 confirmationCancelBtn.removeEventListener('click', handleCancelClick);
             };
-           
+            
             confirmationConfirmBtn.removeEventListener('click', handleConfirmClick); // Remove previous if any
             confirmationCancelBtn.removeEventListener('click', handleCancelClick); // Remove previous if any
 
@@ -1151,7 +1151,7 @@
             patientModalContent.innerHTML = modalHTML;
 
             await populateModalPatientButtonsForAnalysis();
-           
+            
             const modalSearchInput = patientModalContent.querySelector('#modal-search-fp-nr-analysis');
             if (modalSearchInput) {
                 modalSearchInput.addEventListener('input', (e) => {
@@ -1160,7 +1160,7 @@
             }
             patientModalContent.querySelector('#modal-cancel-search-analysis')?.addEventListener('click', closePatientModal);
         }
-       
+        
         async function populateModalPatientButtonsForAnalysis(forceRefresh = false) {
             const container = document.getElementById('modal-patient-id-button-container-analysis');
             if (!container || !currentUserId) return;
@@ -1208,7 +1208,7 @@
                 container.appendChild(button);
             });
         }
-       
+        
         function closePatientModal() {
             patientModalOverlay.style.display = 'none';
             patientModalContent.innerHTML = '';
@@ -1248,7 +1248,7 @@
                 const screeningsRef = collection(db, "users", currentUserId, "patients", selectedPatientId, "screenings");
                 const q = query(screeningsRef, orderBy("testTimestamp", "asc")); 
                 const screeningsSnapshot = await getDocs(q);
-               
+                
                 allScreeningsForSelectedPatient = [];
                 screeningsSnapshot.forEach(docSnap => {
                     allScreeningsForSelectedPatient.push({ id: docSnap.id, ...docSnap.data() });
@@ -1267,7 +1267,7 @@
                     summaryTableWrapper.innerHTML = '';
                     return;
                 }
-               
+                
                 testDateVisibility = {};
                 firstTestDateForPatient = null;
                 if (allScreeningsForSelectedPatient.length > 0) {
@@ -1275,7 +1275,7 @@
                     if (firstScreeningTimestamp && firstScreeningTimestamp.toDate) {
                          firstTestDateForPatient = firstScreeningTimestamp.toDate();
                     } else { 
-                        firstTestDateForPatient = new Date(firstScreeningTimestamp);
+                         firstTestDateForPatient = new Date(firstScreeningTimestamp);
                     }
                 }
                 allScreeningsForSelectedPatient.forEach(screening => {
@@ -1287,7 +1287,7 @@
                     }
                     if (dateKey) testDateVisibility[dateKey] = true; 
                 });
-               
+                
                 updateTestLogDisplay(allScreeningsForSelectedPatient, testDateVisibility); 
                 prepareAndRenderAnalysis();
                 analysisMainContent.style.display = 'block';
@@ -1303,7 +1303,7 @@
                 loadingAnalysisMessage.style.display = 'none';
             }
         }
-       
+        
         function updatePatientProfileCard(profileData) {
             if (!profileData || !patientIdentityCard) return;
             displayPatientIdCard.textContent = selectedPatientId || 'N/A';
@@ -1313,7 +1313,7 @@
             displayInjuryCard.textContent = profileData.injury || 'N/A';
             displayInjuredSideCard.textContent = profileData.injuredSide || 'N/A';
             displayBodyweightCard.textContent = profileData.bodyweight ? `${profileData.bodyweight} kg` : 'N/A';
-           
+            
             patientIdentityCard.style.display = 'flex';
             selectedPatientTestsContainer.style.display = 'flex'; 
             patientOverviewSection.style.display = 'flex';
@@ -1328,10 +1328,10 @@
             screenings.forEach(screening => {
                 const li = document.createElement('li');
                 li.classList.add('test-log-item');
-               
+                
                 const dateSpan = document.createElement('span');
                 dateSpan.classList.add('test-date-span');
-               
+                
                 let screeningDateObj = null;
                 let screeningDateStr = "Invalid Date";
                 let dateKey = null;
@@ -1346,7 +1346,7 @@
                     screeningDateStr = screeningDateObj.toLocaleDateString('nb-NO', { day: '2-digit', month: 'short', year: 'numeric' });
                     dateKey = screeningDateObj.toISOString().split('T')[0];
                 }
-               
+                
                 dateSpan.textContent = screeningDateStr;
                 li.appendChild(dateSpan);
 
@@ -1354,7 +1354,7 @@
                 visibilityIconContainer.classList.add('test-visibility-icon');
                 const icon = document.createElement('i');
                 icon.classList.add('fas');
-               
+                
                 if (dateKey && currentVisibility[dateKey]) {
                     icon.classList.remove('fa-times-circle');
                     icon.classList.add('fa-check-circle'); 
@@ -1377,7 +1377,7 @@
                 selectedPatientTestsListUL.appendChild(li);
             });
         }
-       
+        
         async function deleteScreeningFromFirestore(patientId, screeningDocId) {
             // This function remains for potential future use, though the button is hidden.
             if (!currentUserId || !patientId || !screeningDocId) {
@@ -1395,7 +1395,7 @@
                 showStatusMessage("Error deleting test. Check console.", "error");
             }
         }
-       
+        
         function prepareAndRenderAnalysis() {
             if (!allScreeningsForSelectedPatient || allScreeningsForSelectedPatient.length === 0) {
                 analysisGraphsContainer.innerHTML = '<div class="graph-section-box"><div class="loading-placeholder">No data to analyze.</div></div>';
@@ -1406,7 +1406,7 @@
             const internalStructure = transformRawScreeningsToInternalStructure(allScreeningsForSelectedPatient, selectedPatientProfileData);
             const processedData = processAndFilterData(internalStructure, testDateVisibility, firstTestDateForPatient);
             processedAndGroupedData = groupDataByDateForAnalysis(processedData);
-           
+            
             renderAnalysisContent(); 
         }
 
@@ -1417,12 +1417,12 @@
             rawScreenings.forEach(screening => {
                 const testDate = screening.testTimestamp && screening.testTimestamp.toDate ? screening.testTimestamp.toDate() : new Date(screening.testTimestamp);
                 const bodyweight = screening.bodyweightAtScreening !== undefined && screening.bodyweightAtScreening !== null ? screening.bodyweightAtScreening : (profileData.bodyweight !== undefined && profileData.bodyweight !== null ? profileData.bodyweight : null);
-               
+                
                 POSITIONS.forEach(pos => {
                     const ashTestDataForPos = screening.ashTest ? screening.ashTest[pos] : null;
                     if (ashTestDataForPos) {
                         let leftMaxForce, rightMaxForce, leftRfd, rightRfd;
-                       
+                        
                         const screeningRecordInjuredSide = ashTestDataForPos.injuredSideAtScreening || screening.injuredSideAtScreening || patientProfileInjuredSide;
 
                         if (screeningRecordInjuredSide === 'Left') {
@@ -1436,7 +1436,7 @@
                             rightMaxForce = ashTestDataForPos.injuredMaxForce;
                             rightRfd = ashTestDataForPos.injuredRfd;
                         }
-                       
+                        
                         transformed.push({
                             'Test Date': testDate, 'Position Clean': pos, 'Metric': METRIC_KEYS.MAX_FORCE,
                             'Left Value': leftMaxForce, 'Right Value': rightMaxForce,
@@ -1458,7 +1458,7 @@
             });
             return transformed;
         }
-       
+        
         function processAndFilterData(internalStructure, currentTestDateVisibility, firstTestDate) {
             if (!firstTestDate) return [];
             return internalStructure
@@ -1494,7 +1494,7 @@
                 }
                 if (!grouped[dateStr][item['Position Clean']]) grouped[dateStr][item['Position Clean']] = {};
                 if (!grouped[dateStr][item['Position Clean']][item['Metric']]) grouped[dateStr][item['Position Clean']][item['Metric']] = {};
-               
+                
                 grouped[dateStr][item['Position Clean']][item['Metric']] = {
                     Left: item['Left Value'],
                     Right: item['Right Value']
@@ -1507,14 +1507,14 @@
 
 
         // --- UI Rendering for Analysis ---
-       
+        
         function switchViewMode(mode) {
             currentViewMode = mode;
             scatterViewBtn.classList.toggle('active-view-btn', mode === 'scatter');
             barViewBtn.classList.toggle('active-view-btn', mode === 'bar');
             renderAnalysisContent(); 
         }
-       
+        
         function renderAnalysisContent() {
             analysisGraphsContainer.innerHTML = ''; 
             summaryTableWrapper.innerHTML = ''; 
@@ -1524,13 +1524,13 @@
                 summaryTableWrapper.innerHTML = '<div class="summary-position-block"><p>No data for summary table based on current filters.</p></div>';
                 return;
             }
-           
+            
             POSITIONS.forEach(pos => {
                 const positionBox = document.createElement('div');
                 positionBox.className = 'position-analysis-box';
                 positionBox.innerHTML = `<h2 class="position-analysis-box-title">Position ${pos} Analysis</h2><div class="position-graphs-grid"></div>`;
                 analysisGraphsContainer.appendChild(positionBox);
-               
+                
                 const graphsGrid = positionBox.querySelector('.position-graphs-grid');
 
                 if (currentViewMode === 'scatter') {
@@ -1553,7 +1553,7 @@
             });
             renderDetailedSummaryTable(processedAndGroupedData);
         }
-       
+        
         function getPlotlyConfig() {
             return {
                 responsive: true,
@@ -1581,14 +1581,14 @@
                 }]
             };
         }
-       
+        
         function calculateAxisRange(values, bufferFactor = 0.1, minAbsRange = 10) {
             const numericValues = values.filter(v => typeof v === 'number' && isFinite(v));
             if (numericValues.length === 0) return [0, minAbsRange]; 
 
             let minVal = Math.min(...numericValues);
             let maxVal = Math.max(...numericValues);
-           
+            
             if (minVal === maxVal) { 
                 minVal -= minAbsRange / 2;
                 maxVal += minAbsRange / 2;
@@ -1596,7 +1596,7 @@
 
             const currentRange = maxVal - minVal;
             const buffer = currentRange * bufferFactor;
-           
+            
             let finalMin = minVal - buffer;
             let finalMax = maxVal + buffer;
 
@@ -1627,7 +1627,7 @@
                 line: { color: RIGHT_COLOR, width: 2, shape: 'spline' }, marker: { color: RIGHT_COLOR, size: 7 }, 
                 hovertemplate: 'Right: %{y:.2f}<extra></extra>'
             };
-           
+            
             const allYValues = [...yValuesLeft, ...yValuesRight].filter(v => v !== null && v !== undefined && isFinite(v));
             const yRangeSettings = calculateAxisRange(allYValues, 0.15, metricKey === METRIC_KEYS.NORM_MAX_FORCE ? 0.5 : 20);
 
@@ -1661,7 +1661,7 @@
                     });
                 });
             }
-           
+            
             try {
                  Plotly.newPlot(divId, [traceLeft, traceRight], layout, getPlotlyConfig())
                     .then(() => {
@@ -1697,7 +1697,7 @@
                 textfont: { color: 'var(--white)', size: 14 }, 
                 hovertemplate: 'Right: %{y:.1f}<extra></extra>'
             };
-           
+            
             const allYValues = [...yValuesLeft, ...yValuesRight].filter(v => v !== null && v !== undefined && isFinite(v));
             const yAxisRange = calculateAxisRange(allYValues, 0.65, 20); 
 
@@ -1742,7 +1742,7 @@
                         changePercentR = ((Rval - prevRval) / Math.abs(prevRval)) * 100;
                     }
                 }
-               
+                
                 const barTopY = Math.max(Lval || 0, Rval || 0);
                 const xCategory = xValuesFormattedDates[index]; 
                 const annotationOffsetFactor = 0.07; 
@@ -1770,7 +1770,7 @@
                         xshift: 22, yshift: 0, xanchor: 'center', yanchor: 'bottom'
                     });
                 }
-               
+                
                 // Asymmetry % - Placed above the change %
                 if (asymmetryPercent !== null) {
                     let asymColor = getComputedStyle(document.documentElement).getPropertyValue(getCssVariableForChange(asymmetryPercent, true)).trim(); 
@@ -1794,7 +1794,7 @@
                  console.error(`Error rendering bar chart for ${divId}:`, e);
             }
         }
-       
+        
         function getCssVariableForChange(percent, isAsymmetry = false) {
             if (percent === null || percent === undefined || !isFinite(percent)) return '--change-neutral'; 
 
@@ -1804,12 +1804,12 @@
                 // User: !5% og mindre rødt som faen
                 if (percent >= -10) return '--asym-green';         // Green for -10% and above
                 if (percent < -10 && percent >= -15) return '--asym-orange-warning'; // Gold/Orange for < -10% down to -15%
-                return '--asym-strong-red';                        // Red for < -15%
+                return '--asym-strong-red';                       // Red for < -15%
             } else { // Regular L/R change
                 // User: alt negativt skal være rødt og alt positivt skal være grønt
-                if (percent > 0) return '--change-positive';      // Green for positive
-                if (percent < 0) return '--change-negative';      // Red for negative
-                return '--change-neutral';                         // Neutral for 0%
+                if (percent > 0) return '--change-positive';     // Green for positive
+                if (percent < 0) return '--change-negative';     // Red for negative
+                return '--change-neutral';                        // Neutral for 0%
             }
         }
 
@@ -1817,13 +1817,13 @@
             if (changePercent === null || changePercent === undefined || !isFinite(changePercent)) return 'change-na';
 
             if (isAsymmetry) { // Asymmetry: specific thresholds
-                if (changePercent >= -10) return 'asym-green-table';        // Green
+                if (changePercent >= -10) return 'asym-green-table';       // Green
                 if (changePercent < -10 && changePercent >= -15) return 'asym-gold-table'; // Gold/Orange
-                return 'asym-red-table';                                    // Red
+                return 'asym-red-table';                                     // Red
             } else { // Directional L/R change: positive is green, negative is red
                 if (changePercent > 0) return 'change-positive-table';    // Green
                 if (changePercent < 0) return 'change-negative-table';    // Red
-                return 'change-neutral-table';                             // Gray for 0%
+                return 'change-neutral-table';                                // Gray for 0%
             }
         }
 
@@ -1843,7 +1843,7 @@
             let metricTh = headerRow1.insertCell();
             metricTh.textContent = 'Metric';
             metricTh.classList.add('metric-header');
-           
+            
             dGBD_data.forEach(session => {
                 const th = document.createElement('th');
                 th.colSpan = 3; // L Val (%Chg), R Val (%Chg), Asym %
@@ -1861,7 +1861,7 @@
                     subTh.classList.add('sub-header');
                 });
             });
-           
+            
             thead.rows[0].cells[0].rowSpan = 2;
             thead.rows[1].cells[0].remove();
 
@@ -1885,7 +1885,7 @@
                         const metricData = session[pos]?.[metricKey];
                         const Lval = metricData?.Left;
                         const Rval = metricData?.Right;
-                       
+                        
                         let LchangePercentNum = null; 
                          let RchangePercentNum = null;
                          let asymmetryPercentNum = null;
@@ -1920,7 +1920,7 @@
                              lChangeHTML = ` <span class="change-arrow ${lChangeClass}">${lArrow}</span><sup class="change-percent ${lChangeClass}">${LchangePercentNum > 0 ? '+' : ''}${LchangePercentNum.toFixed(0)}%</sup>`;
                          }
                          lValCell.innerHTML = lValText + lChangeHTML;
-                        
+                         
                          let rValCell = metricRow.insertCell();
                          rValCell.classList.add('value-cell', 'right-value-cell-bg'); 
                          let rValText = Rval !== null && Rval !== undefined ? Rval.toFixed(metricKey === METRIC_KEYS.NORM_MAX_FORCE ? 2 : 1) : '-';
@@ -1947,7 +1947,7 @@
 
             summaryTableWrapper.appendChild(table);
         }
-       
+        
         function updateNoDataMessage() {
             if (!selectedPatientId) {
                 noDataMessage.textContent = 'Please select a patient to view their history and analysis.';
@@ -2012,7 +2012,7 @@
                     ['Left', 'Right'].forEach(val => injuredSideModalSelect.add(new Option(val, val)));
                     injuredSideModalSelect.value = tempPatientData.injuredSide || 'Left';
                 }
-               
+                
                 patientModalContent.querySelector('#modal-confirm-edit')?.addEventListener('click', () => handleUpdatePatientProfile(patientIdToEdit));
                 patientModalContent.querySelector('#modal-cancel-edit')?.addEventListener('click', closePatientModal);
             } else {
