@@ -77,11 +77,13 @@
             --print-medium-gray: #dee2e6;
 
             /* New colors for percentage changes */
-            --change-significant-positive: #15803d; /* Strong Green */
-            --change-moderate-positive: #16a34a;  /* Standard Green (same as --success-color) */
-            --change-minimal-neutral: #6b7280;    /* Dus Grå */
-            --change-moderate-negative: #f97316;  /* Orange/Lighter Red */
-            --change-significant-negative: #dc2626;/* Strong Red (same as --danger-color-dark) */
+            --change-super-green: #14532d; /* Darker Strong Green for best */
+            --change-green: #15803d; /* Strong Green */
+            --change-light-green: #16a34a;  /* Standard Green (same as --success-color) */
+            --change-neutral-gray: #6b7280;    /* Dus Grå */
+            --change-orange-warning: #f97316;  /* Orange/Lighter Red */
+            --change-strong-red: #b91c1c; /* Darker Strong Red */
+            --change-darker-red: #991b1b; /* Even Darker red for very bad */
         }
         body {
             font-family: 'Avenir', sans-serif;
@@ -574,7 +576,7 @@
             font-size: 1.3rem;
             color: var(--app-primary-color);
             margin-top: 0;
-            margin-bottom: 1em;
+            margin-bottom: 0.2em; /* Reduced margin for tighter look */
             font-weight: var(--semibold-font-weight);
             padding-bottom: 0.5em;
             border-bottom: 1px solid var(--medium-gray);
@@ -697,19 +699,30 @@
             padding-left: 1rem; 
             background-color: var(--print-table-header-bg); 
         }
-        .summary-table .left-value-cell {
-            background-color: var(--print-left-value-cell-bg); 
+        .summary-table .value-cell { /* General class for L Val and R Val cells */
+             /* background-color set by specific left/right if needed, or keep neutral */
         }
-        .summary-table .right-value-cell {
-            background-color: var(--print-right-value-cell-bg); 
+        .summary-table .value-cell .change-arrow {
+            margin-right: 0.2em;
         }
-        /* Detailed Change Percentage Classes */
-        .summary-table .change-significant-positive { color: var(--change-significant-positive) !important; font-weight: var(--semibold-font-weight); }
-        .summary-table .change-moderate-positive  { color: var(--change-moderate-positive) !important; font-weight: var(--normal-font-weight); }
-        .summary-table .change-minimal-neutral    { color: var(--change-minimal-neutral) !important; font-weight: var(--normal-font-weight); }
-        .summary-table .change-moderate-negative  { color: var(--change-moderate-negative) !important; font-weight: var(--normal-font-weight); }
-        .summary-table .change-significant-negative{ color: var(--change-significant-negative) !important; font-weight: var(--semibold-font-weight); }
-        .summary-table .change-na                 { color: var(--dark-gray) !important; font-style: italic; }
+        .summary-table .value-cell .change-percent {
+            font-size: 0.8em;
+            vertical-align: super;
+            margin-left: 0.1em;
+        }
+
+        /* Detailed Change Percentage Classes for Table Values (Arrow and Superscript) */
+        .change-significant-positive { color: var(--change-significant-positive) !important; }
+        .change-moderate-positive  { color: var(--change-moderate-positive) !important; }
+        .change-minimal-neutral    { color: var(--change-minimal-neutral) !important; }
+        .change-moderate-negative  { color: var(--change-moderate-negative) !important; }
+        .change-significant-negative{ color: var(--change-significant-negative) !important; }
+        .change-na                 { color: var(--dark-gray) !important; font-style: italic; }
+        
+        .summary-table .asymmetry-cell {
+            /* General style for asymmetry cell, color will be applied by specific class */
+        }
+
 
         
         #analysis-controls {
@@ -1543,9 +1556,9 @@
             return {
                 responsive: true,
                 displaylogo: false,
-                displayModeBar: false, // Completely hide the modebar
+                displayModeBar: false, 
                 modeBarButtonsToRemove: ['sendDataToCloud', 'lasso2d', 'select2d', 'autoScale2d', 'hoverClosestCartesian', 'hoverCompareCartesian', 'toggleSpikelines'],
-                 modeBarButtonsToAdd: [{ // Keep download button if needed, or remove this block
+                 modeBarButtonsToAdd: [{ 
                     name: 'Download Plot as PNG',
                     icon: Plotly.Icons.camera,
                     click: function(gd) {
@@ -1558,7 +1571,7 @@
                             }
                         }
                         if (gd.layout && gd.layout.yaxis && gd.layout.yaxis.title && gd.layout.yaxis.title.text) {
-                             filename += '_' + gd.layout.yaxis.title.text.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                             filename += '_' + gd.layout.yaxis.title.text.replace(/[^a-zA-Z0-9]/gi, '_').toLowerCase();
                         }
 
                         Plotly.downloadImage(gd, {format: 'png', width: gd._fullLayout.width, height: gd._fullLayout.height, filename: filename });
@@ -1604,12 +1617,12 @@
 
             const traceLeft = {
                 x: xValuesFormattedDates, y: yValuesLeft, mode: 'lines+markers', name: 'Left',
-                line: { color: LEFT_COLOR, width: 2 }, marker: { color: LEFT_COLOR, size: 7 },
+                line: { color: LEFT_COLOR, width: 2, shape: 'spline' }, marker: { color: LEFT_COLOR, size: 7 }, 
                 hovertemplate: 'Left: %{y:.2f}<extra></extra>'
             };
             const traceRight = {
                 x: xValuesFormattedDates, y: yValuesRight, mode: 'lines+markers', name: 'Right',
-                line: { color: RIGHT_COLOR, width: 2 }, marker: { color: RIGHT_COLOR, size: 7 },
+                line: { color: RIGHT_COLOR, width: 2, shape: 'spline' }, marker: { color: RIGHT_COLOR, size: 7 }, 
                 hovertemplate: 'Right: %{y:.2f}<extra></extra>'
             };
             
@@ -1693,7 +1706,7 @@
                     title: {text: ''} 
                 }, 
                 yaxis: { title: {text: metricKey, font: {size: 11}}, automargin: true, range: yAxisRange, zeroline: true },
-                margin: { l: 50, r: 20, b: 80, t: 30, pad: 5 }, // Reduced top margin
+                margin: { l: 50, r: 20, b: 80, t: 30, pad: 5 }, 
                 legend: {orientation: "h", yanchor: "top", y: -0.2, xanchor: "center", x: 0.5, font: {size: 10}},
                 annotations: [],
                 paper_bgcolor: 'rgba(0,0,0,0)',
@@ -1735,7 +1748,7 @@
 
                 // L Change %
                 if (changePercentL !== null) {
-                    let changeLColor = getComputedStyle(document.documentElement).getPropertyValue(getCssVariableForChange(changePercentL)).trim();
+                    let changeLColor = getComputedStyle(document.documentElement).getPropertyValue(getCssVariableForChange(changePercentL, false)).trim();
                     layout.annotations.push({
                         x: xCategory, y: barTopY + yOffsetStep * 1, 
                         xref: 'x', yref: 'y',
@@ -1746,7 +1759,7 @@
                 }
                 // R Change %
                 if (changePercentR !== null) {
-                    let changeRColor = getComputedStyle(document.documentElement).getPropertyValue(getCssVariableForChange(changePercentR)).trim();
+                    let changeRColor = getComputedStyle(document.documentElement).getPropertyValue(getCssVariableForChange(changePercentR, false)).trim();
                      layout.annotations.push({
                         x: xCategory, y: barTopY + yOffsetStep * 1, 
                         xref: 'x', yref: 'y',
@@ -1782,12 +1795,12 @@
         
         function getCssVariableForChange(percent, isAsymmetry = false) {
             const absPercent = Math.abs(percent);
-            if (isAsymmetry) { // Asymmetry: closer to 0 is better
-                if (absPercent <= 10) return '--change-super-green';
-                if (absPercent <= 15) return '--change-green';
-                if (absPercent <= 20) return '--change-orange-warning';
-                return '--change-strong-red';
-            } else { // Regular change: positive is green, negative is red/orange
+            if (isAsymmetry) { // Asymmetry: closer to 0 is better (lower abs value is better)
+                if (absPercent <= 10) return '--change-super-green';  // Best
+                if (absPercent <= 15) return '--change-green';       // Good
+                if (absPercent <= 20) return '--change-orange-warning';// OK/Warning
+                return '--change-strong-red';                       // Worse
+            } else { // Regular change: positive is generally better (improvement)
                 if (percent > 15) return '--change-significant-positive';
                 if (percent > 5) return '--change-moderate-positive';
                 if (percent >= -5) return '--change-minimal-neutral';
@@ -1796,14 +1809,22 @@
             }
         }
 
-        function getChangeClass(changePercent) { // For table
+        function getChangeClass(changePercent, isAsymmetry = false) { // For table, now with isAsymmetry flag
             if (changePercent === null || changePercent === undefined || !isFinite(changePercent)) return 'change-na';
-            // This function now uses the directional logic for L/R changes.
-            if (changePercent > 15) return 'change-significant-positive';
-            if (changePercent > 5) return 'change-moderate-positive';
-            if (changePercent >= -5) return 'change-minimal-neutral';
-            if (changePercent >= -15) return 'change-moderate-negative';
-            return 'change-significant-negative';
+            const absPercent = Math.abs(changePercent);
+
+            if (isAsymmetry) { // Closer to 0 is better
+                if (absPercent <= 10) return 'change-significant-positive'; // "Super Green" in intent, maps to strong green
+                if (absPercent <= 15) return 'change-moderate-positive';    // "Green"
+                if (absPercent <= 20) return 'change-moderate-negative'; // "Orange/Warning"
+                return 'change-significant-negative'; // "Red"
+            } else { // Directional: positive is good, negative is bad
+                if (changePercent > 15) return 'change-significant-positive';
+                if (changePercent > 5) return 'change-moderate-positive';
+                if (changePercent >= -5) return 'change-minimal-neutral';
+                if (changePercent >= -15) return 'change-moderate-negative';
+                return 'change-significant-negative';
+            }
         }
 
         function renderDetailedSummaryTable(dGBD_data) {
@@ -1825,7 +1846,7 @@
             
             dGBD_data.forEach(session => {
                 const th = document.createElement('th');
-                th.colSpan = 4; 
+                th.colSpan = 3; // L Val (%Chg), R Val (%Chg), Asym %
                 th.textContent = session['Test Date'].toLocaleDateString('nb-NO', {day:'2-digit', month:'short', year:'numeric'});
                 th.classList.add('date-header', 'date-column-group');
                 headerRow1.appendChild(th);
@@ -1834,7 +1855,7 @@
             let headerRow2 = thead.insertRow();
             headerRow2.insertCell(); 
             dGBD_data.forEach(() => {
-                ['L Val', 'R Val', 'L Ch%', 'R Ch%'].forEach(subCol => {
+                ['L Val (%Chg)', 'R Val (%Chg)', 'Asym %'].forEach(subCol => {
                     let subTh = headerRow2.insertCell();
                     subTh.textContent = subCol;
                     subTh.classList.add('sub-header');
@@ -1847,7 +1868,7 @@
             POSITIONS.forEach(pos => {
                 let posHeaderRow = tbody.insertRow();
                 let posTh = document.createElement('th');
-                posTh.colSpan = 1 + dGBD_data.length * 4;
+                posTh.colSpan = 1 + dGBD_data.length * 3; // Adjusted colspan
                 posTh.textContent = `Position ${pos}`;
                 posHeaderRow.appendChild(posTh);
                 posHeaderRow.style.backgroundColor = 'var(--app-secondary-color)'; 
@@ -1865,16 +1886,9 @@
                         const Lval = metricData?.Left;
                         const Rval = metricData?.Right;
                         
-                        let lValCell = metricRow.insertCell();
-                        lValCell.textContent = Lval !== null && Lval !== undefined ? Lval.toFixed(metricKey === METRIC_KEYS.NORM_MAX_FORCE ? 2 : 1) : '-';
-                        lValCell.classList.add('left-value-cell');
-
-                        let rValCell = metricRow.insertCell();
-                        rValCell.textContent = Rval !== null && Rval !== undefined ? Rval.toFixed(metricKey === METRIC_KEYS.NORM_MAX_FORCE ? 2 : 1) : '-';
-                        rValCell.classList.add('right-value-cell');
-                        
-                        let Lchange = '-'; let Rchange = '-';
-                        let LchangePercentNum = null; let RchangePercentNum = null;
+                        let LchangePercentNum = null; 
+                            let RchangePercentNum = null;
+                            let asymmetryPercentNum = null;
 
                         if (index > 0) {
                             const prevSession = dGBD_data[index-1];
@@ -1882,21 +1896,49 @@
                             if (prevMetricData) {
                                 if (Lval !== null && Lval !== undefined && prevMetricData.Left !== null && prevMetricData.Left !== undefined && prevMetricData.Left !== 0 && isFinite(prevMetricData.Left)) {
                                     LchangePercentNum = ((Lval - prevMetricData.Left) / Math.abs(prevMetricData.Left)) * 100;
-                                    Lchange = `${LchangePercentNum > 0 ? '+' : ''}${LchangePercentNum.toFixed(0)}%`;
                                 }
                                 if (Rval !== null && Rval !== undefined && prevMetricData.Right !== null && prevMetricData.Right !== undefined && prevMetricData.Right !== 0 && isFinite(prevMetricData.Right)) {
                                     RchangePercentNum = ((Rval - prevMetricData.Right) / Math.abs(prevMetricData.Right)) * 100;
-                                    Rchange = `${RchangePercentNum > 0 ? '+' : ''}${RchangePercentNum.toFixed(0)}%`;
                                 }
                             }
                         }
-                        let lChangeCell = metricRow.insertCell();
-                        lChangeCell.textContent = Lchange;
-                        lChangeCell.className = getChangeClass(LchangePercentNum, false); // false for regular change
+                            if (Lval !== null && Lval !== undefined && Rval !== null && Rval !== undefined && session['Injured Side Profile']) {
+                                const injuredVal = session['Injured Side Profile'] === 'Left' ? Lval : Rval;
+                                const uninjuredVal = session['Injured Side Profile'] === 'Left' ? Rval : Lval;
+                                if (uninjuredVal !== 0 && isFinite(uninjuredVal)) {
+                                    asymmetryPercentNum = ((injuredVal - uninjuredVal) / Math.abs(uninjuredVal)) * 100;
+                                }
+                            }
 
-                        let rChangeCell = metricRow.insertCell();
-                        rChangeCell.textContent = Rchange;
-                        rChangeCell.className = getChangeClass(RchangePercentNum, false); // false for regular change
+                            let lValCell = metricRow.insertCell();
+                            lValCell.classList.add('value-cell');
+                            let lValContent = Lval !== null && Lval !== undefined ? Lval.toFixed(metricKey === METRIC_KEYS.NORM_MAX_FORCE ? 2 : 1) : '-';
+                            if (LchangePercentNum !== null) {
+                                const lChangeClass = getChangeClass(LchangePercentNum, false);
+                                const lArrow = LchangePercentNum > 0 ? '<i class="fas fa-arrow-up"></i> ' : (LchangePercentNum < 0 ? '<i class="fas fa-arrow-down"></i> ' : '');
+                                lValContent = `<span class="${lChangeClass}">${lArrow}${lValContent}<sup>${LchangePercentNum > 0 ? '+' : ''}${LchangePercentNum.toFixed(0)}%</sup></span>`;
+                            }
+                            lValCell.innerHTML = lValContent;
+                            
+                            let rValCell = metricRow.insertCell();
+                            rValCell.classList.add('value-cell');
+                            let rValContent = Rval !== null && Rval !== undefined ? Rval.toFixed(metricKey === METRIC_KEYS.NORM_MAX_FORCE ? 2 : 1) : '-';
+                             if (RchangePercentNum !== null) {
+                                const rChangeClass = getChangeClass(RchangePercentNum, false);
+                                const rArrow = RchangePercentNum > 0 ? '<i class="fas fa-arrow-up"></i> ' : (RchangePercentNum < 0 ? '<i class="fas fa-arrow-down"></i> ' : '');
+                                rValContent = `<span class="${rChangeClass}">${rArrow}${rValContent}<sup>${RchangePercentNum > 0 ? '+' : ''}${RchangePercentNum.toFixed(0)}%</sup></span>`;
+                            }
+                            rValCell.innerHTML = rValContent;
+
+                            let asymCell = metricRow.insertCell();
+                            asymCell.classList.add('asymmetry-cell');
+                            if (asymmetryPercentNum !== null) {
+                                asymCell.textContent = `${asymmetryPercentNum > 0 ? '+' : ''}${asymmetryPercentNum.toFixed(0)}%`;
+                                asymCell.className += ' ' + getChangeClass(asymmetryPercentNum, true); // true for asymmetry logic
+                            } else {
+                                asymCell.textContent = '-';
+                                asymCell.classList.add('change-na');
+                            }
                     });
                 });
             });
