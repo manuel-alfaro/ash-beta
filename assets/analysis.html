@@ -6,7 +6,7 @@
     <title>Patient History Analysis</title>    
     <script src="https://cdn.plot.ly/plotly-2.27.1.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Avenir:wght@400&family=Futura:wght@400&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" xintegrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         :root {
             --app-primary-color: #285484;
@@ -24,7 +24,7 @@
             --app-button-light-gradient-end: rgba(40, 84, 132, 0.9); 
            
             --light-gray: #f8f9fa; 
-            --box-background-color: #f0f2f5; /* Sidebar and other boxes */
+            --box-background-color: #f8f9fa; /* ENDRET: Samme som --light-gray */
             --medium-gray: #dee2e6;
             --dark-gray: #495057;
             --text-color: #212529;
@@ -39,7 +39,6 @@
             --asym-green: #15803d;          /* Asymmetry: >= -10% (Green) */
             --asym-orange-warning: #f97316; /* Asymmetry: < -10% to -15% (Gold/Orange) */
             --asym-strong-red: #b91c1c;     /* Asymmetry: < -15% (Red as hell) */
-            /* --asym-super-green: #14532d; was for abs Asym <= 5%, new logic is simpler */
             
             --change-positive: #16a34a;     /* L/R Change: Positive (Green) */
             --change-negative: #dc2626;     /* L/R Change: Negative (Red) */
@@ -72,7 +71,7 @@
             --normal-font-weight: 400;
             --semibold-font-weight: 600; 
             --bold-font-weight: 700; 
-            --main-content-margin: 40px; 
+            --main-content-margin: 20px; /* ENDRET: Til 20px */
 
             --print-text-color: #000000;
             --print-primary-color: #285484;
@@ -142,7 +141,7 @@
 
         .app-sidebar {
             width: var(--sidebar-width);
-            background-color: var(--box-background-color); /* Sidebar background */
+            background-color: var(--box-background-color); 
             color: var(--text-color);
             padding: 20px 15px;
             display: flex;
