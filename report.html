@@ -128,8 +128,13 @@
             overflow: hidden !important;
             width: 100% !important;
             box-sizing: border-box !important;
-             -webkit-print-color-adjust: exact !important;
+            -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
+            transition: box-shadow 0.3s ease-in-out; /* Added for smooth effect */
+        }
+        /* ADDED: Class for green shadow on success */
+        .all-green-shadow {
+            box-shadow: 0 0 8px 2px rgba(42, 157, 143, 0.6) !important;
         }
         .js-plotly-plot {
             flex-grow: 1 !important;
@@ -336,14 +341,31 @@ async function updateGraphsAndTable() {
         
         // The call is the same, but the underlying function is now simpler
         const positionData = processInputAndCalculate(pos);
+        
+        // MODIFIED: Find the position box element for this row
+        const positionBox = document.getElementById(`position-box-${pos}`);
 
         if (positionData) {
             try {
                 const [fig, allGreen] = createAsymmetryChart(positionData, injuredSide, pos);
+
+                // MODIFIED: Add or remove shadow class based on 'allGreen' status
+                if (positionBox) {
+                    positionBox.classList.remove('all-green-shadow'); // Reset first
+                    if (allGreen) {
+                        positionBox.classList.add('all-green-shadow');
+                    }
+                }
+
                 if (fig.data) { // Check if a valid figure object was returned
                     plotPromises.push(Plotly.react(asymmetryChartDivId, fig.data, fig.layout, plotlyConfig));
                 }
             } catch (error) { console.error(`Error creating asymmetry chart for ${pos}:`, error); }
+        } else {
+            // If no data, ensure shadow is removed
+            if (positionBox) {
+               positionBox.classList.remove('all-green-shadow');
+            }
         }
         if (bodyweightValid && positionData) {
             try {
@@ -379,3 +401,4 @@ document.addEventListener('DOMContentLoaded', async () => {
 </script>
 </body>
 </html>
+
