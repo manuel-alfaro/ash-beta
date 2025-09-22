@@ -175,7 +175,7 @@
             font-size: 1em;
             line-height: 1;
         }
-         .app-sidebar button .button-text, .app-sidebar a > button .button-text {
+       .app-sidebar button .button-text, .app-sidebar a > button .button-text {
             line-height: 1;
             flex-grow: 1;
         }
@@ -545,7 +545,7 @@
             height: 100%;
             box-sizing: border-box;
         }
-         .patient-profile-title-internal {
+       .patient-profile-title-internal {
             font-size: 1.3rem;
             color: var(--app-primary-color);
             margin-bottom: 10px;
@@ -826,147 +826,7 @@
         .js-plotly-plot { flex-grow: 1; position: relative; z-index: 1; }
         #normative-placeholder { text-align: center; color: var(--dark-gray); font-style: italic; padding: 20px; background-color: var(--box-background-color); border-radius: var(--border-radius); margin-top: 1em;}
         #bottom-area { margin-top: 30px; padding-top: 15px; border-top: 1px solid var(--medium-gray); min-height: 30px; }
-        #preview-exit-button-inline { display: none; position: fixed; top: 15px; right: 15px; background-color: var(--danger-color-dark); color: white; padding: 8px 15px; font-size: 0.9rem; font-weight: var(--normal-font-weight); border: none; border-radius: var(--border-radius); cursor: pointer; z-index: 1001; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: all 0.3s ease; font-family: inherit; }
-        #preview-exit-button-inline:hover { background-color: #b91c1c; box-shadow: 0 4px 10px rgba(185, 28, 28, 0.3); transform: translateY(-1px); }
-        #preview-exit-button-inline:active { transform: translateY(0px); box-shadow: 0 2px 5px rgba(185, 28, 28, 0.2); }
-        #preview-exit-button-inline i { margin-right: 6px; }
-        .explanation-box { display: none; background-color: var(--box-background-color); border: 1px solid var(--medium-gray); border-left: 5px solid var(--app-primary-color); padding: 15px; margin: 1em 0 2em 0; border-radius: var(--border-radius); font-size: 0.9em; color: var(--dark-gray); }
-        .explanation-box h4 { margin-top: 0; color: var(--app-primary-color); font-family: inherit; font-weight: var(--normal-font-weight); }
-        .explanation-box p { margin-bottom: 0.5em; }
-        .explanation-box ul { margin-top: 0.5em; padding-left: 20px; }
 
-        /* PDF Preview / Print Mode Active */
-        body.pdf-preview-active {
-            --graph-box-height: 340px !important; /* Matched to main view box height */
-        }
-        body.pdf-preview-active .app-sidebar,
-        body.pdf-preview-active #patient-choice-section,
-        body.pdf-preview-active #patient-choice-container,
-        body.pdf-preview-active #existing-patient-search-container,
-        body.pdf-preview-active #patient-data-secondary-controls,
-        body.pdf-preview-active #patient-data-container,
-        body.pdf-preview-active #patient-overview-section,
-        body.pdf-preview-active #patient-card-and-log-title,
-        body.pdf-preview-active #input-section-container,
-        body.pdf-preview-active #save-data-button-container,
-        body.pdf-preview-active #bottom-area,
-        body.pdf-preview-active .sidebar-social-links,
-        body.pdf-preview-active #loggedInUserContainer,
-        body.pdf-preview-active .sidebar-buttons,
-        body.pdf-preview-active #patient-details-title,
-        body.pdf-preview-active #input-title,
-        body.pdf-preview-active #selected-patient-tests-container
-        {
-            display: none !important;
-        }
-
-        body.pdf-preview-active h1,
-        body.pdf-preview-active .explanation-box,
-        body.pdf-preview-active #results-title,
-        body.pdf-preview-active .position-row
-        {
-            display: block !important;
-        }
-         body.pdf-preview-active .position-row {
-            display: flex !important;
-            flex-wrap: wrap !important; 
-            gap: 30px !important; 
-        }
-
-         body.pdf-preview-active #results-title {
-            margin-top: 5mm !important;
-            text-align: center !important;
-           }
-
-
-        body.pdf-preview-active .app-main-content {
-            margin-left: 0 !important;
-            padding: 5mm 50mm !important; /* MODIFIED: Was 50mm, changed to 65mm for narrower content */
-            height: auto !important;
-            overflow: visible !important;
-            box-shadow: none !important; 
-            border: none !important; 
-        }
-        body.pdf-preview-active .content-container {
-            max-width: 100% !important;
-        }
-
-        body.pdf-preview-active .explanation-box {
-            margin: 0 0 5mm 0 !important;
-        }
-        body.pdf-preview-active .position-row {
-            flex-direction: row !important;
-            page-break-inside: avoid !important;
-            width: 100% !important;
-            box-sizing: border-box !important;
-        }
-         body.pdf-preview-active .asymmetry-graph-container{
-            flex: 4 !important; 
-            min-width: 0 !important; 
-            margin-bottom: 5mm !important;
-            page-break-inside: avoid !important;
-           }
-         body.pdf-preview-active .normative-graph-container {
-            flex: 2.7 !important; 
-            min-width: 0 !important; 
-            margin-bottom: 5mm !important;
-           }
-        body.pdf-preview-active .position-box,
-        body.pdf-preview-active .normative-box {
-            background-color: var(--box-background-color) !important; 
-            box-shadow: var(--subtle-shadow) !important; 
-            border: none !important; 
-            height: var(--graph-box-height) !important; 
-            min-height: var(--graph-box-height) !important; 
-            padding: 10px 20px 15px 20px !important; 
-            overflow: hidden !important;
-            display: flex !important;
-            flex-direction: column !important;
-            width: 100% !important;
-            box-sizing: border-box !important; /* <-- LEGG TIL DENNE LINJEN */
-        
-        }
-        body.pdf-preview-active .position-box.green-box {
-             box-shadow: 0 0 15px 5px var(--success-shadow-color) !important; 
-        }
-        /* body.pdf-preview-active .position-box::after { display: none !important; } */ 
-
-
-        .js-plotly-plot { width: 100% !important; height: 100% !important; flex-grow: 1 !important; }
-        .plotly .scatterlayer .trace.fill { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-        
-        .plotly .annotation .norm-label, 
-        .plotly .annotation .left-label, 
-        .plotly .annotation .right-label, 
-        .plotly .annotation .value-display, 
-        .plotly .annotation .nkg-combined-text span,
-        .plotly .annotation .asymmetry-percent { 
-            fill: black !important; 
-            color: black !important; 
-            font-weight: normal !important; 
-        }
-        .plotly .annotation text { 
-            font-weight: normal !important; 
-        }
-
-        body.pdf-preview-active .plotly .annotation .norm-label, 
-        body.pdf-preview-active .plotly .annotation .left-label, 
-        body.pdf-preview-active .plotly .annotation .right-label, 
-        body.pdf-preview-active .plotly .annotation .value-display, 
-        body.pdf-preview-active .plotly .annotation .nkg-combined-text span,
-        body.pdf-preview-active .plotly .annotation .asymmetry-percent {
-            fill: black !important; 
-            color: black !important; 
-            font-weight: normal !important; 
-        }
-        body.pdf-preview-active .plotly .annotation text {
-            font-weight: normal !important;
-        }
-
-        .plotly .annotation .norm-value { font-weight: normal !important; } 
-        .plotly .gtitle { fill: black !important; font-weight: normal !important; }
-        .plotly .axistitle { fill: black !important; font-size: 9pt !important; font-weight: normal !important; }
-        .plotly .tick text { fill: black !important; font-size: 8pt !important; font-weight: normal !important; }
         .plotly .modebar { display: none !important; } 
         #bar-chart-I, #bar-chart-Y, #bar-chart-T { height: 100% !important; }
         #normative-chart-I, #normative-chart-Y, #normative-chart-T { height: 100% !important; }
@@ -998,7 +858,7 @@
             <div class="sidebar-logo-placeholder"><i class="fas fa-bars"></i></div>
             <div class="sidebar-buttons">
                 <a href="assets/analysis.html" id="analysis-link-button"><button type="button" id="view-analysis-button"><i class="fas fa-history"></i> <span class="button-text">Patient History</span></button></a>
-                <button id="pdf-preview-button"><i class="fas fa-file-pdf"></i><span class="button-text">PDF Preview</span></button>
+                <button id="pdf-preview-button"><i class="fas fa-file-pdf"></i><span class="button-text">Generate Report</span></button>
                 <button id="export-excel-button"><i class="fas fa-file-excel"></i><span class="button-text">Export Data</span></button>
                 <button id="clear-all-button"><i class="fas fa-eraser"></i><span class="button-text">Clear All</span></button>
             </div>
@@ -1016,7 +876,6 @@
             </div>
         </aside>
         <main class="app-main-content">
-            <button id="preview-exit-button-inline"><i class="fas fa-times-circle"></i> Exit Preview</button>
             <div class="content-container">
                 <div id="report-content">
                     <h1>Functional Shoulder Screening</h1>
@@ -1042,7 +901,6 @@
                         </div>
 
                     <div id="main-screening-content">
-                        <div class="explanation-box"><h4>About This Report</h4> <p>This report summarizes the results of the Functional Shoulder Screening using the ASH test (Positions I, Y, T).</p><ul> <li><strong>Asymmetry Graphs:</strong> Show the percentage difference between the injured and uninjured side for key metrics (Max Force, RFD, % Max Force at 100ms). Values closer to 100% indicate better symmetry. Annotations above the bars show the percentage difference relative to the uninjured side (100%). Numbers inside the bars show the absolute values for each side.</li> <li><strong>Normative Graphs:</strong> Visually represent the estimated percentile rank for Max Force / Bodyweight (N/kg) for each side, based on normative thresholds. Background colors indicate performance zones (Poor, Average, Good, Excellent). Vertical dashed lines show the estimated percentile for the Left (Orange) and Right (Blue) values.</li> </ul><p><i>To save the report as a PDF (recommended browser: Safari): Go to 'File' in the menu bar, then select 'Export as PDF...'. Click 'Exit Preview' to return.</i></p></div>
 
                         <h2 class="section-title-main" id="patient-card-and-log-title" style="display: none;">Details</h2>
                         <div id="patient-overview-section">
@@ -1216,7 +1074,7 @@
         const percentileZones = {
             poor: 30,  
             average: 70,  
-            good: 90,   
+            good: 90,    
             excellent: 100 
         };
         const percentileMidpoint = 50; 
@@ -1247,9 +1105,7 @@
         const exportExcelButton = document.getElementById('export-excel-button');
         const clearAllButton = document.getElementById('clear-all-button');
         const logoutButton = document.getElementById('logout-button');
-        const previewExitButtonInline = document.getElementById('preview-exit-button-inline');
-        const explanationBox = document.querySelector('.explanation-box');
-
+       
         const inputSectionContainer = document.getElementById('input-section-container');
         const resultsTitle = document.getElementById('results-title');
         const positionRows = document.querySelectorAll('.position-row');
@@ -1394,9 +1250,8 @@
             const maxYValue = validRatios.length > 0 ? Math.max(110, ...validRatios) : 110;
             const annotationYTop = maxYValue + 8;
             const yAxisUpperBound = annotationYTop + 15;
-
-            const isPdfPreview = document.body.classList.contains('pdf-preview-active');
-            const plotHeight = isPdfPreview ? 260 : 300; // Adjusted PDF height
+            
+            const plotHeight = 300;
 
             const fig = {
                 data: [
@@ -1499,7 +1354,7 @@
              if (clampedValue === upperPoint.v) { 
                 return upperPoint.p;
             }
-            if (clampedValue === lowerPoint.v) { 
+             if (clampedValue === lowerPoint.v) { 
                 return lowerPoint.p;
             }
 
@@ -1558,8 +1413,7 @@
             }
             traces.push({ x: baseCurveX, y: baseCurveY, type: 'scatter', mode: 'lines', line: { color: '#ffffff', width: 1.5, shape: 'spline' }, hoverinfo: 'none', name: 'Distribution (Visual)', showlegend: false });
             
-            const isPdfPreview = document.body.classList.contains('pdf-preview-active');
-            const plotHeight = isPdfPreview ? 260 : 250; // Adjusted PDF height
+            const plotHeight = 250; 
 
             const layout = {
                 height: plotHeight,
@@ -1644,37 +1498,42 @@
             });
             setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
         }
-        function enterPreviewMode() {
-            document.body.classList.add('pdf-preview-active');
-            if(previewExitButtonInline) previewExitButtonInline.style.display = 'inline-block';
-            if(explanationBox) explanationBox.style.display = 'block';
-            setTimeout(() => {
-                asymmetryChartDivs.concat(normativeChartDivs).forEach(divId => {
-                    const gd = document.getElementById(divId);
-                    if (gd && gd.classList.contains('js-plotly-plot') && typeof gd.layout !== 'undefined') {
-                        try {
-                            Plotly.Plots.resize(gd);
-                        } catch (e) { console.warn("Error resizing plot for PDF preview:", divId, e); }
-                    }
-                });
-            }, 150);
+        function generateReportAndOpen() {
+            if (!currentPatientDataForApp || !currentPatientDataForApp.patientId) {
+                showStatusMessage("Please select or create a patient before generating a report.", "warning");
+                return;
+            }
+
+            const reportData = {
+                patientInfo: { ...currentPatientDataForApp },
+                screeningData: {},
+                timestamp: new Date().toISOString()
+            };
+
+            let hasData = false;
+            ['I', 'Y', 'T'].forEach(pos => {
+                const processedData = processInputAndCalculate(pos);
+                if (processedData) {
+                    reportData.screeningData[pos] = processedData;
+                    hasData = true;
+                }
+            });
+
+            if (!hasData) {
+                showStatusMessage("No screening data entered to generate a report.", "warning");
+                return;
+            }
+
+            try {
+                localStorage.setItem('shoulderScreeningReportData', JSON.stringify(reportData));
+                showStatusMessage("Report data prepared. Opening report...", "info", 2000);
+                window.open('report.html', '_blank');
+            } catch (error) {
+                console.error("Error saving report data to localStorage:", error);
+                showStatusMessage("Could not generate report.", "error");
+            }
         }
 
-        function exitPreviewMode() {
-            document.body.classList.remove('pdf-preview-active');
-            if(previewExitButtonInline) previewExitButtonInline.style.display = 'none';
-            if(explanationBox) explanationBox.style.display = 'none';
-             setTimeout(() => {
-                asymmetryChartDivs.concat(normativeChartDivs).forEach(divId => {
-                    const gd = document.getElementById(divId);
-                     if (gd && gd.classList.contains('js-plotly-plot') && typeof gd.layout !== 'undefined') { 
-                         try {
-                            Plotly.Plots.resize(gd);
-                         } catch (e) { /* Ignore resize errors if plot not fully rendered */ }
-                    }
-                });
-            }, 150);
-        }
         function exportTableToCsv() { const fpNr = currentPatientDataForApp.patientId || ''; const age = currentPatientDataForApp.age || ''; const gender = currentPatientDataForApp.gender || ''; const sport = currentPatientDataForApp.sport || ''; const injuryValue = currentPatientDataForApp.injury || ''; const bodyweightValue = currentPatientDataForApp.bodyweight || ''; const injuredSide = currentPatientDataForApp.injuredSide || ''; const date = new Date(); const year = date.getFullYear(); const month = (date.getMonth() + 1).toString().padStart(2, '0'); const day = date.getDate().toString().padStart(2, '0'); const dateString = `${year}-${month}-${day}`; const safeFpNr = fpNr.replace(/[^a-z0-9]/gi, '_') || 'Unknown'; const filename = `ASH_${safeFpNr}_${dateString}.csv`; const headers = [ "Patient ID", "Age", "Gender", "Sport", "Injury", "Bodyweight (kg)", "Injured Side", "Position", "Metric", "Left Value", "Right Value" ]; let csv = [headers.join(',')]; const positions = ['I', 'Y', 'T']; const metricsForCsv = ['Max Force (N)', 'RFD 100ms (N/s)']; positions.forEach(pos => { const positionName = `ASH Test Position ${pos}`; const positionData = processInputAndCalculate(pos); metricsForCsv.forEach(metricDisplay => { let leftVal = ''; let rightVal = ''; let metricIdentifier = metricDisplay; if (metricDisplay === 'Max Force (N)') { if (positionData) { leftVal = positionData.left.max_force; rightVal = positionData.right.max_force; } } else if (metricDisplay === 'RFD 100ms (N/s)') { if (positionData) { leftVal = positionData.left.rfd; rightVal = positionData.right.rfd; } metricIdentifier = 'RFD 100ms (N/s)'; } const rowData = [ `"${fpNr}"`, `"${age}"`, `"${gender}"`, `"${sport}"`, `"${injuryValue}"`, `"${bodyweightValue}"`, `"${injuredSide}"`, `"${positionName}"`, `"${metricIdentifier}"`, `"${leftVal}"`, `"${rightVal}"` ]; csv.push(rowData.join(',')); }); }); const csvString = "\uFEFF" + csv.join('\n'); const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a'); if (link.download !== undefined) { const url = URL.createObjectURL(blob); link.setAttribute('href', url); link.setAttribute('download', filename); link.style.visibility = 'hidden'; document.body.appendChild(link); link.click(); document.body.removeChild(link); showStatusMessage("Data exported to CSV.", "success"); } else { alert("CSV export is not directly supported in this browser. Please try a modern browser."); } }
 
         function resetPatientDataForApp() {
@@ -2738,9 +2597,8 @@
             input.addEventListener('input', updateGraphsAndTable);
             input.addEventListener('change', saveInputsToLocalStorage);
         });
-        if (pdfPreviewButton) pdfPreviewButton.addEventListener('click', enterPreviewMode);
+        if (pdfPreviewButton) pdfPreviewButton.addEventListener('click', generateReportAndOpen);
         if (exportExcelButton) exportExcelButton.addEventListener('click', exportTableToCsv);
-        if (previewExitButtonInline) previewExitButtonInline.addEventListener('click', exitPreviewMode); 
         if (clearAllButton) clearAllButton.addEventListener('click', clearAllFields);
         if(saveDataButton) saveDataButton.addEventListener('click', saveScreeningToFirestore);
 
@@ -2762,7 +2620,7 @@
                 const gd = document.getElementById(divId);
                  if (gd && gd.classList.contains('js-plotly-plot') && typeof gd.layout !== 'undefined') { 
                      try {
-                        Plotly.Plots.resize(gd);
+                         Plotly.Plots.resize(gd);
                      } catch (e) { /* Ignore resize errors if plot not fully rendered */ }
                 }
             });
